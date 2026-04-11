@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-04-11)
 ## Current Position
 
 Phase: 1 of 5 (Pipeline Validation Spike)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-04-11 — Roadmap created
+Plan: 1 of 3 in current phase (01-01 complete)
+Status: In progress
+Last activity: 2026-04-12 — Plan 01-01 complete
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 7% (1/15 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 15 min
+- Total execution time: 0.25 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| Phase 1 | 1/3 | 15 min | 15 min |
 
 **Recent Trend:**
-- Last 5 plans: -
-- Trend: -
+- Last 5 plans: 01-01 (15 min)
+- Trend: Baseline established
 
 *Updated after each plan completion*
 
@@ -42,11 +42,16 @@ Progress: [░░░░░░░░░░] 0%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- None yet.
+- Use `re.findall(r"[a-z]+")` for tokenization (single-pass: lowercase + punctuation removal + split)
+- Validate Gutenberg IDs as positive integers before constructing file paths
+- 10,000 unique word minimum enforced post-stopword-removal; skip rather than abort
+- Download script is resumable: checks file existence and size before re-downloading
 
 ### Pending Todos
 
-None yet.
+- Run `python scripts/01_download_corpus.py` to fetch corpus (~30-40s, requires network)
+- Run `python scripts/02_preprocess.py` to generate processed JSON files
+- Proceed to Plan 01-02: Word2Vec model training
 
 ### Blockers/Concerns
 
@@ -56,6 +61,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-11
-Stopped at: Roadmap created, ready for Phase 1 planning
+Last session: 2026-04-12
+Stopped at: Completed 01-01-PLAN.md (corpus download and preprocessing pipeline)
 Resume file: None
