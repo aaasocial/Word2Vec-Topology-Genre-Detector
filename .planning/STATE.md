@@ -10,24 +10,24 @@ See: .planning/PROJECT.md (updated 2026-04-11)
 ## Current Position
 
 Phase: 1 of 5 (Pipeline Validation Spike)
-Plan: 2 of 3 in current phase (01-02 complete)
-Status: In progress
-Last activity: 2026-04-12 — Plan 01-02 complete
+Plan: 3 of 3 in current phase (01-03 complete — Phase 1 implementation done)
+Status: Phase 1 complete — awaiting corpus data to run pipeline
+Last activity: 2026-04-12 — Plan 01-03 complete
 
-Progress: [███░░░░░░░] 13% (2/15 plans)
+Progress: [████░░░░░░] 20% (3/15 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 15 min
-- Total execution time: 0.25 hours
+- Total plans completed: 3
+- Average duration: ~12 min
+- Total execution time: ~0.6 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| Phase 1 | 1/3 | 15 min | 15 min |
+| Phase 1 | 3/3 | ~35 min | ~12 min |
 
 **Recent Trend:**
 - Last 5 plans: 01-01 (15 min)
@@ -46,12 +46,17 @@ Recent decisions affecting current work:
 - Validate Gutenberg IDs as positive integers before constructing file paths
 - 10,000 unique word minimum enforced post-stopword-removal; skip rather than abort
 - Download script is resumable: checks file existence and size before re-downloading
+- Windows-compatible subprocess timeout via multiprocessing.Process instead of signal.alarm (POSIX-only)
+- PCA inside sklearn Pipeline to prevent data leakage across LOOCV folds
+- PersistenceImager fitted on all books jointly for consistent image grid
+- alpha=0.5 default blending of topology and cluster distribution features (configurable)
 
 ### Pending Todos
 
 - Run `python scripts/01_download_corpus.py` to fetch corpus (~30-40s, requires network)
 - Run `python scripts/02_preprocess.py` to generate processed JSON files
-- Proceed to Plan 01-03: Persistent homology and SVM validation
+- Run full pipeline: 01_download_corpus.py → 02_preprocess.py → 03_train_embeddings.py → 04_compute_homology.py → 05_build_features.py → 06_validate.py
+- Inspect GO/NO-GO verdict in results/validation_report.txt to determine if Phase 2 (web app) proceeds
 
 ### Blockers/Concerns
 
@@ -62,5 +67,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-04-12
-Stopped at: Completed 01-02-PLAN.md (Word2Vec training and TF-IDF computation)
+Stopped at: Completed 01-03-PLAN.md (Persistent homology, feature engineering, validation pipeline — Phase 1 implementation complete)
 Resume file: None
