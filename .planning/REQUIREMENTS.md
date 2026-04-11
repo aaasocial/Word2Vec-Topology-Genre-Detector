@@ -92,7 +92,7 @@
 
 ### Corpus & Data
 
-- [ ] **CORPUS-01**: App ships with a bundled labeled corpus of 50-100 books across 5-8 literary genres (horror, romance, detective, sci-fi, literary fiction, etc.)
+- [ ] **CORPUS-01**: App ships with a bundled labeled corpus of 50-100 public domain books sourced from Project Gutenberg, spanning 5-8 literary genres (horror, romance, detective, sci-fi, literary fiction, etc.) with genre labels assigned by the development team
 - [ ] **CORPUS-02**: Bundled corpus results (Word2Vec model, TF-IDF weights, persistence diagrams, feature vectors, projections) are pre-computed at build time — not recomputed on each server start
 - [ ] **CORPUS-03**: Vietoris-Rips computation enforces a configurable `max_words` cap per book (default 500, max 1000) to prevent computational explosion
 - [ ] **CORPUS-04**: All books in the bundled corpus are public domain texts (e.g., Project Gutenberg) to avoid copyright issues
@@ -146,28 +146,79 @@
 
 ## Traceability
 
-Which phases cover which requirements. Updated during roadmap creation.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VALID-01 to VALID-03 | Phase 1 | Pending |
-| PIPE-01 to PIPE-05 | Phase 1-2 | Pending |
-| HOM-01 to HOM-08 | Phase 2-3 | Pending |
-| VIZ-01 to VIZ-11 | Phase 2-3 | Pending |
-| TOPO-01 to TOPO-07 | Phase 3-4 | Pending |
-| COMP-01 to COMP-02 | Phase 4 | Pending |
-| CLASS-01 to CLASS-05 | Phase 4-5 | Pending |
-| PARAM-01 to PARAM-06 | Phase 3-5 | Pending |
-| EXPLAIN-01 | Phase 5 | Pending |
-| UX-01 to UX-05 | Throughout | Pending |
-| CORPUS-01 to CORPUS-04 | Phase 1-2 | Pending |
-| INFRA-01 to INFRA-06 | Phase 1-2 | Pending |
+| VALID-01 | Phase 1 | Pending |
+| VALID-02 | Phase 1 | Pending |
+| VALID-03 | Phase 1 | Pending |
+| PIPE-01 | Phase 1 | Pending |
+| PIPE-02 | Phase 1 | Pending |
+| PIPE-03 | Phase 1 | Pending |
+| PIPE-04 | Phase 1 | Pending |
+| PIPE-05 | Phase 1 | Pending |
+| HOM-01 | Phase 1 | Pending |
+| HOM-02 | Phase 1 | Pending |
+| HOM-03 | Phase 1 | Pending |
+| HOM-04 | Phase 1 | Pending |
+| HOM-05 | Phase 1 | Pending |
+| HOM-06 | Phase 1 | Pending |
+| HOM-07 | Phase 1 | Pending |
+| HOM-08 | Phase 1 | Pending |
+| CORPUS-01 | Phase 1 | Pending |
+| CORPUS-03 | Phase 1 | Pending |
+| CORPUS-04 | Phase 1 | Pending |
+| INFRA-01 | Phase 2 | Pending |
+| INFRA-02 | Phase 2 | Pending |
+| INFRA-03 | Phase 2 | Pending |
+| CORPUS-02 | Phase 2 | Pending |
+| CLASS-01 | Phase 2 | Pending |
+| CLASS-02 | Phase 2 | Pending |
+| CLASS-04 | Phase 2 | Pending |
+| CLASS-05 | Phase 2 | Pending |
+| UX-01 | Phase 2 | Pending |
+| UX-02 | Phase 2 | Pending |
+| INFRA-04 | Phase 3 | Pending |
+| VIZ-01 | Phase 3 | Pending |
+| VIZ-02 | Phase 3 | Pending |
+| VIZ-03 | Phase 3 | Pending |
+| VIZ-04 | Phase 3 | Pending |
+| VIZ-05 | Phase 3 | Pending |
+| VIZ-06 | Phase 3 | Pending |
+| VIZ-07 | Phase 3 | Pending |
+| VIZ-08 | Phase 3 | Pending |
+| VIZ-09 | Phase 3 | Pending |
+| VIZ-10 | Phase 3 | Pending |
+| VIZ-11 | Phase 3 | Pending |
+| CLASS-03 | Phase 3 | Pending |
+| PARAM-01 | Phase 3 | Pending |
+| PARAM-02 | Phase 3 | Pending |
+| UX-04 | Phase 3 | Pending |
+| TOPO-01 | Phase 4 | Pending |
+| TOPO-02 | Phase 4 | Pending |
+| TOPO-03 | Phase 4 | Pending |
+| TOPO-04 | Phase 4 | Pending |
+| TOPO-05 | Phase 4 | Pending |
+| TOPO-06 | Phase 4 | Pending |
+| TOPO-07 | Phase 4 | Pending |
+| COMP-01 | Phase 4 | Pending |
+| COMP-02 | Phase 4 | Pending |
+| PARAM-03 | Phase 4 | Pending |
+| PARAM-04 | Phase 4 | Pending |
+| PARAM-05 | Phase 4 | Pending |
+| PARAM-06 | Phase 4 | Pending |
+| EXPLAIN-01 | Phase 4 | Pending |
+| UX-03 | Phase 4 | Pending |
+| UX-05 | Phase 4 | Pending |
+| INFRA-05 | Phase 5 | Pending |
+| INFRA-06 | Phase 5 | Pending |
 
 **Coverage:**
-- v1 requirements: 57 total
-- Mapped to phases: 57
+- v1 requirements: 63 total
+- Mapped to phases: 63
 - Unmapped: 0
+
+**Note:** The original count of 57 was incorrect. Actual count is 63 requirements across 12 categories.
 
 ---
 *Requirements defined: 2026-04-11*
-*Last updated: 2026-04-11 after initialization*
+*Last updated: 2026-04-11 after roadmap creation*
