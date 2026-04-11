@@ -1,0 +1,36 @@
+# Pipeline parameters -- override any value via CLI flags
+# Example: python scripts/04_compute_homology.py --max-words 400
+
+corpus:
+  min_unique_words: 10000  # D-13: minimum unique words after stopword removal
+  download_sleep: 2        # seconds between Gutenberg downloads
+
+word2vec:
+  vector_size: 100
+  window: 5
+  min_count: 5
+  sg: 1                    # skip-gram
+  epochs: 10
+  workers: 1               # deterministic
+  seed: 42
+
+homology:
+  max_words: 500
+  timeout: 10              # seconds per book before retry
+  retry_step: 100          # reduce max_words by this on timeout
+  min_words: 100           # give up below this
+  homology_dimensions: [0, 1]  # H0 and H1
+  epsilon_max: 1.0
+
+features:
+  grid_resolution: 20
+  sigma: 0.5
+  k_clusters: 50
+  alpha: 0.5
+
+validation:
+  svm_kernel: rbf
+  svm_C: 1.0
+  svm_gamma: scale
+  pca_components: 20
+  permutation_n: 1000

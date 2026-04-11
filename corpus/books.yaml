@@ -1,0 +1,49 @@
+genres:
+  horror:
+    - title: "Dracula"
+      author: "Bram Stoker"
+      gutenberg_id: 345
+    - title: "Frankenstein"
+      author: "Mary Shelley"
+      gutenberg_id: 84
+    - title: "The Picture of Dorian Gray"
+      author: "Oscar Wilde"
+      gutenberg_id: 174
+    - title: "The Strange Case of Dr Jekyll and Mr Hyde"
+      author: "R.L. Stevenson"
+      gutenberg_id: 43
+    - title: "The Turn of the Screw"
+      author: "Henry James"
+      gutenberg_id: 209
+  scifi:
+    - title: "The War of the Worlds"
+      author: "H.G. Wells"
+      gutenberg_id: 36
+    - title: "Twenty Thousand Leagues Under the Seas"
+      author: "Jules Verne"
+      gutenberg_id: 164
+    - title: "The Time Machine"
+      author: "H.G. Wells"
+      gutenberg_id: 35
+    - title: "A Journey to the Centre of the Earth"
+      author: "Jules Verne"
+      gutenberg_id: 18857
+    - title: "The Island of Doctor Moreau"
+      author: "H.G. Wells"
+      gutenberg_id: 159
+  romance:
+    - title: "Pride and Prejudice"
+      author: "Jane Austen"
+      gutenberg_id: 1342
+    - title: "Jane Eyre"
+      author: "Charlotte Bronte"
+      gutenberg_id: 1260
+    - title: "Sense and Sensibility"
+      author: "Jane Austen"
+      gutenberg_id: 161
+    - title: "Wuthering Heights"
+      author: "Emily Bronte"
+      gutenberg_id: 768
+    - title: "Emma"
+      author: "Jane Austen"
+      gutenberg_id: 158
