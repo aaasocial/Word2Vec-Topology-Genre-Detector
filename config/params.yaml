@@ -2,7 +2,7 @@
 # Example: python scripts/04_compute_homology.py --max-words 400
 
 corpus:
-  min_unique_words: 10000  # D-13: minimum unique words after stopword removal
+  min_unique_words: 3000   # D-13: minimum unique words after stopword removal (classic novels top out ~4-12k)
   download_sleep: 2        # seconds between Gutenberg downloads
 
 word2vec:
@@ -24,7 +24,7 @@ homology:
 
 features:
   grid_resolution: 20
-  sigma: 0.5
+  sigma: 0.05
   k_clusters: 50
   alpha: 0.5
 

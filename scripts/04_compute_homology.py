@@ -99,6 +99,9 @@ def main():
 
         vectors = np.load(str(vf))
         tfidf_weights = np.load(str(tfidf_file))
+        # Normalize weights to [0, 1] per book so weighted distances land in
+        # a meaningful range (0.1-1.4) rather than collapsing into 0.01-0.05.
+        tfidf_weights = tfidf_weights / tfidf_weights.max()
 
         current_max = min(max_words, len(vectors))
         success = False

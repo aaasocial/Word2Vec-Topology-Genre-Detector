@@ -111,21 +111,36 @@ def main():
         pimgr.pixel_size = span / grid_resolution
         return pimgr
 
-    h0_imager = fit_imager(all_h0_diagrams, grid_resolution, sigma)
+    # H0 images are dropped: all H0 births are 0 (components born at radius 0),
+    # so the birth axis collapses and the 2D persistence image degenerates to 0 pixels.
+    # H1 (loops) carries the topological signal.
     h1_imager = fit_imager(all_h1_diagrams, grid_resolution, sigma)
     print(f"done ({time.time()-t_start:.1f}s)")
 
-    def transform_diagram(pimgr, diag, grid_resolution):
-        if pimgr is None or len(diag) == 0:
-            return np.zeros(grid_resolution * grid_resolution)
-        imgs = pimgr.transform([diag], skew=True)
-        return imgs[0].flatten()
+    # Determine actual H1 image size by transforming the first valid diagram.
+    # The fitted imager may produce non-square images (birth_span ≠ pers_span),
+    # so we cannot assume grid_resolution² pixels.
+    h1_img_size = 0
+    for diag in all_h1_diagrams:
+        if h1_imager is not None and len(diag) > 0:
+            sample = h1_imager.transform([diag], skew=True)[0].flatten()
+            h1_img_size = len(sample)
+            break
 
-    # Determine image vector size
-    sample_h0 = transform_diagram(h0_imager, all_h0_diagrams[0], grid_resolution)
-    sample_h1 = transform_diagram(h1_imager, all_h1_diagrams[0], grid_resolution)
-    img_size = len(sample_h0)
-    print(f"Persistence images: H0 ({img_size}D), H1 ({img_size}D)")
+    def transform_h1(diag):
+        """Transform H1 diagram to a fixed-size flattened image vector."""
+        if h1_imager is None or h1_img_size == 0 or len(diag) == 0:
+            return np.zeros(h1_img_size)
+        flat = h1_imager.transform([diag], skew=True)[0].flatten()
+        # Pad or trim to h1_img_size in case of floating-point edge pixels
+        if len(flat) != h1_img_size:
+            out = np.zeros(h1_img_size)
+            n = min(len(flat), h1_img_size)
+            out[:n] = flat[:n]
+            return out
+        return flat
+
+    print(f"Persistence images: H1 ({h1_img_size}D), H0 dropped (degenerate birth axis)")
 
     # Step 3: K-means clustering on all word vectors
     t_start = time.time()
@@ -149,12 +164,8 @@ def main():
         t_start = time.time()
         print(f"[{i}/{total}] Book {gid}: building feature vector...", end=' ', flush=True)
 
-        # Persistence images
-        h0_img = transform_diagram(h0_imager, all_h0_diagrams[i-1], grid_resolution)
-        h1_img = transform_diagram(h1_imager, all_h1_diagrams[i-1], grid_resolution)
-
-        # L2-normalize
-        h0_norm = h0_img / (np.linalg.norm(h0_img) + 1e-10)
+        # Persistence image (H1 only — H0 dropped, see fit step above)
+        h1_img = transform_h1(all_h1_diagrams[i-1])
         h1_norm = h1_img / (np.linalg.norm(h1_img) + 1e-10)
 
         # Cluster distribution
@@ -170,9 +181,8 @@ def main():
                 cluster_dist[word_to_cluster[word]] += tfidf_weights[j]
         cluster_norm = cluster_dist / (np.linalg.norm(cluster_dist) + 1e-10)
 
-        # Concatenate with alpha weighting
-        structure_vec = np.concatenate([h0_norm, h1_norm])
-        feature = np.concatenate([alpha * structure_vec, (1 - alpha) * cluster_norm])
+        # Concatenate with alpha weighting (H1 topology + cluster location)
+        feature = np.concatenate([alpha * h1_norm, (1 - alpha) * cluster_norm])
 
         # Save individual feature
         np.save(str(features_dir / f'features_{gid}.npy'), feature)

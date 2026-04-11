@@ -155,7 +155,13 @@ def main():
         results_dir, overall_accuracy, p_value, genre_accuracies, params_summary
     )
     print()
-    print(report_text)
+    ascii_report = (report_text
+                    .replace('✓', '[GO]')
+                    .replace('✗', '[NO-GO]')
+                    .replace('\u2014', '--')
+                    .replace('\u2500', '-')
+                    .replace('\u2502', '|'))
+    print(ascii_report)
 
     # Append to run history
     log_path = results_dir / 'run_history.log'
