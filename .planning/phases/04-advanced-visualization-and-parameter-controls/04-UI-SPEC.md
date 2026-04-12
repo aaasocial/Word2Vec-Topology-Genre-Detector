@@ -58,6 +58,8 @@ Inherited from Phase 3. No new sizes or weights added.
 | Heading | 18px | 600 | 1.2 | Inter | "Topology", "Settings", slide deck step titles |
 | Mono | 13px | 400 | 1.4 | JetBrains Mono | Epsilon slider value, persistence birth/death values, parameter numeric inputs, CSV export data preview |
 
+**Note on Label (12px) vs Mono (13px):** The 1px size difference between these roles is intentional but secondary -- the primary distinction is font-family (Inter vs JetBrains Mono). Label uses Inter for UI chrome; Mono uses JetBrains Mono for numeric/data values. Do not swap sizes between these roles; the font-family assignment is what matters for visual consistency.
+
 ---
 
 ## Color
@@ -65,6 +67,8 @@ Inherited from Phase 3. No new sizes or weights added.
 ### Inherited Surface and Accent Colors
 
 All surface colors (`#0A0A0F`, `#111118`, `#16161F`, `#1A1A25`, `#1E1E2A`, `#2A2A3A`), text colors (`#6B6B80`, `#E0E0EC`, `#F5F5FF`), accent (`#6366F1`), destructive (`#EF4444`), success (`#22C55E`), and genre palette are inherited from Phase 3 without modification.
+
+**Distribution: 60% surface (`#0A0A0F` / `#111118`), 30% card/input surfaces (`#16161F`, `#1A1A25`, `#1E1E2A`, `#2A2A3A`), 10% accent and semantic colors (`#6366F1`, `#EF4444`, `#22C55E`, `#FACC15`).**
 
 ### Phase 4 New Color Tokens
 
@@ -86,7 +90,7 @@ All surface colors (`#0A0A0F`, `#111118`, `#16161F`, `#1A1A25`, `#1E1E2A`, `#2A2
 | Disclaimer text | `#6B6B80` | Muted, non-intrusive |
 | Settings drawer overlay | `rgba(0,0,0,0.5)` | Backdrop behind open settings drawer |
 | Slide deck overlay | `rgba(10,10,15,0.95)` | Near-opaque overlay for pipeline explanation |
-| Recompute badge background | `#FBBF24` (amber-400) | "Parameters changed -- Recompute" badge |
+| Recompute badge background | `#FBBF24` (amber-400) | "Parameters changed -- Recompute Results" badge |
 | Recompute badge text | `#111118` | Dark text on amber badge for contrast |
 | Updating overlay | `rgba(10,10,15,0.4)` | Dim overlay on canvas during background recomputation |
 
@@ -117,7 +121,7 @@ Components numbered 20+ to continue from Phase 3's 1-19.
 | Active tab | `#F5F5FF` text, 2px bottom border `#6366F1`, no background fill |
 | Inactive tab | `#6B6B80` text, no bottom border |
 | Hover tab | `#E0E0EC` text, `#151520` background, border-radius 4px top |
-| Right content | Settings gear icon (lucide `Settings`, 20px, `#6B6B80`, hover `#E0E0EC`) |
+| Right content | Settings gear icon (lucide `Settings`, 20px, `#6B6B80`, hover `#E0E0EC`). `aria-label="Open settings"`. Wrapped in shadcn `Tooltip` with label "Settings" (appears on hover, 200ms delay). |
 | Tab transition | 150ms color transition on hover; no tab content crossfade (instant swap) |
 | Keyboard | Tab key cycles through tab buttons; Enter/Space activates |
 
@@ -250,8 +254,8 @@ Components numbered 20+ to continue from Phase 3's 1-19.
 | Epsilon step | "Epsilon Step Size" | 0.001 to 0.5 | 0.01 | 0.001 |
 
 | Dirty state | When any parameter differs from last-computed value: amber badge appears at section top |
-| Recompute badge | Pill badge: "Parameters changed -- Recompute" (12px, 600 weight). Background `#FBBF24`, text `#111118`. 4px vertical padding, 12px horizontal padding, border-radius 9999px. |
-| Recompute button | shadcn `Button` variant="default" (accent bg `#6366F1`). Label: "Recompute". Full width of drawer. 44px height. Disabled when no parameters are dirty. |
+| Recompute badge | Pill badge: "Parameters changed -- Recompute Results" (12px, 600 weight). Background `#FBBF24`, text `#111118`. 4px vertical padding, 12px horizontal padding, border-radius 9999px. |
+| Recompute button | shadcn `Button` variant="default" (accent bg `#6366F1`). Label: "Recompute Results". Full width of drawer. 44px height. Disabled when no parameters are dirty. |
 | Loading state | Button shows spinner (lucide `Loader2` with CSS spin animation) + "Recomputing..." label. Button disabled during computation. |
 
 ### 29. Very-Slow-Tier Parameter Controls (inside Settings Drawer)
@@ -266,7 +270,7 @@ Components numbered 20+ to continue from Phase 3's 1-19.
 | Word2Vec dimension | "Embedding Dimension" | 50 to 300 | 150 | 10 |
 | Context window | "Context Window" | 2 to 15 | 5 | 1 |
 
-| Confirm dialog | shadcn `Dialog`. Title: "Retrain Word2Vec Model?" (18px heading). Body: "This will retrain the entire model with the new parameters. Current visualizations will be unavailable during retraining. Estimated time: 2--5 minutes." (14px body). Actions: "Cancel" (variant="outline") + "Retrain Model" (variant="destructive", `#EF4444` bg). |
+| Confirm dialog | shadcn `Dialog`. Title: "Retrain Word2Vec Model?" (18px heading). Body: "This will retrain the entire model with the new parameters. Current visualizations will be unavailable during retraining. Estimated time: 2--5 minutes." (14px body). Actions: "Keep Current Model" (variant="outline") + "Retrain Model" (variant="destructive", `#EF4444` bg). |
 | During retraining | Full canvas overlay: `rgba(10,10,15,0.4)` with centered spinner + "Retraining model..." (16px, `#E0E0EC`) + cancel button below. All other controls disabled except cancel. |
 
 ### 30. Recomputation Overlay (PARAM-05)
@@ -358,8 +362,8 @@ Each step uses the currently selected/uploaded book's actual data when available
 | Action | Effect |
 |--------|--------|
 | Open drawer | Drawer slides in from right (300ms). Backdrop appears. Main content remains visible but dimmed. |
-| Change slow-tier param | Amber "Parameters changed -- Recompute" badge appears. No computation triggered yet. |
-| Click Recompute | Badge disappears. Button enters loading state. Recomputation overlay appears on canvas. When complete: overlay fades out (300ms), new data replaces old. |
+| Change slow-tier param | Amber "Parameters changed -- Recompute Results" badge appears. No computation triggered yet. |
+| Click Recompute Results | Badge disappears. Button enters loading state. Recomputation overlay appears on canvas. When complete: overlay fades out (300ms), new data replaces old. |
 | Change very-slow param | Confirm dialog opens immediately (no badge accumulation). |
 | Confirm retrain | Dialog closes. Full canvas overlay with "Retraining model..." All interactions disabled except cancel. On completion: full page data refresh. |
 | Cancel retrain | Revert parameter to previous value. Resume normal state. |
@@ -423,17 +427,18 @@ Each step uses the currently selected/uploaded book's actual data when available
 | Persistence Y-axis | "Persistence" |
 | VR viewer empty state | "Drag the epsilon slider to explore filtration" |
 | Settings drawer title | "Settings" |
+| Settings gear tooltip | "Settings" |
 | Slow-tier section heading | "Recompute Parameters" |
 | Slow-tier section description | "Changes require explicit recomputation. Current view remains interactive." |
 | Very-slow section heading | "Model Parameters" |
 | Very-slow warning | "Changing these will retrain the Word2Vec model. Estimated time: 2--5 minutes." |
-| Recompute badge | "Parameters changed -- Recompute" |
-| Recompute button | "Recompute" |
+| Recompute badge | "Parameters changed -- Recompute Results" |
+| Recompute button | "Recompute Results" |
 | Recompute button loading | "Recomputing..." |
 | Retrain confirm title | "Retrain Word2Vec Model?" |
 | Retrain confirm body | "This will retrain the entire model with the new parameters. Current visualizations will be unavailable during retraining. Estimated time: 2--5 minutes." |
 | Retrain confirm button | "Retrain Model" |
-| Retrain cancel button | "Cancel" |
+| Retrain cancel button | "Keep Current Model" |
 | Retraining overlay | "Retraining model..." |
 | Updating overlay | "Updating..." |
 | Compare toggle button | "Compare Genres" |
@@ -500,7 +505,7 @@ Each step uses the currently selected/uploaded book's actual data when available
 
 | Action | Confirmation approach |
 |--------|----------------------|
-| Retrain Word2Vec model (PARAM-04) | shadcn Dialog with explicit confirm button (variant="destructive"). Must click "Retrain Model" to proceed. Esc or "Cancel" aborts. |
+| Retrain Word2Vec model (PARAM-04) | shadcn Dialog with explicit confirm button (variant="destructive"). Must click "Retrain Model" to proceed. Esc or "Keep Current Model" aborts. |
 | No other destructive actions in Phase 4. Upload replacement (Phase 3) remains non-destructive. | |
 
 ---
@@ -562,6 +567,7 @@ Same 2px solid `#6366F1` focus ring as Phase 3 for all new interactive elements.
 | H2 disabled tab | `aria-disabled="true"`, `title="Enable H2 computation in Settings"` |
 | Epsilon slider | `role="slider"`, `aria-label="Filtration radius epsilon"`, `aria-valuemin`, `aria-valuemax`, `aria-valuenow` |
 | VR viewer canvas | `role="img"`, `aria-label="Vietoris-Rips filtration 3D viewer"` |
+| Settings gear button | `aria-label="Open settings"` |
 | Settings drawer | `role="dialog"`, `aria-label="Settings"`, `aria-modal="true"` |
 | Pipeline explanation | `role="dialog"`, `aria-label="Pipeline explanation"`, `aria-modal="true"` |
 | Recompute badge | `role="alert"`, `aria-live="polite"` |
