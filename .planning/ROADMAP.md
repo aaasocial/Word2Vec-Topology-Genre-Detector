@@ -67,10 +67,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 03-01-PLAN.md -- React app scaffold, Vite+R3F+Tailwind+shadcn bootstrap, THREE.Points PointCloud renderer, Zustand stores, genre palette (VIZ-11), Wave 0 test infra
-- [ ] 03-02-PLAN.md -- TF-IDF brightness shader, genre coloring, projection lerp animation, sidebar controls, hover tooltip, click-to-select, word search, keyboard shortcuts, 2D/3D toggle
-- [ ] 03-03-PLAN.md -- File upload drag-and-drop, 6-step WebSocket progress stepper, classification result display, uploaded book amber scatter integration
-- [ ] 03-04-PLAN.md -- Backend precompute_viz.py (PCA/KPCA/UMAP/t-SNE on 150D vocab), GET /viz/scatter/{projection}, GET /viz/tfidf/{genre|book} endpoints
+- [x] 03-01-PLAN.md -- React app scaffold, Vite+R3F+Tailwind+shadcn bootstrap, THREE.Points PointCloud renderer, Zustand stores, genre palette (VIZ-11), Wave 0 test infra
+- [x] 03-02-PLAN.md -- TF-IDF brightness shader, genre coloring, projection lerp animation, sidebar controls, hover tooltip, click-to-select, word search, keyboard shortcuts, 2D/3D toggle
+- [x] 03-03-PLAN.md -- File upload drag-and-drop, 6-step WebSocket progress stepper, classification result display, uploaded book amber scatter integration
+- [x] 03-04-PLAN.md -- Backend precompute_viz.py (PCA/KPCA/UMAP/t-SNE on 150D vocab), GET /viz/scatter/{projection}, GET /viz/tfidf/{genre|book} endpoints
 
 ---
 
@@ -84,13 +84,12 @@ Plans:
   3. A user can select two genres for side-by-side comparison with consistent color scales, seeing both brightness maps and persistence images simultaneously
   4. A user can adjust slow-tier parameters (persistence image resolution, sigma, K, alpha, SVM params) via a "Recompute" button and very-slow-tier parameters (Word2Vec dimension) via a confirm dialog, while the current visualization remains interactive during background recomputation
   5. A user sees a persistent disclaimer on all 3D views noting that topology is computed in N-dimensional space and the 3D view is a lossy projection
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: Persistence image panel and H0/H1/H2 tabs with brushing-and-linking
-- [ ] 04-02: Animated Vietoris-Rips filtration viewer
-- [ ] 04-03: Genre comparison view, parameter control tiers, pipeline explanation, and export/disclaimer
+- [ ] 04-01-PLAN.md -- Tab navigation + persistence image heatmap panel + H0/H1/H2 tabs + brushing-and-linking store extension
+- [ ] 04-02-PLAN.md -- Backend VR edge precompute + API endpoint + animated Vietoris-Rips 3D viewer + epsilon slider
+- [ ] 04-03-PLAN.md -- Genre comparison view, settings drawer with tiered recompute, pipeline explanation, export/disclaimer
 
 ---
 
@@ -116,5 +115,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Pipeline Validation Spike | 0/3 | Not started | - |
 | 2. API Layer and Job Queue | 0/3 | Not started | - |
 | 3. Frontend Core and 3D Visualization | 0/4 | Planning complete | - |
-| 4. Advanced Visualization and Parameter Controls | 0/3 | Not started | - |
+| 4. Advanced Visualization and Parameter Controls | 0/3 | Planning complete | - |
 | 5. Deployment and Public Access | 0/1 | Not started | - |
