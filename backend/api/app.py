@@ -17,6 +17,8 @@ def create_app() -> FastAPI:
     from backend.api.routes.corpus import router as corpus_router
     app.include_router(health_router)
     app.include_router(corpus_router)
+    from backend.api.routes.classify import router as classify_router
+    app.include_router(classify_router)
     return app
 
 

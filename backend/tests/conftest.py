@@ -4,8 +4,11 @@ from backend.api.app import create_app
 
 
 @pytest.fixture
-def app():
-    return create_app()
+async def app():
+    _app = create_app()
+    # Manually run lifespan so app.state.redis etc. are set
+    async with _app.router.lifespan_context(_app):
+        yield _app
 
 
 @pytest.fixture
