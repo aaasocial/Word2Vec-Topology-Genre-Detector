@@ -18,3 +18,4 @@ chardet==7.4.1
 langdetect==1.0.9
 httpx
 pytest-asyncio
+umap-learn>=0.5.0
