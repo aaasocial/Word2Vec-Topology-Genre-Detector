@@ -73,7 +73,7 @@ The Phase 2 FastAPI backend (already built) handles all computation. This phase 
 - **Root:** `frontend/` directory at project root, separate from `backend/`
 
 ### 3D Scatter Implementation Details
-- Points rendered as instanced mesh (Three.js InstancedMesh) for performance at 50k points.
+- Points rendered as `THREE.Points` with custom `ShaderMaterial` (NOT InstancedMesh) — research confirmed `THREE.Points` is 3-5x faster for 58k uniform-shape points (single draw call vs 11.6M triangles). See RESEARCH.md §Architecture Patterns.
 - TF-IDF brightness mapped to point opacity and emissive intensity, not separate geometry.
 - Genre colours from a fixed palette (VIZ-11 — consistent across all views). Palette defined in a shared constants file.
 - Camera controls via `@react-three/drei` OrbitControls — orbit, pan, zoom. Reset camera on R key or button click.
@@ -121,7 +121,7 @@ The Phase 2 FastAPI backend (already built) handles all computation. This phase 
 <specifics>
 ## Specific Ideas
 
-- Use Three.js `InstancedMesh` for 50k points — individual `Mesh` per point will kill framerate
+- Use `THREE.Points` with custom `ShaderMaterial` for 58k points — individual `Mesh` per point kills framerate; InstancedMesh at ~200 triangles/sphere = 11.6M triangles; Points = 58k fragments in one draw call
 - Zustand store should have slices: `visualizationSlice` (selected genre, book, point, projection), `uploadSlice` (job state, progress, result), `uiSlice` (sidebar open/closed, search query)
 - Genre colour palette should be defined once in `frontend/src/constants/genres.ts` and imported everywhere (VIZ-11)
 - shadcn/ui Slider component for the per-book slider (VIZ-05) — smooth with debounce at 200ms (PARAM-02)
