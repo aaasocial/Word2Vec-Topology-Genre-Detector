@@ -70,6 +70,11 @@ export function CameraController() {
     const t = 1 - Math.pow(1 - lerpProgress.current, 3) // cubic ease-out
     camera.position.lerp(lerpTargetPosition.current, t)
     controlsRef.current?.target.lerp(lerpTargetLookAt.current, t)
+    // Snap exactly to target when animation completes to eliminate floating-point residual
+    if (lerpProgress.current === 1.0) {
+      camera.position.copy(lerpTargetPosition.current)
+      controlsRef.current?.target.copy(lerpTargetLookAt.current)
+    }
     controlsRef.current?.update()
   })
 
