@@ -24,7 +24,12 @@ export function useGenreTfidf(genre: string | null) {
 export function useBookTfidf(bookId: string | null) {
   return useQuery<TfidfMap>({
     queryKey: ['tfidf', 'book', bookId],
-    queryFn: () => apiFetch<TfidfMap>(`/viz/tfidf/book/${bookId}`),
+    queryFn: () => {
+      if (!bookId) throw new Error('no bookId')
+      // T-3-02: guard against path injection — Gutenberg IDs are positive integers
+      if (!/^\d+$/.test(bookId)) throw new Error(`Invalid bookId: ${bookId}`)
+      return apiFetch<TfidfMap>(`/viz/tfidf/book/${bookId}`)
+    },
     enabled: bookId !== null,
     staleTime: Infinity,
     gcTime: Infinity,

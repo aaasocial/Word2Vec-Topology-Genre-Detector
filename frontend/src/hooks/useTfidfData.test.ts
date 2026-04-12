@@ -83,4 +83,14 @@ describe('useBookTfidf', () => {
     const { result } = renderHook(() => useBookTfidf(null), { wrapper: makeWrapper() })
     expect(result.current.fetchStatus).toBe('idle')
   })
+
+  it('throws error for invalid bookId (path injection guard)', async () => {
+    const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    const wrapper = ({ children }: { children: React.ReactNode }) =>
+      React.createElement(QueryClientProvider, { client: qc }, children)
+
+    const { result } = renderHook(() => useBookTfidf('../secret'), { wrapper })
+    await waitFor(() => expect(result.current.isError).toBe(true))
+    expect(result.current.error).toBeTruthy()
+  })
 })
