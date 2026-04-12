@@ -6,6 +6,9 @@ export interface ScatterPoint {
   z: number
   tfidf_weight: number
   neighbors: Array<{ word: string; similarity: number }>
+  // Optional book-level fields populated when the API returns book-scoped points
+  bookId?: string
+  bookTitle?: string
 }
 
 export type ProjectionKey = 'pca' | 'kpca' | 'umap' | 'tsne'

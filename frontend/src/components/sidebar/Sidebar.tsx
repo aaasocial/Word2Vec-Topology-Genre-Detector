@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { useUploadStore } from '@/stores/uploadStore'
@@ -26,6 +26,21 @@ interface SidebarProps {
 export function Sidebar({ points = [], open, onToggle, searchInputRef }: SidebarProps) {
   const selectedPointIndex = useVisualizationStore(s => s.selectedPointIndex)
   const selectedPoint = selectedPointIndex !== null ? (points[selectedPointIndex] ?? null) : null
+  const selectedGenre = useVisualizationStore(s => s.selectedGenre)
+
+  // Derive unique books for the selected genre from scatter points
+  const books = useMemo(() => {
+    if (!selectedGenre) return []
+    const seen = new Set<string>()
+    const result: { id: string; title: string }[] = []
+    for (const p of points) {
+      if (p.genre === selectedGenre && p.bookId && !seen.has(p.bookId)) {
+        seen.add(p.bookId)
+        result.push({ id: p.bookId, title: p.bookTitle ?? p.bookId })
+      }
+    }
+    return result
+  }, [points, selectedGenre])
 
   const { jobId, steps, result, retryMessage } = useUploadStore()
   const { classify } = useClassify()
@@ -84,7 +99,7 @@ export function Sidebar({ points = [], open, onToggle, searchInputRef }: Sidebar
 
         <ProjectionTabs />
         <GenreSelect />
-        <BookSlider books={[]} />
+        <BookSlider books={books} />
         <ControlSliders />
 
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
