@@ -42,13 +42,16 @@ export default function App() {
     return buildBuffers(data.points, GENRE_COLORS)
   }, [data])
 
-  // Build tfidfWeights Float32Array aligned to corpus points
+  // Build tfidfWeights Float32Array aligned to corpus points, normalized to [0,1]
   const tfidfWeights = useMemo<Float32Array | null>(() => {
     if (!activeTfidf || !data?.points) return null
     const weights = new Float32Array(data.points.length)
+    let maxW = 1
     for (let i = 0; i < data.points.length; i++) {
       weights[i] = activeTfidf[data.points[i].word] ?? 0
+      if (weights[i] > maxW) maxW = weights[i]
     }
+    for (let i = 0; i < weights.length; i++) weights[i] /= maxW
     return weights
   }, [activeTfidf, data])
 

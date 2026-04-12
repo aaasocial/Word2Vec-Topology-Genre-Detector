@@ -5,12 +5,17 @@ import { UPLOADED_BOOK_COLOR } from '@/constants/genres'
 export function buildBuffers(
   points: ScatterPoint[],
   genreColors: Record<string, string>,
-): { positions: Float32Array; colors: Float32Array; sizes: Float32Array; opacities: Float32Array } {
+): { positions: Float32Array; colors: Float32Array; sizes: Float32Array; opacities: Float32Array; normalizedWeights: Float32Array } {
   const n = points.length
   const positions = new Float32Array(n * 3)
   const colors = new Float32Array(n * 3)
   const sizes = new Float32Array(n)
   const opacities = new Float32Array(n)
+  const normalizedWeights = new Float32Array(n)
+
+  // Normalize tfidf_weight to [0,1] — raw scores can be 0–20+
+  const maxWeight = Math.max(...points.map(p => p.tfidf_weight), 1)
+
   for (let i = 0; i < n; i++) {
     const p = points[i]
     positions[i * 3] = p.x
@@ -21,10 +26,12 @@ export function buildBuffers(
     colors[i * 3] = color.r
     colors[i * 3 + 1] = color.g
     colors[i * 3 + 2] = color.b
-    sizes[i] = 2.0 + p.tfidf_weight * 8.0
-    opacities[i] = Math.max(0.08, p.tfidf_weight)
+    const w = p.tfidf_weight / maxWeight  // normalized [0, 1]
+    normalizedWeights[i] = w
+    sizes[i] = 1.0 + w * 2.0             // range [1, 3] — small base for 57k points
+    opacities[i] = Math.max(0.15, w)
   }
-  return { positions, colors, sizes, opacities }
+  return { positions, colors, sizes, opacities, normalizedWeights }
 }
 
 export function buildUploadedBuffers(uploadedPoints: ScatterPoint[]): {

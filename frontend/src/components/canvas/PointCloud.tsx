@@ -19,7 +19,7 @@ void main() {
   vColor = aColor;
   vIndex = aIndex;
   vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-  gl_PointSize = aSize * uSizeMultiplier * (300.0 / -mvPosition.z);
+  gl_PointSize = aSize * uSizeMultiplier * (25.0 / -mvPosition.z);
   gl_Position = projectionMatrix * mvPosition;
 }
 `
@@ -76,6 +76,10 @@ export function PointCloud({
   onHover,
   onClick,
 }: PointCloudProps) {
+  const selectedGenre = useVisualizationStore(s => s.selectedGenre)
+  const globalOpacity = useVisualizationStore(s => s.opacity)
+  const tfidfThreshold = useVisualizationStore(s => s.tfidfThreshold)
+  const brightnessSensitivity = useVisualizationStore(s => s.brightnessSensitivity)
   // Guard: positions.length is n*3, so n = positions.length/3 — cap at 100k points (300k floats)
   if (positions.length > 300_000) {
     throw new Error('PointCloud: positions array exceeds 100k points (300k floats)')
@@ -147,38 +151,50 @@ export function PointCloud({
     }
   }, [positions, geometry])
 
-  // When TF-IDF weights or selected genre changes, update opacity/size buffers
+  // When any visual state changes, update opacity/size GPU buffers
   useEffect(() => {
     const store = useVisualizationStore.getState()
-    const { selectedGenre, brightnessSensitivity, pointSizeMultiplier } = store
+    const { pointSizeMultiplier } = store
 
     const sizesAttr = geometry.attributes.aSize.array as Float32Array
     const opacitiesAttr = geometry.attributes.aOpacity.array as Float32Array
 
-    if (tfidfWeights && selectedGenre !== null) {
-      for (let i = 0; i < n; i++) {
-        const inGenre = points?.[i]?.genre === selectedGenre
-        if (!inGenre) {
-          opacitiesAttr[i] = 0.08
-          sizesAttr[i] = 1.5
-        } else {
-          const w = tfidfWeights[i] ?? 0
-          const brightness = Math.pow(w, brightnessSensitivity)
-          opacitiesAttr[i] = Math.max(0.1, brightness)
-          sizesAttr[i] = 2.0 + w * 8.0 * pointSizeMultiplier
-        }
+    for (let i = 0; i < n; i++) {
+      const inSelectedGenre = selectedGenre === null || points?.[i]?.genre === selectedGenre
+      const w = Math.min(1.0, tfidfWeights?.[i] ?? 0)
+
+      // Hide points below tfidf threshold (only when a genre is selected and weights exist)
+      if (selectedGenre !== null && tfidfWeights && inSelectedGenre && w < tfidfThreshold) {
+        opacitiesAttr[i] = 0.0
+        sizesAttr[i] = 0.0
+        continue
       }
-    } else {
-      // No genre selected — restore base opacities/sizes
-      for (let i = 0; i < n; i++) {
-        opacitiesAttr[i] = opacities[i]
-        sizesAttr[i] = sizes[i]
+
+      if (selectedGenre !== null) {
+        if (!inSelectedGenre) {
+          // Dim non-genre points strongly
+          opacitiesAttr[i] = 0.04 * globalOpacity
+          sizesAttr[i] = 0.8
+        } else if (tfidfWeights) {
+          // Genre point with TF-IDF: apply brightness curve
+          const brightness = Math.pow(w, brightnessSensitivity)
+          opacitiesAttr[i] = Math.max(0.2, brightness) * globalOpacity
+          sizesAttr[i] = (1.0 + w * 2.0) * pointSizeMultiplier
+        } else {
+          // Genre point, no TF-IDF data yet
+          opacitiesAttr[i] = opacities[i] * globalOpacity
+          sizesAttr[i] = sizes[i] * pointSizeMultiplier
+        }
+      } else {
+        // No genre selected — base opacities/sizes scaled by global opacity
+        opacitiesAttr[i] = opacities[i] * globalOpacity
+        sizesAttr[i] = sizes[i] * pointSizeMultiplier
       }
     }
 
     geometry.attributes.aOpacity.needsUpdate = true
     geometry.attributes.aSize.needsUpdate = true
-  }, [tfidfWeights, geometry, n, points, opacities, sizes])
+  }, [tfidfWeights, geometry, n, points, opacities, sizes, selectedGenre, globalOpacity, tfidfThreshold, brightnessSensitivity])
 
   useFrame((_, delta) => {
     if (!geometry || !material) return
