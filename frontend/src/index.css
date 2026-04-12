@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 0 0% 4%;
+    --foreground: 240 20% 93%;
+    --card: 240 13% 10%;
+    --card-foreground: 240 20% 97%;
+    --popover: 240 13% 10%;
+    --popover-foreground: 240 20% 97%;
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 10% 14%;
+    --secondary-foreground: 240 20% 93%;
+    --muted: 240 10% 14%;
+    --muted-foreground: 240 5% 46%;
+    --accent: 239 84% 67%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 13% 16%;
+    --input: 240 13% 16%;
+    --ring: 239 84% 67%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+  body {
+    background-color: #0A0A0F;
+    color: #E0E0EC;
+    font-family: 'Inter', system-ui, sans-serif;
+    margin: 0;
+    overflow: hidden;
+  }
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar-scroll::-webkit-scrollbar { width: 4px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: #2A2A3A; border-radius: 2px; }
+.sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+
+/* Upload progress pulse animation */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+.pulse-dot { animation: pulse-dot 1s ease-in-out infinite; }
