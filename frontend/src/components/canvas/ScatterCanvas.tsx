@@ -1,13 +1,16 @@
 import * as THREE from 'three'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { CameraController } from './CameraController'
 import { PointCloud } from './PointCloud'
+import type { ScatterPoint } from '@/types/scatter'
 
 interface ScatterCanvasProps {
   positions: Float32Array
   colors: Float32Array
   sizes: Float32Array
   opacities: Float32Array
+  points?: ScatterPoint[]
+  tfidfWeights?: Float32Array | null
   selectedIndex: number | null
   hoveredIndex: number | null
   onHover: (idx: number | null) => void
@@ -29,8 +32,21 @@ export function ScatterCanvas(props: ScatterCanvasProps) {
           scene.background = new THREE.Color('#0A0A0F')
         }}
       >
-        <OrbitControls enableDamping dampingFactor={0.1} />
-        {props.positions.length > 0 && <PointCloud {...props} />}
+        <CameraController />
+        {props.positions.length > 0 && (
+          <PointCloud
+            positions={props.positions}
+            colors={props.colors}
+            sizes={props.sizes}
+            opacities={props.opacities}
+            points={props.points}
+            tfidfWeights={props.tfidfWeights}
+            selectedIndex={props.selectedIndex}
+            hoveredIndex={props.hoveredIndex}
+            onHover={props.onHover}
+            onClick={props.onClick}
+          />
+        )}
       </Canvas>
     </div>
   )

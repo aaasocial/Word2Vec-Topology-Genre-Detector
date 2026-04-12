@@ -1,19 +1,23 @@
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import { useVisualizationStore } from '@/stores/visualizationStore'
+import type { ScatterPoint } from '@/types/scatter'
 
 const VERTEX_SHADER = `
 attribute float aSize;
 attribute float aOpacity;
 attribute vec3 aColor;
+attribute float aIndex;
 varying float vOpacity;
 varying vec3 vColor;
+varying float vIndex;
 uniform float uSizeMultiplier;
 
 void main() {
   vOpacity = aOpacity;
   vColor = aColor;
+  vIndex = aIndex;
   vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
   gl_PointSize = aSize * uSizeMultiplier * (300.0 / -mvPosition.z);
   gl_Position = projectionMatrix * mvPosition;
@@ -23,19 +27,38 @@ void main() {
 const FRAGMENT_SHADER = `
 varying float vOpacity;
 varying vec3 vColor;
+varying float vIndex;
+uniform float uHighlightIndex;
+
 void main() {
   float dist = length(gl_PointCoord - vec2(0.5));
   if (dist > 0.5) discard;
+
+  // Selection ring: draw white annulus around highlighted point
+  if (uHighlightIndex >= 0.0 && vIndex == uHighlightIndex) {
+    float ringDist = abs(dist - 0.42);
+    if (ringDist < 0.06) {
+      gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+      return;
+    }
+  }
+
   float alpha = smoothstep(0.5, 0.35, dist) * vOpacity;
   gl_FragColor = vec4(vColor, alpha);
 }
 `
+
+function easeOut(t: number): number {
+  return 1 - Math.pow(1 - t, 3)
+}
 
 interface PointCloudProps {
   positions: Float32Array
   colors: Float32Array
   sizes: Float32Array
   opacities: Float32Array
+  points?: ScatterPoint[]
+  tfidfWeights?: Float32Array | null
   selectedIndex: number | null
   hoveredIndex: number | null
   onHover: (idx: number | null) => void
@@ -47,6 +70,9 @@ export function PointCloud({
   colors,
   sizes,
   opacities,
+  points,
+  tfidfWeights,
+  selectedIndex,
   onHover,
   onClick,
 }: PointCloudProps) {
@@ -55,14 +81,39 @@ export function PointCloud({
     throw new Error('PointCloud: positions array exceeds 100k points (300k floats)')
   }
 
+  const n = positions.length / 3
   const pointsRef = useRef<THREE.Points>(null)
+
+  // Lerp animation refs
+  const prevPositions = useRef<Float32Array>(new Float32Array(positions.length))
+  const targetPositions = useRef<Float32Array>(positions)
+  const lerpProgress = useRef(1.0)
+  const prevProjection = useRef(useVisualizationStore.getState().projection)
+
+  // 2D toggle refs
+  const originalZ = useRef<Float32Array>(new Float32Array(n))
+  const is2DProgress = useRef(1.0)
+  const prevIs2D = useRef(useVisualizationStore.getState().is2D)
+
+  // Store original Z values on first mount
+  useEffect(() => {
+    for (let i = 0; i < n; i++) {
+      originalZ.current[i] = positions[i * 3 + 2]
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { geometry, material } = useMemo(() => {
     const geo = new THREE.BufferGeometry()
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-    geo.setAttribute('aColor', new THREE.BufferAttribute(colors, 3))
-    geo.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1))
-    geo.setAttribute('aOpacity', new THREE.BufferAttribute(opacities, 1))
+    const posClone = new Float32Array(positions)
+    geo.setAttribute('position', new THREE.BufferAttribute(posClone, 3))
+    geo.setAttribute('aColor', new THREE.BufferAttribute(new Float32Array(colors), 3))
+    geo.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(sizes), 1))
+    geo.setAttribute('aOpacity', new THREE.BufferAttribute(new Float32Array(opacities), 1))
+
+    // Index attribute for selection ring
+    const indices = new Float32Array(n)
+    for (let i = 0; i < n; i++) indices[i] = i
+    geo.setAttribute('aIndex', new THREE.BufferAttribute(indices, 1))
 
     const mat = new THREE.ShaderMaterial({
       vertexShader: VERTEX_SHADER,
@@ -71,16 +122,112 @@ export function PointCloud({
       depthWrite: false,
       uniforms: {
         uSizeMultiplier: { value: 1.0 },
+        uHighlightIndex: { value: -1.0 },
       },
     })
 
-    return { geometry: geo, material: mat }
-  }, [positions, colors, sizes, opacities])
+    // Initialise lerp refs when geometry changes
+    prevPositions.current = new Float32Array(posClone)
+    targetPositions.current = posClone
+    lerpProgress.current = 1.0
 
-  useFrame(() => {
-    if (material) {
-      material.uniforms.uSizeMultiplier.value =
-        useVisualizationStore.getState().pointSizeMultiplier
+    return { geometry: geo, material: mat }
+  }, [positions, colors, sizes, opacities, n])
+
+  // When projection changes, start lerp from current displayed positions to new target
+  useEffect(() => {
+    const store = useVisualizationStore.getState()
+    if (store.projection !== prevProjection.current) {
+      prevProjection.current = store.projection
+      // Capture current displayed positions as start
+      const posArr = geometry.attributes.position.array as Float32Array
+      prevPositions.current = new Float32Array(posArr)
+      targetPositions.current = positions
+      lerpProgress.current = 0.0
+    }
+  }, [positions, geometry])
+
+  // When TF-IDF weights or selected genre changes, update opacity/size buffers
+  useEffect(() => {
+    const store = useVisualizationStore.getState()
+    const { selectedGenre, brightnessSensitivity, pointSizeMultiplier } = store
+
+    const sizesAttr = geometry.attributes.aSize.array as Float32Array
+    const opacitiesAttr = geometry.attributes.aOpacity.array as Float32Array
+
+    if (tfidfWeights && selectedGenre !== null) {
+      for (let i = 0; i < n; i++) {
+        const inGenre = points?.[i]?.genre === selectedGenre
+        if (!inGenre) {
+          opacitiesAttr[i] = 0.08
+          sizesAttr[i] = 1.5
+        } else {
+          const w = tfidfWeights[i] ?? 0
+          const brightness = Math.pow(w, brightnessSensitivity)
+          opacitiesAttr[i] = Math.max(0.1, brightness)
+          sizesAttr[i] = 2.0 + w * 8.0 * pointSizeMultiplier
+        }
+      }
+    } else {
+      // No genre selected — restore base opacities/sizes
+      for (let i = 0; i < n; i++) {
+        opacitiesAttr[i] = opacities[i]
+        sizesAttr[i] = sizes[i]
+      }
+    }
+
+    geometry.attributes.aOpacity.needsUpdate = true
+    geometry.attributes.aSize.needsUpdate = true
+  }, [tfidfWeights, geometry, n, points, opacities, sizes])
+
+  useFrame((_, delta) => {
+    if (!geometry || !material) return
+
+    const store = useVisualizationStore.getState()
+
+    // Update size multiplier uniform (instant, no subscription)
+    material.uniforms.uSizeMultiplier.value = store.pointSizeMultiplier
+
+    // Update selection ring uniform
+    material.uniforms.uHighlightIndex.value = selectedIndex ?? -1
+
+    // Detect projection change inside useFrame (belt-and-suspenders)
+    if (store.projection !== prevProjection.current) {
+      prevProjection.current = store.projection
+      const posArr = geometry.attributes.position.array as Float32Array
+      prevPositions.current = new Float32Array(posArr)
+      targetPositions.current = positions
+      lerpProgress.current = 0.0
+    }
+
+    // Projection lerp animation
+    if (lerpProgress.current < 1.0) {
+      lerpProgress.current = Math.min(lerpProgress.current + delta / 0.6, 1.0)
+      const t = easeOut(lerpProgress.current)
+      const posArr = geometry.attributes.position.array as Float32Array
+      for (let i = 0; i < n * 3; i++) {
+        posArr[i] = THREE.MathUtils.lerp(prevPositions.current[i], targetPositions.current[i], t)
+      }
+      geometry.attributes.position.needsUpdate = true
+    }
+
+    // 2D toggle: lerp Z coordinates
+    const currentIs2D = store.is2D
+    if (currentIs2D !== prevIs2D.current) {
+      prevIs2D.current = currentIs2D
+      is2DProgress.current = 0.0
+    }
+
+    if (is2DProgress.current < 1.0) {
+      is2DProgress.current = Math.min(is2DProgress.current + delta / 0.6, 1.0)
+      const t = easeOut(is2DProgress.current)
+      const posArr = geometry.attributes.position.array as Float32Array
+      for (let i = 0; i < n; i++) {
+        const origZ = originalZ.current[i]
+        const targetZ = currentIs2D ? 0 : origZ
+        posArr[i * 3 + 2] = THREE.MathUtils.lerp(posArr[i * 3 + 2], targetZ, t)
+      }
+      geometry.attributes.position.needsUpdate = true
     }
   })
 

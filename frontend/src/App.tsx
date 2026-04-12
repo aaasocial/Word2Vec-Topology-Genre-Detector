@@ -1,83 +1,56 @@
-import { useMemo } from 'react'
-import * as THREE from 'three'
+import { useMemo, useRef } from 'react'
 import { ScatterCanvas } from '@/components/canvas/ScatterCanvas'
-import { UploadZone } from '@/components/sidebar/UploadZone'
-import { UploadProgress } from '@/components/sidebar/UploadProgress'
-import { ClassificationResult } from '@/components/sidebar/ClassificationResult'
+import { Sidebar } from '@/components/sidebar/Sidebar'
+import { GenreLegend } from '@/components/sidebar/GenreLegend'
+import { KeyboardHint } from '@/components/sidebar/KeyboardHint'
 import { useScatterData } from '@/hooks/useScatterData'
-import { useClassify } from '@/hooks/useClassify'
+import { useGenreTfidf, useBookTfidf } from '@/hooks/useTfidfData'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { useUploadStore } from '@/stores/uploadStore'
-import { GENRE_COLORS, UPLOADED_BOOK_COLOR } from '@/constants/genres'
-import type { ScatterPoint } from '@/types/scatter'
-
-function buildBuffers(points: ScatterPoint[], genreColors: Record<string, string>) {
-  const n = points.length
-  const positions = new Float32Array(n * 3)
-  const colors = new Float32Array(n * 3)
-  const sizes = new Float32Array(n)
-  const opacities = new Float32Array(n)
-  for (let i = 0; i < n; i++) {
-    const p = points[i]
-    positions[i * 3] = p.x
-    positions[i * 3 + 1] = p.y
-    positions[i * 3 + 2] = p.z
-    const hex = genreColors[p.genre] ?? '#888888'
-    const color = new THREE.Color(hex)
-    colors[i * 3] = color.r
-    colors[i * 3 + 1] = color.g
-    colors[i * 3 + 2] = color.b
-    sizes[i] = 2.0 + p.tfidf_weight * 8.0
-    opacities[i] = Math.max(0.08, p.tfidf_weight)
-  }
-  return { positions, colors, sizes, opacities }
-}
-
-function buildUploadedBuffers(uploadedPoints: ScatterPoint[]) {
-  const n = uploadedPoints.length
-  if (n === 0) {
-    return {
-      positions: new Float32Array(0),
-      colors: new Float32Array(0),
-      sizes: new Float32Array(0),
-      opacities: new Float32Array(0),
-    }
-  }
-  const positions = new Float32Array(n * 3)
-  const colors = new Float32Array(n * 3)
-  const sizes = new Float32Array(n)
-  const opacities = new Float32Array(n)
-  const color = new THREE.Color(UPLOADED_BOOK_COLOR)
-  for (let i = 0; i < n; i++) {
-    const p = uploadedPoints[i]
-    positions[i * 3] = p.x
-    positions[i * 3 + 1] = p.y
-    positions[i * 3 + 2] = p.z
-    colors[i * 3] = color.r
-    colors[i * 3 + 1] = color.g
-    colors[i * 3 + 2] = color.b
-    sizes[i] = 3.0 + p.tfidf_weight * 10.0
-    opacities[i] = Math.max(0.3, p.tfidf_weight)
-  }
-  return { positions, colors, sizes, opacities }
-}
+import { useUIStore } from '@/stores/uiStore'
+import { buildBuffers, buildUploadedBuffers } from '@/lib/buffers'
+import { GENRE_COLORS } from '@/constants/genres'
 
 export default function App() {
   const projection = useVisualizationStore((s) => s.projection)
+  const selectedGenre = useVisualizationStore((s) => s.selectedGenre)
+  const selectedBookId = useVisualizationStore((s) => s.selectedBookId)
   const selectedPointIndex = useVisualizationStore((s) => s.selectedPointIndex)
   const hoveredPointIndex = useVisualizationStore((s) => s.hoveredPointIndex)
   const setSelectedPoint = useVisualizationStore((s) => s.setSelectedPoint)
   const setHoveredPoint = useVisualizationStore((s) => s.setHoveredPoint)
 
-  const { jobId, steps, result, uploadedPoints, retryMessage } = useUploadStore()
-  const { classify } = useClassify()
+  const sidebarOpen = useUIStore(s => s.sidebarOpen)
+  const toggleSidebar = useUIStore(s => s.toggleSidebar)
+
+  const { uploadedPoints } = useUploadStore()
+
+  // Search input ref — passed to both WordSearch and useKeyboardShortcuts
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  useKeyboardShortcuts(searchInputRef)
 
   const { data, isLoading } = useScatterData(projection)
+
+  // TF-IDF data for genre/book brightness encoding
+  const { data: genreTfidf } = useGenreTfidf(selectedGenre)
+  const { data: bookTfidf } = useBookTfidf(selectedBookId)
+  const activeTfidf = bookTfidf ?? genreTfidf ?? null
 
   const corpusBuffers = useMemo(() => {
     if (!data?.points) return null
     return buildBuffers(data.points, GENRE_COLORS)
   }, [data])
+
+  // Build tfidfWeights Float32Array aligned to corpus points
+  const tfidfWeights = useMemo<Float32Array | null>(() => {
+    if (!activeTfidf || !data?.points) return null
+    const weights = new Float32Array(data.points.length)
+    for (let i = 0; i < data.points.length; i++) {
+      weights[i] = activeTfidf[data.points[i].word] ?? 0
+    }
+    return weights
+  }, [activeTfidf, data])
 
   const uploadedBuffers = useMemo(() => {
     return buildUploadedBuffers(uploadedPoints)
@@ -109,78 +82,90 @@ export default function App() {
     return { positions, colors, sizes, opacities }
   }, [corpusBuffers, uploadedBuffers])
 
-  const showProgress = jobId !== null && result === null
-  const showResult = result !== null
+  const allPoints = useMemo(() => {
+    if (!data?.points) return []
+    return [...data.points, ...uploadedPoints]
+  }, [data, uploadedPoints])
 
   return (
-    <div style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden' }}>
-      {/* 3D Canvas */}
-      <div style={{ flex: 1, position: 'relative' }}>
-        {isLoading && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#6B6B80',
-              fontSize: 14,
-              zIndex: 10,
-            }}
-          >
-            Loading scatter data...
-          </div>
-        )}
-        {mergedBuffers && (
-          <ScatterCanvas
-            positions={mergedBuffers.positions}
-            colors={mergedBuffers.colors}
-            sizes={mergedBuffers.sizes}
-            opacities={mergedBuffers.opacities}
-            selectedIndex={selectedPointIndex}
-            hoveredIndex={hoveredPointIndex}
-            onHover={setHoveredPoint}
-            onClick={setSelectedPoint}
-          />
-        )}
-      </div>
+    <>
+      {/* Unsupported screen overlay — pure CSS, no React state */}
+      <style>{`
+        @media (max-width: 767px) {
+          .unsupported { display: flex !important; }
+          .app-root { display: none !important; }
+        }
+      `}</style>
 
-      {/* Right sidebar */}
-      <aside
-        className="sidebar-scroll"
+      <div
+        className="unsupported"
         style={{
-          width: 320,
-          background: '#111118',
-          borderLeft: '1px solid #1E1E2A',
+          display: 'none',
+          position: 'fixed',
+          inset: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#0A0A0F',
+          color: '#9090A0',
+          fontSize: 16,
+          textAlign: 'center',
           padding: 24,
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 24,
+          zIndex: 9999,
         }}
       >
-        <div style={{ fontSize: 18, fontWeight: 600, color: '#F5F5FF' }}>
-          Literary Genre Topology
+        Literary Genre Topology requires a screen wider than 768px.
+      </div>
+
+      <div
+        className="app-root"
+        style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden' }}
+      >
+        {/* 3D Canvas area */}
+        <div style={{ flex: 1, position: 'relative', minWidth: 0 }}>
+          {isLoading && (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#6B6B80',
+                fontSize: 14,
+                zIndex: 10,
+              }}
+            >
+              Loading scatter data...
+            </div>
+          )}
+          {mergedBuffers && (
+            <ScatterCanvas
+              positions={mergedBuffers.positions}
+              colors={mergedBuffers.colors}
+              sizes={mergedBuffers.sizes}
+              opacities={mergedBuffers.opacities}
+              points={allPoints}
+              tfidfWeights={tfidfWeights}
+              selectedIndex={selectedPointIndex}
+              hoveredIndex={hoveredPointIndex}
+              onHover={setHoveredPoint}
+              onClick={setSelectedPoint}
+            />
+          )}
+
+          {/* Canvas overlays */}
+          <GenreLegend />
+          <KeyboardHint />
         </div>
 
-        {/* Upload section */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div style={{ fontSize: 14, color: '#6B6B80', fontWeight: 600 }}>Upload & Classify</div>
-          {!showProgress && !showResult && (
-            <UploadZone onClassify={classify} />
-          )}
-          {showProgress && (
-            <UploadProgress steps={steps} retryMessage={retryMessage} />
-          )}
-          {showResult && (
-            <>
-              <UploadZone onClassify={classify} />
-              <ClassificationResult result={result} />
-            </>
-          )}
-        </div>
-      </aside>
-    </div>
+        {/* Sidebar */}
+        <Sidebar
+          points={allPoints}
+          open={sidebarOpen}
+          onToggle={toggleSidebar}
+          searchInputRef={searchInputRef}
+        />
+      </div>
+    </>
   )
 }
