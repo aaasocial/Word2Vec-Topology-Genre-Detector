@@ -1,14 +1,26 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+import os
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Redis and arq pool are initialized here when Redis is available.
-    # For now, set to None so tests can run without Redis.
-    app.state.redis = None
-    app.state.arq_pool = None
+    redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+    try:
+        import redis.asyncio as aioredis
+        from arq import create_pool
+        from arq.connections import RedisSettings
+        app.state.redis = aioredis.from_url(redis_url)
+        app.state.arq_pool = await create_pool(RedisSettings())
+    except Exception:
+        # Redis not available -- tests and dev without Redis still work
+        app.state.redis = None
+        app.state.arq_pool = None
     yield
+    if app.state.redis is not None:
+        await app.state.redis.close()
+    if app.state.arq_pool is not None:
+        await app.state.arq_pool.close()
 
 
 def create_app() -> FastAPI:
