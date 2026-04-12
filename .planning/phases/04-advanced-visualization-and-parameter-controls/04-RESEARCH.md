@@ -477,22 +477,22 @@ function exportPersistenceCSV(
 | A5 | preserveDrawingBuffer needed for PNG export from WebGL canvas | Code Examples | If not set at Canvas creation, toDataURL returns blank. Must be set on R3F Canvas gl prop. |
 | A6 | Edge count for typical genre top-300 words with epsilon_max=1.0 is ~10k-40k edges | Pitfall 1 | Depends on actual distance distribution in the trained model |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **preserveDrawingBuffer performance impact**
    - What we know: THREE.js Canvas needs `preserveDrawingBuffer: true` for `toDataURL()` to work, but this can reduce rendering performance
    - What's unclear: Whether to set it globally or only temporarily for export
-   - Recommendation: Set it globally (performance impact is minimal on modern GPUs). If noticeable, use a render-then-capture approach: call renderer.render() and immediately toDataURL() in the same frame, without preserveDrawingBuffer.
+   - **RESOLVED:** Recommendation: Set it globally (performance impact is minimal on modern GPUs). If noticeable, use a render-then-capture approach: call renderer.render() and immediately toDataURL() in the same frame, without preserveDrawingBuffer.
 
 2. **VR edge payload format: indices vs strings**
    - What we know: Using word indices instead of strings reduces payload 3-4x
    - What's unclear: Whether to send word list separately or rely on scatter data already loaded
-   - Recommendation: VR endpoint returns `{ words: string[], edges: [a_idx, b_idx, eps_birth][], epsilon_max: number }`. Words array provides index mapping; edges use compact array-of-arrays format.
+   - **RESOLVED:** Recommendation: VR endpoint returns `{ words: string[], edges: [a_idx, b_idx, eps_birth][], epsilon_max: number }`. Words array provides index mapping; edges use compact array-of-arrays format.
 
 3. **H2 computation toggle**
    - What we know: H2 is computationally expensive and disabled by default (TOPO-02)
    - What's unclear: Where in the settings drawer does the H2 enable toggle live
-   - Recommendation: Add an "Enable H2 computation" toggle in the slow-tier settings section. When toggled on, mark as dirty param requiring recompute. H2 tab in persistence panel becomes enabled after recompute completes.
+   - **RESOLVED:** Recommendation: Add an "Enable H2 computation" toggle in the slow-tier settings section. When toggled on, mark as dirty param requiring recompute. H2 tab in persistence panel becomes enabled after recompute completes.
 
 ## Environment Availability
 
