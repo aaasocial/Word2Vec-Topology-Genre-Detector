@@ -64,13 +64,13 @@ Plans:
   3. A user can switch between PCA, Kernel PCA, UMAP, and t-SNE projections and see the same words rearrange into different 3D layouts
   4. A user can upload a .txt file, see it classified, and then see the uploaded book appear in the scatter plot with its TF-IDF brightness active among the existing corpus
   5. A user can hover any point for tooltip details, click to select and pin, search for a word, and toggle between 2D and 3D views
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 4 plans
 
 Plans:
-- [ ] 03-01: React app scaffold with Three.js/R3F 3D scatter plot renderer
-- [ ] 03-02: TF-IDF brightness, genre coloring, projection switching, and interaction controls
-- [ ] 03-03: File upload flow, classification display, and instant/fast parameter controls
+- [ ] 03-01-PLAN.md -- React app scaffold, Vite+R3F+Tailwind+shadcn bootstrap, THREE.Points PointCloud renderer, Zustand stores, genre palette (VIZ-11), Wave 0 test infra
+- [ ] 03-02-PLAN.md -- TF-IDF brightness shader, genre coloring, projection lerp animation, sidebar controls, hover tooltip, click-to-select, word search, keyboard shortcuts, 2D/3D toggle
+- [ ] 03-03-PLAN.md -- File upload drag-and-drop, 6-step WebSocket progress stepper, classification result display, uploaded book amber scatter integration
+- [ ] 03-04-PLAN.md -- Backend precompute_viz.py (PCA/KPCA/UMAP/t-SNE on 150D vocab), GET /viz/scatter/{projection}, GET /viz/tfidf/{genre|book} endpoints
 
 ---
 
@@ -115,6 +115,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Pipeline Validation Spike | 0/3 | Not started | - |
 | 2. API Layer and Job Queue | 0/3 | Not started | - |
-| 3. Frontend Core and 3D Visualization | 0/3 | Not started | - |
+| 3. Frontend Core and 3D Visualization | 0/4 | Planning complete | - |
 | 4. Advanced Visualization and Parameter Controls | 0/3 | Not started | - |
 | 5. Deployment and Public Access | 0/1 | Not started | - |
