@@ -31,6 +31,8 @@ def create_app() -> FastAPI:
     app.include_router(corpus_router)
     from backend.api.routes.classify import router as classify_router
     app.include_router(classify_router)
+    from backend.api.routes.viz import router as viz_router
+    app.include_router(viz_router, prefix='/viz', tags=['viz'])
     return app
 
 
