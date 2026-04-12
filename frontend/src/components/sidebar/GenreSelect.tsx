@@ -1,0 +1,62 @@
+import { useVisualizationStore } from '@/stores/visualizationStore'
+import { GENRE_COLORS, GENRE_LIST } from '@/constants/genres'
+import { useDebounce } from '@/hooks/useDebounce'
+import { useState, useEffect } from 'react'
+
+export function GenreSelect() {
+  const selectedGenre = useVisualizationStore(s => s.selectedGenre)
+  const setSelectedGenre = useVisualizationStore(s => s.setSelectedGenre)
+
+  const [localValue, setLocalValue] = useState<string>(selectedGenre ?? '')
+  const debouncedValue = useDebounce(localValue, 200)
+
+  useEffect(() => {
+    setSelectedGenre(debouncedValue === '' ? null : debouncedValue)
+  }, [debouncedValue, setSelectedGenre])
+
+  return (
+    <div>
+      <div style={{ fontSize: 12, color: '#6B6B80', fontWeight: 600, marginBottom: 8 }}>
+        Genre
+      </div>
+      <select
+        value={localValue}
+        onChange={e => setLocalValue(e.target.value)}
+        style={{
+          width: '100%',
+          background: '#1E1E2A',
+          border: '1px solid #2E2E3A',
+          borderRadius: 6,
+          color: '#F5F5FF',
+          padding: '8px 10px',
+          fontSize: 13,
+          cursor: 'pointer',
+          outline: 'none',
+        }}
+      >
+        <option value="">All Genres</option>
+        {GENRE_LIST.map(genre => (
+          <option key={genre} value={genre}>
+            {genre.charAt(0).toUpperCase() + genre.slice(1)}
+          </option>
+        ))}
+      </select>
+      {selectedGenre && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
+          <span
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: GENRE_COLORS[selectedGenre] ?? '#888',
+              display: 'inline-block',
+            }}
+          />
+          <span style={{ fontSize: 12, color: GENRE_COLORS[selectedGenre] ?? '#888' }}>
+            {selectedGenre}
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}
