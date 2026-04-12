@@ -27,12 +27,12 @@ This project builds outward from a mathematical hypothesis: that persistent homo
   2. A developer can run the weighted Vietoris-Rips filtration on any book and see stable persistence diagrams that visibly differ between genres (not random noise)
   3. A developer can run a benchmark command that reports computation time vs. word count and confirms the safe max_words cap keeps per-book homology under 10 seconds
   4. The permutation test confirms genre separation is statistically significant (p < 0.05), or the project pivots
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Corpus assembly and text processing pipeline
-- [ ] 01-02: Word2Vec training and TF-IDF computation
-- [ ] 01-03: Persistent homology and classification pipeline with validation tests
+- [ ] 01-01-PLAN.md -- Corpus assembly and text processing pipeline
+- [ ] 01-02-PLAN.md -- Word2Vec training and TF-IDF computation
+- [ ] 01-03-PLAN.md -- Persistent homology and classification pipeline with validation tests
 
 ---
 
@@ -45,12 +45,12 @@ Plans:
   2. A client can GET pre-computed results for any bundled corpus book instantly (cache hit, no recomputation)
   3. A client uploading an invalid file (wrong format, too large, too few words, encoding issues) receives a specific, actionable error message explaining the problem
   4. Long-running computations execute in a background worker without blocking other API requests
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: FastAPI endpoints, WebSocket progress, and request validation
-- [ ] 02-02: Background job queue and content-addressed pipeline cache
-- [ ] 02-03: Build-time corpus pre-computation and upload classification flow
+- [ ] 02-01-PLAN.md -- FastAPI app skeleton, upload validation, WebSocket progress format, and test infrastructure
+- [ ] 02-02-PLAN.md -- Content-addressed disk cache, arq worker with Redis pub/sub progress bridge
+- [ ] 02-03-PLAN.md -- Pipeline module refactor, build-time precompute, corpus results endpoint
 
 ---
 
