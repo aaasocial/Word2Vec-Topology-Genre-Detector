@@ -1,4 +1,4 @@
-import { useState, useRef, forwardRef } from 'react'
+import { useState, useEffect, forwardRef } from 'react'
 import { Search, X } from 'lucide-react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { useDebounce } from '@/hooks/useDebounce'
@@ -17,12 +17,10 @@ export const WordSearch = forwardRef<HTMLInputElement, WordSearchProps>(
     const [localQuery, setLocalQuery] = useState('')
     const debouncedQuery = useDebounce(localQuery, 200)
 
-    // Sync debounced query to store
-    const prevDebounced = useRef('')
-    if (debouncedQuery !== prevDebounced.current) {
-      prevDebounced.current = debouncedQuery
+    // Sync debounced query to store — must be in an effect, not render body
+    useEffect(() => {
       setSearchQuery(debouncedQuery)
-    }
+    }, [debouncedQuery, setSearchQuery])
 
     // Client-side filter on cached point list — top 10
     const results: Array<{ point: ScatterPoint; index: number }> = []
