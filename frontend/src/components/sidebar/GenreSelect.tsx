@@ -14,6 +14,11 @@ export function GenreSelect() {
     setSelectedGenre(debouncedValue === '' ? null : debouncedValue)
   }, [debouncedValue, setSelectedGenre])
 
+  // Resync local display when selectedGenre is changed externally (e.g. clicking GenreLegend)
+  useEffect(() => {
+    setLocalValue(selectedGenre ?? '')
+  }, [selectedGenre])
+
   return (
     <div>
       <div style={{ fontSize: 12, color: '#6B6B80', fontWeight: 600, marginBottom: 8 }}>
