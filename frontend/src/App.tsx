@@ -8,6 +8,7 @@ import { DisclaimerBanner } from '@/components/nav/DisclaimerBanner'
 import { TopologyPanel } from '@/components/topology/TopologyPanel'
 import { SettingsDrawer } from '@/components/settings/SettingsDrawer'
 import { RecomputeOverlay } from '@/components/settings/RecomputeOverlay'
+import { PipelineExplanation } from '@/components/explanation/PipelineExplanation'
 import { useScatterData } from '@/hooks/useScatterData'
 import { useGenreTfidf, useBookTfidf } from '@/hooks/useTfidfData'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
@@ -256,6 +257,9 @@ export default function App() {
 
         {/* Settings drawer (overlays from right) */}
         <SettingsDrawer />
+
+        {/* Pipeline explanation dialog (fullscreen overlay) */}
+        <PipelineExplanation />
       </div>
     </>
   )
