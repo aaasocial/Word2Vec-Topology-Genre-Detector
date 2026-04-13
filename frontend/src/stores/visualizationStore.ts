@@ -56,6 +56,7 @@ interface VisualizationState {
   setIsRecomputing: (v: boolean) => void
   setIsRetraining: (v: boolean) => void
   addDirtyParam: (p: string) => void
+  removeDirtyParam: (p: string) => void
   clearDirtyParams: () => void
   setH2Enabled: (v: boolean) => void
 }
@@ -112,6 +113,11 @@ export const useVisualizationStore = create<VisualizationState>()((set) => ({
   setIsRecomputing: (v) => set({ isRecomputing: v }),
   setIsRetraining: (v) => set({ isRetraining: v }),
   addDirtyParam: (p) => set((s) => ({ dirtyParams: new Set([...s.dirtyParams, p]) })),
+  removeDirtyParam: (p) => set((s) => {
+    const next = new Set(s.dirtyParams)
+    next.delete(p)
+    return { dirtyParams: next }
+  }),
   clearDirtyParams: () => set({ dirtyParams: new Set<string>() }),
   setH2Enabled: (v) => set({ h2Enabled: v }),
 }))

@@ -14,6 +14,8 @@ import { DetailPanel } from './DetailPanel'
 import { UploadZone } from './UploadZone'
 import { UploadProgress } from './UploadProgress'
 import { ClassificationResult } from './ClassificationResult'
+import { CompareControls } from '@/components/compare/CompareControls'
+import { CompareHeatmaps } from '@/components/compare/CompareHeatmaps'
 import type { ScatterPoint } from '@/types/scatter'
 
 interface SidebarProps {
@@ -27,6 +29,7 @@ export function Sidebar({ points = [], open, onToggle, searchInputRef }: Sidebar
   const selectedPointIndex = useVisualizationStore(s => s.selectedPointIndex)
   const selectedPoint = selectedPointIndex !== null ? (points[selectedPointIndex] ?? null) : null
   const selectedGenre = useVisualizationStore(s => s.selectedGenre)
+  const compareMode = useVisualizationStore(s => s.compareMode)
 
   // Derive unique books for the selected genre from scatter points
   const books = useMemo(() => {
@@ -99,6 +102,8 @@ export function Sidebar({ points = [], open, onToggle, searchInputRef }: Sidebar
 
         <ProjectionTabs />
         <GenreSelect />
+        <CompareControls />
+        {compareMode && <CompareHeatmaps />}
         <BookSlider books={books} />
         <ControlSliders />
 

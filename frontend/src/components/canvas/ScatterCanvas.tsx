@@ -11,6 +11,7 @@ interface ScatterCanvasProps {
   opacities: Float32Array
   points?: ScatterPoint[]
   tfidfWeights?: Float32Array | null
+  compareTfidfWeights?: Float32Array | null
   selectedIndex: number | null
   hoveredIndex: number | null
   onHover: (idx: number | null) => void
@@ -25,7 +26,7 @@ export function ScatterCanvas(props: ScatterCanvasProps) {
       style={{ width: '100%', height: '100%' }}
     >
       <Canvas
-        gl={{ antialias: true, alpha: false }}
+        gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
         camera={{ fov: 60, near: 0.1, far: 1000, position: [0, 0, 5] }}
         raycaster={{ params: { Points: { threshold: 0.05 } } }}
         onCreated={({ scene }) => {
@@ -41,6 +42,7 @@ export function ScatterCanvas(props: ScatterCanvasProps) {
             opacities={props.opacities}
             points={props.points}
             tfidfWeights={props.tfidfWeights}
+            compareTfidfWeights={props.compareTfidfWeights}
             selectedIndex={props.selectedIndex}
             hoveredIndex={props.hoveredIndex}
             onHover={props.onHover}

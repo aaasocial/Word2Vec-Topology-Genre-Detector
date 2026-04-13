@@ -59,6 +59,7 @@ interface PointCloudProps {
   opacities: Float32Array
   points?: ScatterPoint[]
   tfidfWeights?: Float32Array | null
+  compareTfidfWeights?: Float32Array | null
   selectedIndex: number | null
   hoveredIndex: number | null
   onHover: (idx: number | null) => void
@@ -72,6 +73,7 @@ export function PointCloud({
   opacities,
   points,
   tfidfWeights,
+  compareTfidfWeights,
   selectedIndex,
   onHover,
   onClick,
@@ -80,6 +82,8 @@ export function PointCloud({
   const globalOpacity = useVisualizationStore(s => s.opacity)
   const tfidfThreshold = useVisualizationStore(s => s.tfidfThreshold)
   const brightnessSensitivity = useVisualizationStore(s => s.brightnessSensitivity)
+  const compareMode = useVisualizationStore(s => s.compareMode)
+  const compareGenre = useVisualizationStore(s => s.compareGenre)
   // Guard: positions.length is n*3, so n = positions.length/3 — cap at 100k points (300k floats)
   if (positions.length > 300_000) {
     throw new Error('PointCloud: positions array exceeds 100k points (300k floats)')
@@ -160,8 +164,31 @@ export function PointCloud({
     const opacitiesAttr = geometry.attributes.aOpacity.array as Float32Array
 
     for (let i = 0; i < n; i++) {
-      const inSelectedGenre = selectedGenre === null || points?.[i]?.genre === selectedGenre
+      const pointGenre = points?.[i]?.genre
+      const inSelectedGenre = selectedGenre === null || pointGenre === selectedGenre
+      const inCompareGenre = compareMode && compareGenre && pointGenre === compareGenre
       const w = Math.min(1.0, tfidfWeights?.[i] ?? 0)
+
+      // Compare mode: dual brightness for both genres
+      if (compareMode && compareGenre && selectedGenre) {
+        if (pointGenre === selectedGenre) {
+          // Genre A: full color, TF-IDF brightness
+          const brightness = tfidfWeights ? Math.pow(w, brightnessSensitivity) : 0.8
+          opacitiesAttr[i] = Math.max(0.2, brightness) * globalOpacity
+          sizesAttr[i] = (1.0 + (tfidfWeights ? w : 0.5) * 2.0) * pointSizeMultiplier
+        } else if (inCompareGenre) {
+          // Genre B: full color, TF-IDF brightness from compare weights
+          const cw = Math.min(1.0, compareTfidfWeights?.[i] ?? 0)
+          const brightness = compareTfidfWeights ? Math.pow(cw, brightnessSensitivity) : 0.8
+          opacitiesAttr[i] = Math.max(0.2, brightness) * globalOpacity
+          sizesAttr[i] = (1.0 + (compareTfidfWeights ? cw : 0.5) * 2.0) * pointSizeMultiplier
+        } else {
+          // All other points: dim to 4%
+          opacitiesAttr[i] = 0.04 * globalOpacity
+          sizesAttr[i] = 0.8
+        }
+        continue
+      }
 
       // Hide points below tfidf threshold (only when a genre is selected and weights exist)
       if (selectedGenre !== null && tfidfWeights && inSelectedGenre && w < tfidfThreshold) {
@@ -194,7 +221,7 @@ export function PointCloud({
 
     geometry.attributes.aOpacity.needsUpdate = true
     geometry.attributes.aSize.needsUpdate = true
-  }, [tfidfWeights, geometry, n, points, opacities, sizes, selectedGenre, globalOpacity, tfidfThreshold, brightnessSensitivity])
+  }, [tfidfWeights, compareTfidfWeights, geometry, n, points, opacities, sizes, selectedGenre, globalOpacity, tfidfThreshold, brightnessSensitivity, compareMode, compareGenre])
 
   useFrame((_, delta) => {
     if (!geometry || !material) return

@@ -28,6 +28,8 @@ export default function App() {
   const setHoveredPoint = useVisualizationStore((s) => s.setHoveredPoint)
 
   const activeTab = useVisualizationStore((s) => s.activeTab)
+  const compareMode = useVisualizationStore((s) => s.compareMode)
+  const compareGenre = useVisualizationStore((s) => s.compareGenre)
 
   const sidebarOpen = useUIStore(s => s.sidebarOpen)
   const toggleSidebar = useUIStore(s => s.toggleSidebar)
@@ -44,6 +46,9 @@ export default function App() {
   const { data: genreTfidf } = useGenreTfidf(selectedGenre)
   const { data: bookTfidf } = useBookTfidf(selectedBookId)
   const activeTfidf = bookTfidf ?? genreTfidf ?? null
+
+  // Compare genre TF-IDF (for dual brightness in compare mode)
+  const { data: compareTfidfData } = useGenreTfidf(compareMode ? compareGenre : null)
 
   const corpusBuffers = useMemo(() => {
     if (!data?.points) return null
@@ -62,6 +67,19 @@ export default function App() {
     for (let i = 0; i < weights.length; i++) weights[i] /= maxW
     return weights
   }, [activeTfidf, data])
+
+  // Build compareTfidfWeights Float32Array for compare genre
+  const compareTfidfWeights = useMemo<Float32Array | null>(() => {
+    if (!compareTfidfData || !data?.points) return null
+    const weights = new Float32Array(data.points.length)
+    let maxW = 1
+    for (let i = 0; i < data.points.length; i++) {
+      weights[i] = compareTfidfData[data.points[i].word] ?? 0
+      if (weights[i] > maxW) maxW = weights[i]
+    }
+    for (let i = 0; i < weights.length; i++) weights[i] /= maxW
+    return weights
+  }, [compareTfidfData, data])
 
   const uploadedBuffers = useMemo(() => {
     return buildUploadedBuffers(uploadedPoints)
@@ -166,6 +184,7 @@ export default function App() {
                     opacities={mergedBuffers.opacities}
                     points={allPoints}
                     tfidfWeights={tfidfWeights}
+                    compareTfidfWeights={compareTfidfWeights}
                     selectedIndex={selectedPointIndex}
                     hoveredIndex={hoveredPointIndex}
                     onHover={setHoveredPoint}
@@ -180,20 +199,42 @@ export default function App() {
             {/* Topology tab */}
             {activeTab === 'topology' && <TopologyPanel />}
 
-            {/* Compare tab placeholder */}
+            {/* Compare tab — renders scatter with compareMode active */}
             {activeTab === 'compare' && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '100%',
-                  color: '#6B6B80',
-                  fontSize: 14,
-                }}
-              >
-                Genre comparison view -- coming in Plan 02
-              </div>
+              <>
+                {isLoading && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#6B6B80',
+                      fontSize: 14,
+                      zIndex: 10,
+                    }}
+                  >
+                    Loading scatter data...
+                  </div>
+                )}
+                {mergedBuffers && (
+                  <ScatterCanvas
+                    positions={mergedBuffers.positions}
+                    colors={mergedBuffers.colors}
+                    sizes={mergedBuffers.sizes}
+                    opacities={mergedBuffers.opacities}
+                    points={allPoints}
+                    tfidfWeights={tfidfWeights}
+                    compareTfidfWeights={compareTfidfWeights}
+                    selectedIndex={selectedPointIndex}
+                    hoveredIndex={hoveredPointIndex}
+                    onHover={setHoveredPoint}
+                    onClick={setSelectedPoint}
+                  />
+                )}
+                <GenreLegend />
+              </>
             )}
           </div>
 
