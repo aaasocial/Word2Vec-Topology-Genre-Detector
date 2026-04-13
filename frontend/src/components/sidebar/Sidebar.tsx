@@ -1,5 +1,5 @@
-import { useRef, useMemo } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useRef, useMemo, useState, useCallback } from 'react'
+import { ChevronLeft, ChevronRight, Download } from 'lucide-react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { useUploadStore } from '@/stores/uploadStore'
 import { useClassify } from '@/hooks/useClassify'
@@ -16,6 +16,7 @@ import { UploadProgress } from './UploadProgress'
 import { ClassificationResult } from './ClassificationResult'
 import { CompareControls } from '@/components/compare/CompareControls'
 import { CompareHeatmaps } from '@/components/compare/CompareHeatmaps'
+import { exportScatterPNG } from '@/lib/exportUtils'
 import type { ScatterPoint } from '@/types/scatter'
 
 interface SidebarProps {
@@ -23,13 +24,23 @@ interface SidebarProps {
   open: boolean
   onToggle: () => void
   searchInputRef: React.RefObject<HTMLInputElement>
+  scatterCanvasRef?: React.RefObject<HTMLCanvasElement | null>
 }
 
-export function Sidebar({ points = [], open, onToggle, searchInputRef }: SidebarProps) {
+export function Sidebar({ points = [], open, onToggle, searchInputRef, scatterCanvasRef }: SidebarProps) {
   const selectedPointIndex = useVisualizationStore(s => s.selectedPointIndex)
   const selectedPoint = selectedPointIndex !== null ? (points[selectedPointIndex] ?? null) : null
   const selectedGenre = useVisualizationStore(s => s.selectedGenre)
   const compareMode = useVisualizationStore(s => s.compareMode)
+  const projection = useVisualizationStore(s => s.projection)
+
+  const [pngExported, setPngExported] = useState(false)
+  const handleExportPNG = useCallback(() => {
+    if (!scatterCanvasRef?.current) return
+    exportScatterPNG(scatterCanvasRef.current, selectedGenre ?? 'all', projection)
+    setPngExported(true)
+    setTimeout(() => setPngExported(false), 2000)
+  }, [scatterCanvasRef, selectedGenre, projection])
 
   // Derive unique books for the selected genre from scatter points
   const books = useMemo(() => {
@@ -115,6 +126,28 @@ export function Sidebar({ points = [], open, onToggle, searchInputRef }: Sidebar
         <WordSearch ref={searchInputRef} points={points} />
 
         {selectedPoint && <DetailPanel point={selectedPoint} />}
+
+        {/* Export PNG button */}
+        <button
+          onClick={handleExportPNG}
+          disabled={!scatterCanvasRef?.current}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            background: 'transparent',
+            border: '1px solid #2E2E3A',
+            color: '#9090A0',
+            borderRadius: 6,
+            padding: '6px 10px',
+            fontSize: 12,
+            cursor: 'pointer',
+            width: 'fit-content',
+          }}
+        >
+          <Download size={14} />
+          {pngExported ? 'Exported!' : 'Export PNG'}
+        </button>
 
         {/* Upload section */}
         <div style={{ borderTop: '1px solid #1E1E2A', paddingTop: 16 }}>

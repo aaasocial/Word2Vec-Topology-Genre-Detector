@@ -40,6 +40,7 @@ export default function App() {
 
   // Search input ref — passed to both WordSearch and useKeyboardShortcuts
   const searchInputRef = useRef<HTMLInputElement>(null)
+  const scatterCanvasRef = useRef<HTMLCanvasElement | null>(null)
   useKeyboardShortcuts(searchInputRef)
 
   const { data, isLoading } = useScatterData(projection)
@@ -193,6 +194,7 @@ export default function App() {
                     hoveredIndex={hoveredPointIndex}
                     onHover={setHoveredPoint}
                     onClick={setSelectedPoint}
+                    onCanvasReady={(c) => { scatterCanvasRef.current = c }}
                   />
                 )}
                 <GenreLegend />
@@ -248,6 +250,7 @@ export default function App() {
             open={sidebarOpen}
             onToggle={toggleSidebar}
             searchInputRef={searchInputRef}
+            scatterCanvasRef={scatterCanvasRef}
           />
         </div>
 

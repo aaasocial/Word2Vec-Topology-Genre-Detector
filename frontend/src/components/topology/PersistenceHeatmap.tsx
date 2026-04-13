@@ -1,8 +1,9 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { usePersistenceImage } from '@/hooks/usePersistenceImage'
 import { renderHeatmap } from '@/lib/heatmap'
 import { PLASMA_256 } from '@/lib/plasma'
+import { exportHeatmapPNG, exportPersistenceCSV } from '@/lib/exportUtils'
 import { HomologyTabs } from './HomologyTabs'
 
 const HEATMAP_SIZE = 300 // default canvas size, constrained to min 200 max 400
@@ -50,6 +51,39 @@ export function PersistenceHeatmap() {
 
   const hasSelection = !!queryId
 
+  // Export feedback state
+  const [pngExported, setPngExported] = useState(false)
+  const [csvExported, setCsvExported] = useState(false)
+
+  const handleExportPNG = useCallback(() => {
+    if (!canvasRef.current || !queryId) return
+    exportHeatmapPNG(canvasRef.current, queryId, selectedHomologyDim)
+    setPngExported(true)
+    setTimeout(() => setPngExported(false), 2000)
+  }, [queryId, selectedHomologyDim])
+
+  const handleExportCSV = useCallback(() => {
+    if (!data || !queryId) return
+    // Convert flat persistence image data to diagram entries for CSV
+    const M = data.M
+    const diagrams: { birth: number; death: number; dimension: number }[] = []
+    for (let row = 0; row < M; row++) {
+      for (let col = 0; col < M; col++) {
+        const val = data.data[row * M + col]
+        if (val > 0) {
+          diagrams.push({
+            birth: col / M,
+            death: row / M,
+            dimension: selectedHomologyDim,
+          })
+        }
+      }
+    }
+    exportPersistenceCSV(diagrams, queryId, selectedHomologyDim)
+    setCsvExported(true)
+    setTimeout(() => setCsvExported(false), 2000)
+  }, [data, queryId, selectedHomologyDim])
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Header */}
@@ -68,34 +102,35 @@ export function PersistenceHeatmap() {
           <HomologyTabs />
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          {/* Export buttons -- wired in Plan 03 */}
           <button
-            disabled
+            onClick={handleExportPNG}
+            disabled={!data}
             style={{
               background: 'transparent',
               border: '1px solid #2A2A3A',
-              color: '#6B6B80',
+              color: data ? '#9090A0' : '#6B6B80',
               fontSize: 12,
               padding: '4px 8px',
               borderRadius: 4,
-              cursor: 'not-allowed',
+              cursor: data ? 'pointer' : 'not-allowed',
             }}
           >
-            PNG
+            {pngExported ? '\u2713' : 'PNG'}
           </button>
           <button
-            disabled
+            onClick={handleExportCSV}
+            disabled={!data}
             style={{
               background: 'transparent',
               border: '1px solid #2A2A3A',
-              color: '#6B6B80',
+              color: data ? '#9090A0' : '#6B6B80',
               fontSize: 12,
               padding: '4px 8px',
               borderRadius: 4,
-              cursor: 'not-allowed',
+              cursor: data ? 'pointer' : 'not-allowed',
             }}
           >
-            CSV
+            {csvExported ? '\u2713' : 'CSV'}
           </button>
         </div>
       </div>

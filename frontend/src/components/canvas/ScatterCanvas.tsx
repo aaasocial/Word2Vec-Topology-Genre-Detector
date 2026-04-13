@@ -16,6 +16,7 @@ interface ScatterCanvasProps {
   hoveredIndex: number | null
   onHover: (idx: number | null) => void
   onClick: (idx: number) => void
+  onCanvasReady?: (canvas: HTMLCanvasElement) => void
 }
 
 export function ScatterCanvas(props: ScatterCanvasProps) {
@@ -29,8 +30,9 @@ export function ScatterCanvas(props: ScatterCanvasProps) {
         gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
         camera={{ fov: 60, near: 0.1, far: 1000, position: [0, 0, 5] }}
         raycaster={{ params: { Points: { threshold: 0.05 } } }}
-        onCreated={({ scene }) => {
+        onCreated={({ scene, gl }) => {
           scene.background = new THREE.Color('#0A0A0F')
+          if (props.onCanvasReady) props.onCanvasReady(gl.domElement)
         }}
       >
         <CameraController />
