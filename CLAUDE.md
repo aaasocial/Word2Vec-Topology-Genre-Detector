@@ -138,6 +138,57 @@ A hosted web application that makes the hidden geometric structure of literary g
 No project skills found. Add skills to any of: `.claude/skills/`, `.agents/skills/`, `.cursor/skills/`, or `.github/skills/` with a `SKILL.md` index file.
 <!-- GSD:skills-end -->
 
+## Fresh Machine Setup
+
+If you are running on a new machine (laptop, new clone), follow these steps in order.
+
+**1. Clone and install dependencies**
+```bash
+git clone https://github.com/aaasocial/Word2Vec-Topology-Genre-Detector.git
+cd Word2Vec-Topology-Genre-Detector
+pip install -r requirements.txt
+cd frontend && npm install && cd ..
+```
+
+**2. Pull LFS model files** (Word2Vec models, SVM, TF-IDF vectorizers — pre-trained, no retraining needed)
+```bash
+git lfs pull
+```
+This downloads `data/models/` (~300MB). The slow pipeline steps (corpus download, preprocessing, Word2Vec training, homology) are already done.
+
+**3. Regenerate derived caches** (fast, ~20 min total)
+```bash
+# Step 5: rebuild per-book feature vectors from existing models
+python scripts/05_build_features.py --window 15
+
+# Step 6: validate SVM accuracy (optional sanity check)
+python scripts/06_validate.py --window 15
+
+# Precompute all visualization caches (projections, VR, persistence diagrams)
+python -c "
+from backend.pipeline.precompute import precompute_all
+precompute_all(window=15, force=True)
+"
+```
+
+**4. Start the app**
+```bash
+# Terminal 1 — backend
+uvicorn backend.api.app:app --reload --port 8000
+
+# Terminal 2 — frontend
+cd frontend && npm run dev
+```
+App runs at http://localhost:5173.
+
+**If you have a new corpus:**
+1. Update `corpus/books.yaml` with new book entries
+2. Run the full pipeline: scripts 01 → 02 → 03 → 04 → 05 → 06 (see individual script --help)
+3. `git add data/models/ && git commit -m "feat: retrain on new corpus" && git push`
+4. On other machines: `git pull && git lfs pull` then re-run step 3 above
+
+---
+
 <!-- GSD:workflow-start source:GSD defaults -->
 ## GSD Workflow Enforcement
 

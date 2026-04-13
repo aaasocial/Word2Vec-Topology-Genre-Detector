@@ -13,9 +13,10 @@ venv/
 # Generated data — regenerate with pipeline scripts
 data/cache/
 data/features/
-data/models/
 data/processed/
 data/raw/
+
+# Models tracked via git-lfs (*.model, *.joblib, *.pkl) — do NOT gitignore data/models/
 
 # Downloaded book texts
 texts/
