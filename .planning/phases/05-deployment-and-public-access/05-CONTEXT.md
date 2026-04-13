@@ -35,18 +35,17 @@ This phase containerizes the full application stack and deploys it to a publicly
 - Single container exposing one port (default 8000).
 
 ### Model Files Strategy
-- **Decision: Bake into Docker image at build time**
-- Copy `data/models/` into the image during the Docker build.
-- Models are already in git-lfs — Docker build pulls them via `git lfs pull` before building.
-- Resulting image will be ~1–1.5GB. Acceptable tradeoff for zero-runtime-download startup.
-- No volume mounts needed for models.
+- **Decision: GitHub Release tarball downloaded during Docker build** *(revised from discuss-phase — Railway strips .git directory, so git-lfs pull is unavailable in Railway builds)*
+- User creates a GitHub Release containing `genre-topology-data.tar.gz` (models + pre-built cache).
+- Dockerfile downloads via `curl $RELEASE_URL` during build using a build ARG.
+- For local `docker compose up`, files are bind-mounted from the local `data/` directory (no download needed).
+- Resulting image ~1–1.5GB. No volume mounts needed at runtime.
 
 ### Precomputed Cache Strategy
-- **Decision: Bake into Docker image at build time**
-- Run the full precompute pipeline (`python -c "from backend.pipeline.precompute import precompute_all; precompute_all(window=15)"`) during Docker build after models are copied in.
-- Cache files land in `data/cache/` inside the image — instant serving on startup.
-- Adds ~5–10 min to image build time (acceptable for a one-time build).
-- No volume mounts needed for cache.
+- **Decision: Pre-built cache included in GitHub Release tarball** *(revised from discuss-phase — data/features/ is gitignored and unavailable in Docker build context; Railway 20-min build timeout makes running precompute infeasible)*
+- `data/cache/` (~336MB) is built locally and included in the GitHub Release tarball alongside models.
+- No precompute step runs during Docker build — cache is ready immediately on container startup.
+- When models change (new corpus), rebuild the cache locally and update the GitHub Release.
 
 ### Redis
 - **Decision: Railway Redis addon**
