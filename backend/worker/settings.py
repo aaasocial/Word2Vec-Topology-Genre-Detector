@@ -9,8 +9,14 @@ re-loading models per request.
 
 The best window size is read from config/params.yaml (word2vec.window field).
 """
+import os
 from arq.connections import RedisSettings
 from backend.worker.jobs import classify_book
+
+
+def _get_redis_settings():
+    url = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+    return RedisSettings.from_dsn(url)
 
 
 async def startup(ctx):
@@ -64,7 +70,7 @@ class WorkerSettings:
     functions = [classify_book]
     on_startup = startup
     on_shutdown = shutdown
-    redis_settings = RedisSettings()
+    redis_settings = _get_redis_settings()
     max_jobs = 1              # Sequential processing -- model is not thread-safe
     job_timeout = 120         # 2 minutes max per job
     allow_abort_jobs = True   # Enable cancellation on WebSocket disconnect

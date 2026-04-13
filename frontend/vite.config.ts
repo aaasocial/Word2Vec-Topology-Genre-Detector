@@ -10,8 +10,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': { target: 'http://localhost:8000', rewrite: (p) => p.replace(/^\/api/, '') },
-      '/ws': { target: 'ws://localhost:8000', ws: true, rewrite: (p) => p.replace(/^\/ws/, '') },
+      '/api': { target: 'http://localhost:8000', ws: true },
     },
   },
 })
