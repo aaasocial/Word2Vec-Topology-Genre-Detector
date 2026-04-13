@@ -2,7 +2,7 @@ import { useRef, useEffect } from 'react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { usePersistenceDiagram } from '@/hooks/usePersistenceDiagram'
 
-const SIZE = 240
+const SIZE = 320
 
 /**
  * PersistenceDiagram: Canvas 2D scatter plot of raw (birth, death) pairs.
@@ -42,14 +42,19 @@ export function PersistenceDiagram() {
 
     if (!data || data.points.length === 0) return
 
-    const pad = 20
+    const pad = 28
     const plotW = SIZE - pad * 2
     const plotH = SIZE - pad * 2
-    const eps = data.epsilon_max
+
+    // Auto-scale axes to actual data range for better visibility
+    const validPts = data.points.filter(([b, d]) => d > b)
+    const allVals = validPts.flatMap(([b, d]) => [b, d])
+    const dataMax = allVals.length > 0 ? Math.max(...allVals) : data.epsilon_max
+    const axisMax = Math.min(dataMax * 1.1, data.epsilon_max) // 10% headroom, capped at eps_max
 
     // Coordinate transform: data -> canvas
-    const tx = (v: number) => pad + (v / eps) * plotW
-    const ty = (v: number) => SIZE - pad - (v / eps) * plotH
+    const tx = (v: number) => pad + (v / axisMax) * plotW
+    const ty = (v: number) => SIZE - pad - (v / axisMax) * plotH
 
     // Grid lines
     ctx.strokeStyle = '#2A2A3A'
@@ -69,17 +74,17 @@ export function PersistenceDiagram() {
     ctx.setLineDash([4, 4])
     ctx.beginPath()
     ctx.moveTo(tx(0), ty(0))
-    ctx.lineTo(tx(eps), ty(eps))
+    ctx.lineTo(tx(axisMax), ty(axisMax))
     ctx.stroke()
     ctx.setLineDash([])
 
     // Plot points
     const pts = data.points
-    const radius = pts.length > 500 ? 1.5 : pts.length > 100 ? 2 : 3
+    const radius = pts.length > 500 ? 2 : pts.length > 100 ? 3 : 4
     ctx.fillStyle = '#FACC15'
-    ctx.globalAlpha = pts.length > 200 ? 0.6 : 0.85
+    ctx.globalAlpha = pts.length > 200 ? 0.7 : 0.9
     for (const [birth, death] of pts) {
-      if (death > birth && death <= eps * 1.05) {
+      if (death > birth && death <= axisMax * 1.05) {
         const cx = tx(birth)
         const cy = ty(death)
         ctx.beginPath()
@@ -94,13 +99,13 @@ export function PersistenceDiagram() {
     ctx.font = '9px JetBrains Mono, monospace'
     ctx.textAlign = 'center'
     for (let i = 0; i <= gridSteps; i++) {
-      const v = (eps * i) / gridSteps
+      const v = (axisMax * i) / gridSteps
       const label = v.toFixed(v < 1 ? 2 : 1)
-      ctx.fillText(label, tx(v), SIZE - pad + 12)
+      ctx.fillText(label, tx(v), SIZE - pad + 14)
     }
     ctx.textAlign = 'right'
     for (let i = 0; i <= gridSteps; i++) {
-      const v = (eps * i) / gridSteps
+      const v = (axisMax * i) / gridSteps
       const label = v.toFixed(v < 1 ? 2 : 1)
       ctx.fillText(label, pad - 4, ty(v) + 3)
     }
