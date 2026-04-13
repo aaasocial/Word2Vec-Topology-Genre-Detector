@@ -6,6 +6,9 @@ services:
     environment:
       - REDIS_URL=redis://redis:6379
       - PORT=8000
+    volumes:
+      - ./data/models:/app/data/models:ro
+      - ./data/cache:/app/data/cache:ro
     depends_on:
       redis:
         condition: service_started

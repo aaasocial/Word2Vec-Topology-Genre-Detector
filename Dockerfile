@@ -39,10 +39,6 @@ RUN if [ -n "$RELEASE_URL" ]; then \
       echo "WARNING: No RELEASE_URL provided. Expecting data/models/ and data/cache/ in build context."; \
     fi
 
-# Copy local data dirs as fallback (if they exist in build context and weren't downloaded)
-COPY data/models/ ./data/models/
-COPY data/cache/ ./data/cache/
-
 # Copy built frontend
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 

@@ -13,9 +13,7 @@ venv
 dump.rdb
 results/
 tests/
-data/raw/
-data/processed/
-data/features/
+data/
 texts/
 *.md
 !requirements.txt
