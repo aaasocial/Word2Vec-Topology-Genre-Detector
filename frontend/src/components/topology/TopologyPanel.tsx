@@ -1,3 +1,5 @@
+import { PersistenceHeatmap } from './PersistenceHeatmap'
+
 /**
  * TopologyPanel: Container for the Topology tab.
  * Two-panel flex layout: left = persistence heatmap, right = VR viewer placeholder.
@@ -11,7 +13,7 @@ export function TopologyPanel() {
         height: '100%',
       }}
     >
-      {/* Left panel: persistence heatmap slot */}
+      {/* Left panel: persistence heatmap */}
       <div
         style={{
           width: '50%',
@@ -20,20 +22,10 @@ export function TopologyPanel() {
           padding: 24,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
           overflow: 'auto',
         }}
       >
-        <div
-          style={{
-            color: '#6B6B80',
-            fontSize: 14,
-            textAlign: 'center',
-          }}
-        >
-          Persistence heatmap -- loading in Task 2
-        </div>
+        <PersistenceHeatmap />
       </div>
 
       {/* Right panel: VR viewer placeholder */}
