@@ -1,6 +1,9 @@
 import { create } from 'zustand'
 import type { ProjectionKey } from '@/types/scatter'
 
+export type TabKey = 'scatter' | 'topology' | 'compare'
+export type HomologyDim = 0 | 1 | 2
+
 interface VisualizationState {
   projection: ProjectionKey
   selectedGenre: string | null
@@ -15,6 +18,19 @@ interface VisualizationState {
   searchQuery: string
   cameraFocusUploadCounter: number
   cameraResetCounter: number
+  // Phase 4 slices
+  activeTab: TabKey
+  selectedHomologyDim: HomologyDim
+  vrEpsilon: number
+  compareMode: boolean
+  compareGenre: string | null
+  settingsDrawerOpen: boolean
+  pipelineExplanationOpen: boolean
+  pipelineExplanationStep: number
+  isRecomputing: boolean
+  isRetraining: boolean
+  dirtyParams: Set<string>
+  h2Enabled: boolean
   setProjection: (p: ProjectionKey) => void
   setSelectedGenre: (g: string | null) => void
   setSelectedBook: (id: string | null) => void
@@ -28,6 +44,20 @@ interface VisualizationState {
   setSearchQuery: (q: string) => void
   triggerCameraFocusUpload: () => void
   triggerCameraReset: () => void
+  // Phase 4 setters
+  setActiveTab: (t: TabKey) => void
+  setSelectedHomologyDim: (d: HomologyDim) => void
+  setVrEpsilon: (v: number) => void
+  setCompareMode: (v: boolean) => void
+  setCompareGenre: (g: string | null) => void
+  setSettingsDrawerOpen: (v: boolean) => void
+  setPipelineExplanationOpen: (v: boolean) => void
+  setPipelineExplanationStep: (v: number) => void
+  setIsRecomputing: (v: boolean) => void
+  setIsRetraining: (v: boolean) => void
+  addDirtyParam: (p: string) => void
+  clearDirtyParams: () => void
+  setH2Enabled: (v: boolean) => void
 }
 
 export const useVisualizationStore = create<VisualizationState>()((set) => ({
@@ -44,6 +74,19 @@ export const useVisualizationStore = create<VisualizationState>()((set) => ({
   searchQuery: '',
   cameraFocusUploadCounter: 0,
   cameraResetCounter: 0,
+  // Phase 4 defaults
+  activeTab: 'scatter',
+  selectedHomologyDim: 0,
+  vrEpsilon: 0,
+  compareMode: false,
+  compareGenre: null,
+  settingsDrawerOpen: false,
+  pipelineExplanationOpen: false,
+  pipelineExplanationStep: 0,
+  isRecomputing: false,
+  isRetraining: false,
+  dirtyParams: new Set<string>(),
+  h2Enabled: false,
   setProjection: (p) => set({ projection: p }),
   setSelectedGenre: (g) => set({ selectedGenre: g }),
   setSelectedBook: (id) => set({ selectedBookId: id }),
@@ -57,4 +100,18 @@ export const useVisualizationStore = create<VisualizationState>()((set) => ({
   setSearchQuery: (q) => set({ searchQuery: q }),
   triggerCameraFocusUpload: () => set((s) => ({ cameraFocusUploadCounter: s.cameraFocusUploadCounter + 1 })),
   triggerCameraReset: () => set((s) => ({ cameraResetCounter: s.cameraResetCounter + 1 })),
+  // Phase 4 setters
+  setActiveTab: (t) => set({ activeTab: t }),
+  setSelectedHomologyDim: (d) => set({ selectedHomologyDim: d }),
+  setVrEpsilon: (v) => set({ vrEpsilon: v }),
+  setCompareMode: (v) => set({ compareMode: v }),
+  setCompareGenre: (g) => set({ compareGenre: g }),
+  setSettingsDrawerOpen: (v) => set({ settingsDrawerOpen: v }),
+  setPipelineExplanationOpen: (v) => set({ pipelineExplanationOpen: v }),
+  setPipelineExplanationStep: (v) => set({ pipelineExplanationStep: v }),
+  setIsRecomputing: (v) => set({ isRecomputing: v }),
+  setIsRetraining: (v) => set({ isRetraining: v }),
+  addDirtyParam: (p) => set((s) => ({ dirtyParams: new Set([...s.dirtyParams, p]) })),
+  clearDirtyParams: () => set({ dirtyParams: new Set<string>() }),
+  setH2Enabled: (v) => set({ h2Enabled: v }),
 }))

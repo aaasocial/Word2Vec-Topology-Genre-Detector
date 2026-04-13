@@ -5,8 +5,32 @@ class WebGLRenderingContext {}
 ;(global as any).WebGLRenderingContext = WebGLRenderingContext
 ;(global as any).WebGL2RenderingContext = WebGLRenderingContext
 
-// Mock canvas.getContext to return a minimal WebGL stub
-;(HTMLCanvasElement.prototype as any).getContext = (contextId: string) => {
+// Mock canvas.getContext to return minimal stubs for 2d and WebGL
+// Cache 2d context per canvas instance so repeated getContext calls return the same object
+const canvas2dCache = new WeakMap<HTMLCanvasElement, any>()
+;(HTMLCanvasElement.prototype as any).getContext = function (contextId: string) {
+  if (contextId === '2d') {
+    let cached = canvas2dCache.get(this)
+    if (cached) return cached
+    const calls: any[] = []
+    cached = {
+      fillRect: (...args: any[]) => calls.push({ method: 'fillRect', args }),
+      clearRect: () => {},
+      fillStyle: '',
+      font: '',
+      textAlign: '',
+      textBaseline: '',
+      fillText: () => {},
+      measureText: () => ({ width: 0 }),
+      save: () => {},
+      restore: () => {},
+      translate: () => {},
+      rotate: () => {},
+      _calls: calls,
+    }
+    canvas2dCache.set(this, cached)
+    return cached
+  }
   if (contextId === 'webgl' || contextId === 'webgl2') {
     return {
       getExtension: () => null,
