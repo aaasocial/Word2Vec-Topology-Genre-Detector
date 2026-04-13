@@ -29,7 +29,7 @@ export function ScatterCanvas(props: ScatterCanvasProps) {
       <Canvas
         gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
         camera={{ fov: 60, near: 0.1, far: 1000, position: [0, 0, 5] }}
-        raycaster={{ params: { Points: { threshold: 0.05 } } }}
+        raycaster={{ params: { Points: { threshold: 0.05 } } as any }}
         onCreated={({ scene, gl }) => {
           scene.background = new THREE.Color('#0A0A0F')
           if (props.onCanvasReady) props.onCanvasReady(gl.domElement)
