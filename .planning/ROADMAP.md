@@ -100,10 +100,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. A user can access the full application via a public URL without installing anything locally
   2. A developer can build and run the entire application stack with a single `docker compose up` command
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: Docker containerization and hosted deployment
+- [ ] 05-01-PLAN.md -- Containerization: Dockerfile, docker-compose, Redis/routing fixes, SPA serving
+- [ ] 05-02-PLAN.md -- GitHub Release data tarball and Railway deployment
 
 ## Progress
 
@@ -116,4 +117,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. API Layer and Job Queue | 0/3 | Not started | - |
 | 3. Frontend Core and 3D Visualization | 0/4 | Planning complete | - |
 | 4. Advanced Visualization and Parameter Controls | 0/3 | Planning complete | - |
-| 5. Deployment and Public Access | 0/1 | Not started | - |
+| 5. Deployment and Public Access | 0/2 | Planning complete | - |
