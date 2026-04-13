@@ -1,5 +1,5 @@
 import { useRef, useCallback } from 'react'
-import { apiFetch, WS_BASE } from '@/lib/api'
+import { apiFetch, API_BASE } from '@/lib/api'
 import { useUploadStore } from '@/stores/uploadStore'
 import type { ScatterPoint } from '@/types/scatter'
 
@@ -14,7 +14,8 @@ interface UseClassifyReturn {
 }
 
 export function useClassify(): UseClassifyReturn {
-  const wsRef = useRef<WebSocket | null>(null)
+  const esRef = useRef<EventSource | null>(null)
+  const retryCountRef = useRef(0)
   const store = useUploadStore
 
   const classify = useCallback(async (file: File) => {
@@ -28,6 +29,7 @@ export function useClassify(): UseClassifyReturn {
 
     // Reset previous state
     store.getState().reset()
+    retryCountRef.current = 0
 
     // Mark step 1 active (use value form — setSteps accepts ProgressStep[], not a callback)
     const initSteps = store.getState().steps
@@ -42,46 +44,55 @@ export function useClassify(): UseClassifyReturn {
     })
     store.getState().setJobId(job_id)
 
-    // Connect WebSocket with retry logic
-    let retryCount = 0
-    const connect = () => {
-      const wsUrl = `${WS_BASE}/ws/classify/${job_id}`
-      const ws = new WebSocket(wsUrl)
-      wsRef.current = ws
+    // Open SSE stream for progress — SSE uses plain HTTP, works through Railway's proxy
+    // (WebSocket upgrade headers are stripped by Railway's edge proxy)
+    const sseUrl = `${API_BASE}/classify/${job_id}/progress`
 
-      ws.onmessage = (event: MessageEvent) => {
+    const connect = () => {
+      const es = new EventSource(sseUrl)
+      esRef.current = es
+
+      es.onmessage = (event: MessageEvent) => {
+        // Worker publishes: {step, index, total, message, status, result?}
+        // status: 'running' | 'done' | 'error' | 'cancelled'
         const msg = JSON.parse(event.data as string)
-        if (msg.type === 'progress') {
+
+        if (msg.status === 'running') {
           const prevSteps = store.getState().steps
           store.getState().setSteps(prevSteps.map((s, i) => {
-            if (i === msg.step - 1) return { ...s, status: msg.status, errorMessage: msg.message }
-            if (i < msg.step - 1 && s.status !== 'error') return { ...s, status: 'complete' }
+            if (i === msg.index - 1) return { ...s, status: 'active', errorMessage: msg.message }
+            if (i < msg.index - 1 && s.status !== 'error') return { ...s, status: 'complete' }
             return s
           }))
-        } else if (msg.type === 'result') {
+        } else if (msg.status === 'done' && msg.result) {
           store.getState().setResult({
-            genre: msg.genre,
-            confidence: msg.confidence,
-            oov_count: msg.oov_count,
-            total_words: msg.total_words,
+            genre: msg.result.predicted_genre,
+            confidence: msg.result.confidence,
+            oov_count: msg.result.oov_word_count,
+            total_words: msg.result.total_words,
           })
           // Cap at 50k points (T-3-03 DoS guard)
-          const pts: ScatterPoint[] = ((msg.scatter_points ?? []) as ScatterPoint[]).slice(0, MAX_UPLOADED_POINTS)
+          const pts: ScatterPoint[] = ((msg.result.scatter_points ?? []) as ScatterPoint[]).slice(0, MAX_UPLOADED_POINTS)
           store.getState().setUploadedPoints(pts)
-          ws.close()
-        } else if (msg.type === 'error') {
+          es.close()
+        } else if (msg.status === 'error' || msg.status === 'cancelled') {
           const errMsg = (msg.message as string) ?? 'Classification failed'
           const errSteps = store.getState().steps
           store.getState().setSteps(errSteps.map((s) =>
             s.status === 'active' ? { ...s, status: 'error', errorMessage: errMsg } : s
           ))
+          es.close()
         }
       }
 
-      ws.onerror = () => {
-        if (retryCount < MAX_RETRIES) {
-          retryCount++
-          store.getState().setRetryMessage(`Connection lost. Retrying... (${retryCount}/${MAX_RETRIES})`)
+      es.onerror = () => {
+        // Close to prevent EventSource's built-in auto-reconnect, then retry manually
+        es.close()
+        if (retryCountRef.current < MAX_RETRIES) {
+          retryCountRef.current++
+          store.getState().setRetryMessage(
+            `Connection lost. Retrying... (${retryCountRef.current}/${MAX_RETRIES})`
+          )
           setTimeout(connect, RETRY_DELAY_MS)
         } else {
           store.getState().setRetryMessage('Unable to connect to the server. Please refresh the page.')
@@ -92,8 +103,8 @@ export function useClassify(): UseClassifyReturn {
   }, [])
 
   const reset = useCallback(() => {
-    wsRef.current?.close()
-    wsRef.current = null
+    esRef.current?.close()
+    esRef.current = null
     store.getState().reset()
   }, [])
 
