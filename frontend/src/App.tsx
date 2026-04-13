@@ -6,6 +6,8 @@ import { KeyboardHint } from '@/components/sidebar/KeyboardHint'
 import { TopNavTabs } from '@/components/nav/TopNavTabs'
 import { DisclaimerBanner } from '@/components/nav/DisclaimerBanner'
 import { TopologyPanel } from '@/components/topology/TopologyPanel'
+import { SettingsDrawer } from '@/components/settings/SettingsDrawer'
+import { RecomputeOverlay } from '@/components/settings/RecomputeOverlay'
 import { useScatterData } from '@/hooks/useScatterData'
 import { useGenreTfidf, useBookTfidf } from '@/hooks/useTfidfData'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
@@ -157,6 +159,8 @@ export default function App() {
         <div style={{ display: 'flex', flex: 1, marginTop: TOP_OFFSET, minHeight: 0 }}>
           {/* Main view area */}
           <div style={{ flex: 1, position: 'relative', minWidth: 0 }}>
+            {/* Recompute overlay — renders above canvas when recomputing */}
+            <RecomputeOverlay />
             {/* Scatter tab */}
             {activeTab === 'scatter' && (
               <>
@@ -246,6 +250,9 @@ export default function App() {
             searchInputRef={searchInputRef}
           />
         </div>
+
+        {/* Settings drawer (overlays from right) */}
+        <SettingsDrawer />
       </div>
     </>
   )

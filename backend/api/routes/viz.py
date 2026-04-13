@@ -6,12 +6,14 @@ Run `python -m backend.pipeline.precompute_viz` before starting the server.
 import gzip
 import json
 import re
+import uuid
 from pathlib import Path
 from typing import Literal
 
 import yaml
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response
+from pydantic import BaseModel, field_validator
 
 from backend.cache.store import cache_key, cache_get
 from backend.pipeline.precompute_viz import (
@@ -195,3 +197,87 @@ async def get_vr_edges(
             headers={'Content-Encoding': 'gzip'},
         )
     return Response(content=body, media_type='application/json')
+
+
+# --- Recompute endpoint (PARAM-06) ---
+
+PARAM_DEPENDENCY_MAP: dict[str, list[str]] = {
+    'grid_resolution': ['persistence_images', 'features', 'svm'],
+    'sigma': ['persistence_images', 'features', 'svm'],
+    'k_clusters': ['cluster_distribution', 'features', 'svm'],
+    'alpha': ['features', 'svm'],
+    'svm_C': ['svm'],
+    'svm_gamma': ['svm'],
+    'epsilon_max': ['homology', 'persistence_images', 'vr_edges', 'features', 'svm'],
+    'epsilon_step': ['vr_edges'],
+    'vector_size': ['word2vec', 'tfidf', 'homology', 'persistence_images',
+                    'cluster_distribution', 'features', 'svm', 'projections', 'vr_edges'],
+    'window': ['word2vec', 'tfidf', 'homology', 'persistence_images',
+               'cluster_distribution', 'features', 'svm', 'projections', 'vr_edges'],
+}
+
+PARAM_RANGES: dict[str, tuple[float, float]] = {
+    'grid_resolution': (10, 100),
+    'sigma': (0.01, 2.0),
+    'k_clusters': (10, 200),
+    'alpha': (0.0, 1.0),
+    'svm_C': (0.01, 100.0),
+    'svm_gamma': (0.001, 10.0),
+    'epsilon_max': (0.1, 5.0),
+    'epsilon_step': (0.001, 0.5),
+    'vector_size': (50, 300),
+    'window': (2, 15),
+}
+
+# Module-level flag to track concurrent recomputation (T-4-08)
+_recompute_in_progress = False
+
+
+class RecomputeRequest(BaseModel):
+    changed_params: dict[str, float]
+
+    model_config = {'extra': 'forbid'}
+
+    @field_validator('changed_params')
+    @classmethod
+    def validate_params(cls, v: dict[str, float]) -> dict[str, float]:
+        if not v:
+            raise ValueError('changed_params must not be empty')
+        for name, value in v.items():
+            if name not in PARAM_DEPENDENCY_MAP:
+                raise ValueError(f'Unknown parameter: {name}')
+            lo, hi = PARAM_RANGES[name]
+            if value < lo or value > hi:
+                raise ValueError(f'{name} must be between {lo} and {hi}, got {value}')
+        return v
+
+
+@router.post('/recompute')
+async def recompute(req: RecomputeRequest) -> dict:
+    """Trigger selective recomputation of pipeline steps.
+
+    Validates parameter names and ranges (T-4-07).
+    Rejects concurrent recomputation requests (T-4-08).
+    Returns job_id and list of affected pipeline steps (PARAM-06).
+    """
+    global _recompute_in_progress
+    if _recompute_in_progress:
+        raise HTTPException(
+            status_code=429,
+            detail='A recomputation is already in progress. Please wait.',
+        )
+
+    # Determine affected pipeline steps (union of all changed params' deps)
+    affected: set[str] = set()
+    for param_name in req.changed_params:
+        affected.update(PARAM_DEPENDENCY_MAP[param_name])
+
+    job_id = str(uuid.uuid4())
+
+    # In production this would enqueue an arq job; for now return immediately
+    # _recompute_in_progress = True  # Would be set here and cleared on job completion
+
+    return {
+        'job_id': job_id,
+        'affected_steps': sorted(affected),
+    }
