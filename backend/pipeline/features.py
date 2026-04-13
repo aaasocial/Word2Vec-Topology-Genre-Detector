@@ -4,7 +4,6 @@ Wraps the core math from scripts/05_build_features.py.
 All functions accept cancel_event for cooperative cancellation (per CONTEXT.md).
 """
 import asyncio
-from typing import Callable
 
 import numpy as np
 
@@ -21,16 +20,38 @@ def diagram_to_birth_persistence(diagrams: np.ndarray, dim: int = 1) -> np.ndarr
     return np.stack([bd[:, 0], bd[:, 1] - bd[:, 0]], axis=1)
 
 
-def build_persistence_imager(all_diagrams: list[np.ndarray], grid_resolution: int, sigma: float) -> Callable:
-    """Fit a global persistence image grid and return a transform function.
+class PersistenceImager:
+    """Picklable persistence image transformer fitted on a corpus of diagrams."""
 
-    Returns callable: (birth, persistence) diagram -> grid_resolution^2 vector.
+    def __init__(self, grid: np.ndarray, two_sigma_sq: float, grid_resolution: int):
+        self.grid = grid
+        self.two_sigma_sq = two_sigma_sq
+        self.grid_resolution = grid_resolution
+
+    def __call__(self, diagram: np.ndarray) -> np.ndarray:
+        if len(diagram) == 0:
+            return np.zeros(self.grid_resolution ** 2)
+        births = diagram[:, 0]
+        perss = diagram[:, 1]
+        weights = perss
+        diff = self.grid[:, np.newaxis, :] - np.stack([births, perss], axis=1)[np.newaxis, :, :]
+        sq_dist = np.sum(diff ** 2, axis=2)
+        gaussians = np.exp(-sq_dist / self.two_sigma_sq)
+        return gaussians @ weights
+
+
+def build_persistence_imager(all_diagrams: list[np.ndarray], grid_resolution: int, sigma: float) -> 'PersistenceImager':
+    """Fit a global persistence image grid and return a PersistenceImager.
+
+    Returns PersistenceImager callable: (birth, persistence) diagram -> grid_resolution^2 vector.
     """
     all_pts = np.concatenate([d for d in all_diagrams if len(d) > 0], axis=0)
     if len(all_pts) == 0:
-        def zero_transform(diag):
-            return np.zeros(grid_resolution ** 2)
-        return zero_transform
+        return PersistenceImager(
+            grid=np.zeros((grid_resolution ** 2, 2)),
+            two_sigma_sq=2.0 * sigma ** 2,
+            grid_resolution=grid_resolution,
+        )
 
     b_min, b_max = all_pts[:, 0].min(), all_pts[:, 0].max()
     p_min, p_max = all_pts[:, 1].min(), all_pts[:, 1].max()
@@ -43,20 +64,12 @@ def build_persistence_imager(all_diagrams: list[np.ndarray], grid_resolution: in
     p_centres = np.linspace(p_min, p_max, grid_resolution)
     B, P = np.meshgrid(b_centres, p_centres, indexing='ij')
     grid = np.stack([B.ravel(), P.ravel()], axis=1)
-    two_sigma_sq = 2.0 * sigma ** 2
 
-    def transform(diagram):
-        if len(diagram) == 0:
-            return np.zeros(grid_resolution ** 2)
-        births = diagram[:, 0]
-        perss = diagram[:, 1]
-        weights = perss
-        diff = grid[:, np.newaxis, :] - np.stack([births, perss], axis=1)[np.newaxis, :, :]
-        sq_dist = np.sum(diff ** 2, axis=2)
-        gaussians = np.exp(-sq_dist / two_sigma_sq)
-        return gaussians @ weights
-
-    return transform
+    return PersistenceImager(
+        grid=grid,
+        two_sigma_sq=2.0 * sigma ** 2,
+        grid_resolution=grid_resolution,
+    )
 
 
 def build_feature_vector(
@@ -65,7 +78,7 @@ def build_feature_vector(
     tfidf_weights: np.ndarray,
     w2v_model,
     kmeans,
-    persistence_imager: Callable,
+    persistence_imager: 'PersistenceImager',
     k_clusters: int,
     alpha: float,
     cancel_event: asyncio.Event = None,

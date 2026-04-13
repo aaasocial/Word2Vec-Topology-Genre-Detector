@@ -18,7 +18,7 @@ from pydantic import BaseModel, field_validator
 from backend.cache.store import cache_key, cache_get
 from backend.pipeline.precompute_viz import (
     get_cached_scatter, get_cached_tfidf_genre, get_cached_tfidf_book,
-    get_cached_persistence_image,
+    get_cached_persistence_image, get_cached_persistence_diagram,
 )
 from backend.pipeline.precompute_vr import get_cached_vr_edges
 
@@ -163,6 +163,45 @@ async def get_persistence_image_book(gutenberg_id: str, dim: int = 0) -> dict:
         raise HTTPException(
             status_code=404,
             detail=f'No cached persistence image for book {gutenberg_id} dim={dim}.',
+        )
+    return data
+
+
+@router.get('/persistence-diagram/{genre}')
+async def get_persistence_diagram_genre(genre: str, dim: int = 1) -> dict:
+    """Return raw persistence diagram (birth/death scatter points) for a genre.
+
+    Validates genre and dim.
+    Response: {points: [number, number][], dim: number, epsilon_max: number}
+    """
+    if genre not in _KNOWN_GENRES:
+        raise HTTPException(status_code=404, detail=f'Genre not found: {genre}')
+    if dim not in (0, 1, 2):
+        raise HTTPException(status_code=400, detail=f'Invalid homology dimension: {dim}.')
+    data = get_cached_persistence_diagram(genre, dim, _DEFAULT_WINDOW, is_book=False)
+    if data is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f'No cached persistence diagram for genre {genre} dim={dim}.',
+        )
+    return data
+
+
+@router.get('/persistence-diagram/book/{gutenberg_id}')
+async def get_persistence_diagram_book(gutenberg_id: str, dim: int = 1) -> dict:
+    """Return raw persistence diagram for a specific book."""
+    if not _GUTENBERG_ID_RE.match(gutenberg_id):
+        raise HTTPException(
+            status_code=400,
+            detail=f'Invalid gutenberg_id: must be a positive integer, got {gutenberg_id!r}',
+        )
+    if dim not in (0, 1, 2):
+        raise HTTPException(status_code=400, detail=f'Invalid homology dimension: {dim}.')
+    data = get_cached_persistence_diagram(gutenberg_id, dim, _DEFAULT_WINDOW, is_book=True)
+    if data is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f'No cached persistence diagram for book {gutenberg_id} dim={dim}.',
         )
     return data
 

@@ -11,6 +11,7 @@ from collections import defaultdict
 
 import yaml
 import nltk
+from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).parent))
 from utils import load_params
@@ -40,7 +41,6 @@ def main():
     with open(books_path) as f:
         books_data = yaml.safe_load(f)
 
-    # Build id -> metadata map
     id_to_meta = {}
     for genre, books in books_data['genres'].items():
         for book in books:
@@ -55,15 +55,15 @@ def main():
     skipped = []
     genre_counts = defaultdict(int)
 
-    for i, raw_file in enumerate(raw_files, 1):
+    bar = tqdm(raw_files, desc="Preprocessing", unit="book", dynamic_ncols=True)
+    for raw_file in bar:
         gid = int(raw_file.stem)
         meta = id_to_meta.get(gid, {})
         title = meta.get('title', f'Book {gid}')
         genre = meta.get('genre', 'unknown')
+        bar.set_postfix(id=gid, genre=genre)
 
         t_start = time.time()
-        print(f"[{i}/{total}] {title} ({gid}): preprocessing...", end=' ', flush=True)
-
         text = raw_file.read_text(encoding='utf-8', errors='replace')
         tokens = tokenize(text)
         tokens = [t for t in tokens if t not in sw]
@@ -71,8 +71,8 @@ def main():
         unique_count = len(set(tokens))
         if unique_count < min_unique:
             elapsed = time.time() - t_start
-            print(f"SKIPPED: only {unique_count:,} unique words (minimum {min_unique:,}) ({elapsed:.1f}s)")
-            print(f"  WARNING: Skipping {title}: only {unique_count:,} unique words after filtering (minimum {min_unique:,})")
+            tqdm.write(f"  [{gid}] {title}: SKIPPED only {unique_count:,} unique words "
+                       f"(min {min_unique:,}) ({elapsed:.1f}s)")
             skipped.append(title)
             continue
 
@@ -90,18 +90,18 @@ def main():
         genre_counts[genre] += 1
 
         elapsed = time.time() - t_start
-        print(f"{unique_count:,} unique words, {len(tokens):,} total tokens... done ({elapsed:.1f}s)")
+        tqdm.write(f"  [{gid}] {title}: {unique_count:,} unique, {len(tokens):,} tokens "
+                   f"({elapsed:.1f}s)")
 
     print(f"\nProcessed: {total - len(skipped)}/{total} books ({len(skipped)} skipped)")
     print(f"Per-genre: {dict(genre_counts)}")
     if skipped:
         print(f"Skipped: {skipped}")
 
-    # D-12: warn if any genre has fewer than expected books
-    expected_per_genre = 5
+    expected_per_genre = 10
     for genre, count in genre_counts.items():
         if count < expected_per_genre:
-            print(f"WARNING: Genre {genre}: only {count} books available (expected {expected_per_genre}) -- results may be less reliable")
+            print(f"WARNING: {genre}: only {count} books (expected {expected_per_genre})")
 
 
 if __name__ == '__main__':

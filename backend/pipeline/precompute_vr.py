@@ -140,25 +140,94 @@ def get_cached_vr_edges(genre: str, projection: str, window: int) -> Optional[di
     return cache_get(key)
 
 
-def precompute_all_vr(window: int = None, projection: str = 'pca', force: bool = False) -> None:
-    """Entry point: precompute VR edges for all genres.
+ALL_PROJECTIONS = ['pca', 'kpca', 'umap', 'tsne']
+
+
+def _precompute_vr_for_projection(
+    projection: str,
+    window: int,
+    w2v_model,
+    books_data: dict,
+    epsilon_max: float,
+    force: bool,
+) -> None:
+    """Precompute VR edges for all genres under one projection."""
+    from backend.pipeline.precompute_viz import get_cached_scatter
+    scatter_data = get_cached_scatter(projection, window)
+    if scatter_data is None:
+        log.error(f'Scatter data for projection={projection} not cached. Run precompute_viz first.')
+        return
+
+    word_to_scatter_idx: dict[str, int] = {}
+    scatter_points = scatter_data['points']
+    for idx, pt in enumerate(scatter_points):
+        word_to_scatter_idx[pt['word']] = idx
+
+    for genre, book_list in books_data['genres'].items():
+        ck = cache_key('vr_edges', {'genre': genre, 'projection': projection, 'window': window})
+        if not force and cache_exists(ck):
+            log.info(f'  [{projection}] VR edges for {genre}: already cached')
+            continue
+
+        genre_tfidf_key = cache_key('tfidf_genre', {'genre': genre, 'window': window})
+        genre_tfidf = cache_get(genre_tfidf_key)
+        if genre_tfidf is None:
+            log.warning(f'  [{projection}] No TF-IDF data for {genre}, skipping')
+            continue
+
+        candidates = [
+            (w, weight) for w, weight in genre_tfidf.items()
+            if w in w2v_model.wv and w in word_to_scatter_idx
+        ]
+        candidates.sort(key=lambda x: -x[1])
+        selected = candidates[:MAX_WORDS_PER_GENRE]
+
+        if len(selected) < 2:
+            log.warning(f'  [{projection}] Too few words for {genre} ({len(selected)}), skipping VR')
+            continue
+
+        words = [w for w, _ in selected]
+        vectors = np.array([w2v_model.wv[w] for w in words], dtype=np.float32)
+        tfidf_w = np.array([wt for _, wt in selected], dtype=np.float32)
+        positions = [
+            [scatter_points[word_to_scatter_idx[w]]['x'],
+             scatter_points[word_to_scatter_idx[w]]['y'],
+             scatter_points[word_to_scatter_idx[w]]['z']]
+            for w in words
+        ]
+
+        log.info(f'  [{projection}] Computing VR edges for {genre} ({len(words)} words)...')
+        result = precompute_vr_edges(
+            words=words, vectors=vectors, tfidf_weights=tfidf_w,
+            epsilon_max=epsilon_max, projection_coords=positions,
+        )
+        cache_put(ck, result)
+        log.info(f'  [{projection}] Cached VR edges for {genre}: {len(result["edges"])} edges')
+
+
+def precompute_all_vr(
+    window: int = None,
+    projections: list[str] | None = None,
+    force: bool = False,
+) -> None:
+    """Entry point: precompute VR edges for all genres and projections.
 
     Args:
         window: Word2Vec window size. If None, reads from params.yaml.
-        projection: Projection method for 3D coordinates.
+        projections: List of projection methods. Defaults to all 4 (pca/kpca/umap/tsne).
         force: Recompute even if cached.
     """
     from utils import load_params
     params = load_params()
     if window is None:
         window = params['word2vec']['window']
+    if projections is None:
+        projections = ALL_PROJECTIONS
 
     project_root = Path(__file__).resolve().parents[2]
     models_dir = project_root / 'data' / 'models'
-    features_dir = project_root / 'data' / 'features'
     corpus_path = project_root / 'corpus' / 'books.yaml'
 
-    # Load Word2Vec model
     from gensim.models import Word2Vec
     model_path = models_dir / f'word2vec_w{window}.model'
     if not model_path.exists():
@@ -171,64 +240,19 @@ def precompute_all_vr(window: int = None, projection: str = 'pca', force: bool =
     with open(corpus_path) as f:
         books_data = yaml.safe_load(f)
 
-    # Load scatter data for projection coordinates
-    from backend.pipeline.precompute_viz import get_cached_scatter
-    scatter_data = get_cached_scatter(projection, window)
-    if scatter_data is None:
-        log.error('Scatter data not cached. Run precompute_viz first.')
-        return
-
-    # Build word -> index + coords mapping from scatter data
-    word_to_scatter_idx = {}
-    scatter_points = scatter_data['points']
-    for idx, pt in enumerate(scatter_points):
-        word_to_scatter_idx[pt['word']] = idx
-
     epsilon_max = params.get('homology', {}).get('epsilon_max', 1.0)
+    log.info(f'epsilon_max={epsilon_max}, projections={projections}')
 
-    for genre, book_list in books_data['genres'].items():
-        ck = cache_key('vr_edges', {'genre': genre, 'projection': projection, 'window': window})
-        if not force and cache_exists(ck):
-            log.info(f'  VR edges for {genre}: already cached')
-            continue
-
-        # Collect top-N TF-IDF words for this genre
-        genre_tfidf_key = cache_key('tfidf_genre', {'genre': genre, 'window': window})
-        genre_tfidf = cache_get(genre_tfidf_key)
-        if genre_tfidf is None:
-            log.warning(f'  No TF-IDF data for {genre}, skipping')
-            continue
-
-        # Filter to words in the W2V vocab and scatter data
-        candidates = []
-        for w, weight in genre_tfidf.items():
-            if w in w2v_model.wv and w in word_to_scatter_idx:
-                candidates.append((w, weight))
-
-        # Sort by TF-IDF descending, take top MAX_WORDS_PER_GENRE
-        candidates.sort(key=lambda x: -x[1])
-        selected = candidates[:MAX_WORDS_PER_GENRE]
-
-        if len(selected) < 2:
-            log.warning(f'  Too few words for {genre} ({len(selected)}), skipping VR')
-            continue
-
-        words = [w for w, _ in selected]
-        vectors = np.array([w2v_model.wv[w] for w in words], dtype=np.float32)
-        tfidf_w = np.array([wt for _, wt in selected], dtype=np.float32)
-        positions = []
-        for w in words:
-            si = word_to_scatter_idx[w]
-            pt = scatter_points[si]
-            positions.append([pt['x'], pt['y'], pt['z']])
-
-        log.info(f'  Computing VR edges for {genre} ({len(words)} words)...')
-        result = precompute_vr_edges(
-            words=words, vectors=vectors, tfidf_weights=tfidf_w,
-            epsilon_max=epsilon_max, projection_coords=positions,
+    for projection in projections:
+        log.info(f'--- Projection: {projection} ---')
+        _precompute_vr_for_projection(
+            projection=projection,
+            window=window,
+            w2v_model=w2v_model,
+            books_data=books_data,
+            epsilon_max=epsilon_max,
+            force=force,
         )
-        cache_put(ck, result)
-        log.info(f'  Cached VR edges for {genre}: {len(result["edges"])} edges')
 
     log.info('precompute_all_vr complete.')
 
@@ -237,7 +261,9 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Pre-compute VR edges for all genres')
     parser.add_argument('--window', type=int, default=None)
-    parser.add_argument('--projection', type=str, default='pca')
+    parser.add_argument('--projections', type=str, default='all',
+                        help='Comma-separated list of projections, or "all" (default)')
     parser.add_argument('--force', action='store_true')
     args = parser.parse_args()
-    precompute_all_vr(window=args.window, projection=args.projection, force=args.force)
+    proj_list = ALL_PROJECTIONS if args.projections == 'all' else args.projections.split(',')
+    precompute_all_vr(window=args.window, projections=proj_list, force=args.force)

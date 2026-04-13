@@ -1,36 +1,36 @@
 # Pipeline parameters -- override any value via CLI flags
-# Example: python scripts/04_compute_homology.py --max-words 400
+# Example: python scripts/03_train_embeddings.py --window 10
 
 corpus:
-  min_unique_words: 3000   # D-13: minimum unique words after stopword removal (classic novels top out ~4-12k)
-  download_sleep: 2        # seconds between Gutenberg downloads
+  min_unique_words: 3000
+  download_sleep: 2
 
 word2vec:
-  vector_size: 100
-  window: 5
-  min_count: 5
-  sg: 1                    # skip-gram
+  vector_size: 150          # embedding dimension (was 100)
+  window: 15                # default single-run window; sweep uses windows list
+  windows: [5, 10, 15, 20]  # context window sweep values
+  min_count: 2              # was 5; TF-IDF handles downweighting, min_count guards embedding quality
+  sg: 1                     # skip-gram
   epochs: 10
-  workers: 1               # deterministic
+  workers: 1                # deterministic
   seed: 42
 
 homology:
-  max_words: 500
-  timeout: 10              # seconds per book before retry
-  retry_step: 100          # reduce max_words by this on timeout
-  min_words: 100           # give up below this
-  homology_dimensions: [0, 1]  # H0 and H1
-  epsilon_max: 1.0
+  epsilon_max: 10.0
+  homology_dimensions: [1]  # H0 dropped: birth axis collapses to 0 in Vietoris-Rips (degenerate)
 
 features:
-  grid_resolution: 20
-  sigma: 0.05
-  k_clusters: 50
-  alpha: 0.5
+  grid_resolution: 20       # persistence image: 20x20 = 400D, independent per axis
+  sigma: 0.5                # Gaussian bandwidth (units: filtration radius, same as epsilon_max)
+  k_clusters: 200           # default K for single runs
+  k_clusters_sweep: [20, 30, 40, 50, 60, 70, 85, 100]
+  alpha: 0.7                # topology weight (1-alpha = location weight); baseline 70/30
+  alpha_sweep: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
 validation:
   svm_kernel: rbf
-  svm_C: 1.0
-  svm_gamma: scale
-  pca_components: 20
+  svm_C: 10                 # default C; was 1.0 (sparse TDA features benefit from less regularisation)
+  svm_C_sweep: [1, 10, 100]
+  svm_gamma: scale          # 1/(n_features * X.var()); data-adaptive, no tuning needed
+  svm_class_weight: balanced # balances penalty across genres; critical for minority-class accuracy
   permutation_n: 1000

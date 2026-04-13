@@ -1,4 +1,32 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
 .pytest_cache/
+*.egg-info/
+.eggs/
+.env
+venv/
+.venv/
+
+# Generated data — regenerate with pipeline scripts
+data/cache/
+data/features/
+data/models/
+data/processed/
+data/raw/
+
+# Downloaded book texts
+texts/
+
+# Redis
+dump.rdb
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Claude internal
+.claude/scheduled_tasks.lock

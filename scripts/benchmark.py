@@ -96,12 +96,12 @@ def main():
     results = run_benchmark(vectors, tfidf_weights, word_counts, homology_dims, epsilon_max, args.timeout)
 
     print()
-    print("── Benchmark: Vietoris-Rips vs Word Count ────────")
+    print("-- Benchmark: Vietoris-Rips vs Word Count --------")
     print(f"{'Words':<8} {'Time (s)':>10}  {'H0 feats':>9}  {'H1 feats':>9}")
     for r in results:
         status = "TIMEOUT" if r['timed_out'] else f"{r['time_seconds']:.2f}"
         print(f"{r['word_count']:<8} {status:>10}  {r['n_features_h0']:>9}  {r['n_features_h1']:>9}")
-    print("──────────────────────────────────────────────────")
+    print("--------------------------------------------------")
 
     under_cap = [r for r in results if not r['timed_out'] and r['time_seconds'] < 10.0]
     if under_cap:

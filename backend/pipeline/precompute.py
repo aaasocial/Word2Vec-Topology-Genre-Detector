@@ -105,7 +105,7 @@ def precompute_all(window: int = None):
 
     for book in all_books:
         gid = book['gutenberg_id']
-        diag_path = features_dir / f'diagrams_w{window}' / f'{gid}.npy'
+        diag_path = features_dir / f'diagrams_{gid}_w{window}.npy'
         if diag_path.exists():
             diagrams = np.load(str(diag_path), allow_pickle=False)
             book_diagrams[gid] = diagrams
@@ -136,12 +136,14 @@ def precompute_all(window: int = None):
         diagrams = book_diagrams[gid]
 
         # Load per-book word list and TF-IDF weights from Phase 1 features
-        words_path = features_dir / f'words_w{window}' / f'{gid}.json'
-        weights_path = features_dir / f'tfidf_weights_w{window}' / f'{gid}.npy'
+        words_path = features_dir / f'words_{gid}_w{window}.json'
+        weights_path = features_dir / f'tfidf_{gid}_w{window}.npy'
 
         if words_path.exists() and weights_path.exists():
             with open(words_path) as f:
-                words = json.load(f)
+                words_data = json.load(f)
+            # words JSON is a dict with a 'words' key containing the word list
+            words = words_data['words'] if isinstance(words_data, dict) else words_data
             tfidf_weights = np.load(str(weights_path), allow_pickle=False)
         else:
             # Fallback: recompute from raw text if feature files missing

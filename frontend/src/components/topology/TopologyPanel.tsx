@@ -1,4 +1,5 @@
 import { PersistenceHeatmap } from './PersistenceHeatmap'
+import { PersistenceDiagram } from './PersistenceDiagram'
 import { VRViewer } from './VRViewer'
 import { EpsilonSlider } from './EpsilonSlider'
 import { useVRData } from '@/hooks/useVRData'
@@ -21,7 +22,7 @@ export function TopologyPanel() {
         height: '100%',
       }}
     >
-      {/* Left panel: persistence heatmap */}
+      {/* Left panel: persistence heatmap + diagram */}
       <div
         style={{
           width: '50%',
@@ -30,10 +31,14 @@ export function TopologyPanel() {
           padding: 24,
           display: 'flex',
           flexDirection: 'column',
+          gap: 32,
           overflow: 'auto',
         }}
       >
         <PersistenceHeatmap />
+        <div style={{ borderTop: '1px solid #1E1E2A', paddingTop: 24 }}>
+          <PersistenceDiagram />
+        </div>
       </div>
 
       {/* Right panel: VR viewer + epsilon slider */}

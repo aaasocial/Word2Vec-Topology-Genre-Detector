@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Download 15 books from Project Gutenberg and save raw text to data/raw/."""
+"""Download books from Project Gutenberg and save raw text to data/raw/."""
 
 import sys
 import time
@@ -7,8 +7,9 @@ import argparse
 from pathlib import Path
 
 import yaml
+import requests
+from tqdm import tqdm
 
-# Ensure scripts/ is importable
 sys.path.insert(0, str(Path(__file__).parent))
 from utils import load_params
 
@@ -19,11 +20,24 @@ def validate_gutenberg_id(gid):
     return gid
 
 
-def download_book(gutenberg_id, title):
-    from gutenbergpy.textget import get_text_by_id, strip_headers
-    raw = get_text_by_id(gutenberg_id)
-    clean = strip_headers(raw)
-    return clean.decode('utf-8', errors='replace')
+def download_book(gutenberg_id):
+    """Download and strip Gutenberg headers. No timeout — no size cap."""
+    from gutenbergpy.textget import strip_headers
+    urls = [
+        f"https://www.gutenberg.org/cache/epub/{gutenberg_id}/pg{gutenberg_id}.txt",
+        f"https://www.gutenberg.org/files/{gutenberg_id}/{gutenberg_id}-0.txt",
+        f"https://www.gutenberg.org/files/{gutenberg_id}/{gutenberg_id}.txt",
+    ]
+    last_err = None
+    for url in urls:
+        try:
+            r = requests.get(url, timeout=None)
+            if r.status_code == 200 and len(r.content) > 1000:
+                return strip_headers(r.content).decode('utf-8', errors='replace')
+        except Exception as e:
+            last_err = e
+            continue
+    raise RuntimeError(f"All URLs failed for ID {gutenberg_id}: {last_err}")
 
 
 def main():
@@ -45,7 +59,6 @@ def main():
     raw_dir = Path(__file__).parent.parent / 'data' / 'raw'
     raw_dir.mkdir(parents=True, exist_ok=True)
 
-    # Flatten book list with genre labels
     all_books = []
     for genre, books in books_data['genres'].items():
         for book in books:
@@ -54,47 +67,47 @@ def main():
     total = len(all_books)
     failures = []
 
-    for i, book in enumerate(all_books, 1):
+    bar = tqdm(all_books, desc="Downloading", unit="book", dynamic_ncols=True)
+    for book in bar:
         gid = book['gutenberg_id']
         title = book['title']
         genre = book['genre']
+        bar.set_postfix(id=gid, genre=genre)
 
         try:
             validate_gutenberg_id(gid)
         except ValueError as e:
-            print(f"[{i}/{total}] SKIPPING {title}: {e}")
+            tqdm.write(f"  SKIP {title}: {e}")
             failures.append(title)
             continue
 
         outfile = raw_dir / f"{gid}.txt"
         if outfile.exists() and outfile.stat().st_size > 1000:
-            print(f"[{i}/{total}] {title} ({gid}): already downloaded, skipping")
+            tqdm.write(f"  [{gid}] {title}: already downloaded, skipping")
             continue
 
         t_start = time.time()
-        print(f"[{i}/{total}] {title} ({gid}): downloading...", end=' ', flush=True)
         try:
-            text = download_book(gid, title)
+            text = download_book(gid)
             if len(text) < 1000:
-                print(f"WARN: text too short ({len(text)} chars), skipping")
+                tqdm.write(f"  [{gid}] {title}: WARN text too short ({len(text)} chars), skipping")
                 failures.append(title)
                 continue
             outfile.write_text(text, encoding='utf-8')
             elapsed = time.time() - t_start
-            print(f"done ({elapsed:.1f}s, {len(text):,} chars)")
+            tqdm.write(f"  [{gid}] {title}: done ({elapsed:.1f}s, {len(text):,} chars)")
         except Exception as e:
             elapsed = time.time() - t_start
-            print(f"FAILED ({elapsed:.1f}s): {e}")
+            tqdm.write(f"  [{gid}] {title}: FAILED ({elapsed:.1f}s): {e}")
             failures.append(title)
 
-        if i < total:
-            time.sleep(sleep_time)
+        time.sleep(sleep_time)
 
     print(f"\nDownloaded: {total - len(failures)}/{total} books ({len(failures)} failures)")
     if failures:
-        print("Failed books:")
-        for title in failures:
-            print(f"  - {title}")
+        print("Failed:")
+        for t in failures:
+            print(f"  - {t}")
 
 
 if __name__ == '__main__':

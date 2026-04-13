@@ -264,8 +264,9 @@ def precompute_viz(window: int = None, force: bool = False) -> None:
 
     log.info('precompute_viz scatter complete.')
 
-    # Pre-compute persistence images (after scatter precompute)
+    # Pre-compute persistence images and raw diagrams (after scatter precompute)
     precompute_persistence_images(window=window, force=force)
+    precompute_persistence_diagrams(window=window, force=force)
 
     log.info('precompute_viz complete.')
 
@@ -413,6 +414,102 @@ def get_cached_persistence_image(genre_or_book: str, dim: int, window: int, is_b
         key = cache_key('persistence_image_book', {'gutenberg_id': genre_or_book, 'dim': dim, 'window': window})
     else:
         key = cache_key('persistence_image', {'genre': genre_or_book, 'dim': dim, 'window': window})
+    return cache_get(key)
+
+
+def precompute_persistence_diagrams(window: int = None, force: bool = False) -> None:
+    """Cache per-genre and per-book raw persistence diagram scatter points.
+
+    For each genre/book and dimension, stores the raw (birth, death) pairs
+    so the frontend can render a persistence diagram scatter plot.
+    """
+    params = load_params()
+    if window is None:
+        window = params['word2vec']['window']
+
+    project_root = Path(__file__).resolve().parents[2]
+    features_dir = project_root / 'data' / 'features'
+    corpus_path = project_root / 'corpus' / 'books.yaml'
+    epsilon_max = float(params.get('homology', {}).get('epsilon_max', 1.0))
+
+    if not corpus_path.exists():
+        log.warning('books.yaml not found, skipping persistence diagram precompute')
+        return
+
+    with open(corpus_path) as f:
+        books_data = yaml.safe_load(f)
+
+    homology_dims = [0, 1]
+    sample_book = next(
+        (b for books in books_data['genres'].values() for b in books), None
+    )
+    if sample_book:
+        gid = str(sample_book['gutenberg_id'])
+        diag_path = features_dir / f'diagrams_{gid}_w{window}.npy'
+        if diag_path.exists():
+            diag = np.load(str(diag_path), allow_pickle=True)
+            if diag.shape[0] > 0 and np.any(diag[0][:, 2] == 2):
+                homology_dims.append(2)
+
+    # Per-genre diagrams (aggregate all books)
+    for genre, book_list in books_data['genres'].items():
+        for dim in homology_dims:
+            ck = cache_key('persistence_diagram', {'genre': genre, 'dim': dim, 'window': window})
+            if not force and cache_exists(ck):
+                log.info(f'  Persistence diagram {genre} dim={dim}: already cached')
+                continue
+
+            points: list[list[float]] = []
+            for book in book_list:
+                gid = str(book['gutenberg_id'])
+                diag_path = features_dir / f'diagrams_{gid}_w{window}.npy'
+                if not diag_path.exists():
+                    continue
+                diagrams = np.load(str(diag_path), allow_pickle=True)
+                if diagrams.shape[0] == 0:
+                    continue
+                diag = diagrams[0]  # shape (n_features, 3): [birth, death, dim]
+                mask = (diag[:, 2] == dim) & (diag[:, 0] < diag[:, 1]) & np.isfinite(diag[:, 1])
+                for birth, death, _ in diag[mask]:
+                    points.append([round(float(birth), 6), round(float(death), 6)])
+
+            if not points:
+                log.warning(f'  No diagram data for {genre} dim={dim}')
+                continue
+
+            cache_put(ck, {'points': points, 'dim': dim, 'epsilon_max': epsilon_max})
+            log.info(f'  Cached persistence diagram: {genre} dim={dim} ({len(points)} points)')
+
+    # Per-book diagrams
+    for genre, book_list in books_data['genres'].items():
+        for book in book_list:
+            gid = str(book['gutenberg_id'])
+            for dim in homology_dims:
+                bk = cache_key('persistence_diagram_book', {'gutenberg_id': gid, 'dim': dim, 'window': window})
+                if not force and cache_exists(bk):
+                    continue
+                diag_path = features_dir / f'diagrams_{gid}_w{window}.npy'
+                if not diag_path.exists():
+                    continue
+                diagrams = np.load(str(diag_path), allow_pickle=True)
+                if diagrams.shape[0] == 0:
+                    continue
+                diag = diagrams[0]
+                mask = (diag[:, 2] == dim) & (diag[:, 0] < diag[:, 1]) & np.isfinite(diag[:, 1])
+                points = [[round(float(b), 6), round(float(d), 6)] for b, d, _ in diag[mask]]
+                if not points:
+                    continue
+                cache_put(bk, {'points': points, 'dim': dim, 'epsilon_max': epsilon_max})
+
+    log.info('Persistence diagram precompute complete.')
+
+
+def get_cached_persistence_diagram(genre_or_book: str, dim: int, window: int, is_book: bool = False) -> dict | None:
+    """Retrieve cached raw persistence diagram points for a genre or book."""
+    if is_book:
+        key = cache_key('persistence_diagram_book', {'gutenberg_id': genre_or_book, 'dim': dim, 'window': window})
+    else:
+        key = cache_key('persistence_diagram', {'genre': genre_or_book, 'dim': dim, 'window': window})
     return cache_get(key)
 
 
