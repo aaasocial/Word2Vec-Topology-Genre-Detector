@@ -35,9 +35,10 @@ COPY scripts/utils.py ./scripts/utils.py
 #   data/models/  (runtime files only)
 #   data/cache/   (pre-built cache)
 ARG RELEASE_URL=""
-RUN if [ -n "$RELEASE_URL" ]; then \
-      echo "Downloading models + cache from $RELEASE_URL..." && \
-      curl -fsSL "$RELEASE_URL" | tar xz -C /app; \
+RUN CLEAN_URL=$(printf '%s' "$RELEASE_URL" | tr -d '[:space:]') && \
+    if [ -n "$CLEAN_URL" ]; then \
+      echo "Downloading models + cache from $CLEAN_URL..." && \
+      curl -fsSL "$CLEAN_URL" | tar xz -C /app; \
     else \
       echo "WARNING: No RELEASE_URL provided. Expecting data/models/ and data/cache/ in build context."; \
     fi
