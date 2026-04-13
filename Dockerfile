@@ -21,6 +21,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Download NLTK data required at import time
+RUN python -m nltk.downloader stopwords
+
 # Copy application code
 COPY backend/ ./backend/
 COPY config/ ./config/
