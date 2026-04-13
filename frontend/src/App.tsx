@@ -3,6 +3,9 @@ import { ScatterCanvas } from '@/components/canvas/ScatterCanvas'
 import { Sidebar } from '@/components/sidebar/Sidebar'
 import { GenreLegend } from '@/components/sidebar/GenreLegend'
 import { KeyboardHint } from '@/components/sidebar/KeyboardHint'
+import { TopNavTabs } from '@/components/nav/TopNavTabs'
+import { DisclaimerBanner } from '@/components/nav/DisclaimerBanner'
+import { TopologyPanel } from '@/components/topology/TopologyPanel'
 import { useScatterData } from '@/hooks/useScatterData'
 import { useGenreTfidf, useBookTfidf } from '@/hooks/useTfidfData'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
@@ -12,6 +15,9 @@ import { useUIStore } from '@/stores/uiStore'
 import { buildBuffers, buildUploadedBuffers } from '@/lib/buffers'
 import { GENRE_COLORS } from '@/constants/genres'
 
+/** Height of top nav (48px) + disclaimer banner (28px) + borders (2px) */
+const TOP_OFFSET = 78
+
 export default function App() {
   const projection = useVisualizationStore((s) => s.projection)
   const selectedGenre = useVisualizationStore((s) => s.selectedGenre)
@@ -20,6 +26,8 @@ export default function App() {
   const hoveredPointIndex = useVisualizationStore((s) => s.hoveredPointIndex)
   const setSelectedPoint = useVisualizationStore((s) => s.setSelectedPoint)
   const setHoveredPoint = useVisualizationStore((s) => s.setHoveredPoint)
+
+  const activeTab = useVisualizationStore((s) => s.activeTab)
 
   const sidebarOpen = useUIStore(s => s.sidebarOpen)
   const toggleSidebar = useUIStore(s => s.toggleSidebar)
@@ -121,53 +129,82 @@ export default function App() {
 
       <div
         className="app-root"
-        style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden' }}
+        style={{ display: 'flex', flexDirection: 'column', width: '100vw', height: '100vh', overflow: 'hidden' }}
       >
-        {/* 3D Canvas area */}
-        <div style={{ flex: 1, position: 'relative', minWidth: 0 }}>
-          {isLoading && (
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#6B6B80',
-                fontSize: 14,
-                zIndex: 10,
-              }}
-            >
-              Loading scatter data...
-            </div>
-          )}
-          {mergedBuffers && (
-            <ScatterCanvas
-              positions={mergedBuffers.positions}
-              colors={mergedBuffers.colors}
-              sizes={mergedBuffers.sizes}
-              opacities={mergedBuffers.opacities}
-              points={allPoints}
-              tfidfWeights={tfidfWeights}
-              selectedIndex={selectedPointIndex}
-              hoveredIndex={hoveredPointIndex}
-              onHover={setHoveredPoint}
-              onClick={setSelectedPoint}
-            />
-          )}
+        {/* Top navigation + disclaimer */}
+        <TopNavTabs />
+        <DisclaimerBanner />
 
-          {/* Canvas overlays */}
-          <GenreLegend />
-          <KeyboardHint />
+        {/* Main content area below top bars */}
+        <div style={{ display: 'flex', flex: 1, marginTop: TOP_OFFSET, minHeight: 0 }}>
+          {/* Main view area */}
+          <div style={{ flex: 1, position: 'relative', minWidth: 0 }}>
+            {/* Scatter tab */}
+            {activeTab === 'scatter' && (
+              <>
+                {isLoading && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#6B6B80',
+                      fontSize: 14,
+                      zIndex: 10,
+                    }}
+                  >
+                    Loading scatter data...
+                  </div>
+                )}
+                {mergedBuffers && (
+                  <ScatterCanvas
+                    positions={mergedBuffers.positions}
+                    colors={mergedBuffers.colors}
+                    sizes={mergedBuffers.sizes}
+                    opacities={mergedBuffers.opacities}
+                    points={allPoints}
+                    tfidfWeights={tfidfWeights}
+                    selectedIndex={selectedPointIndex}
+                    hoveredIndex={hoveredPointIndex}
+                    onHover={setHoveredPoint}
+                    onClick={setSelectedPoint}
+                  />
+                )}
+                <GenreLegend />
+                <KeyboardHint />
+              </>
+            )}
+
+            {/* Topology tab */}
+            {activeTab === 'topology' && <TopologyPanel />}
+
+            {/* Compare tab placeholder */}
+            {activeTab === 'compare' && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                  color: '#6B6B80',
+                  fontSize: 14,
+                }}
+              >
+                Genre comparison view -- coming in Plan 02
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar (persistent across all tabs) */}
+          <Sidebar
+            points={allPoints}
+            open={sidebarOpen}
+            onToggle={toggleSidebar}
+            searchInputRef={searchInputRef}
+          />
         </div>
-
-        {/* Sidebar */}
-        <Sidebar
-          points={allPoints}
-          open={sidebarOpen}
-          onToggle={toggleSidebar}
-          searchInputRef={searchInputRef}
-        />
       </div>
     </>
   )

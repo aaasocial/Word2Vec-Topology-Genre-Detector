@@ -262,6 +262,11 @@ def precompute_viz(window: int = None, force: bool = False) -> None:
         cache_put(proj_key, {'projection': method, 'points': scatter_points})
         log.info(f'  Cached {method}: {len(scatter_points)} points')
 
+    log.info('precompute_viz scatter complete.')
+
+    # Pre-compute persistence images (after scatter precompute)
+    precompute_persistence_images(window=window, force=force)
+
     log.info('precompute_viz complete.')
 
 
@@ -278,6 +283,136 @@ def get_cached_tfidf_genre(genre: str, window: int) -> dict | None:
 
 def get_cached_tfidf_book(gutenberg_id: str, window: int) -> dict | None:
     key = cache_key('tfidf_book', {'gutenberg_id': gutenberg_id, 'window': window})
+    return cache_get(key)
+
+
+def precompute_persistence_images(window: int = None, force: bool = False) -> None:
+    """Pre-compute persistence images for all genres and books.
+
+    For each genre and homology dimension (0, 1, optionally 2), produces an M*M
+    flat persistence image vector with vmin/vmax metadata. Stores results in cache.
+    """
+    params = load_params()
+    if window is None:
+        window = params['word2vec']['window']
+
+    project_root = Path(__file__).resolve().parents[2]
+    models_dir = project_root / 'data' / 'models'
+    features_dir = project_root / 'data' / 'features'
+
+    # Load persistence imager
+    imager_path = models_dir / 'persistence_imager.joblib'
+    if not imager_path.exists():
+        log.warning(f'persistence_imager.joblib not found at {imager_path}, skipping persistence image precompute')
+        return
+
+    persistence_imager = joblib.load(str(imager_path))
+
+    # Load corpus metadata
+    corpus_path = project_root / 'corpus' / 'books.yaml'
+    if not corpus_path.exists():
+        log.warning(f'books.yaml not found at {corpus_path}, skipping persistence image precompute')
+        return
+
+    with open(corpus_path) as f:
+        books_data = yaml.safe_load(f)
+
+    grid_resolution = params.get('features', {}).get('grid_resolution', 20)
+
+    from backend.pipeline.features import diagram_to_birth_persistence
+
+    homology_dims = [0, 1]
+    # Check if any H2 data exists
+    sample_book = None
+    for genre, book_list in books_data['genres'].items():
+        if book_list:
+            sample_book = book_list[0]
+            break
+    if sample_book:
+        gid = str(sample_book['gutenberg_id'])
+        diag_path = features_dir / f'diagrams_{gid}_w{window}.npy'
+        if diag_path.exists():
+            diag = np.load(str(diag_path), allow_pickle=True)
+            if diag.shape[0] > 0 and np.any(diag[0][:, 2] == 2):
+                homology_dims.append(2)
+                log.info('H2 data detected, including dimension 2')
+
+    # Per-genre persistence images
+    for genre, book_list in books_data['genres'].items():
+        for dim in homology_dims:
+            ck = cache_key('persistence_image', {'genre': genre, 'dim': dim, 'window': window})
+            if not force and cache_exists(ck):
+                log.info(f'  Persistence image {genre} dim={dim}: already cached')
+                continue
+
+            # Aggregate all books' diagrams for this genre
+            all_bp = []
+            for book in book_list:
+                gid = str(book['gutenberg_id'])
+                diag_path = features_dir / f'diagrams_{gid}_w{window}.npy'
+                if not diag_path.exists():
+                    continue
+                diagrams = np.load(str(diag_path), allow_pickle=True)
+                bp = diagram_to_birth_persistence(diagrams, dim=dim)
+                if len(bp) > 0:
+                    all_bp.append(bp)
+
+            if not all_bp:
+                log.warning(f'  No diagram data for {genre} dim={dim}')
+                continue
+
+            merged_bp = np.concatenate(all_bp, axis=0)
+            pi_vector = persistence_imager(merged_bp)
+            M = grid_resolution
+            pi_data = pi_vector.tolist()
+            vmin = float(np.min(pi_vector))
+            vmax = float(np.max(pi_vector))
+
+            cache_put(ck, {
+                'data': pi_data,
+                'M': M,
+                'dim': dim,
+                'vmin': vmin,
+                'vmax': vmax,
+            })
+            log.info(f'  Cached persistence image: {genre} dim={dim} M={M} range=[{vmin:.4f}, {vmax:.4f}]')
+
+    # Per-book persistence images
+    for genre, book_list in books_data['genres'].items():
+        for book in book_list:
+            gid = str(book['gutenberg_id'])
+            for dim in homology_dims:
+                bk = cache_key('persistence_image_book', {'gutenberg_id': gid, 'dim': dim, 'window': window})
+                if not force and cache_exists(bk):
+                    continue
+
+                diag_path = features_dir / f'diagrams_{gid}_w{window}.npy'
+                if not diag_path.exists():
+                    continue
+                diagrams = np.load(str(diag_path), allow_pickle=True)
+                bp = diagram_to_birth_persistence(diagrams, dim=dim)
+                if len(bp) == 0:
+                    continue
+
+                pi_vector = persistence_imager(bp)
+                M = grid_resolution
+                cache_put(bk, {
+                    'data': pi_vector.tolist(),
+                    'M': M,
+                    'dim': dim,
+                    'vmin': float(np.min(pi_vector)),
+                    'vmax': float(np.max(pi_vector)),
+                })
+
+    log.info('Persistence image precompute complete.')
+
+
+def get_cached_persistence_image(genre_or_book: str, dim: int, window: int, is_book: bool = False) -> dict | None:
+    """Retrieve cached persistence image for a genre or book."""
+    if is_book:
+        key = cache_key('persistence_image_book', {'gutenberg_id': genre_or_book, 'dim': dim, 'window': window})
+    else:
+        key = cache_key('persistence_image', {'genre': genre_or_book, 'dim': dim, 'window': window})
     return cache_get(key)
 
 
