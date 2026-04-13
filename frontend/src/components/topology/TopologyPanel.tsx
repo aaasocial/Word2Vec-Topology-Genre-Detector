@@ -1,10 +1,18 @@
 import { PersistenceHeatmap } from './PersistenceHeatmap'
+import { VRViewer } from './VRViewer'
+import { EpsilonSlider } from './EpsilonSlider'
+import { useVRData } from '@/hooks/useVRData'
+import { useVisualizationStore } from '@/stores/visualizationStore'
 
 /**
  * TopologyPanel: Container for the Topology tab.
- * Two-panel flex layout: left = persistence heatmap, right = VR viewer placeholder.
+ * Two-panel flex layout: left = persistence heatmap, right = VR viewer + epsilon slider.
  */
 export function TopologyPanel() {
+  const selectedGenre = useVisualizationStore((s) => s.selectedGenre)
+  const projection = useVisualizationStore((s) => s.projection)
+  const { data: vrData } = useVRData(selectedGenre, projection)
+
   return (
     <div
       style={{
@@ -28,26 +36,19 @@ export function TopologyPanel() {
         <PersistenceHeatmap />
       </div>
 
-      {/* Right panel: VR viewer placeholder */}
+      {/* Right panel: VR viewer + epsilon slider */}
       <div
         style={{
           width: '50%',
           background: '#0A0A0F',
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          flexDirection: 'column',
         }}
       >
-        <div
-          style={{
-            color: '#6B6B80',
-            fontSize: 14,
-            textAlign: 'center',
-            padding: 24,
-          }}
-        >
-          Vietoris-Rips viewer -- coming in Plan 02
+        <div style={{ flex: 1, minHeight: 0 }}>
+          <VRViewer />
         </div>
+        <EpsilonSlider vrData={vrData} />
       </div>
     </div>
   )

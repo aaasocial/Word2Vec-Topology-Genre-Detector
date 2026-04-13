@@ -3,6 +3,7 @@
 All endpoints serve from disk cache (data/cache/).
 Run `python -m backend.pipeline.precompute_viz` before starting the server.
 """
+import gzip
 import json
 import re
 from pathlib import Path
@@ -10,12 +11,14 @@ from typing import Literal
 
 import yaml
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import Response
 
 from backend.cache.store import cache_key, cache_get
 from backend.pipeline.precompute_viz import (
     get_cached_scatter, get_cached_tfidf_genre, get_cached_tfidf_book,
     get_cached_persistence_image,
 )
+from backend.pipeline.precompute_vr import get_cached_vr_edges
 
 router = APIRouter()
 
@@ -160,3 +163,35 @@ async def get_persistence_image_book(gutenberg_id: str, dim: int = 0) -> dict:
             detail=f'No cached persistence image for book {gutenberg_id} dim={dim}.',
         )
     return data
+
+
+@router.get('/vr/{genre}')
+async def get_vr_edges(
+    genre: str,
+    projection: Literal['pca', 'kpca', 'umap', 'tsne'] = 'pca',
+) -> Response:
+    """Return pre-computed VR edge data for a genre.
+
+    Validates genre against known genre list (T-4-04).
+    Validates projection against literal enum (T-4-04).
+    Response: {words, edges, epsilon_max, positions}
+    Applies gzip compression for payloads > 100KB (T-4-06).
+    """
+    if genre not in _KNOWN_GENRES:
+        raise HTTPException(status_code=404, detail=f'Genre not found: {genre}')
+    data = get_cached_vr_edges(genre, projection, _DEFAULT_WINDOW)
+    if data is None:
+        raise HTTPException(
+            status_code=503,
+            detail='VR edge data not found. Run python -m backend.pipeline.precompute_vr first.',
+        )
+    body = json.dumps(data)
+    # Gzip compress if payload > 100KB
+    if len(body) > 100_000:
+        compressed = gzip.compress(body.encode('utf-8'))
+        return Response(
+            content=compressed,
+            media_type='application/json',
+            headers={'Content-Encoding': 'gzip'},
+        )
+    return Response(content=body, media_type='application/json')
