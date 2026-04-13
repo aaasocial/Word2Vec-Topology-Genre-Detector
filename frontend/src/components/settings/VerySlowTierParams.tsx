@@ -13,7 +13,7 @@ interface VerySlowParam {
 
 const VERY_SLOW_PARAMS: VerySlowParam[] = [
   { key: 'vector_size', label: 'Embedding Dimension', min: 50, max: 300, default: 150, step: 10 },
-  { key: 'window', label: 'Context Window', min: 2, max: 15, default: 5, step: 1 },
+  { key: 'window', label: 'Context Window', min: 2, max: 15, default: 15, step: 1 },
 ]
 
 export function VerySlowTierParams() {
