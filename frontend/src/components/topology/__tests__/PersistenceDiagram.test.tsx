@@ -40,6 +40,7 @@ function spyCanvas() {
   const calls: Array<{ method: string; args: any[] }> = []
   const cache = new WeakMap<HTMLCanvasElement, any>()
   ;(HTMLCanvasElement.prototype as any).getContext = function (
+    this: HTMLCanvasElement,
     contextId: string,
   ) {
     if (contextId !== '2d') return null
