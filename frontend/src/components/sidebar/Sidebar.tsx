@@ -1,8 +1,9 @@
-import { useRef, useMemo, useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { ChevronLeft, ChevronRight, Download } from 'lucide-react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { useUploadStore } from '@/stores/uploadStore'
 import { useClassify } from '@/hooks/useClassify'
+import { useCorpusBooks } from '@/hooks/useCorpusBooks'
 import { ProjectionTabs } from './ProjectionTabs'
 import { GenreSelect } from './GenreSelect'
 import { BookSlider } from './BookSlider'
@@ -42,19 +43,11 @@ export function Sidebar({ points = [], open, onToggle, searchInputRef, scatterCa
     setTimeout(() => setPngExported(false), 2000)
   }, [scatterCanvasRef, selectedGenre, projection])
 
-  // Derive unique books for the selected genre from scatter points
-  const books = useMemo(() => {
-    if (!selectedGenre) return []
-    const seen = new Set<string>()
-    const result: { id: string; title: string }[] = []
-    for (const p of points) {
-      if (p.genre === selectedGenre && p.bookId && !seen.has(p.bookId)) {
-        seen.add(p.bookId)
-        result.push({ id: p.bookId, title: p.bookTitle ?? p.bookId })
-      }
-    }
-    return result
-  }, [points, selectedGenre])
+  // Plan 06-03 BUG-03: books come from GET /api/corpus/genres/{genre}/books,
+  // which surfaces author + word_count + top_10_tfidf_words per book.
+  // Scatter points only carry id/title, which is why the old useMemo could
+  // never populate the BookSlider with anything beyond the title.
+  const { data: books = [] } = useCorpusBooks(selectedGenre)
 
   const { jobId, steps, result, retryMessage } = useUploadStore()
   const { classify } = useClassify()
