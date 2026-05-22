@@ -12,12 +12,42 @@ import numpy as np
 CACHE_DIR = Path(__file__).resolve().parents[2] / 'data' / 'cache'
 
 
-def cache_key(step_name: str, params: dict) -> str:
-    """Generate deterministic cache key from step name and params.
+def cache_key(
+    step_name: str,
+    params: dict,
+    *,
+    corpus_hash: str,
+    w2v_model_sha256: str,
+) -> str:
+    """Generate deterministic cache key from step name, params, and lineage.
 
-    Keys are order-invariant: {'a': 1, 'b': 2} == {'b': 2, 'a': 1}.
+    Keys are order-invariant on ``params``: ``{'a': 1, 'b': 2}`` and
+    ``{'b': 2, 'a': 1}`` produce the same key.
+
+    Lineage (``corpus_hash`` + ``w2v_model_sha256``) is **mandatory** and
+    keyword-only: a corpus change OR a Word2Vec retrain MUST invalidate every
+    downstream artifact (Plan 06-05 / BUG-05; ``PITFALLS.md`` §1). The
+    keyword-only contract makes call sites pass them explicitly -- no silent
+    backward-compat default that would re-introduce the v1 footgun.
+
+    Args:
+        step_name: stable identifier for the pipeline step.
+        params: step-specific parameters (order-invariant via ``sort_keys``).
+        corpus_hash: sha256 of ``corpus/books.yaml`` content.
+        w2v_model_sha256: sha256 of the Word2Vec model file in use.
+
+    Returns:
+        Hex sha256 of the canonicalized payload.
     """
-    canonical = json.dumps({step_name: params}, sort_keys=True, default=str)
+    canonical = json.dumps(
+        {
+            step_name: params,
+            '__corpus_hash__': corpus_hash,
+            '__w2v_model_sha256__': w2v_model_sha256,
+        },
+        sort_keys=True,
+        default=str,
+    )
     return hashlib.sha256(canonical.encode()).hexdigest()
 
 
