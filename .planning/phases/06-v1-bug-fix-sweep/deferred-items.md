@@ -46,3 +46,25 @@ phase-level cleanup or for a future plan.
   passes 4/4 in the same run, isolating the failure to ``useClassify``.
 - **Owner:** Phase 06 cleanup (or whoever next touches useClassify).
 
+## Discovered during Plan 06-04 (H₂/H₀ removal sweep)
+
+### backend/api/tests/test_viz.py — 10/13 tests failing (wrong path prefix)
+
+- **Discovered:** 2026-05-22 while running the broader viz/persistence test
+  suite to validate the new ``Literal[1]`` enforcement on ``dim``.
+- **Symptom:** Tests in ``backend/api/tests/test_viz.py`` call paths like
+  ``/viz/scatter/pca`` and ``/viz/tfidf/{genre}``, but routes are mounted at
+  ``/api/viz/...`` (via the ``api_router`` parent in ``backend/api/app.py``).
+  All hit the SPA catch-all and return 200 (or invalid JSON), so the asserts
+  fail. Confirmed pre-existing by checking the git history: this file was
+  last touched in Phase 3 and was already broken on master HEAD before
+  Plan 06-04 began.
+- **Why deferred:** Same root cause as ``test_api.py::test_corpus_books_returns_list``
+  (recorded under Plan 06-03 above) -- the FastAPI ``/api`` prefix
+  migration left these tests un-rebased. Out of scope for Plan 06-04's
+  BUG-01 surface; I fixed the same issue in ``backend/tests/test_persistence_api.py``
+  because that file IS in Plan 06-04's ``files_modified`` list and the new
+  ``Literal[1]`` rejection tests had to actually reach the routes.
+- **Owner:** Phase 06 cleanup (or whoever next touches the FastAPI
+  ``/api/`` prefix migration in tests).
+
