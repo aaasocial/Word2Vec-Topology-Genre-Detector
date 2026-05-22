@@ -8,42 +8,69 @@ A hosted web application that makes the hidden geometric structure of literary g
 
 A user uploads any book and sees where it lives in semantic space — and why the algorithm predicts the genre it does.
 
+## Current Milestone: v2.0 — Accuracy, Depth, and Polish
+
+**Goal:** Improve classification accuracy via a better-sourced corpus, add explainability and top-N predictions, sweep v1 bugs, and round out the visual experience with theming and onboarding.
+
+**Target features:**
+- Sweep v1 carry-over bugs: H₂ homology + tooltip, persistence-diagram dot scaling, BookSlider stub (corpus metadata endpoint), restore empty ROADMAP/STATE files
+- Corpus sourcing research spike — recommendation doc on how comparable projects build training corpora
+- Corpus expansion driven by research findings; measurable accuracy improvement vs v1 baseline
+- Classification depth: top-N predictions with confidence scores + "why this genre" explainability (feature importance, nearest training books)
+- Visual polish: dark mode / theming refinement, onboarding, empty-state polish
+
 ## Requirements
 
-### Validated
-
-(None yet — ship to validate)
-
-### Active
+### Validated (v1.0 — shipped 2026-04-13)
 
 **Shared Pipeline**
-- [ ] Train a single skip-gram Word2Vec model on the entire corpus (all genres combined)
-- [ ] Compute per-book TF-IDF weights for all vocabulary
-- [ ] Construct per-book weighted point clouds (shared word vectors + per-book TF-IDF weights)
-- [ ] All numerical parameters exposed as live UI controls (sliders/inputs); downstream recomputes on change
+- [x] Single skip-gram Word2Vec model trained on entire corpus (Phase 1)
+- [x] Per-book TF-IDF weights computed corpus-wide without genre leakage (Phase 1)
+- [x] Per-book weighted point clouds in shared embedding space (Phase 1)
+- [x] All numerical parameters exposed as live UI controls with recompute on change (Phase 4)
 
 **Classification Pipeline**
-- [ ] Compute persistent homology (Vietoris-Rips filtration, weighted by TF-IDF) in full N-D space per book
-- [ ] Convert persistence diagrams to fixed-length persistence image vectors (configurable grid resolution)
-- [ ] Cluster full vocabulary into K semantic regions; compute per-book TF-IDF distribution across clusters
-- [ ] Concatenate normalized structure + location vectors with adjustable α weighting
-- [ ] Train kernel SVM (RBF) on combined feature vectors for genre classification
-- [ ] Upload a raw text file → receive genre prediction with confidence score
-- [ ] Cross-validation evaluation (leave-one-out given small dataset)
+- [x] Vietoris-Rips persistent homology weighted by TF-IDF in full N-D (Phase 1, H₀+H₁ only — H₂ deferred to v2)
+- [x] Persistence images at configurable grid resolution (Phase 1)
+- [x] K-means cluster distribution feature track (Phase 1)
+- [x] α-weighted concatenation of normalized structure + location vectors (Phase 1)
+- [x] Kernel SVM (RBF) classifier (Phase 1)
+- [x] Upload .txt → genre prediction with confidence (Phase 2)
+- [x] LOOCV + permutation test evaluation (Phase 1)
 
 **Visualization Suite**
-- [ ] 3D scatter plot of word embeddings with four projection options: PCA, Kernel PCA, UMAP, t-SNE
-- [ ] Genre brightness toggle: illuminate that genre's distinctive vocabulary by TF-IDF brightness/size
-- [ ] Per-book slider within a genre to watch vocabulary emphasis shift (reveals subgenre structure)
-- [ ] Animated Vietoris-Rips plot (separate 3D view): ε slider assembles edges/simplices in real time, highlights births/deaths of topological features
-- [ ] Persistence image panel: 2D heatmap (scale vs. persistence) updating per genre/book; separate H₀/H₁/H₂ views
-- [ ] Genre comparison view: side-by-side brightness maps + persistence images for two selected genres
-- [ ] Pipeline explanation: interactive walkthrough of the mathematical method
+- [x] 3D scatter with PCA / KPCA / UMAP / t-SNE projections (Phase 3)
+- [x] Genre TF-IDF brightness toggle (Phase 3)
+- [x] Animated Vietoris-Rips ε-slider with edge birth highlighting (Phase 4)
+- [x] Persistence image heatmap with H₀/H₁ views (Phase 4 — H₂ deferred)
+- [x] Genre comparison view with stacked brightness + heatmaps (Phase 4)
+- [x] Pipeline explanation walkthrough dialog (Phase 4)
 
 **Corpus & Data**
-- [ ] Ships with bundled pre-labeled corpus (horror, romance, detective, sci-fi, literary fiction, etc.) — works out of the box
-- [ ] User can upload additional text files; those books enter the classification + visualization pipeline
-- [ ] Hosted and publicly accessible via URL — no local install required
+- [x] Bundled corpus (horror, sci-fi, romance — 3 genres × 5 books) (Phase 1)
+- [x] User can upload .txt files into the classification + viz pipeline (Phase 2)
+- [x] Hosted and publicly accessible (Phase 5 — Railway deployment)
+
+### Active (v2.0)
+
+**Bug-Fix Sweep**
+- [ ] H₂ homology computed and exposed via H₂ heatmap tab with working tooltip
+- [ ] Persistence-diagram dot scaling improved for readability
+- [ ] BookSlider wired to a corpus metadata endpoint so per-book slide-through within a genre works
+- [ ] ROADMAP.md and STATE.md restored as living documents
+
+**Corpus Quality**
+- [ ] Research how comparable NLP/genre-classification projects source and structure training corpora; produce recommendation document
+- [ ] Expand or restructure the bundled corpus per research findings; demonstrate measurable accuracy improvement vs v1 baseline
+
+**Classification Depth**
+- [ ] Top-N (N=3 or configurable) genre predictions with confidence scores
+- [ ] "Why this genre" explainability: surface driving features (words, persistence features, nearest training books)
+
+**Visual Polish**
+- [ ] Dark mode / refined theming pass
+- [ ] Onboarding flow / first-load tour
+- [ ] Empty-state polish across the app
 
 ### Out of Scope
 
@@ -75,12 +102,17 @@ Persistent homology scales poorly with point count (Vietoris-Rips complex constr
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Single shared Word2Vec space | Comparability across books requires identical embedding coordinates — separate models break the geometric interpretation | — Pending |
-| Persistent homology in full N-D | Topology computed on 3D projections would reflect projection artifacts, not true genre structure | — Pending |
-| Kernel SVM with RBF | Robust with small datasets (relies only on support vectors near boundary); nonlinear boundary in high-D feature space | — Pending |
-| Hosted deployment | Sharable via URL; computation too heavy for reliable client-side execution | — Pending |
-| Bundled corpus + user upload | Works out of the box for exploration; user upload enables the core use case (classify my book) | — Pending |
-| All parameters live-adjustable | The app is an exploration and learning tool — seeing how parameters change results is central to the value | — Pending |
+| Single shared Word2Vec space | Comparability across books requires identical embedding coordinates — separate models break the geometric interpretation | Validated — v1.0 |
+| Persistent homology in full N-D | Topology computed on 3D projections would reflect projection artifacts, not true genre structure | Validated — v1.0 |
+| Kernel SVM with RBF | Robust with small datasets (relies only on support vectors near boundary); nonlinear boundary in high-D feature space | Validated — v1.0 |
+| Hosted deployment | Sharable via URL; computation too heavy for reliable client-side execution | Validated — v1.0 (Railway) |
+| Bundled corpus + user upload | Works out of the box for exploration; user upload enables the core use case (classify my book) | Validated — v1.0 |
+| All parameters live-adjustable | The app is an exploration and learning tool — seeing how parameters change results is central to the value | Validated — v1.0 |
+| SSE over WebSocket for progress | Railway edge dropped WS frames; SSE is unidirectional and works through the proxy | Validated — v1.0 (post-deploy fix) |
+| Ripser over giotto-tda for homology | Simpler API, no subprocess timeout wrapper; matches Phase 1 weighted-distance math | Validated — v1.0 (Phase 2) |
+| Models shipped as GitHub Release asset | Avoids LFS quota on Railway builds; container downloads at start via RELEASE_URL | Validated — v1.0 (Phase 5) |
+| v2: corpus expansion preceded by research spike | User wants accuracy improvement grounded in how comparable projects source training data, not arbitrary additions | — Pending (v2.0 Phase 7) |
+| v2: bug-fix phase first, then features | Clean slate before new features makes verification easier; resolves v1 carry-overs (H₂, BookSlider, persistence-diagram scaling, empty ROADMAP/STATE) | — Pending (v2.0 Phase 6) |
 
 ## Evolution
 
@@ -100,4 +132,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-11 after initialization*
+*Last updated: 2026-05-22 — v2.0 milestone initialized (v1.0 shipped 2026-04-13)*
