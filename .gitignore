@@ -31,3 +31,6 @@ frontend/.vite/
 
 # Claude internal
 .claude/scheduled_tasks.lock
+
+# BUG-04 — local recovery snapshots; never tracked.
+.planning/.snapshots/

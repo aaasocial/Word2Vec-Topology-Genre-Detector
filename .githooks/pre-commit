@@ -1,0 +1,39 @@
+#!/bin/sh
+# Pre-commit hook installed via scripts/install-hooks.sh.
+# Purpose:
+#   1. Reject any 0-byte commit to .planning/**/*.md (BUG-04, PITFALLS.md §15).
+#   2. Snapshot ROADMAP.md / STATE.md / PROJECT.md to .planning/.snapshots/{UTC-timestamp}/
+#      so a future wipe is always one cp away from recovery.
+set -eu
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "$REPO_ROOT"
+
+# --- 1. Reject 0-byte planning markdown ---
+FAILED=0
+STAGED=$(git diff --cached --name-only --diff-filter=AM | grep -E '^\.planning/.*\.md$' || true)
+for f in $STAGED; do
+  if [ -e "$f" ]; then
+    SIZE=$(wc -c < "$f" | tr -d ' ')
+    if [ "$SIZE" = "0" ]; then
+      echo "ERROR: Refusing to commit 0-byte planning file: $f"
+      echo "       (PITFALLS.md §15 — restore from .planning/.snapshots/ or revert the change)"
+      FAILED=1
+    fi
+  fi
+done
+if [ "$FAILED" -ne 0 ]; then
+  exit 1
+fi
+
+# --- 2. Snapshot the load-bearing planning docs ---
+TS=$(date -u +%Y-%m-%dT%H%M%SZ)
+SNAP_DIR=".planning/.snapshots/$TS"
+mkdir -p "$SNAP_DIR" 2>/dev/null || true
+for f in .planning/ROADMAP.md .planning/STATE.md .planning/PROJECT.md; do
+  if [ -f "$f" ]; then
+    cp "$f" "$SNAP_DIR/$(basename "$f")" 2>/dev/null || true
+  fi
+done
+
+exit 0
