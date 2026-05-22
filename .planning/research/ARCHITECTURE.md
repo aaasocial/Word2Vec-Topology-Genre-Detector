@@ -1,430 +1,248 @@
-# Architecture Research
+# Architecture Research — v2.0 Integration
 
-**Project:** Literary Genre Topology
-**Researched:** 2026-04-11
-**Overall confidence:** HIGH (well-trodden architecture pattern: FastAPI + Celery + Redis + React)
+**Domain:** Subsequent-milestone integration on a deployed FastAPI + arq/Redis + React/R3F + Zustand stack
+**Researched:** 2026-05-22
+**Confidence:** HIGH — every recommendation cites an existing file/symbol in the live v1 codebase
 
-## Computation Architecture
+## 1. Existing-Layer Recap (do not re-research)
 
-### The Core Tension
+| Layer | v1 location | Touchpoints for v2 |
+|---|---|---|
+| FastAPI routes | `backend/api/routes/{corpus,viz,classify}.py` (mounted under `/api`) | corpus → BookSlider; classify → top-N + explainability |
+| Pipeline functions | `backend/pipeline/{embed,homology,features,classify,precompute,precompute_viz,precompute_vr}.py` | homology → H₂; classify → top-N; features → per-feature contributions |
+| arq worker | `backend/worker/jobs.py` (`classify_book`) — emits SSE-bound progress on `job:{id}:progress` | extend with explainability publish step |
+| Disk cache | `backend/cache/store.py` — `cache_key(step, params)` content-addressed | invalidates on `window`, `k`, `alpha`, **new:** `homology_dimensions` and **corpus_hash** |
+| Zustand store | `frontend/src/stores/visualizationStore.ts` already has `h2Enabled`, `selectedHomologyDim` | add `topNCount`, `explainOpen`, separate `preferencesStore` for theme |
+| R3F scene | `frontend/src/components/canvas/` (ScatterCanvas etc.) | theme-aware background only |
+| Sidebar | `frontend/src/components/sidebar/{Sidebar,BookSlider,ClassificationResult}.tsx` | BookSlider already wired to `points` (derives books from scatter); needs richer metadata from new endpoint |
 
-This app has two competing needs: (a) interactive parameter sliders that imply fast feedback, and (b) backend computations that take seconds to minutes. The solution is a **tiered response strategy** based on which parameter changed and how expensive the downstream recomputation is.
+**Critical observation re BookSlider:** `Sidebar.tsx` lines 46-57 already derives `books` from `points` (the scatter payload) — `setSelectedBook(p.bookId)` works *as long as* `ScatterPoint` carries `bookId`/`bookTitle`. The v1 carry-over is really about **adding richer metadata that scatter points don't carry** (author, word_count, pagination order).
 
-### Tiered Recomputation Model
+## 2. v2 Feature → Integration Matrix
 
-**Tier 1 -- Instant (< 200ms, synchronous HTTP response):**
-- Alpha weighting change: just re-concatenates two pre-computed vectors. Pure arithmetic.
-- SVM gamma/C change: re-trains SVM on pre-computed feature vectors. Fast on < 1000 samples.
-- Visualization projection method change (PCA/UMAP/t-SNE): if pre-computed projections are cached per method, this is a cache lookup.
+| # | Feature | Backend changes | Frontend changes | New endpoints |
+|---|---|---|---|---|
+| 1 | H₂ homology | Modify `homology.py`, `features.py`, `precompute.py`, `precompute_viz.py`, `worker/jobs.py` | Modify `HomologyTabs.tsx` (drop disabled gate when h2Enabled), `PersistenceHeatmap`, `PersistenceDiagram` (already accept dim=2); store `h2Enabled` already exists | none (existing `/api/viz/persistence/{genre}?dim=2` already routes — just needs data) |
+| 2 | Corpus metadata endpoint (BookSlider) | New route in `corpus.py` | Modify `Sidebar.tsx` to fetch from endpoint instead of deriving from points; modify `BookSlider.tsx` to show richer label (author, word count) | `GET /api/corpus/genres/{genre}/books` |
+| 3 | Expanded corpus | No code changes — purely a data + precompute regeneration; `genre_names.json` and palette expansion | Modify `constants/genres.ts` (extend palette beyond 10) | none |
+| 4 | Top-N predictions | Modify `classify.py` (return ranked list); modify `worker/jobs.py` to publish ranked result; modify `api/models.py` `ClassifyResponse` | Modify `ClassificationResult.tsx` to render top-N list; new `TopNList.tsx` | none (extends existing SSE result payload) |
+| 5 | Explainability | New endpoint, new pipeline module `backend/pipeline/explain.py` | New component `ClassificationExplain.tsx`; modify `ClassificationResult.tsx` to host an "Why this genre?" expander | `POST /api/classify/{job_id}/explain` (synchronous, ~200ms) |
+| 6 | Dark mode | None | New `preferencesStore.ts` (separate from viz store — different lifetime/persistence); modify `index.css` to actually consume the HSL custom properties already defined; modify every component that hard-codes hex colours (~30 files); modify R3F scene background colour | none |
+| 7 | Onboarding tour | None | New `components/onboarding/Tour.tsx` + `constants/tourSteps.ts`; `preferencesStore` tracks `hasSeenTour` (localStorage) | none |
 
-**Tier 2 -- Fast (1-10s, async with optimistic UI):**
-- Persistence image grid resolution change: re-grids from cached persistence diagrams. No homology recomputation needed.
-- Sigma (persistence image bandwidth) change: re-kernels from cached diagrams.
-- K (cluster count) change: re-clusters from cached embeddings.
-- Dimensionality reduction re-run with new parameters (UMAP neighbors, t-SNE perplexity).
+## 3. New vs Modified — File-Level
 
-**Tier 3 -- Slow (30s-5min, background job with progress streaming):**
-- Epsilon-max change: re-runs Vietoris-Rips persistent homology per book. The most expensive step.
-- Word2Vec dimensionality or window size change: re-trains the entire Word2Vec model, invalidating everything downstream.
-- Corpus change (new book upload or removal): re-trains Word2Vec on the expanded corpus, then cascades.
+### NEW files
 
-### Implementation Pattern
+**Backend:**
+- `backend/pipeline/explain.py` — feature-importance + nearest-neighbour computation
+- `backend/api/routes/explain.py` (or extend `classify.py`) — explainability HTTP route
+- `backend/api/models.py` additions: `TopNPrediction`, `ExplainResponse`, `FeatureContribution`, `NearestBook`, `DrivingWord` Pydantic models
+- `backend/cache/explain_cache.py` *(optional)* — separate cache keyspace for per-upload explanations (TTL'd)
 
-- **Tier 1**: Handle in the FastAPI request handler directly. Return result synchronously.
-- **Tier 2**: Submit as a Celery task, return task ID immediately, client polls or receives WebSocket push. Show a spinner but keep the UI interactive.
-- **Tier 3**: Submit as a Celery task, stream progress updates via WebSocket. Show a progress bar with estimated time. Pre-compute defaults on server startup so the app is immediately usable.
+**Frontend:**
+- `frontend/src/stores/preferencesStore.ts` — `theme: 'dark' | 'light' | 'system'` + `hasSeenTour` + `tourStep`, persisted to `localStorage` via Zustand `persist` middleware
+- `frontend/src/hooks/useCorpusBooks.ts` — React Query hook for new `GET /api/corpus/genres/{genre}/books`
+- `frontend/src/hooks/useExplain.ts` — `POST /api/classify/{job_id}/explain` mutation
+- `frontend/src/components/sidebar/ClassificationExplain.tsx` — driving-words pill list + nearest-books list + feature-contribution mini-chart
+- `frontend/src/components/sidebar/TopNList.tsx` — ranked predictions with confidence bars
+- `frontend/src/components/onboarding/Tour.tsx` — overlay-based step tour
+- `frontend/src/components/onboarding/TourTooltip.tsx`
+- `frontend/src/constants/tourSteps.ts` — step definitions
+- `frontend/src/lib/theme.ts` — light/dark token maps (HSL pairs)
 
-### Precomputed Defaults
+### MODIFIED files
 
-On deployment (or corpus change), pre-compute results for a sensible set of default parameters. Users see instant results on first load. Only when they adjust parameters do they trigger recomputation. This is critical for perceived performance.
+**Backend (modified):**
+- `backend/pipeline/homology.py` — change `homology_dims` default to include `2`
+- `backend/pipeline/features.py` — `diagram_to_birth_persistence` accepts `dim=2`; `build_feature_vector` extended only if H₂ goes into the feature vector (see §6a — recommendation: viz-only in v2)
+- `backend/pipeline/classify.py` — return `list[tuple[str, float]]`; use `decision_function` already present
+- `backend/pipeline/precompute.py` — compute and cache H₂ diagrams + persistence images; persist `book_index` for nearest-book explainability
+- `backend/pipeline/precompute_viz.py` — emit `persistence_images_{genre}_dim2.json` and persistence diagrams for dim=2
+- `backend/api/routes/classify.py` — wire top-N into `ClassifyResponse`; SSE payload `result` dict gains `top_n: [{genre, confidence, color}]`
+- `backend/api/routes/corpus.py` — add `GET /genres/{genre}/books`
+- `backend/api/models.py` — extend `ClassifyResponse.result`, add new models for top-N + explain
+- `backend/worker/jobs.py` — `_publish_progress` `result` field carries top-N list
+- `config/params.yaml` — `homology.homology_dimensions: [0, 1, 2]`; add `classify.top_n: 3`, `classify.explain.k_neighbors: 5`
 
-## Pipeline Caching Strategy
+**Frontend (modified):**
+- `frontend/src/components/sidebar/Sidebar.tsx` — replace the points-derived `books` `useMemo` (lines 46-57) with `useCorpusBooks(selectedGenre)`
+- `frontend/src/components/sidebar/BookSlider.tsx` — accept richer `BookMeta = { id, title, author?, word_count? }`
+- `frontend/src/components/sidebar/ClassificationResult.tsx` — render `result.top_n` (use new `<TopNList>`); add `<button>Why?</button>` to open `<ClassificationExplain>`
+- `frontend/src/components/topology/HomologyTabs.tsx` — once H₂ is precomputed, set `h2Enabled` to `true` by default
+- `frontend/src/components/topology/PersistenceDiagram.tsx` — fix dot-scaling carry-over: line 83, replace `radius = pts.length > 500 ? 2 : ...` step function with continuous `Math.max(1.5, Math.min(5, 60 / Math.sqrt(pts.length)))`
+- `frontend/src/constants/genres.ts` — extend `GENRE_LIST`/`GENRE_COLORS` if corpus expansion adds genres
+- `frontend/src/index.css` — add `[data-theme="light"]` override block (variables already defined, unused)
+- ~30 component files with inline `'#111118'`, `'#1E1E2A'`, etc. → replace with `var(--background)`, `var(--card)`, etc.
+- `frontend/src/components/canvas/ScatterCanvas.tsx` — read theme from preferences store; set scene `background` accordingly
 
-### The Pipeline DAG
+## 4. Endpoint Shapes (proposed)
 
-```
-Word2Vec training (dim, window, corpus)
-    |
-    v
-Per-book TF-IDF (corpus vocabulary)
-    |
-    v
-Per-book weighted point clouds (Word2Vec vectors + TF-IDF weights)
-    |
-    +---> Persistent homology (epsilon_max, word count filter)
-    |         |
-    |         v
-    |     Persistence images (grid_resolution, sigma)
-    |         |
-    |         v
-    |     Structure feature vector (per book)
-    |
-    +---> Word clustering (K clusters)
-    |         |
-    |         v
-    |     Location feature vector (per book, TF-IDF distribution across clusters)
-    |
-    +---> Dimensionality reduction (method, params) --> 3D coordinates for viz
-    |
-    v
-Concatenation (alpha weighting) --> Combined feature vector
-    |
-    v
-SVM training (gamma, C) --> Trained classifier
-```
+### `GET /api/corpus/genres/{genre}/books`
 
-### Cache Key Strategy
-
-Each pipeline step produces output that is a deterministic function of its inputs. The cache key for each step is a hash of its input parameters plus the hash of its upstream cache key. This creates a content-addressed cache where changing any parameter automatically invalidates exactly the right downstream results.
-
-```
-cache_key = hash(step_name, upstream_cache_key, step_params)
-```
-
-**Example:**
-- `w2v_key = hash("word2vec", corpus_hash, dim=100, window=5)`
-- `tfidf_key = hash("tfidf", w2v_key, book_id)`
-- `homology_key = hash("homology", tfidf_key, epsilon_max=2.0, max_words=500)`
-- `persistence_img_key = hash("pers_img", homology_key, grid=20, sigma=0.1)`
-
-### Storage Backend
-
-**Redis** for cache metadata (key lookups, TTL management, task state) and small results (feature vectors, SVM parameters, 3D coordinates).
-
-**Filesystem (or object storage)** for large intermediate results:
-- Trained Word2Vec model (~10-100MB depending on corpus/dim)
-- Persistence diagrams per book (variable, typically KB to low MB)
-- Persistence images per book (~KB)
-- Precomputed 3D projection coordinates
-
-Use a `cache/` directory on disk, keyed by content hash. Redis stores the mapping from parameter combinations to file paths.
-
-**Not a database.** This data is all recomputable. If the cache is lost, the system regenerates from raw corpus. No need for durability guarantees beyond what the filesystem provides.
-
-### Cache Eviction
-
-- LRU eviction on the filesystem cache when total size exceeds a configurable limit (e.g., 2GB).
-- TTL on Redis keys (e.g., 24 hours for non-default parameter combinations, indefinite for defaults).
-- On corpus change: invalidate the entire Word2Vec cache and everything downstream. This is a full recompute event.
-
-## Job Queue Architecture
-
-### Celery + Redis
-
-**Use Celery with Redis as both broker and result backend.** This is the standard, battle-tested stack for Python web apps with long-running computation. RQ is simpler but Celery's workflow primitives (chains, groups, chords) are needed for the pipeline DAG.
-
-**Why Celery over RQ:**
-- Pipeline steps have dependencies (chain: Word2Vec -> TF-IDF -> homology -> persistence images)
-- Need parallel fan-out (group: compute homology for all books simultaneously across workers)
-- Need fan-in (chord: wait for all books' feature vectors, then train SVM)
-- Celery handles all of these natively with `chain()`, `group()`, and `chord()`
-
-**Why Redis over RabbitMQ as broker:**
-- Already need Redis for caching. One fewer service to operate.
-- Redis is simpler to deploy and monitor.
-- For this workload (low task volume, long tasks), RabbitMQ's durability advantages are irrelevant. If a task fails, we re-submit it.
-
-### Worker Configuration
-
-- **Concurrency:** Use `prefork` pool (not threads) because computation is CPU-bound (numpy, giotto-tda are GIL-releasing but still CPU-intensive).
-- **Worker count:** One worker per CPU core. On a 4-core VPS, run 4 worker processes.
-- **Task time limits:** Set `soft_time_limit=600` (10 min) to prevent runaway homology computations. The Vietoris-Rips step on large point clouds can explode; enforce the limit and return an error asking the user to reduce word count or epsilon.
-- **Task priorities:** Tier 1 tasks (if any overflow to Celery) get high priority. Tier 3 tasks get low priority so interactive parameter tweaks are not starved.
-
-### Progress Streaming
-
-**WebSocket connection per user session.** When a Tier 2 or Tier 3 task runs:
-
-1. FastAPI endpoint receives parameter change request.
-2. FastAPI submits Celery task, gets task ID.
-3. FastAPI returns task ID to client via HTTP response.
-4. Celery worker updates progress in Redis (`task:{id}:progress = 0.35`).
-5. A lightweight asyncio loop on the FastAPI side checks Redis and pushes updates to the client's WebSocket.
-6. On completion, the final result (or a URL to fetch it) is pushed over WebSocket.
-
-**Alternative considered:** Server-Sent Events (SSE). Simpler than WebSocket but unidirectional. Since we also need client-to-server messages (parameter changes, cancellation), WebSocket is the right choice.
-
-### Task Cancellation
-
-When a user changes a parameter while a previous computation is still running, the old task should be cancelled (via `task.revoke(terminate=True)`). The new parameter set triggers a fresh computation. Without this, changing a slider rapidly would queue dozens of expensive tasks.
-
-## Data Model
-
-### What Must Be Persisted (survives server restart)
-
-| Data | Format | Storage | Rationale |
-|------|--------|---------|-----------|
-| Raw corpus text files | `.txt` files | Filesystem (`data/corpus/`) | Source of truth. Cannot be recomputed. |
-| Genre labels | JSON manifest | Filesystem (`data/corpus/manifest.json`) | Maps filenames to genres |
-| User-uploaded books | `.txt` files | Filesystem (`data/uploads/`) | User data. Must survive restarts. |
-| Precomputed default results | Serialized (pickle/numpy) | Filesystem (`cache/defaults/`) | Avoids cold-start recomputation. Regenerable but expensive. |
-
-### What Can Be Recomputed (cache, not persistent)
-
-| Data | Typical Size | Cache Location |
-|------|-------------|----------------|
-| Trained Word2Vec model | 10-100 MB | `cache/models/` |
-| Per-book TF-IDF vectors | KB per book | Redis or `cache/tfidf/` |
-| Per-book persistence diagrams | KB-MB per book | `cache/homology/` |
-| Per-book persistence images | KB per book | `cache/pers_images/` |
-| Word cluster assignments | KB | Redis |
-| Feature vectors (structure + location) | KB per book | Redis |
-| 3D projection coordinates | KB | Redis |
-| Trained SVM model | KB | Redis (pickled) |
-
-### No Traditional Database Needed
-
-This application does not need PostgreSQL or SQLite. The data model is:
-- Raw files on disk (corpus).
-- Computed artifacts in a content-addressed file cache.
-- Ephemeral state in Redis (task queue, cache keys, session data).
-
-Adding a database would be overengineering. If user accounts are added later, that changes; but the project scope explicitly excludes authentication.
-
-## Frontend/Backend Boundary
-
-### Server-Side (Python)
-
-All numerically intensive computation runs on the server:
-- Word2Vec training (gensim)
-- TF-IDF computation (scikit-learn)
-- Persistent homology / Vietoris-Rips (giotto-tda with giotto-ph backend)
-- Persistence image generation (giotto-tda)
-- Word clustering (scikit-learn KMeans)
-- Dimensionality reduction for viz (scikit-learn PCA, umap-learn, openTSNE)
-- SVM training and prediction (scikit-learn)
-- Feature vector concatenation and normalization
-
-### Client-Side (JavaScript/TypeScript)
-
-All rendering and interaction runs in the browser:
-- 3D scatter plot rendering (Three.js via React Three Fiber)
-- Vietoris-Rips animation (Three.js -- server sends edge lists at discrete epsilon values, client animates between them)
-- Persistence image heatmap rendering (Canvas 2D or a lightweight heatmap library)
-- Parameter controls (React UI)
-- Genre brightness/size mapping (shader-level: pass TF-IDF weights as vertex attributes)
-
-### The Vietoris-Rips Animation Decision
-
-**Server computes, client renders.** The server pre-computes a sequence of simplicial complexes at discrete epsilon values (e.g., 50-100 steps). It sends the client a JSON payload with:
-- Vertex positions (3D projected coordinates)
-- For each epsilon step: which edges exist, which triangles exist, birth/death events
-
-The client uses Three.js to animate through these steps as the user drags the epsilon slider. This avoids shipping a computational topology library to the browser while keeping the animation smooth (interpolating between precomputed frames).
-
-### API Surface
-
-**REST endpoints:**
-- `GET /api/corpus` -- list books and genres
-- `POST /api/upload` -- upload a new book
-- `POST /api/compute` -- trigger recomputation with parameter set, returns task ID
-- `GET /api/results/{cache_key}` -- fetch computed results (projections, feature vectors, etc.)
-- `GET /api/predict/{book_id}` -- get genre prediction for a book
-- `GET /api/rips/{book_id}` -- get precomputed Vietoris-Rips animation frames
-
-**WebSocket:**
-- `/ws/progress` -- bidirectional channel for task progress updates and parameter change events
-
-## Deployment Architecture
-
-### Single VPS with Docker Compose
-
-For a publicly hosted educational/research tool (not high-traffic SaaS), a single VPS is the right starting point. Over-engineering with Kubernetes or separate microservices adds complexity without proportional benefit at this scale.
-
-**Services (all in one Docker Compose file):**
-
-```
-+--------------------------------------------------+
-|  VPS (4-8 CPU cores, 8-16 GB RAM recommended)    |
-|                                                   |
-|  +------------+  +------------+  +-------------+ |
-|  |  Nginx     |  |  FastAPI   |  |  Celery     | |
-|  |  (reverse  |->|  (uvicorn  |  |  Workers    | |
-|  |   proxy +  |  |   2-4      |  |  (4 procs,  | |
-|  |   static)  |  |   workers) |  |   prefork)  | |
-|  +------------+  +-----+------+  +------+------+ |
-|        |               |               |         |
-|        |         +-----v------+        |         |
-|  +-----v------+  |   Redis    |<-------+         |
-|  | Static     |  | (broker +  |                   |
-|  | Frontend   |  |  cache +   |                   |
-|  | (React     |  |  results)  |                   |
-|  |  build)    |  +------------+                   |
-|  +------------+                                   |
-|                                                   |
-|  Filesystem:                                      |
-|    /data/corpus/    (bundled + uploaded texts)     |
-|    /cache/          (intermediate computation)     |
-+--------------------------------------------------+
+```json
+[
+  { "gutenberg_id": "84",
+    "title": "Frankenstein",
+    "author": "Mary Shelley",
+    "word_count": 75500,
+    "color": "#FF6B6B" }
+]
 ```
 
-**Why this topology:**
-- **Nginx:** Serves the static React frontend build. Reverse-proxies `/api/*` and `/ws/*` to FastAPI. Handles TLS termination.
-- **FastAPI + Uvicorn:** 2-4 async workers handle HTTP and WebSocket connections. Light on CPU since heavy work is delegated to Celery.
-- **Celery Workers:** 4 prefork workers (one per core) crunch the actual computation. These are the CPU-hungry processes.
-- **Redis:** Single instance handles task brokering, result backend, and caching. Memory footprint is small for this workload.
+- Backed by `corpus/books.yaml` — extend YAML to include `author` and `word_count` per book
+- 404 if genre unknown (reuse `_KNOWN_GENRES` pattern from `viz.py`)
+- Cache: in-memory at module import
+- Backwards-compatible: existing `GET /api/corpus/books` (flat list) stays unchanged
 
-### Resource Sizing
+### `POST /api/classify/{job_id}/explain`
 
-| Component | CPU | RAM | Notes |
-|-----------|-----|-----|-------|
-| Nginx | Negligible | Negligible | Static file serving |
-| FastAPI (uvicorn) | 0.5 core | 512 MB | Async I/O, not CPU-bound |
-| Celery workers (x4) | 4 cores | 4-8 GB | Word2Vec + homology are memory-hungry |
-| Redis | 0.5 core | 512 MB - 1 GB | Cache + broker |
-| **Total** | 4-8 cores | 8-16 GB | A $40-80/mo VPS |
+```json
+{
+  "feature_contributions": {
+    "topology": 0.42,
+    "location": 0.58,
+    "top_clusters": [
+      { "cluster_id": 7, "weight": 0.18, "representative_words": ["castle","dread","spectre"] },
+      { "cluster_id": 13, "weight": 0.12, "representative_words": ["moor","wind","shadow"] }
+    ]
+  },
+  "nearest_training_books": [
+    { "gutenberg_id": "84", "title": "Frankenstein", "genre": "horror", "distance": 0.31 }
+  ],
+  "driving_words": [
+    { "word": "haunted", "tfidf_weight": 0.087, "cluster_id": 7 }
+  ]
+}
+```
 
-**Recommended providers:** Hetzner (best price/performance for CPU-heavy workloads in Europe), DigitalOcean or Linode for US-based hosting. Avoid AWS/GCP unless cost is not a concern -- a single dedicated VPS outperforms equivalent cloud instances for this workload pattern.
+- Backend: small `backend/pipeline/explain.py` using cached `feature_vec` from upload's job_id (store in Redis at end of `classify_book` with 5-min TTL), cached training `feature_vectors`, cached k-means centroids
+- Distance = Euclidean in L2-normalised feature space (same as SVM operates in)
+- "Feature importance" via **per-track permutation importance** (topology slab vs location slab) — per-dim is noisy for RBF SVM
+- Cost: ~100-300 ms; no job queue needed; handle inline
+- Cache: keyed by `sha256(feature_vec.tobytes())` in Redis with 1-hour TTL
 
-### Concurrent User Handling
+### Top-N enrichment of existing SSE result
 
-With 4 Celery workers, 4 users can run heavy computations simultaneously. Additional users see their tasks queued (with progress updates). For an educational/research tool, this is adequate. If traffic grows, add more workers on the same VPS or scale to a second VPS for workers.
+```python
+result = {
+    'predicted_genre': top_n[0]['genre'],   # backwards-compatible
+    'confidence': top_n[0]['confidence'],   # backwards-compatible
+    'top_n': top_n,                          # new
+    'oov_word_count': oov_count,
+    'total_words': total_words,
+    'processing_time_s': round(processing_time, 2),
+}
+```
 
-**Key constraint:** Each Vietoris-Rips computation can consume 1-4 GB of RAM depending on point count. With 4 workers at peak, that is 4-16 GB just for homology. This is the memory bottleneck and why enforcing `max_words` limits in the UI is critical.
+## 5. Architectural Trade-offs and Decisions
 
-## Suggested Build Order
+### 5a. H₂ in the feature vector, or visualisation-only?
 
-### Phase 1: Core Pipeline (CLI)
+**Recommendation: visualisation-only in v2.** Extending the feature vector by another `grid_resolution²` dims (with H₂ typically sparse) is unlikely to improve accuracy *and* it invalidates every cached feature vector and SVM. Treat H₂ as a **diagnostic view** in v2; revisit in v3 after corpus expansion baseline.
 
-**Build the computation pipeline as a standalone Python package with no web concerns.**
+### 5b. Where does the explainability cache live?
 
-- Word2Vec training on bundled corpus (gensim)
-- Per-book TF-IDF computation
-- Persistent homology via giotto-tda (Vietoris-Rips)
-- Persistence image generation
-- Word clustering
-- Feature vector construction (structure + location + alpha concatenation)
-- SVM training and cross-validation
-- Dimensionality reduction (PCA, UMAP, t-SNE) for visualization coordinates
+**Separate Redis keyspace `explain:{feature_vec_hash}` with 1-hour TTL** — not the disk content-addressed cache. Disk cache is for build-time corpus artefacts; explainability is per-upload and ephemeral.
 
-**Rationale:** Every subsequent phase depends on this working correctly. Build it as importable Python modules with a CLI entry point. Validate the math before adding any web complexity. This phase can be developed and tested entirely locally.
+### 5c. Theme store: merge or separate from `visualizationStore`?
 
-**Dependency:** None. This is the foundation.
+**Separate `preferencesStore` with `persist` middleware.** `visualizationStore` is intentionally session-scoped; theme + tour-completion must survive reloads. Different lifetimes → different stores.
 
-### Phase 2: API Layer + Job Queue
+### 5d. Onboarding tour — library or hand-rolled?
 
-**Wrap the pipeline in FastAPI endpoints with Celery for async execution.**
+The codebase has no positioning library and uses inline styles. ~5-8 steps doesn't justify pulling in joyride/shepherd. **Hand-roll a `<Tour>` overlay** with stable `data-tour-id` attributes.
 
-- FastAPI app structure
-- Celery + Redis integration
-- REST endpoints for triggering computation and fetching results
-- Pipeline caching layer (content-addressed cache keys)
-- WebSocket progress streaming
-- File upload endpoint for new books
-- Task cancellation on parameter change
+### 5e. Corpus expansion — does data layout change?
 
-**Rationale:** The API layer is the integration point between computation and visualization. Building it before the frontend means the frontend team (or phase) has a stable API contract to build against.
+**No code changes**, but **two cache invalidations**:
+1. **Latent v1 bug**: `cache_key('book_result', {gutenberg_id, window, k, alpha})` in `corpus.py` line 46-51 does NOT include the corpus hash. Change the corpus and stale cached results are returned. Phase 8 must fix this in `precompute.py` and `routes/corpus.py` together.
+2. Palette must grow if new genres appear; consider switching to `d3-scale-chromatic` `schemeCategory10` or HSL stepping.
 
-**Dependency:** Phase 1 (pipeline must exist to wrap it).
+## 6. Suggested Build Order (with dependencies)
 
-### Phase 3: Frontend Core + 3D Visualization
+| Order | Phase | Why this position | Hard dependencies |
+|---|---|---|---|
+| 6.1 | Restore ROADMAP.md / STATE.md (already done) | unblocks GSD workflow | none |
+| 6.2 | Persistence-diagram dot-scaling fix | trivial; also unblocks H₂ visual review | none |
+| 6.3 | Corpus metadata endpoint + BookSlider wiring | foundational integration test of "new endpoint" pattern | none |
+| 6.4 | H₂ homology backend + frontend enable | needs cache-key change (add `corpus_hash` / `homology_dimensions`) | 6.3 |
+| 7 | Corpus-sourcing research spike | informs phase 8 — pure research | none |
+| 8 | Corpus expansion | invalidates all precomputed caches; lands before classification-depth | 7; 6.4 (cache-key invalidation) |
+| 9 | Classification depth: top-N + explainability | needs final corpus + final SVM | 8 |
+| 10 | Visual polish: dark mode + onboarding | touches ~30 files; must be last | 6-9 |
 
-**Build the React frontend with Three.js visualizations.**
+### Why BookSlider before H₂
 
-- React app scaffold (Vite + TypeScript)
-- Parameter control panel (sliders, dropdowns)
-- 3D scatter plot with React Three Fiber (word embeddings, genre coloring)
-- Genre brightness/size toggle (TF-IDF weighting)
-- Projection method switching (PCA/UMAP/t-SNE)
-- WebSocket integration for progress streaming
-- File upload UI
-- Genre prediction display
+BookSlider is the smallest end-to-end new-endpoint integration (one route, one hook, one store change, one component edit). Proves the v2 endpoint-addition pattern works before larger H₂ migration.
 
-**Rationale:** Requires API endpoints from Phase 2 to exist. The 3D scatter plot is the primary interaction surface and should be built before the more complex Vietoris-Rips animation.
+### Why corpus expansion before classification depth
 
-**Dependency:** Phase 2 (API must exist for the frontend to consume).
+Top-N and explainability are user-facing features users will trust. If SVM is retrained on a larger corpus in a later phase, cached explanations and top-N go stale.
 
-### Phase 4: Advanced Visualization + Polish
+### Why dark mode last
 
-**Build the remaining visualization features and polish the UX.**
+Theming is a horizontal concern touching every component touched in phases 6-9. Last means each new v2 component is built with CSS variables from the outset.
 
-- Animated Vietoris-Rips visualization (epsilon slider, edge/simplex assembly)
-- Persistence image heatmap panel (H0/H1/H2 views)
-- Per-book slider within genre (subgenre structure exploration)
-- Genre comparison view (side-by-side)
-- Pipeline explanation / interactive walkthrough
-- Responsive layout, loading states, error handling
-- Performance optimization (debounce sliders, cancel stale requests)
+## 7. Backwards-Compatibility Audit
 
-**Rationale:** These are differentiating features that build on the core visualization. The Rips animation is the most complex frontend component and depends on the server-side Rips frame precomputation from Phase 2.
+| Existing v1 endpoint | v2 status | Notes |
+|---|---|---|
+| `GET /api/corpus/books` | unchanged | new `/genres/{g}/books` is additive |
+| `GET /api/corpus/books/{id}/results` | cache key changes (corpus_hash) — will 404 until precompute reruns | acceptable: corpus expansion is trigger |
+| `GET /api/viz/scatter/{projection}` | unchanged response shape | regenerated by precompute_viz |
+| `GET /api/viz/tfidf/*` | unchanged | regenerated |
+| `GET /api/viz/persistence/{genre}?dim=*` | response shape unchanged; dim=2 now returns data | route already validates `dim in (0,1,2)` |
+| `POST /api/classify` | unchanged | new fields in eventual `result` payload |
+| `GET /api/classify/{job_id}/progress` (SSE) | result event payload gains `top_n` | non-breaking |
+| `POST /api/viz/recompute` | unchanged | `homology.homology_dimensions` not in `PARAM_DEPENDENCY_MAP` — H₂ is build-time, not request-time |
 
-**Dependency:** Phase 3 (core visualization framework must exist).
+## 8. Cache Invalidation Plan
 
-### Phase 5: Deployment + Production Hardening
+| v2 change | Caches invalidated | Mechanism |
+|---|---|---|
+| Add H₂ to `homology_dimensions` | All diagrams, persistence images | Bump cache key: add `dims_hash = sha256(json(homology_dimensions))` |
+| Corpus expansion | All feature vectors, book results, scatter, tfidf, VR, persistence | Add `corpus_hash = sha256(books.yaml)` to every `cache_key` site |
+| Top-N from `decision_function` | SVM doesn't change; only postprocessing in `predict_genre` | n/a |
+| Explainability | New cache namespace `explain:*` in Redis, TTL 1h | additive |
 
-**Dockerize, deploy, and harden for public access.**
+## 9. Anti-Patterns to Avoid in v2
 
-- Docker Compose setup (Nginx + FastAPI + Celery + Redis)
-- TLS via Let's Encrypt (certbot)
-- Rate limiting on upload and compute endpoints
-- Memory/time limits on homology computation
-- Pre-computation of default parameter results on startup
-- Health checks and basic monitoring
-- Input sanitization (uploaded text files)
+| Anti-pattern | Why tempting | Do instead |
+|---|---|---|
+| Putting theme state in `visualizationStore` | One store feels simpler | Separate `preferencesStore` with `persist` |
+| Inlining H₂ persistence image into feature vector | "More features = more accuracy" | Keep H₂ viz-only in v2; measure first |
+| Explainability via SSE | Reuse classify pipeline | Synchronous POST (200ms) is correct |
+| Computing explainability eagerly at end of `classify_book` | Pre-warm cache | Most users don't click "Why?"; pay cost on demand |
+| Hand-rolling colour-token swaps in JS | Avoid CSS refactor | CSS variables already defined in `index.css` (lines 4-25) |
+| Adding `homology_dimensions` to `PARAM_DEPENDENCY_MAP` for live re-toggle | Symmetry with other params | H₂ enablement is build-time, not request-time |
 
-**Rationale:** Deployment is last because it is the thinnest layer over working software. All features should work locally before adding deployment concerns. Pre-computation of defaults (the cold-start problem) is a deployment concern, not a feature concern.
+## 10. Key Integration Points — Phase Summary
 
-**Dependency:** Phases 1-4 (deploy what works).
+| Phase | Files it must touch | Endpoints |
+|---|---|---|
+| **6 (Bug-Fix Sweep)** | `homology.py`, `features.py`, `precompute_viz.py`, `precompute.py` (cache_key + corpus_hash), `PersistenceDiagram.tsx`, `Sidebar.tsx` + new `useCorpusBooks.ts` + new corpus genres route, `params.yaml` | NEW `GET /api/corpus/genres/{genre}/books` |
+| **8 (Corpus Expansion)** | `corpus/books.yaml` (add author, word_count, new entries), `data/raw/*`, full precompute rerun, `genres.ts` palette | none — purely data |
+| **9 (Classification Depth)** | `classify.py` (top-N), `worker/jobs.py`, `api/models.py`, NEW `pipeline/explain.py`, NEW `api/routes/explain.py`, NEW `ClassificationExplain.tsx`, NEW `TopNList.tsx`, modified `ClassificationResult.tsx`, NEW `useExplain.ts` | NEW `POST /api/classify/{job_id}/explain` |
+| **10 (Visual Polish)** | `index.css` (light theme block), every component with inline hex (~30 files), NEW `preferencesStore.ts`, NEW `Tour.tsx` + `tourSteps.ts`, NEW `ThemeToggle.tsx`, `ScatterCanvas.tsx` | none |
 
-### Phase Ordering Rationale
+## 11. Open Questions for Phase Planning
 
-The ordering follows the data dependency chain: **compute -> serve -> render -> enhance -> deploy**. Each phase produces a testable artifact:
-1. CLI that processes a corpus and outputs classification results
-2. API server that accepts parameters and returns computed results
-3. Web app that visualizes results and accepts user input
-4. Full-featured interactive exploration tool
-5. Publicly accessible deployed application
+1. **Author + word_count source** — hand-edited or script-generated from Gutenberg metadata? Phase 7 should answer.
+2. **Explainability technique** — Phase 9 commits to one of: (a) per-track permutation importance, (b) LIME on linearised decision function, (c) "nearest training books" + "top contributing clusters" heuristic. **Recommendation: (c)** — fastest, most intuitive, matches "why this genre" without overclaiming.
+3. **Tour library decision** — Phase 10 decides; recommendation is hand-rolled.
+4. **System dark mode detection** — `prefers-color-scheme: dark` for `'system'` default.
+5. **Top-N configurable from UI?** — Recommendation: hardcode N=3 in v2; expose as settings toggle only if user demand surfaces.
 
-## Key Architectural Decisions
+## 12. Confidence Assessment
 
-These decisions are hard to change later and should be made at the start:
-
-### 1. Python Backend Framework: FastAPI
-
-**Decision:** FastAPI over Django or Flask.
-**Rationale:** Native async support (critical for WebSocket progress streaming), automatic OpenAPI docs, Pydantic validation, and first-class Celery integration patterns. Django is overkill (no ORM needed, no admin, no auth). Flask could work but lacks native async and type validation.
-
-### 2. Task Queue: Celery with Redis
-
-**Decision:** Celery + Redis, not RQ, not background threads.
-**Rationale:** Need workflow primitives (chain, group, chord) for the pipeline DAG. Redis serves triple duty as broker, result backend, and cache -- one service instead of three. Background threads do not survive process restarts and cannot distribute across cores (GIL).
-
-### 3. Frontend: React + TypeScript + React Three Fiber
-
-**Decision:** React with R3F for 3D, not raw Three.js, not Plotly.
-**Rationale:** The app is a parameter-driven interactive tool -- React's component model and state management are ideal. R3F wraps Three.js in React's declarative model, making it maintainable. Raw Three.js would require imperative scene management alongside React state, creating two sources of truth. Plotly lacks the custom shader/animation control needed for the Rips visualization.
-
-### 4. Persistent Homology Library: giotto-tda
-
-**Decision:** giotto-tda (which uses giotto-ph backend), not ripser.py directly.
-**Rationale:** giotto-ph is faster than Ripser v1.2 on multi-core systems (lockfree parallel implementation). giotto-tda provides a scikit-learn-compatible API and includes persistence image generation, so it handles both the homology computation and the featurization step.
-
-### 5. No Database
-
-**Decision:** Filesystem + Redis, no PostgreSQL/SQLite.
-**Rationale:** All persistent data is files (corpus text, cached computation artifacts). All ephemeral state is in Redis (task queue, progress, cache keys). Adding a relational database adds operational complexity (migrations, backups, connection pooling) for zero benefit. Revisit only if user accounts are added.
-
-### 6. Monolith, Not Microservices
-
-**Decision:** Single deployable unit (Docker Compose on one VPS).
-**Rationale:** The application has one purpose, one team, and moderate traffic expectations. Microservices add network hops, deployment complexity, and debugging difficulty. A monolith with well-separated Python modules (pipeline, api, cache) achieves the same code organization without the operational tax.
-
-### 7. Content-Addressed Caching
-
-**Decision:** Cache keys are deterministic hashes of (step_name + input_params + upstream_cache_key).
-**Rationale:** This makes cache invalidation automatic and correct. Changing any parameter in the pipeline produces a new cache key for that step and all downstream steps, while unchanged branches remain cached. No manual invalidation logic needed.
-
-## Sources
-
-- [Celery + Redis + FastAPI Production Guide 2025](https://medium.com/@dewasheesh.rana/celery-redis-fastapi-the-ultimate-2025-production-guide-broker-vs-backend-explained-5b84ef508fa7)
-- [Python Background Tasks 2025: Celery vs RQ vs Dramatiq](https://devproportal.com/languages/python/python-background-tasks-celery-rq-dramatiq-comparison-2025/)
-- [Choosing the Right Python Task Queue](https://judoscale.com/blog/choose-python-task-queue)
-- [FastAPI WebSockets and Async Tasks](https://blog.poespas.me/posts/2025/03/05/fastapi-websockets-asynchronous-tasks/)
-- [FastAPI Best Practices: Production Patterns 2025](https://orchestrator.dev/blog/2025-1-30-fastapi-production-patterns/)
-- [Deploying ML Models with FastAPI and Celery](https://towardsdatascience.com/deploying-ml-models-in-production-with-fastapi-and-celery-7063e539a5db/)
-- [Pipeline Caching: Storing Intermediate Results](https://softwarepatternslexicon.com/machine-learning/infrastructure-and-scalability/workflow-management/pipeline-caching/)
-- [giotto-ph: High-Performance Persistent Homology](https://arxiv.org/abs/2107.05412)
-- [giotto-tda Documentation](https://giotto-ai.github.io/gtda-docs/latest/modules/generated/homology/gtda.homology.VietorisRipsPersistence.html)
-- [React Three Fiber vs Three.js in 2026](https://graffersid.com/react-three-fiber-vs-three-js/)
-- [Asynchronous Tasks with FastAPI and Celery (TestDriven.io)](https://testdriven.io/blog/fastapi-and-celery/)
-- [FastAPI + PostgreSQL + Celery Docker Compose Setup](https://oneuptime.com/blog/post/2026-02-08-how-to-set-up-a-fastapi-postgresql-celery-stack-with-docker-compose/view)
+| Area | Confidence | Reason |
+|---|---|---|
+| Backend integration points | HIGH | Read every file cited; existing patterns (cache_key, SSE, ctx-loaded models) |
+| Frontend integration points | HIGH | Read Sidebar, BookSlider, ClassificationResult, HomologyTabs, PersistenceDiagram, visualizationStore, index.css |
+| Top-N implementation | HIGH | `predict_genre` already calls `decision_function` — postprocessing only |
+| Explainability technique | MEDIUM | NN + cluster-contribution is sound; per-dim importance for RBF SVM is contested in literature |
+| Cache invalidation plan | HIGH | Surfaced latent corpus_hash bug; ripser supports arbitrary `maxdim` |
+| Dark-mode scope estimate | HIGH | Grepped for inline hex; index.css variables already defined — mechanical replacement |
+| Tour implementation | MEDIUM | No codebase preference; hand-rolled on dependency-frugality grounds |
+| Build order | HIGH | Dictated by cache-invalidation cascades + theming as horizontal concern |

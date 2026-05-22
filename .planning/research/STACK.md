@@ -1,612 +1,246 @@
-# Stack Research
+# Stack Research — v2.0 Additions
 
-**Project:** Literary Genre Topology
-**Researched:** 2026-04-11
-**Overall confidence:** HIGH
+**Domain:** Literary genre topology web app (v2.0 milestone)
+**Researched:** 2026-05-22
+**Confidence:** HIGH (most additions) / MEDIUM (corpus sources, SHAP for kernel SVM)
 
-## Recommendation Summary
-
-| Layer | Recommended | Version | Runner-up | Rejected |
-|-------|-------------|---------|-----------|----------|
-| Persistent Homology | giotto-tda | 0.6.2 | ripser.py + persim | GUDHI (verbose API) |
-| Persistence Images | persim (via scikit-tda) | 0.3.8 | giotto-tda built-in | Manual implementation |
-| Word2Vec | gensim | 4.4.0 | -- | PyTorch (overkill), fasttext (wrong focus) |
-| TF-IDF | scikit-learn TfidfVectorizer | 1.8.x | -- | Manual implementation |
-| Dimensionality Reduction | umap-learn + openTSNE + scikit-learn | 0.5.x / 1.0.x / 1.8.x | -- | sklearn TSNE (too slow) |
-| SVM | scikit-learn SVC (RBF) | 1.8.x | -- | -- |
-| Backend Framework | FastAPI | 0.135.x | -- | Flask (no native async), Django (too heavy) |
-| Task Queue | arq | 0.26.x | Celery | RQ (no async) |
-| 3D Visualization | Three.js via react-three-fiber | R3F 9.x / Three.js r170+ | Plotly.js | Babylon.js (overkill), deck.gl (wrong use case) |
-| Frontend Framework | React | 19.x | Svelte | Vue (no advantage here) |
-| Deployment | Fly.io | -- | Railway | Render (compute limits) |
-| Python Version | 3.12 | 3.12.x | 3.11 | 3.13 (ecosystem gaps) |
+> This document covers **only** stack additions/changes for v2.0 features. The v1.0 stack (FastAPI, arq+Redis, gensim, scikit-learn, ripser, persim, React 18, R3F 8, Three.js, Zustand, React Query, Tailwind v4, Vite, Railway) is unchanged unless explicitly noted. See `.planning/research/v1/STACK.md` for v1 rationale.
 
 ---
 
-## Persistent Homology
+## Recommended Stack — v2 Additions
 
-**Recommendation: giotto-tda 0.6.2 + persim 0.3.8**
-**Confidence: HIGH**
+### Core Additions (must add)
 
-### Why giotto-tda
+| Technology | Version | Purpose | Why Recommended |
+|------------|---------|---------|-----------------|
+| **shap** | `0.51.0` (Mar 2026) | "Why this genre" explainability via `KernelExplainer` over the engineered feature vector (persistence images + cluster distributions) | Model-agnostic, works with `SVC(probability=True).predict_proba`, has an established example for RBF SVC, and is the de-facto standard for ML explainability. Permutation-importance fallback covered by existing scikit-learn (no extra dep). |
+| **react-joyride** | `^3.1.0` (May 2026) | Onboarding tour / first-load guided walkthrough | V3 is a complete rewrite for modern React with native React 18 + TypeScript, `useJoyride` hook, Floating UI under the hood, portal rendering (works inside R3F canvas overlays), and works in Vite. Permissive MIT license. |
 
-giotto-tda is the clear winner for this project for one critical reason: it has a built-in `WeightedRipsPersistence` transformer that natively supports weighted Vietoris-Rips filtrations. This maps directly to the TF-IDF weighted point cloud requirement. The class accepts custom 1D arrays of vertex weights or distance-to-measure (DTM) reweighting, and follows scikit-learn transformer conventions (`fit`, `transform`, `fit_transform`).
+### Supporting Libraries (must add)
 
-Performance-wise, giotto-tda uses giotto-ph as its backend, which benchmarks faster than Ripser v1.2 across all dataset sizes. giotto-ph's lockfree multicore implementation surpasses even GPU-accelerated Ripser++ when using 5-10 CPU cores -- relevant since server-side computation will have multiple cores available.
+| Library | Version | Purpose | When to Use |
+|---------|---------|---------|-------------|
+| **scikit-learn `CalibratedClassifierCV`** | already on `sklearn>=1.3` | Wrap the existing `SVC` for stable multiclass probability estimates used by top-N ranking | Use instead of `SVC(probability=True)` if Platt-scaling within LibSVM produces low-confidence saturated probabilities on the small corpus. Sigmoid method + `cv=LeaveOneOut()` for the smallest-sample regime. |
+| **scikit-learn `permutation_importance`** | already on `sklearn>=1.3` | Cheap, model-agnostic feature-importance baseline | Use as the primary explainability signal; SHAP only when per-prediction local explanations are needed. Already shipped — no install. |
+| **scikit-learn `NearestNeighbors`** | already on `sklearn>=1.3` | "Nearest training books" retrieval in the engineered feature space | One-line `kneighbors(query_feat, n_neighbors=N)` over fitted feature matrix used for SVM. Surfaces 3 closest training books per upload for the "why" panel. Already shipped — no install. |
 
-giotto-tda 0.6.2 ships with Python 3.12 wheels. No compilation from source required.
+### Frontend Theming (no new dep needed)
 
-### Why persim for persistence images
+| Library | Version | Purpose | When to Use |
+|---------|---------|---------|-------------|
+| Tailwind v4 `@custom-variant dark` | already on `tailwindcss@4.2.2` | Class-strategy dark mode | v4 removed the `darkMode` config key; configure with `@custom-variant dark (&:where(.dark, .dark *))` in `index.css`. Toggle by adding `.dark` to `<html>`. No new library required. |
+| `localStorage` + Zustand slice | already on `zustand@5.0.12` | Persist theme preference | Theme lives in the existing Zustand store (`useUiStore`) with a hydration hook reading `localStorage.theme`. Avoids the SSR FOUC problem since this app is a Vite SPA. **Do not add `next-themes`** (Next.js-specific and unnecessary). |
 
-persim 0.3.8 from the scikit-tda ecosystem provides `PersistenceImager` with configurable:
-- `pixel_size` (grid resolution control -- directly maps to the "configurable grid resolution" requirement)
-- `birth_range` and `pers_range` (domain bounds)
-- `weight` function (default: persistence-weighted)
-- `kernel` (default: Gaussian CDF)
+### Persistent Homology — H₂ Computation
 
-Attribute updates dynamically propagate to dependent parameters. The output is a flat vector suitable for direct concatenation with the word-cluster distribution vector before SVM training.
+| Library | Version | Purpose | When to Use |
+|---------|---------|---------|-------------|
+| **ripser** (already installed) | `0.6.14` | Compute H₂ by raising `maxdim` from 1 → 2 in `backend/pipeline/homology.py` | The existing `ripser(maxdim=...)` API already supports H₂. No new library; this is a 1-line parameter change behind a feature flag with conservative `epsilon_max` and TF-IDF top-k filtering. |
+| **giotto-tda** (already installed, unused at runtime) | `0.6.2` | Fallback only if `ripser` H₂ is too slow on the deployed corpus | `WeightedRipsPersistence` with `homology_dimensions=[0,1,2]` uses the parallel `giotto-ph` backend. Keep in `requirements.txt` as the escape hatch documented in v1 Key Decision; do not switch unless ripser H₂ exceeds the 60s budget for typical books. |
 
-giotto-tda also has built-in persistence image support, but persim's API is more explicit about grid resolution control and is the established standard in the scikit-tda ecosystem.
+### Corpus Sourcing (research spike — Phase 7)
 
-### What NOT to use
+| Source | Access | Purpose | When to Use |
+|--------|--------|---------|-------------|
+| **Project Gutenberg via `gutenbergpy`** | already installed (`gutenbergpy>=0.3.5`) | Continue using for public-domain bulk fetch with cached metadata | Default source; predictable, licence-clean, programmatic. Genre metadata is weak (LCC subject headings) — must be augmented. |
+| **Hugging Face `datasets` library** | `datasets>=3.0` (new) | Programmatic access to curated literary genre datasets | Recommended adds for Phase 7 evaluation: `agentlans/literary-genre-examples` (86 fiction/nonfiction genres, paragraph-level — too short for full-book features but useful as auxiliary labels) and `TheBritishLibrary/blbooksgenre` (~49k 18th–19th century titles, fiction/nonfiction only — title-level metadata to enrich Gutenberg matches). |
+| **Open Library bulk dumps** | HTTP download | Subject-tagged metadata at scale | Use **bulk JSON dumps** (monthly), not the API (rate-limited and discouraged for bulk). Cross-reference with Gutenberg IDs to inject subject tags. No Python library required — `requests` + `ijson` for streaming parse. |
+| **Internet Archive `internetarchive` CLI/SDK** | `internetarchive>=3.5` (new, optional) | Public-domain full-text beyond Gutenberg | Only if Phase 7 concludes the corpus needs older/rarer fiction. Optional install, not a default dep. |
 
-- **GUDHI**: Comprehensive but verbose API designed for computational geometry researchers, not ML pipelines. No scikit-learn-compatible transformer interface. No native weighted Rips support matching giotto-tda's convenience.
-- **ripser.py alone**: Fast for unweighted Rips, but weighted filtration support is less mature than giotto-tda's `WeightedRipsPersistence`. Would require manual weight handling.
-- **ripser++**: GPU-accelerated but harder to install, and giotto-ph matches or exceeds it on multi-core CPU.
+> **Phase 7 deliverable, not Phase 8 commitment:** Add `datasets` to requirements only if Phase 7 chooses an HF-hosted corpus. Keep `internetarchive` as a documented option, not an install.
 
-### Gotchas
+### Development Tools
 
-- Vietoris-Rips is O(n^2) to O(n^3) in point count. For a 10k-word vocabulary, even after TF-IDF filtering to top-k words per book, expect the Rips computation to take seconds to minutes per book depending on `max_edge_length` (epsilon_max). This MUST be a configurable parameter with a sane default.
-- H2 (2-dimensional holes / voids) computation is much more expensive than H0/H1. Consider making H2 optional or computing it only on demand.
-- Memory usage scales with the number of simplices. Set `max_edge_length` conservatively to avoid blowup.
+| Tool | Purpose | Notes |
+|------|---------|-------|
+| `pytest-benchmark` (optional dev) | Measure H₂ vs H₁ runtime regression | Add only if Phase 6 needs reproducible perf numbers for the H₂ feature flag decision. Skip if visual eyeballing suffices. |
 
-### Installation
+---
+
+## Installation (incremental — apply on top of v1)
 
 ```bash
-pip install giotto-tda==0.6.2 persim==0.3.8
-```
+# Backend (Python) — must add
+pip install shap==0.51.0
 
-### Sources
+# Backend — conditional (Phase 7 decides)
+pip install "datasets>=3.0"          # iff HF corpus chosen
+pip install "internetarchive>=3.5"   # iff IA corpus chosen
 
-- [giotto-tda PyPI](https://pypi.org/project/giotto-tda/)
-- [WeightedRipsPersistence docs](https://giotto-ai.github.io/gtda-docs/latest/modules/generated/homology/gtda.homology.WeightedRipsPersistence.html)
-- [giotto-ph benchmarks](https://arxiv.org/abs/2107.05412)
-- [persim PersistenceImager docs](https://persim.scikit-tda.org/en/latest/reference/stubs/persim.PersistenceImager.html)
-- [ripser.py PyPI](https://pypi.org/project/ripser/)
-
----
-
-## Word2Vec
-
-**Recommendation: gensim 4.4.0**
-**Confidence: HIGH**
-
-### Why gensim
-
-gensim is the standard Python library for Word2Vec and gives the most control over skip-gram parameters:
-
-- `sg=1` for skip-gram (vs. CBOW)
-- `vector_size`: embedding dimensionality (directly controls the N-D space for persistent homology)
-- `window`: context window size
-- `min_count`: minimum word frequency threshold
-- `negative`: number of negative samples
-- `ns_exponent`: negative sampling distribution exponent
-- `alpha` / `min_alpha`: learning rate schedule
-- `epochs`: training iterations
-- `workers`: parallel training threads
-
-All of these should be exposed as UI parameters (with sane defaults) since the project requires "all numerical parameters exposed as live UI controls."
-
-gensim 4.4.0 supports Python 3.12, ships with precompiled wheels, and has a stable, well-documented API.
-
-### What NOT to use
-
-- **fastText (via gensim or Facebook's fasttext)**: Designed for character n-gram subword embeddings. Useful for morphologically rich languages and OOV words -- neither is relevant here. English corpus, closed vocabulary. FastText's subword information adds model size and training time with no benefit for this use case.
-- **PyTorch nn.Embedding + custom skip-gram loop**: Gives maximum control but requires implementing the entire training loop (negative sampling, subsampling, learning rate decay). Weeks of work for no practical benefit over gensim's battle-tested implementation.
-
-### Gotchas
-
-- gensim's Word2Vec trains in-memory. For a corpus of ~50-200 books, this is fine. For thousands of books, monitor RAM.
-- The `workers` parameter benefits from setting `PYTHONHASHSEED=0` for reproducibility.
-- Model serialization: use `model.save()` / `Word2Vec.load()` for full model (allows continued training), or `model.wv.save_word2vec_format()` for export.
-- Re-training on parameter change is expensive. Cache trained models keyed by parameter hash.
-
-### Installation
-
-```bash
-pip install gensim==4.4.0
-```
-
-### Sources
-
-- [gensim Word2Vec docs](https://radimrehurek.com/gensim/models/word2vec.html)
-- [gensim PyPI](https://pypi.org/project/gensim/)
-
----
-
-## TF-IDF
-
-**Recommendation: scikit-learn TfidfVectorizer (part of scikit-learn 1.8.x)**
-**Confidence: HIGH**
-
-### Why scikit-learn
-
-`TfidfVectorizer` is the industry standard. It handles tokenization, vocabulary building, and TF-IDF computation in one pass. Key parameters to expose:
-
-- `max_features`: vocabulary size cap (critical performance lever for persistent homology downstream)
-- `max_df` / `min_df`: document frequency thresholds
-- `sublinear_tf`: whether to apply `1 + log(tf)` (recommended: True)
-- `norm`: L1 or L2 normalization
-- `use_idf`, `smooth_idf`: IDF computation variants
-
-The output sparse matrix can be converted to per-book weight vectors over the shared vocabulary, which then weight the Word2Vec point cloud.
-
-### Critical architectural note
-
-TF-IDF must be computed WITHOUT genre labels (per PROJECT.md constraints). This means fitting `TfidfVectorizer` on the entire corpus treating each book as a document, NOT per-genre. The IDF component reflects corpus-wide document frequency, making high-TF-IDF words book-distinctive rather than genre-distinctive. This prevents circular dependency.
-
-### Gotchas
-
-- The default tokenizer strips single-character words and applies basic lowercasing. For literary text, you may want a custom `tokenizer` or `preprocessor` to handle contractions, proper nouns, etc.
-- `TfidfVectorizer` returns sparse matrices. When constructing per-book weighted point clouds, you need to convert to dense for the subset of words that appear in each book.
-- Vocabulary must be shared between the TF-IDF vectorizer and the Word2Vec model. Build Word2Vec first, then restrict TF-IDF vocabulary to words present in the Word2Vec model.
-
-### Installation
-
-Already included with scikit-learn:
-```bash
-pip install scikit-learn>=1.8
-```
-
----
-
-## Dimensionality Reduction (for Visualization Only)
-
-**Recommendation: scikit-learn (PCA, Kernel PCA) + umap-learn (UMAP) + openTSNE (t-SNE)**
-**Confidence: HIGH**
-
-### PCA and Kernel PCA: scikit-learn
-
-`sklearn.decomposition.PCA` and `sklearn.decomposition.KernelPCA` are the only reasonable choices. Fast, well-tested, deterministic (PCA) or configurable (Kernel PCA with RBF/poly/cosine kernels).
-
-For Kernel PCA, expose: `kernel` type, `gamma`, `degree`, `n_components=3`.
-
-### UMAP: umap-learn 0.5.x
-
-umap-learn is the standard UMAP implementation. Completes embedding of 70k samples in under a minute vs. 45 minutes for sklearn t-SNE. Key parameters to expose:
-
-- `n_neighbors`: local vs. global structure balance
-- `min_dist`: how tightly points cluster
-- `metric`: distance metric (cosine recommended for word embeddings)
-- `n_components=3`
-
-Install `pynndescent` alongside for optimal nearest-neighbor performance on multicore.
-
-### t-SNE: openTSNE 1.0.x
-
-openTSNE is 20x faster than sklearn's TSNE implementation. Uses interpolation-based approximation (FIt-SNE) instead of Barnes-Hut, scaling much better to large vocabularies. Key parameters to expose:
-
-- `perplexity`: local neighborhood size
-- `learning_rate`: optimization step size
-- `n_iter`: iteration count
-- `metric`: distance metric
-
-### What NOT to use
-
-- **sklearn.manifold.TSNE**: Unacceptably slow for 10k+ points. Barnes-Hut approximation does not scale. openTSNE is a drop-in replacement with 20x speedup.
-
-### Gotchas
-
-- All 3D projections are for visualization only. Persistent homology MUST run in full N-D space, never on projected coordinates. This is a mathematical invariant of the project.
-- UMAP and t-SNE are stochastic. Set `random_state` for reproducibility, but warn users that re-runs may produce different layouts.
-- Kernel PCA with RBF kernel on 100k points can be slow (O(n^2) kernel matrix). Consider subsampling for interactive use.
-- UMAP requires `numba`, which adds to dependency weight but is already a transitive dependency of several other packages.
-
-### Installation
-
-```bash
-pip install umap-learn>=0.5.7 pynndescent openTSNE>=1.0
-# scikit-learn already installed
-```
-
-### Sources
-
-- [umap-learn performance](https://umap-learn.readthedocs.io/en/latest/performance.html)
-- [openTSNE GitHub](https://github.com/pavlin-policar/openTSNE)
-- [openTSNE 20x speedup](https://blog.dailydoseofds.com/p/effortlessly-scale-tsne-to-millions)
-
----
-
-## SVM
-
-**Recommendation: scikit-learn SVC with RBF kernel**
-**Confidence: HIGH**
-
-### Why scikit-learn SVC
-
-`sklearn.svm.SVC(kernel='rbf')` is the right tool. SVM with RBF kernel is specifically designed for:
-- Small datasets (relies only on support vectors near decision boundary)
-- High-dimensional feature vectors (the concatenated persistence image + word-cluster distribution vector)
-- Nonlinear decision boundaries in feature space
-
-Key parameters to expose:
-- `C`: regularization (higher = less regularization, risk of overfitting)
-- `gamma`: RBF kernel bandwidth ('scale' or 'auto' or explicit float)
-- `class_weight`: 'balanced' for imbalanced genre distributions
-
-### Cross-validation
-
-With small datasets (5-20 books per genre), use `LeaveOneOut` cross-validation as specified in PROJECT.md. `sklearn.model_selection.LeaveOneOut` + `cross_val_score` handles this.
-
-### Gotchas
-
-- `probability=True` enables Platt scaling for confidence scores but uses internal CV, producing slightly different results than `predict()`. On very small datasets, probability estimates may be unreliable -- document this.
-- Feature normalization is critical before SVM. Both the persistence image vector and word-cluster distribution vector must be independently normalized (L2 or StandardScaler) before concatenation with alpha weighting.
-- Use `C-ordered numpy.ndarray` with `dtype=float64` for optimal SVC performance.
-- GridSearchCV over `C` and `gamma` is essential. Use `StratifiedKFold` inside `GridSearchCV` (not LeaveOneOut, which is too expensive for hyperparameter search).
-
-### Installation
-
-Already included with scikit-learn.
-
----
-
-## Backend Framework
-
-**Recommendation: FastAPI 0.135.x**
-**Confidence: HIGH**
-
-### Why FastAPI
-
-FastAPI wins on every criterion for this project:
-
-1. **Native async**: Built on ASGI (Starlette), handles concurrent requests without blocking. Critical when multiple users trigger recomputation simultaneously.
-2. **WebSocket support**: Native `@app.websocket()` decorator. Required for live parameter updates -- when a user drags a slider, the browser sends a WebSocket message, server recomputes, streams result back. No polling.
-3. **Background tasks**: Built-in `BackgroundTasks` for lightweight work, plus clean integration with arq for heavy computation.
-4. **File upload**: `UploadFile` class with streaming support for book text file uploads.
-5. **Auto-generated API docs**: OpenAPI/Swagger UI out of the box -- useful during development.
-6. **Type validation**: Pydantic models validate all parameter inputs automatically.
-7. **Performance**: Benchmarks at 15-20k req/s vs Flask's 2-3k req/s. Handles 3,200 concurrent WebSocket connections per instance.
-
-### What NOT to use
-
-- **Flask**: WSGI-based. Async support is bolted on (runs async in a per-request loop). WebSocket requires Flask-SocketIO (Socket.IO protocol, not native WebSocket). Benchmarks at 2,100 concurrent WebSocket connections vs. FastAPI's 3,200.
-- **Django**: Full-featured ORM, admin panel, auth system -- none of which this project needs. Django Channels adds WebSocket support but with significant complexity. Overkill.
-
-### Architecture pattern
-
-```
-FastAPI app
-  /api/upload          POST   - Upload book text file
-  /api/train           POST   - Trigger Word2Vec training
-  /api/compute/{book}  POST   - Trigger persistent homology for a book
-  /api/classify/{book} GET    - Get SVM classification result
-  /api/project         GET    - Get projection data (PCA/UMAP/tSNE)
-  /ws/parameters       WS     - Live parameter updates + result streaming
-  /ws/progress         WS     - Computation progress updates
-```
-
-### Installation
-
-```bash
-pip install "fastapi[standard]>=0.135"
-```
-
-The `[standard]` extra includes uvicorn, pydantic, and other essentials.
-
-### Sources
-
-- [FastAPI vs Flask 2025](https://syntha.ai/blog/flask-vs-fastapi-a-complete-2025-comparison-for-python-web-development)
-- [FastAPI PyPI](https://pypi.org/project/fastapi/)
-
----
-
-## Task Queue
-
-**Recommendation: arq 0.26.x**
-**Confidence: MEDIUM**
-
-### Why arq
-
-arq is purpose-built for asyncio Python applications:
-
-1. **Native async**: Designed from the ground up for `asyncio`, making it a natural extension of FastAPI's event loop. No bridging between sync and async worlds.
-2. **Redis-backed**: Simple, fast, reliable message broker. Redis is also useful for caching computed results (projection data, persistence diagrams).
-3. **Lightweight**: Minimal configuration. Define async worker functions, enqueue jobs, done.
-4. **Result storage**: Built-in result backend in Redis -- retrieve job results by ID.
-
-### Why not Celery
-
-Celery is battle-tested and scales to millions of tasks, but:
-- Built for synchronous code. Using it with FastAPI's async requires `sync_to_async` bridges.
-- Heavier operational overhead (needs RabbitMQ or Redis, Flower for monitoring, complex configuration).
-- For this project's scale (tens of concurrent users, not thousands), arq's simplicity wins.
-
-### Why the confidence is MEDIUM
-
-arq is less battle-tested than Celery. If the project scales to heavy concurrent usage, Celery's retry mechanisms, task routing, and monitoring (Flower) become more valuable. For the initial deployment targeting a portfolio/demo project, arq is the right choice. Migrate to Celery only if arq's limitations surface.
-
-### Architecture
-
-```
-FastAPI server --> enqueue job --> Redis --> arq worker process
-     ^                                          |
-     |______ WebSocket progress update _________|
-```
-
-The arq worker runs as a separate process. Heavy computation (Word2Vec training, persistent homology, SVM training) happens in the worker. The FastAPI server streams progress updates to the browser via WebSocket.
-
-### Installation
-
-```bash
-pip install arq>=0.26
-# Redis required (managed Redis on Fly.io via Upstash or similar)
-```
-
-### Sources
-
-- [arq vs Celery for FastAPI](https://medium.com/@komalbaparmar007/fastapi-background-tasks-vs-celery-vs-arq-picking-the-right-asynchronous-workhorse-b6e0478ecf4a)
-- [FastAPI + arq integration](https://davidmuraya.com/blog/fastapi-background-tasks-arq-vs-built-in/)
-
----
-
-## 3D Visualization
-
-**Recommendation: Three.js via react-three-fiber (R3F)**
-**Confidence: HIGH**
-
-### Why Three.js / react-three-fiber
-
-This project has three distinct visualization needs, and Three.js handles all of them:
-
-**1. Interactive 3D scatter plots (10k-100k word points)**
-- Use `InstancedMesh` or `Points` (WebGL `gl.POINTS`) for rendering 100k+ points at 60fps.
-- `InstancedMesh` allows per-point color, size, and opacity control -- required for TF-IDF brightness/size encoding and genre highlighting.
-- react-three-fiber wraps Three.js in React's component model, making it natural to bind point properties to React state (which is driven by parameter sliders).
-
-**2. Animated Vietoris-Rips filtration**
-- Edges appearing as epsilon increases: render with `LineSegments` geometry, dynamically adding edges as the epsilon slider moves.
-- Three.js gives direct control over geometry buffers for efficient edge addition/removal.
-- No other library provides this level of control for custom animated geometric primitives.
-
-**3. Persistence image heatmaps**
-- 2D heatmaps can be rendered as `PlaneGeometry` with a `DataTexture` mapped to a color gradient, or more simply as a 2D canvas overlay using a lightweight charting library (e.g., a simple canvas-based heatmap).
-
-### Why not Plotly.js
-
-Plotly.js renders 3D scatter plots via WebGL and handles 100k points with `Scatter3d`. However:
-- **No custom geometry**: Cannot render arbitrary edge sets for Vietoris-Rips animation. Plotly's 3D is limited to scatter, surface, mesh, and line traces.
-- **Limited interactivity**: Camera controls and hover tooltips are good, but no programmatic animation of individual geometric elements.
-- **WebGL context limits**: Plotly can consume multiple WebGL contexts per figure. Browsers limit to 8-16 contexts total. With multiple visualization panels (scatter + Rips + heatmap), this is a real constraint.
-
-Plotly is excellent for static scientific plots but wrong for this project's interactive, animated requirements.
-
-### Why not Babylon.js or deck.gl
-
-- **Babylon.js**: Full game engine. Massive bundle size, steep learning curve, designed for 3D scenes with physics/lighting/materials. Overkill for data visualization.
-- **deck.gl**: Designed for geospatial data on maps. Wrong abstraction for word embedding space visualization.
-
-### react-three-fiber specifics
-
-react-three-fiber (R3F) is the React renderer for Three.js. Benefits:
-- Declarative: 3D scene is React components, state changes trigger re-renders of only affected objects.
-- `@react-three/drei` provides pre-built helpers: `OrbitControls` (camera), `Html` (DOM overlays in 3D), `Instances` (efficient instanced rendering).
-- `@react-three/postprocessing` for effects if needed (bloom for highlighted points).
-- Hooks: `useFrame` for animation loops, `useThree` for renderer/camera access.
-
-### Performance strategy for 100k points
-
-```javascript
-// Use InstancedMesh for per-point control (color, size, opacity)
-<instancedMesh args={[geometry, material, pointCount]}>
-  // Update instanceMatrix and instanceColor buffers directly
-  // Trigger needsUpdate on buffer attributes, not React re-render
-</instancedMesh>
-```
-
-For the Vietoris-Rips edge animation, use `BufferGeometry` with pre-allocated edge buffer and toggle visibility via draw range.
-
-### Installation
-
-```bash
-npm install three @react-three/fiber @react-three/drei
-```
-
-### Sources
-
-- [R3F point cloud example](https://codesandbox.io/s/three-fiber-point-cloud-6q2wh)
-- [Three.js point cloud visualization](https://betterprogramming.pub/point-clouds-visualization-with-three-js-5ef2a5e24587)
-- [react-three-fiber docs](https://r3f.docs.pmnd.rs/getting-started/examples)
-
----
-
-## Frontend Framework
-
-**Recommendation: React 19.x**
-**Confidence: HIGH**
-
-### Why React
-
-For this specific project, React wins over Svelte despite Svelte's raw performance advantages:
-
-1. **react-three-fiber**: The best Three.js integration in any framework. Svelte has `threlte`, but R3F is more mature, better documented, and has a larger ecosystem (`@react-three/drei`, `@react-three/postprocessing`).
-2. **Parameter-heavy UI**: React's state management (useState/useReducer + context, or Zustand for global state) handles complex interdependent parameter state well. When one slider changes, only dependent visualizations re-render.
-3. **Ecosystem**: Pre-built slider/input components (Radix UI, shadcn/ui), WebSocket hooks (react-use-websocket), state management (Zustand).
-4. **Concurrent rendering**: React 19's concurrent features allow non-blocking UI updates while heavy state changes propagate. When a user drags a slider rapidly, intermediate states can be batched.
-
-### Supporting libraries
-
-| Library | Purpose |
-|---------|---------|
-| Zustand | Global state management for parameters + computed results |
-| react-use-websocket | WebSocket connection to FastAPI backend |
-| @radix-ui/react-slider | Accessible slider components |
-| shadcn/ui | Component library built on Radix primitives |
-| Vite | Build tool (fast HMR, ESM-native) |
-| TypeScript | Type safety across parameter definitions and API contracts |
-
-### What NOT to use
-
-- **Svelte**: Better raw DOM performance and smaller bundles, but `threlte` (Svelte's Three.js wrapper) is less mature than R3F. The Three.js integration is the deciding factor here.
-- **Vue**: No compelling advantage over React for this use case. `TresJS` (Vue Three.js wrapper) exists but is even less mature than threlte.
-
-### Installation
-
-```bash
-npm create vite@latest frontend -- --template react-ts
+# Frontend (npm) — must add
 cd frontend
-npm install zustand react-use-websocket @radix-ui/react-slider
-npm install three @react-three/fiber @react-three/drei
-npm install -D @types/three
+npm install react-joyride@^3.1.0
 ```
 
-### Sources
-
-- [Svelte vs React 2025](https://dev.to/paulthedev/svelte-vs-react-in-2025-the-ultimate-showdown-for-future-proof-frontend-development-5694)
-- [react-three-fiber](https://r3f.docs.pmnd.rs/)
-
----
-
-## Deployment
-
-**Recommendation: Fly.io**
-**Confidence: MEDIUM**
-
-### Why Fly.io
-
-1. **Separate web + worker processes**: Fly.io natively supports running multiple process types (web server + arq worker) as separate machines within the same app. This is the architecture this project needs.
-2. **Pay-per-second compute**: Background workers only cost money when actively computing. For a demo/portfolio project with sporadic usage, this is significantly cheaper than always-on instances.
-3. **Persistent volumes**: $0.15/GB/month for storing trained models, corpus data, and cached results. Models persist across deployments.
-4. **Redis via Upstash**: Fly.io integrates with Upstash for managed Redis (arq's message broker). Free tier covers low-traffic usage.
-5. **Docker-based**: Deploy any Python environment via Dockerfile. No platform-specific buildpack constraints.
-
-### Pricing estimate (low-traffic demo)
-
-| Resource | Spec | Est. Cost/mo |
-|----------|------|-------------|
-| Web server | shared-cpu-1x, 512MB | ~$3.50 |
-| Worker (on-demand) | shared-cpu-2x, 1GB | ~$5-15 (usage-based) |
-| Persistent volume | 3GB | $0.45 |
-| Redis (Upstash) | Free tier | $0 |
-| **Total** | | **~$10-20/mo** |
-
-### Why not alternatives
-
-- **Render**: Simpler but background workers run on always-on instances (no scale-to-zero). More expensive for sporadic compute. Free tier spins down after 15 min inactivity with cold start delays.
-- **Railway**: Usage-based pricing (good), but less control over machine specs and networking. Better for simpler apps.
-- **AWS**: Maximum flexibility but massive operational overhead for a single-developer project. ECS/Fargate + SQS + S3 is the right architecture but wrong complexity level.
-
-### Why the confidence is MEDIUM
-
-Fly.io has had reliability issues reported in 2024-2025 (occasional outages, networking problems). For a portfolio/demo project this is acceptable. For production-critical deployment, Railway or AWS would be safer. Monitor Fly.io's status page.
-
-### Deployment architecture
-
+Pin in `requirements.txt`:
 ```
-Fly.io
-  Machine 1: FastAPI web server (uvicorn)
-    - Serves API + WebSocket connections
-    - Enqueues heavy jobs to arq via Redis
-    - Serves static frontend (or separate CDN)
-  
-  Machine 2: arq worker (scales to 0 when idle)
-    - Word2Vec training
-    - Persistent homology computation
-    - SVM training/prediction
-    - Writes results to Redis + persistent volume
-  
-  Upstash Redis:
-    - arq message broker
-    - Result cache (projections, persistence diagrams)
-  
-  Persistent Volume (3GB):
-    - Trained Word2Vec models
-    - Bundled corpus
-    - Cached persistence diagrams
+shap==0.51.0
 ```
 
-### Sources
-
-- [Fly.io pricing](https://fly.io/pricing)
-- [Fly.io Python async workers](https://fly.io/blog/python-async-workers-on-fly-machines/)
-- [Platform comparison](https://codeyaan.com/blog/top-5/railway-vs-render-vs-flyio-comparison-2624)
-
----
-
-## Full Dependency Summary
-
-### Python (backend)
-
-```bash
-# Core ML/TDA pipeline
-pip install gensim==4.4.0
-pip install scikit-learn>=1.8
-pip install giotto-tda==0.6.2
-pip install persim==0.3.8
-pip install numpy scipy
-
-# Dimensionality reduction
-pip install umap-learn>=0.5.7 pynndescent
-pip install openTSNE>=1.0
-
-# Web framework + task queue
-pip install "fastapi[standard]>=0.135"
-pip install arq>=0.26
-pip install redis
-
-# Utilities
-pip install python-multipart  # file uploads
-pip install orjson             # fast JSON serialization for large arrays
-```
-
-### JavaScript (frontend)
-
-```bash
-npm install react react-dom
-npm install three @react-three/fiber @react-three/drei
-npm install zustand
-npm install react-use-websocket
-npm install @radix-ui/react-slider
+Pin in `frontend/package.json` dependencies:
+```json
+"react-joyride": "^3.1.0"
 ```
 
 ---
 
-## Critical Warnings
+## Integration Points with Existing Code
 
-### 1. Vietoris-Rips computational explosion
+### Backend
 
-The single biggest risk in this project. Rips complex construction on N points is O(n^2) for H0, O(n^3) for H1, and worse for H2. With a 10k-word vocabulary:
-- **Mitigation 1**: TF-IDF filtering to top-k words per book (k=200-500 is a reasonable range)
-- **Mitigation 2**: Configurable `max_edge_length` (epsilon_max) to limit simplex construction
-- **Mitigation 3**: Make H2 computation optional (off by default)
-- **Mitigation 4**: Progress reporting via WebSocket so users know computation is running, not hung
-- **Without these mitigations**: A single persistent homology computation could take 10+ minutes or exhaust server memory.
+| New code | Lives in | Integrates with |
+|----------|----------|-----------------|
+| H₂ computation | `backend/pipeline/homology.py` — change `homology_dims` default from `[1]` to `[0,1,2]` behind config flag | Existing `ripser(maxdim=max_dim, thresh=epsilon_max)` call; content-addressed cache key already hashes params so cache invalidates automatically. |
+| Top-N + calibrated probabilities | `backend/pipeline/classify.py` — wrap `SVC` in `CalibratedClassifierCV(method='sigmoid', cv=LeaveOneOut())` | Existing classify endpoint returns one prediction; extend to return top-N sorted by `predict_proba`. SSE progress unchanged. |
+| Permutation importance | new `backend/pipeline/explain.py` | Fits on the existing feature matrix from `features.py`; called by a new `/api/explain/{book_id}` route. |
+| SHAP per-prediction | same `backend/pipeline/explain.py` | Uses `shap.KernelExplainer(model.predict_proba, shap.kmeans(X_train, k=10))` — k=10 background keeps it tractable on the small corpus. Cached per upload via existing sha256 cache. |
+| Nearest training books | same `backend/pipeline/explain.py` | `NearestNeighbors(metric='cosine')` fit on training feature matrix; `kneighbors` on uploaded book's feature vector. |
+| Corpus metadata endpoint | `backend/api/app.py` — new `/api/corpus` route | Reads `corpus/books.yaml`; unblocks BookSlider stub. No new lib. |
 
-### 2. Word2Vec retraining is expensive
+### Frontend
 
-When a user changes Word2Vec parameters (vector_size, window, etc.), the entire model must retrain. This invalidates ALL downstream computations (TF-IDF weighting, point clouds, persistent homology, projections, SVM).
-- **Mitigation**: Cache trained models keyed by parameter hash. Warn users that Word2Vec parameter changes trigger full pipeline recomputation.
-- **UX**: Clearly separate "model parameters" (expensive to change) from "visualization parameters" (cheap to change).
-
-### 3. WebSocket state management complexity
-
-Live parameter updates via WebSocket create complex state synchronization between browser and server. A user dragging a slider rapidly can flood the server with recomputation requests.
-- **Mitigation**: Debounce slider inputs (200-300ms). Cancel in-flight computations when new parameters arrive. Use request IDs to discard stale results.
-
-### 4. Persistence image + word-cluster vector normalization
-
-The alpha-weighted concatenation of persistence image vectors and word-cluster distribution vectors is mathematically sensitive to normalization. If one vector dominates in magnitude, the SVM will effectively ignore the other.
-- **Mitigation**: Independently L2-normalize (or StandardScaler) each vector before concatenation. Expose alpha as a UI parameter so users can see the effect.
-
-### 5. Three.js memory leaks
-
-Three.js geometries, materials, and textures must be explicitly disposed when no longer needed. React-three-fiber helps with automatic cleanup on unmount, but custom buffer geometries (used for Vietoris-Rips edges) need manual disposal.
-- **Mitigation**: Use R3F's `useEffect` cleanup functions. Profile memory in Chrome DevTools during development.
-
-### 6. Python 3.12, not 3.13
-
-Python 3.13 has compatibility issues with some scientific computing packages (gensim has open issues for 3.13). Stick with 3.12 for maximum ecosystem compatibility. All recommended packages have 3.12 wheels.
+| New code | Lives in | Integrates with |
+|----------|----------|-----------------|
+| Theme toggle | `frontend/src/stores/uiStore.ts` (extend), `frontend/src/components/nav/ThemeToggle.tsx` (new) | Adds `theme: 'light' \| 'dark'` to existing Zustand store; toggles `.dark` on `<html>`. |
+| Tailwind v4 dark variant | `frontend/src/index.css` | Add `@custom-variant dark (&:where(.dark, .dark *));` at top. Existing utility classes (`bg-slate-50` etc.) gain `dark:` variants in components. |
+| Onboarding tour | `frontend/src/components/onboarding/Tour.tsx` (new) | Wraps `<Joyride>` with steps targeting existing element refs in `App.tsx`, sidebar nav, and 3D canvas. Stores "tour seen" in `localStorage` via existing Zustand persist pattern. |
+| Top-N display | `frontend/src/components/sidebar/Prediction.tsx` (extend) | Renders the new `top_n: [{genre, probability}]` field from `/api/classify`. |
+| "Why this genre" panel | `frontend/src/components/sidebar/Explain.tsx` (new) | Calls `/api/explain/{book_id}` via React Query; renders feature-importance bar chart (existing Tailwind primitives — no new chart lib needed), nearest-book chips, and top contributing words from SHAP local explanation. |
+| H₂ heatmap tab | `frontend/src/components/topology/PersistenceHeatmap.tsx` (extend) | Existing H₀/H₁ tab pattern; same persistence-image rendering, just an extra `dim=2` tab. Fixes the broken tooltip while in this file. |
+| Persistence-diagram dot scaling | `frontend/src/components/topology/PersistenceDiagram.tsx` | Use `Math.log1p(count)`-based radius or persistence-magnitude scaling. No new dep. |
 
 ---
 
-*Stack research: 2026-04-11*
+## Alternatives Considered
+
+| Recommended | Alternative | When to Use Alternative |
+|-------------|-------------|-------------------------|
+| `shap.KernelExplainer` | `LIME` (`lime` PyPI) | If SHAP's k-means background sampling produces unstable values on the small corpus, LIME's per-instance local surrogate model is more robust at the cost of explanation consistency. Both have known limitations on RBF SVMs — they share the same underlying problem. |
+| `shap` | `eli5` | If only feature-name + weight is needed (no Shapley decomposition). eli5 is lighter but mostly unmaintained since 2022 — not recommended for new work. |
+| `react-joyride` | `driver.js` | If bundle size matters more than React-native ergonomics. driver.js is smaller and framework-agnostic but loses the React component integration that lets tour steps reference R3F canvas overlay refs cleanly. |
+| `react-joyride` | `shepherd.js` | If a non-React maintenance path is desired. **But:** shepherd.js is AGPL — would force this repo to AGPL or require a commercial licence. Reject. |
+| `CalibratedClassifierCV` wrap | Built-in `SVC(probability=True)` only | If LibSVM's internal Platt scaling produces well-calibrated outputs on this dataset, the wrap is redundant. Decide empirically in Phase 9 by inspecting reliability diagrams. |
+| `ripser maxdim=2` | `giotto-tda WeightedRipsPersistence` with `[0,1,2]` | If ripser H₂ runtime exceeds ~60s per book at typical TF-IDF top-k counts. giotto-ph parallel backend is faster on multicore — but adds binary-wheel risk on Railway Docker base. |
+| Hugging Face `datasets` for corpus | Stay with `gutenbergpy` + manual genre tagging | If Phase 7 finds Gutenberg's LCC subject headings, augmented by Open Library subject tags, give clean enough genre labels. Saves a dependency. |
+
+---
+
+## What NOT to Use (anti-recommendations — v1 already covers these)
+
+| Avoid | Why | Use Instead |
+|-------|-----|-------------|
+| `next-themes` | Next.js-specific patterns and SSR-aware hydration; this is a Vite SPA with no SSR. Adding it pulls Next.js context expectations. | Plain Zustand slice + `localStorage.theme` + class toggle on `<html>`. |
+| Any new state-management library (Redux Toolkit, Jotai, Recoil) | Zustand 5 + React Query already handle global and server state for v1. v2 features don't introduce categorically new state shapes. | Extend existing `useUiStore` and `useGenreStore`. |
+| Any new chart library (Recharts, Plotly, Chart.js, Victory) for the explainability panel | Bar charts for feature importance are trivially rendered with existing Tailwind utility classes (`<div style={{width: '${pct}%'}}>`). Adding a chart lib for one panel pulls 100–400 KB. | Tailwind utility-class bars. |
+| `tw-colors`, `daisyUI`, theme-token plugins | Tailwind v4 has CSS-first themes via `@theme {}` blocks — design tokens go straight into `index.css`. Plugin ecosystem fragmentation is the v3 problem v4 solved. | `@theme { --color-primary: ...; }` and `dark:` variants. |
+| `react-tour` (the original, archived 2023) | Unmaintained, last release 2023, React 18 issues. | `react-joyride` v3. |
+| `intro.js`, `shepherd.js` | AGPL licence — copyleft incompatible with current repo licensing assumptions. | `react-joyride` (MIT) or `driver.js` (MIT). |
+| `tslearn`, `tda-tools`, other TDA wrappers | v1 already pairs `ripser` for VR + `persim` for persistence images, and falls back to `giotto-tda`. Three TDA stacks is two too many. | Use what's installed. |
+| Migrating from Railway to Fly.io | v1 deploy is stable on Railway with the GitHub Release model-asset pattern. v2 introduces no infra requirement that Railway can't meet. | Stay on Railway. |
+| Migrating from SSE back to WebSocket | The v1 SSE migration solved a Railway edge issue. v2 has no WebSocket-only need. | Stay on SSE. |
+| `lime` alongside `shap` | One model-agnostic local explainer is enough; both share the same instability issue on RBF SVMs. | Pick `shap` only. |
+| Adding `pandas` for new features | v1 uses `numpy` + `scipy` + `sklearn` directly. No tabular operations in v2 require pandas. | numpy arrays + plain dicts. |
+
+---
+
+## Stack Patterns by Variant
+
+**If ripser H₂ runs within the per-book SSE-progress budget (~60s) on the deployed corpus:**
+- Use `ripser(maxdim=2)` directly
+- Because no new dependency, same code path, same cache key shape
+- Decision check: Phase 6 perf measurement on the 15-book v1 corpus
+
+**If ripser H₂ exceeds budget or OOMs on Railway's 1GB worker:**
+- Switch `backend/pipeline/homology.py` to `gtda.homology.WeightedRipsPersistence`
+- Because `giotto-ph` parallel backend halves typical wall-clock at the cost of binary-wheel install complexity
+- Apply more aggressive TF-IDF top-k filtering (e.g. 200 → 150) before considering H₂ opt-out per book
+
+**If Phase 9 reliability diagram shows well-calibrated `SVC(probability=True)`:**
+- Skip `CalibratedClassifierCV` wrap
+- Because the LibSVM-internal Platt scaling is sufficient and one less moving part
+
+**If Phase 9 shows saturated / poorly-calibrated probabilities:**
+- Wrap with `CalibratedClassifierCV(SVC(...), method='sigmoid', cv=LeaveOneOut())`
+- Because LOOCV maximises training-data usage for the small corpus and sigmoid handles the typical SVM score distribution
+
+**If SHAP runtime per upload exceeds 10s with k=10 background:**
+- Reduce to `shap.kmeans(X_train, k=5)`
+- Or fall back to `permutation_importance` global + nearest-neighbour local "why" only
+- Because UI responsiveness on the classify flow trumps Shapley fidelity for a portfolio demo
+
+**If Phase 7 corpus research concludes Gutenberg LCC tags are insufficient:**
+- Add `datasets>=3.0`
+- Pull `TheBritishLibrary/blbooksgenre` for title-level fiction labels; cross-join with Gutenberg author/title for subject enrichment
+- Avoid pulling full-text from HF datasets — keep full text from Gutenberg for licence clarity
+
+---
+
+## Version Compatibility
+
+| Package A | Compatible With | Notes |
+|-----------|-----------------|-------|
+| `shap==0.51.0` | `scikit-learn>=1.3,<2.0`, `numpy>=1.24`, Python `3.11`–`3.14` | v0.51 supports current sklearn line. Matches our v1 stack. |
+| `react-joyride@^3.1.0` | `react@^18` and `react@^19`, TypeScript 5+, Vite 5/6 | Confirmed working with `react@18.3.1` + `vite@6.3.5` (our stack). v3 uses Floating UI internally — no peer-dep conflicts with `@floating-ui/react` if added later. |
+| `ripser@0.6.14` `maxdim=2` | unchanged from v1 | Wheels for Python 3.12 (our runtime) ship. No code change beyond parameter. |
+| `tailwindcss@4.2.2` `@custom-variant` | unchanged from v1 | v4-native syntax; no plugin, no config key. |
+| `CalibratedClassifierCV` + `LeaveOneOut` cv | `scikit-learn>=1.3` | API stable since 1.0; uses `ensemble=True` by default which fits a calibrator per CV fold and averages — fine for small corpora. |
+| `datasets>=3.0` (if added) | `numpy<3`, `pyarrow>=15`, Python 3.9+ | Pyarrow dependency adds ~80 MB to the wheel set — only add if Phase 7 commits. |
+
+---
+
+## Confidence Calibration
+
+| Recommendation | Confidence | Rationale |
+|----------------|------------|-----------|
+| `ripser maxdim=2` for H₂ | HIGH | Trivial parameter change; documented behaviour; only risk is runtime, which is empirically measurable in Phase 6. |
+| `react-joyride@^3.1.0` | HIGH | Recent stable release (May 2026); confirmed React 18 + Vite compatibility; permissive licence; mature ecosystem. |
+| `CalibratedClassifierCV` for top-N | HIGH | Official sklearn pattern explicitly recommended for SVC; multiclass Platt extension (Wu-Lin-Weng) is built in. |
+| `shap.KernelExplainer` for SVC RBF | MEDIUM | SHAP docs include the exact pattern, but published research warns SHAP/LIME are sensitive to model choice and feature collinearity on small datasets. Treat outputs as suggestive, not definitive. Phase 9 must include a sanity-check pass. |
+| Tailwind v4 `@custom-variant dark` | HIGH | Tailwind official docs; widely-used pattern since v4 launch. |
+| Hugging Face `datasets` for corpus | MEDIUM | Confirmed datasets exist (`blbooksgenre`, `literary-genre-examples`) but their fit to "5–15 books per genre full-text" use case is unverified. Phase 7 must evaluate before committing. |
+| Open Library bulk dumps | MEDIUM | Documented bulk-download channel; rate-limit policy is explicit. Schema and parse cost unverified for our use case. |
+| `internetarchive` SDK as optional fallback | LOW | Listed as an option, not investigated for current API stability or rate limits in 2026. Phase 7 only if needed. |
+
+---
+
+## Sources
+
+**Persistent homology / H₂**
+- [ripser PyPI](https://pypi.org/project/ripser/) — current version 0.6.14, `maxdim` parameter documented
+- [ripser.py Rips class docs](https://ripser.scikit-tda.org/en/latest/reference/stubs/ripser.Rips.html) — maxdim semantics
+- [giotto-ph paper (arXiv 2107.05412)](https://arxiv.org/abs/2107.05412) — H₂ scaling and edge-collapse mitigation
+- [Divide-and-conquer persistent homology (arXiv 2410.01839)](https://arxiv.org/abs/2410.01839) — mitigation pattern if subsampling becomes necessary
+
+**Classification depth (top-N + calibration)**
+- [scikit-learn 1.8 SVC docs](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) — `decision_function`, `predict_proba`, multiclass Platt extension
+- [scikit-learn 1.8 CalibratedClassifierCV docs](https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html) — ensemble + per-fold calibration
+- [scikit-learn 1.16 probability calibration guide](https://scikit-learn.org/stable/modules/calibration.html) — small-dataset guidance
+- ["Better Classifier Calibration for Small Data Sets" (arXiv 2002.10199)](https://arxiv.org/pdf/2002.10199) — LOOCV calibration rationale
+
+**Explainability**
+- [SHAP PyPI](https://pypi.org/project/shap/) — v0.51.0 released March 2026; Python 3.11+ support
+- [SHAP Iris+sklearn example (official docs)](https://shap.readthedocs.io/en/latest/example_notebooks/tabular_examples/model_agnostic/Iris%20classification%20with%20scikit-learn.html) — exact KernelExplainer + RBF SVC pattern
+- ["A Perspective on Explainable AI: SHAP and LIME" (arXiv 2305.02012)](https://arxiv.org/pdf/2305.02012) — known limitations on small datasets
+- [scikit-learn permutation_importance docs](https://scikit-learn.org/stable/modules/permutation_importance.html) — fallback pattern
+
+**Frontend (theming + onboarding)**
+- [Tailwind v4 dark mode docs](https://tailwindcss.com/docs/dark-mode) — `@custom-variant` pattern
+- [Tailwind v4 custom variant directive (DeepWiki)](https://deepwiki.com/tlq5l/tailwindcss-v4-skill/2.4-the-@variant-and-@custom-variant-directives) — selector forms
+- [react-joyride npm](https://www.npmjs.com/package/react-joyride) — v3.1.0 (May 2026), MIT
+- [react-joyride v3 announcement](https://github.com/gilbarbara/react-joyride/discussions/1196) — useJoyride hook, Floating UI
+- [Inline Manual: tour-library comparison](https://inlinemanual.com/blog/driverjs-vs-introjs-vs-shepherdjs-vs-reactour/) — licence + maturity comparison
+
+**Corpus sourcing (Phase 7 seed)**
+- [Hugging Face datasets — text classification](https://huggingface.co/datasets?task_categories=task_categories:text-classification)
+- [agentlans/literary-genre-examples](https://huggingface.co/datasets/agentlans/literary-genre-examples) — 86 genres, paragraph-level
+- [TheBritishLibrary/blbooksgenre](https://huggingface.co/datasets/blbooksgenre) — 49k titles, fiction/nonfiction
+- [Open Library APIs + data dumps](https://openlibrary.org/developers/api) — bulk-download channel
+- [Open Library Data Dumps](https://openlibrary.org/developers/dumps) — monthly JSON
+- [Standardised Project Gutenberg Corpus (pgcorpus/gutenberg)](https://github.com/pgcorpus/gutenberg) — preprocessing pipeline reference
+
+---
+
+*Stack research for: Literary Genre Topology v2.0 (Accuracy, Depth, Polish)*
+*Researched: 2026-05-22*
+*Building on v1 stack — only deltas documented here.*

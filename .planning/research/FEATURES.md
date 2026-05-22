@@ -1,281 +1,391 @@
-# Features Research
+# Feature Research — v2.0 (Accuracy, Depth, and Polish)
 
-**Domain:** Computational literary analysis with TDA + NLP visualization
-**Researched:** 2026-04-11
-**Overall confidence:** MEDIUM-HIGH
+**Domain:** Computational literary analysis (TDA + NLP) — adding accuracy, explainability, and polish to a shipped v1 web app
+**Researched:** 2026-05-22
+**Confidence:** MEDIUM-HIGH (corpus + explainability HIGH; H₂ interpretation MEDIUM; theming/onboarding HIGH)
 
-## Existing Tools Landscape
+## Scope Note
 
-### TDA Visualization Tools
+This document is **strictly scoped to v2.0 additions**. The v1 feature landscape (3D scatter, VR animation, persistence heatmap, comparison view, settings drawer, walkthrough, PNG/CSV export, bundled corpus) is settled and lives in `.planning/research/v1/FEATURES.md`. This document covers only what's new in v2: the bug-fix sweep, corpus quality, classification depth, and visual polish.
 
-**Giotto-TDA** — The most complete Python TDA library with scikit-learn compatibility. Provides Mapper, persistent homology, and persistence diagram vectorization. Has interactive plotting with memory caching for real-time hyperparameter tuning. However, it is a library, not a hosted app — users must write Python code. No web deployment story.
+Each feature below is categorised as **Table Stakes** (must have for v2 to feel coherent), **Differentiator** (high value, optional), or **Anti-Feature** (do NOT build — explain why), with complexity and v1 dependencies called out.
 
-**KeplerMapper** — Python implementation of the Mapper algorithm. Generates standalone HTML visualizations with d3-force graphs, color-coded nodes, histograms per node, and a search bar. Limitations: no real-time parameter tuning in the browser, no caching, not scikit-learn pipeline compatible. Visualizations are static exports, not live-interactive apps.
+---
 
-**TDAview** — Online Mapper visualization tool targeting biologists/clinicians without programming knowledge. Handles tens of thousands of data points. Supports Euclidean and correlation distances, several filter functions. Limitation: restricted set of built-in analysis options — users needing custom distances must pre-compute in R and upload JSON. No persistent homology visualization (Mapper only).
+## 1. Bug-Fix Sweep (Category: v1 Carry-overs)
 
-**TopoEmbedding** — Web tool for interactive visualization of persistence-based descriptors. Designed for non-experts. Simplifies exploration of TDA descriptor similarities. Academic prototype — limited polish and maintenance.
+These are not "new features" but unfinished v1 work blocking v2 coherence. All are **Table Stakes** — v2.0 cannot ship without them because v1 UI already advertises them.
 
-**VisualizePH** — WebGL-based interactive tool for persistent homology of triangle shapes. Features persistence pair visualization in 3D, lasso/box selection linking persistence diagram to 3D view. Narrow scope (triangle shapes only), but demonstrates good linked-view interaction patterns.
+### Table Stakes
 
-**RIVET** — Desktop tool for computing and visualizing 2-parameter persistent homology. Powerful but desktop-only, steep learning curve.
+| Feature | Why Table Stakes | Complexity | v1 Dependency |
+|---|---|---|---|
+| **H₂ persistent homology computed + exposed** | The H₂ tab already exists in the UI from v1 Phase 4. The tab currently 404s or returns empty data. Users see a broken tab. | **MEDIUM** — Ripser supports `maxdim=2` out of the box; pipeline already wired for H₀/H₁; cost is computational (H₂ is the most expensive dimension to compute) and visualisation (third heatmap panel). | Persistence-image pipeline in `backend/pipeline/`, heatmap renderer in frontend, content-addressed cache (cache key must include `maxdim`). |
+| **H₂ tab tooltip fires correctly** | v1 Phase 4 added tooltips for H₀/H₁; the H₂ tooltip stub is broken. UI inconsistency. | **LOW** — pure frontend fix; same tooltip component, missing wire-up. | Existing tooltip component, hover-state Zustand store. |
+| **Persistence-diagram dot scaling improved** | v1 ships persistence diagrams where dots are illegible — too small at default zoom, no birth=death reference line emphasis, dimension-0 cluster at origin overlaps catastrophically. Standard PD critique: "visual confirmation complicated by overlap of dimension 0 features." | **LOW-MEDIUM** — scale marker size by persistence (death − birth), jitter or hex-bin H₀ cluster at origin, ensure diagonal is clearly drawn, add log-scale toggle for very-short-lived features. | PD renderer (frontend, likely d3/visx layer). |
+| **BookSlider wired to corpus metadata endpoint** | The v1 UI has a "scrub through books in a genre" slider that receives `books={[]}` and is therefore hidden. A documented differentiator from v1 Phase 4 is dead. | **LOW-MEDIUM** — backend endpoint `/api/corpus/books?genre=X` returning `[{book_id, title, author, n_words, ...}]`; frontend hook + slider re-enable. | Existing corpus metadata in `corpus/books.yaml`, backend FastAPI app, frontend BookSlider component. |
+| **ROADMAP.md and STATE.md restored as living documents** | These were 0 bytes at v2.0 start (process bug — v1 closeout did not preserve them). Not user-visible, but GSD workflow depends on them. | **LOW** — already partially done (STATE.md rebuilt 2026-05-22). | Phase tracking lives outside the app. |
 
-### NLP / Embedding Visualization Tools
-
-**TensorFlow Embedding Projector** — The gold standard for embedding visualization UX. Features: 3D scatter with PCA/t-SNE/UMAP/custom projections, click-to-inspect nearest neighbors, search with highlight, bookmarks for saving/sharing state, color-by-metadata, 2D/3D toggle. Standalone at projector.tensorflow.org or embedded in TensorBoard. Limitation: designed for generic embeddings, no domain-specific features (no TF-IDF weighting, no topological features, no genre-specific views).
-
-**BertViz** — Attention visualization for transformers. Different domain (attention heads, not embeddings in space) but demonstrates good patterns for layered, selectable views of model internals.
-
-### Literary / Digital Humanities Tools
-
-**Voyant Tools** — The dominant web-based text analysis tool for humanities scholars. Word clouds, frequency trends, collocations, concordance. Drag-and-drop text upload. Limitations: unstable/slow under load, no automated topic grouping, no semantic embeddings, frequency-only analysis (no geometry, no topology). No machine learning pipeline.
-
-**InfraNodus** — Text network analysis tool positioned as a Voyant alternative. Uses network graphs to reveal conceptual connections. More semantic than Voyant but no embedding-space geometry.
-
-**Bookworm** — Visualizes trends in digitized text repositories. Time-series focused, not geometric/topological.
-
-### Gap Analysis
-
-No existing tool combines:
-1. Word embedding visualization with TF-IDF weighting per book
-2. Persistent homology computation and visualization
-3. Genre classification via SVM on topological + location features
-4. Interactive parameter tuning with live recomputation
-5. User text upload for classification
-
-The closest composite would be: TensorFlow Projector (embedding viz) + Giotto-TDA (persistent homology) + Voyant Tools (literary text upload) — but they do not interoperate and none provides the topological-genre-classification pipeline.
-
-**Confidence: HIGH** — these are well-known tools verified through official documentation and published papers.
-
-## Table Stakes
-
-Features users of TDA/NLP research visualization tools expect. Absence would feel broken.
-
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| **Progress indicators for long computations** | Word2Vec training, persistent homology, and dimensionality reduction take seconds to minutes. Users will assume the app froze without feedback. | Medium | Must show which pipeline stage is running, not just a spinner. "Computing persistent homology (step 3/5)..." |
-| **Export persistence diagrams / images** | Researchers need publication-quality figures. Every TDA tool supports PNG/SVG export of diagrams. | Low | SVG preferred for publications. Include axis labels and scales. |
-| **Export raw data (CSV/JSON)** | Researchers need to take computed features into their own analysis pipelines. TDAview, Giotto-TDA, and Projector all support data export. | Low | Persistence diagrams, feature vectors, projection coordinates. |
-| **Hover/click inspection of points** | TensorFlow Projector, KeplerMapper, and every scatter plot tool shows point details on hover. Users will try to hover immediately. | Low | Show word, TF-IDF weight, book of origin, nearest neighbors. |
-| **Color coding by category** | Every embedding visualizer colors by metadata. Genre color is the minimum. | Low | Consistent color palette across all views. |
-| **Responsive 3D navigation** | Orbit, pan, zoom via mouse. TensorFlow Projector and Plotly both provide this. Laggy rotation kills the experience. | Low | Use WebGL-accelerated rendering (Plotly GL or Three.js). |
-| **Linked views** | When selecting a book in one panel, the other panels (persistence image, scatter plot) should update. VisualizePH demonstrates this well with lasso selection linking to persistence pairs. | Medium | Core to the multi-view layout. |
-| **Loading states with stage names** | Distinguish "uploading file" from "tokenizing" from "computing homology." Users need to know where they are. | Low | Especially critical for the classification pipeline which has 5+ stages. |
-| **Error messages with actionable guidance** | "File too large" is useless. "File exceeds 5MB limit. Try uploading a shorter excerpt or a plain .txt file." is useful. | Low | Cover: wrong file type, too large, too few words, encoding issues. |
-| **Keyboard shortcuts for common actions** | Researchers exploring data want to toggle views, reset camera, cycle projections without reaching for buttons. | Low | At minimum: R to reset camera, 1-4 for projection methods, Esc to deselect. |
-
-**Confidence: HIGH** — derived from direct feature analysis of TensorFlow Projector, Giotto-TDA, KeplerMapper, TDAview, and Voyant Tools.
-
-## Differentiators
-
-Features that no existing tool provides, which would make this app uniquely valuable.
-
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| **TF-IDF brightness/size encoding in 3D** | No embedding visualizer weights points by per-document importance. Seeing which words "light up" for horror vs. romance is immediately compelling and intuitive. | Medium | This is the app's signature visual. Size + brightness + color = three visual channels encoding genre, importance, and position simultaneously. |
-| **Animated Vietoris-Rips assembly** | No web tool animates the filtration process. Watching edges and simplices appear as epsilon grows makes persistent homology tangible for non-experts. Existing tools show static barcodes/diagrams. | High | Needs efficient edge-drawing at interactive frame rates. Pre-compute edge lists at discrete epsilon values server-side, stream to client. |
-| **Per-book slider within genre** | No tool lets you "scrub" through individual books within a genre to see vocabulary emphasis shift. This reveals subgenre structure (e.g., cosmic horror vs. gothic horror) interactively. | Medium | Requires per-book TF-IDF precomputed. UI: genre dropdown then book slider. |
-| **Integrated classification pipeline** | Upload text, get genre prediction with confidence, AND see where the book lands in the visualization. No tool closes the loop from "classify my text" to "show me why." | High | The "show me why" part (placing the uploaded book in the existing visualization) is the differentiator. Just a prediction score is commodity. |
-| **Live parameter exploration** | Change Word2Vec dimensions, TF-IDF threshold, epsilon max, persistence image resolution, SVM kernel parameters — and watch everything downstream recompute. Giotto-TDA has caching for Mapper params but not a full pipeline. | High | This is an exploration/learning tool. Parameters are the point. Requires careful dependency graph for partial recomputation. |
-| **Interactive pipeline explanation** | Step-by-step walkthrough of the math with the user's actual data. Not a static tutorial — shows "here is YOUR book's point cloud" at each stage. | Medium | Differentiated because it teaches with the user's own data, not toy examples. |
-| **Side-by-side genre comparison** | Select two genres, see their brightness maps and persistence images juxtaposed. No tool provides comparative TDA views. | Medium | Simple layout but powerful for understanding what makes genres topologically distinct. |
-| **Persistence image heatmap with H0/H1/H2 tabs** | Most tools show barcodes or scatter diagrams. Persistence images as heatmaps are more visually intuitive for non-experts, and tabbing between homology dimensions reveals different structural aspects. | Medium | Persistence images are a vectorization — showing them as heatmaps makes the "fingerprint" metaphor tangible. |
-
-**Confidence: HIGH** — gap analysis based on direct examination of existing tools confirms none provide these specific features.
-
-## Anti-Features
-
-Things to explicitly NOT build, based on what frustrates users of similar tools.
+### Anti-Features (Bug Sweep)
 
 | Anti-Feature | Why Avoid | What to Do Instead |
-|--------------|-----------|-------------------|
-| **User accounts / authentication** | Adds complexity with no value for an exploration tool. Voyant Tools works without login and that is a major adoption driver. Adding auth kills casual exploration. | Stateless sessions. If sharing state is needed later, use URL-encoded state or shareable links with embedded parameters. |
-| **Server-side session state** | Fragile, doesn't scale, causes "your session expired" errors that destroy work. Voyant Tools suffers from this. | Client holds all UI state. Server is stateless compute: receives parameters + data, returns results. |
-| **Auto-play animations** | The Vietoris-Rips animation should NOT auto-play on load. Users need to control the pace. Auto-playing complex 3D animations causes confusion and performance issues. | Default to static view. User clicks play or drags the epsilon slider. |
-| **Overwhelming parameter panels** | Exposing every parameter at once (Word2Vec dim, window, min_count, TF-IDF threshold, epsilon max, grid resolution, SVM C, gamma, alpha...) will paralyze users. | Progressive disclosure: show 3-4 key parameters by default. "Advanced" expandable section for the rest. Sensible defaults that work well. |
-| **Real-time recomputation on every keystroke/pixel of slider drag** | Heavy computations (persistent homology, Word2Vec) triggered on every slider movement will make the app unusable. | Debounce sliders (200-400ms). For expensive operations (>2s), use explicit "Recompute" button instead of auto-trigger. Show "parameters changed, click to update" indicator. |
-| **3D-only visualization** | 3D scatter plots have well-documented UX issues: occlusion, difficulty judging position on z-axis, disorientation after rotation. Forcing 3D-only alienates users who want quick comparisons. | Provide 2D projection option alongside 3D. Default to 3D but make 2D one click away. |
-| **Massive file upload support** | Accepting arbitrarily large files (entire novel collections, 100MB+ uploads) would require infrastructure for long-running jobs, progress tracking, failure recovery — all complex. The app's value is per-book analysis. | Cap at reasonable limits (e.g., 5MB per file, plain text only). The bundled corpus handles the multi-book case. User uploads are for "classify MY book." |
-| **Custom Word2Vec model upload** | Letting users bring their own pre-trained models introduces compatibility nightmares (different dimensions, different vocabularies, version mismatches). | One shared model trained on the bundled corpus. If users upload books, those books get TF-IDF weights in the existing space — they don't retrain the model. |
-| **Mobile-optimized 3D** | 3D interactive WebGL on mobile is a poor experience: small touch targets, no hover, limited GPU. Trying to make it work degrades the desktop experience. | Responsive layout that is usable on tablet (read-only, simplified views) but the full 3D interactive experience is desktop-targeted. Show a "best on desktop" note on mobile. |
-| **PDF / EPUB parsing** | Format parsing is an entire problem domain. PDFs have headers, footers, page numbers embedded in text. EPUBs have markup. Getting clean text from these formats is error-prone and the errors are invisible (corrupted tokenization). | Accept plain .txt only. Provide clear instructions: "Copy your text into a .txt file." This is an analysis tool, not a file converter. |
+|---|---|---|
+| **Recomputing all v1 caches to fix dot scaling** | Persistence-diagram dots are a frontend rendering decision over already-computed (birth, death) pairs. Recomputing homology is pure waste. | Fix in renderer only. Models and persistence data on disk are correct. |
+| **Adding H₃, H₄ "while we're in there"** | Vietoris-Rips at H₂ already pushes compute time. H₃+ on text-sized point clouds (hundreds to thousands of words) is intractable and uninterpretable. | Hard-cap at `maxdim=2`. Document the cap in the settings drawer. |
 
-**Confidence: HIGH** — anti-features derived from documented limitations and user complaints about Voyant Tools, TensorFlow Projector, KeplerMapper, and TDAview.
+---
 
-## Parameter UI Patterns
+## 2. Corpus Quality (Category: Accuracy)
 
-Best practices for the "adjust parameter, recompute, visualize" loop that is central to this app.
+This is the foundation of the v2.0 accuracy story. **Phase 7 is a research spike** producing a recommendation doc; **Phase 8 acts on it**. Features below frame what that spike must answer and what the resulting corpus capability looks like to the user.
 
-### Tiered Computation Cost Model
+### Table Stakes
 
-Not all parameters cost the same to recompute. The UI must reflect this.
+| Feature | Why Table Stakes | Complexity | v1 Dependency |
+|---|---|---|---|
+| **Expanded labelled corpus (>5 books/genre)** | LOOCV degrades below ~5 books/genre (already a v1 constraint). To claim "measurable accuracy improvement vs v1 baseline" we need both more books per genre AND ideally more genres. Comparable Project Gutenberg genre-classification corpora use **~1000 books across ~10 genres**; small-corpus academic work uses **20–50 books/genre**. We are nowhere near that. | **MEDIUM** — sourcing is the hard part (covered by Phase 7 spike); ingestion path already works in v1 (txt files + `corpus/books.yaml`). | v1 ingestion pipeline (`scripts/01..06`), Word2Vec retraining (run-once), full precompute regeneration. |
+| **Documented sourcing methodology** | If we just throw books in, accuracy improvement is unreproducible and indistinguishable from overfitting. The spike must produce a recommendation document (source, labels, preprocessing, baseline). | **LOW** — research output, not code. | None. |
+| **v1 baseline accuracy preserved as comparison point** | Without holding v1's exact LOOCV number, "measurable improvement" is hand-wavy. Pin the v1 baseline (LOOCV accuracy + permutation-test p-value at current α, window, dim) before retraining. | **LOW** — record the existing `06_validate.py` output as the v2 baseline. | v1 `06_validate.py` output, existing models in GitHub Release. |
+| **Preprocessing parity check** | If preprocessing changes between v1 and v2 (different stopwords, different tokenisation, different min-word filter), accuracy improvement is confounded. Either hold preprocessing constant OR test it separately. | **LOW** — code already exists, just freeze it for the comparison. | `backend/pipeline/preprocess.py`. |
 
-| Tier | Example Parameters | Latency | UI Pattern |
-|------|-------------------|---------|------------|
-| **Instant** (<100ms) | Projection method toggle, color scheme, point size, opacity | Immediate | Update on change. No debounce needed. No loading indicator. |
-| **Fast** (100ms-2s) | TF-IDF brightness threshold, genre toggle, book selection, 2D/3D toggle | Debounced | Debounce 200ms. Brief fade/skeleton during update. |
-| **Slow** (2s-30s) | Dimensionality reduction (UMAP, t-SNE), persistence image resolution, SVM hyperparameters | Explicit trigger | Show "Parameters changed" badge. User clicks "Recompute." Progress bar with stage name. Cancel button. |
-| **Very slow** (30s+) | Word2Vec retraining, full persistent homology on large point clouds | Background job | "This will take ~2 minutes. Computing..." with progress. Results replace current view when ready. User can continue exploring current state while waiting. |
+### Differentiators
 
-### Debouncing Strategy
+| Feature | Value Proposition | Complexity | v1 Dependency |
+|---|---|---|---|
+| **Reproducible "rebuild the corpus" script** | A `scripts/build_corpus.py` that fetches Project Gutenberg book IDs from a manifest (e.g. `corpus/sources.yaml`), downloads, strips Gutenberg headers/footers, and writes canonical `.txt` files. Means anyone can reproduce the labelled set without us shipping copyrighted text. | **MEDIUM** — Project Gutenberg has a stable URL schema and an explicit "small-scale download" policy; header/footer stripping is well-understood (regex on `*** START OF` and `*** END OF` markers). | Existing `corpus/books.yaml` shape. |
+| **Per-book provenance metadata** | Each book record records its source (Gutenberg ID, scrape URL, hash, license note). This lets us defend against "is the corpus biased?" and supports future re-labelling. | **LOW** — schema additions to `corpus/books.yaml`. | Existing yaml schema. |
+| **Multi-genre / soft labels (research target)** | A book like *Frankenstein* is both gothic horror AND early sci-fi. v1 forces single labels. Recent literature uses multi-label or hierarchical (fiction → genre → subgenre). The Phase 7 spike should evaluate whether v2 should adopt multi-label given the kernel-SVM constraint. | **MEDIUM-HIGH** — multi-label SVM is a known but heavier change (one-vs-rest per genre); UI changes ripple (top-N display, "why this genre" must explain co-labels). | SVM training, prediction endpoint, top-N UI. |
 
-- Sliders: 200-400ms debounce. Show the value in real time (label updates instantly) but defer computation.
-- Text inputs (numeric): 500ms debounce after last keystroke.
-- Dropdowns/toggles: Immediate (these are deliberate user choices, not continuous adjustments).
+### Anti-Features
 
-### Partial Recomputation
+| Anti-Feature | Why Avoid | What to Do Instead |
+|---|---|---|
+| **Ship BookCorpus directly** | BookCorpus (~7000 self-published books) has documented licensing issues — many books were scraped from Smashwords without explicit redistribution rights, and several papers note ethical concerns. Including it risks DMCA on Railway and undermines academic credibility. | Use Project Gutenberg (public domain) plus hand-curated metadata. If more data is needed, link to BookCorpus rather than redistribute. |
+| **Scrape Goodreads at scale** | Goodreads ToS prohibits scraping; user-generated shelves are noisy (640 genres → 499 are user-invented rare labels in one study); ethically grey. Academic studies that have used Goodreads typically use the [UCSD Goodreads public dump](https://mengtingwan.github.io/data/goodreads.html) which is itself contentious. | Use Goodreads-derived labels only as *reference taxonomy* (what counts as "thriller" vs "mystery"), not as training labels. Apply expert/manual labels to Gutenberg-sourced texts. |
+| **Auto-labelling via an LLM** | Tempting ("ask Claude to label each book"), but creates a circular benchmark: if we label with an LLM, we're benchmarking our SVM against that LLM, not against literary reality. Also bakes in LLM biases (e.g. genre conflation). | Manual expert labelling for the small canonical corpus. If automation is needed later, use it for *candidate* labels reviewed by a human. |
+| **"Just add more horror/sci-fi/romance"** | Repeating v1's three genres with more books per genre improves intra-class density but doesn't test the model on the harder problem (4+ genres, subgenres). It is the easy win that masks the real accuracy question. | The spike should explicitly recommend genre count + balance, not assume v1's three. |
+| **Languages other than English in v2** | Out of Scope per PROJECT.md, and the Word2Vec model + stopword list are English-centric. Adding French/German books mid-milestone derails the accuracy benchmark. | Defer multilingual to v3. The spike notes it as future work only. |
 
-Build a dependency graph of computations:
+---
+
+## 3. Classification Depth (Category: Top-N + Explainability)
+
+The v1 prediction returns a single genre with a single confidence score. v2 adds **top-N ranked predictions** and **"why this genre" explainability**. These are the most user-visible upgrade in v2.
+
+### 3a. Top-N Predictions with Confidence
+
+#### Table Stakes
+
+| Feature | Why Table Stakes | Complexity | v1 Dependency |
+|---|---|---|---|
+| **Top-N ranked list with calibrated probabilities** | A single winner + confidence is the bare minimum (v1 ships it). The natural next step every classifier UX shows is the ranked list. Users intuit "the model also considered X and Y." | **MEDIUM** — sklearn's `SVC(probability=True)` already does Platt scaling under the hood (extra internal CV). With small corpora this is noisy; calibration may need to be re-fit on LOOCV folds. Alternative: expose raw `decision_function` margins and present as "scores" without claiming probability. | v1 SVM in `backend/pipeline/`, prediction endpoint, frontend prediction card. |
+| **Configurable N (default 3)** | "Top-3" is the dominant default in NLP classifier UX. For 3 genres, top-N = all genres = a probability bar chart; for 5+ genres, top-3 is the right "show me alternatives" view. The control should be a settings-drawer toggle, not hidden. | **LOW** — N is a UI/query parameter; backend always returns all scores. | Settings drawer pattern from v1. |
+| **Probability-bar visualization** | Horizontal bars per genre with width = probability, labelled with the % value, are the canonical NLP confidence display ([HuggingFace Spaces](https://huggingface.co/spaces), TFHub demos all use this). Better than pie charts; better than raw decision values. | **LOW** — pure frontend; use existing genre palette so colour is consistent with scatter view. | v1 genre colour palette, prediction endpoint must return all class scores not just top-1. |
+| **Honest confidence labeling** | Confidence score range matters. Platt-calibrated probabilities sum to 1. Raw SVM decision-function margins do not and can be negative. Pick one and label it correctly. Mis-labelling decision values as "probabilities" is a common bug. | **LOW** — naming discipline. | Backend must clearly distinguish what it returns. |
+
+#### Differentiators
+
+| Feature | Value Proposition | Complexity | v1 Dependency |
+|---|---|---|---|
+| **Entropy / uncertainty indicator** | A single number capturing "the model is very sure" vs "the model is torn." Entropy of the prediction distribution is the standard. Display as a small "uncertainty" badge alongside the bars. ([Useful Confidence Measures: Beyond the Max Score](https://arxiv.org/pdf/2210.14070) covers why margin/entropy beat max-score alone.) | **LOW** — derived from existing probabilities, no extra model work. | Probability output. |
+| **Calibration plot in settings drawer** | A reliability diagram (predicted vs actual probability on LOOCV folds) tells a researcher whether to trust the probabilities. Hidden behind an "Advanced diagnostics" section, but immensely credibility-building for the target audience (researchers, students). | **MEDIUM** — needs LOOCV evaluation pipeline to record per-fold probabilities; plotting is straightforward. | LOOCV pipeline (already exists for validation). |
+
+#### Anti-Features
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|---|---|---|
+| **Pie chart of predictions** | Pies are notoriously bad for comparing close-to-equal probabilities — a 0.40/0.35/0.25 distribution is unreadable as a pie but obvious as bars. | Probability bars only. |
+| **Hiding low-confidence predictions** | If the model says 0.4/0.35/0.25, hiding the 0.25 (or worse: hiding everything when top score < 0.6) deprives the user of the most interesting case — when the model is uncertain, that's the signal. | Always show all genres. Add a visual "low confidence" cue rather than hiding. |
+| **Claiming probabilities from raw decision function** | The `decision_function` of an RBF SVM returns margin distance from the hyperplane; these are NOT probabilities. Labelling them as "Probability: 1.43" is wrong and embarrassing. | If using raw scores, label as "score" or "margin" and explain in tooltip. Otherwise turn on Platt calibration explicitly. |
+
+### 3b. "Why This Genre" Explainability
+
+This is the most subtle area in v2. The v1 SVM is a kernel SVM on a concatenated, normalised feature vector of **persistence-image features + k-means cluster distributions** — there are no raw tokens at the classifier level. Standard NLP explainability (LIME/SHAP on tokens) does not apply directly.
+
+#### Table Stakes
+
+| Feature | Why Table Stakes | Complexity | v1 Dependency |
+|---|---|---|---|
+| **Nearest-neighbour retrieval ("your book is closest to these training books")** | The single most credible, easiest-to-implement, and easiest-to-trust explanation for a kernel classifier. Compute cosine (or kernel) distance from the uploaded book's feature vector to every training book's feature vector, return top 3–5. Literature [Task-Specific Embeddings for Ante-Hoc Explainable Text Classification](https://arxiv.org/pdf/2212.00086) explicitly recommends kNN-style retrieval over kernel SVM as the "ante-hoc" explanation. | **LOW** — feature vectors already exist; nearest-neighbour is `np.argsort`. UI: a small "Nearest training books" panel under the prediction card. | v1 feature pipeline, training-set feature vectors cached. |
+| **Driving-words highlight (caveated)** | Users will expect highlighted words in the uploaded text saying "these words pushed it to horror." For this app, the feature vector does NOT directly come from individual words — it comes from TF-IDF-weighted point-cloud geometry. So the honest version is: highlight high-TF-IDF words in the upload AND show the words colour-coded by which genre's centroid they are nearest. This is a *feature-attribution proxy*, not strict LIME/SHAP. | **MEDIUM** — TF-IDF weights are precomputed; nearest-genre-centroid per word is a vectorised cosine computation; UI is inline span highlighting in a side panel that shows a sample of the uploaded text. | TF-IDF vectorizer, Word2Vec model, genre centroids (computed once from training set). |
+| **Honest "limits of explanation" disclosure** | The walkthrough dialog from v1 already explains the pipeline. The explainability panel should link to it and explicitly state: "The classifier sees topological features, not individual words. These highlights show *plausible* drivers, not the literal classifier inputs." This is the difference between a credible academic tool and a black-box demo. | **LOW** — tooltip + a paragraph in the walkthrough. | v1 walkthrough dialog. |
+
+#### Differentiators
+
+| Feature | Value Proposition | Complexity | v1 Dependency |
+|---|---|---|---|
+| **Feature-track decomposition: "topology vs vocabulary"** | The v1 SVM input is `α · topology_features ⊕ (1−α) · location_features`. Show the user, for the uploaded book, how each track contributed: "Topology pushed strongly toward sci-fi; vocabulary location pushed weakly toward horror; α=0.6 means topology dominated." This is a unique-to-this-app explanation grounded in the actual pipeline. | **MEDIUM** — for each genre, decompose the kernel-distance contribution by feature-vector slice. Visualise as two stacked bars (topology contribution + location contribution) per genre. | Concatenated feature vector with known slice boundaries, kernel computation. |
+| **"Closest training book at each pipeline stage"** | At the point-cloud stage, persistence-image stage, AND final-feature stage, show which training book is closest. Sometimes a book is "geometrically horror but vocabularly sci-fi" — this surfaces it. | **MEDIUM-HIGH** — needs caching of intermediate per-stage feature vectors for training books; UI is a small "stage-by-stage proximity" strip in the explanation panel. | Cached intermediates from v1 precompute. |
+| **Counterfactual: "remove these words and the prediction shifts"** | LIME-style: drop the top-K driving words from the uploaded text, re-predict, show the new top-N. Reveals fragility/robustness of the prediction. | **HIGH** — requires a second full pipeline pass (preprocess → TF-IDF → embed → persistence → predict). Cost: ~tens of seconds per counterfactual. Mitigation: only run on user click, not auto. | Full pipeline, async job queue from v1 Phase 2. |
+
+#### Anti-Features
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|---|---|---|
+| **Black-box LIME/SHAP on tokens** | LIME/SHAP applied as if the SVM consumes tokens is misleading — the SVM consumes engineered topological features. Showing "the word 'space' contributed +0.12 to the sci-fi prediction" implies a causal link that doesn't exist in this pipeline. ([More Than Words: Towards Better Quality Interpretations of Text Classifiers](https://arxiv.org/pdf/2112.12444) documents how token-level attributions on text pipelines mislead.) | Use the TF-IDF-weighted nearest-centroid proxy and label it honestly. |
+| **Full SHAP plot in main UI** | A SHAP summary plot is dense and intimidating; non-experts will be confused. The target user is a curious reader or student, not an ML researcher. | Keep SHAP-style breakdowns in an "Advanced diagnostics" expandable section if at all. The main explanation should be nearest-neighbours + driving words. |
+| **"Explainable AI" buzzword overclaim** | Marketing the feature as "Explainable AI" creates trust the app cannot fully back. The pipeline is partially explainable (topology pipeline is well-understood; the SVM kernel itself is opaque on that feature space). | Call it "Why this prediction" or "Explanation." Honest scope. |
+
+---
+
+## 4. Visual Polish (Category: Dark Mode + Onboarding + Empty States)
+
+### 4a. Dark Mode / Theming
+
+#### Table Stakes
+
+| Feature | Why Table Stakes | Complexity | v1 Dependency |
+|---|---|---|---|
+| **System-preference detection + manual override + persistence** | This is the 2026 default. Users expect `prefers-color-scheme: dark` to be honoured AND a toggle to override AND that override to stick across sessions. Missing any of the three feels broken. | **LOW** — `useMediaQuery('(prefers-color-scheme: dark)')`, Zustand store with `persist` middleware, toggle in header. | Existing Zustand store from v1. |
+| **Three.js scene background + materials updated on theme change** | The dark-mode anti-pattern is "page is dark but the 3D canvas is still white." The R3F scene needs `<color attach="background" args={[bg]} />` driven by the theme. Materials with hardcoded colors (axis labels, edges, grid) must respond too. ([Mike Gold: Dark Mode for r3f threejs](https://mike.gold/notes/x-bookmarks/web-3d/dark-mode-for-r3f-threejs-a-step-by-step-review).) | **MEDIUM** — touches every R3F component that hardcodes a colour. Genre colour palette must have light-mode and dark-mode variants — naively inverting RGB does NOT work for categorical palettes. | All R3F components from v1 Phase 3/4. |
+| **Heatmap colormap variants for dark mode** | Persistence heatmaps (H₀/H₁/H₂) and persistence diagrams use sequential colormaps. The light-mode default (viridis, magma) reads fine on dark; the diverging palette and axis colours do not. Need an explicit dark-mode palette pass. | **LOW-MEDIUM** — colormap is config-only if using d3-scale-chromatic; axis/grid colours need theming tokens. | Existing heatmap components. |
+| **Accessible contrast in both modes** | WCAG AA contrast in both themes is the floor. Genre colours and text on dark backgrounds must hit at least 4.5:1. | **LOW** — pick palettes that meet contrast; automate check in tests if possible. | Genre palette definition. |
+
+#### Differentiators
+
+| Feature | Value Proposition | Complexity | v1 Dependency |
+|---|---|---|---|
+| **Custom theme tokens in settings drawer** | A "Theme" section in the existing settings drawer letting users tweak point opacity, background tint, brightness encoding. Plays well with v1's "all parameters live-adjustable" ethos. | **MEDIUM** — generalise theme from binary toggle to a small token set. | v1 settings drawer. |
+| **Export theme parity** | PNG/CSV exports today render whatever the UI shows. If the user is in dark mode and exports a PNG for a paper, they need to choose light-mode rendering for the export (papers are printed). | **LOW** — temporary theme override during export rendering. | Existing PNG export. |
+
+#### Anti-Features
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|---|---|---|
+| **Pure black background (#000)** | Documented dark-mode anti-pattern: pure-black is harsh, kills depth perception on 3D scenes, and looks amateurish. ([Dark Mode Done Right: Best Practices for 2026](https://medium.com/@social_7132/dark-mode-done-right-best-practices-for-2026-c223a4b92417).) | Use a slight off-black (e.g. `#0E1014` or `#15171C`) and reserve true black for emphasis. |
+| **Inverting the light palette wholesale** | Inverting hex values produces ugly, low-contrast genre colors and breaks any TF-IDF brightness encoding (because brightness was tuned against a light background). | Hand-pick a dark palette with the same hue families but adjusted saturation/lightness. |
+| **Theme toggle without persistence** | Toggle that resets on reload trains users that the app doesn't remember them. | Persist via `localStorage` (Zustand `persist` middleware). |
+
+### 4b. Onboarding / First-Load Tour
+
+#### Table Stakes
+
+| Feature | Why Table Stakes | Complexity | v1 Dependency |
+|---|---|---|---|
+| **First-load tour (3–5 steps)** | Industry data: 3-step tours hit ~72% completion; 7-step tours crater to 16%. The app's most confusing aspects for a first-time user are (1) what am I looking at? (2) what does brightness mean? (3) what can I do? (4) where do I upload? Those are exactly four steps. | **LOW-MEDIUM** — Driver.js (5KB, MIT, framework-agnostic) is the cleanest fit. Reactour is a permissive alternative. Shepherd.js and Joyride are AGPL and have React 19 compatibility issues per the 2026 roundup. | None — purely additive. |
+| **Skip / dismiss / never-show-again** | Users who already understand the app will rage-quit a tour they can't skip. "Skip tour" must be one click; "Never show again" must persist. | **LOW** — persist a `tourCompleted: true` flag. | LocalStorage / Zustand persist. |
+| **Triggerable from help menu** | Users who dismissed it should be able to re-trigger from a Help or "?" button. | **LOW** — wire button to tour-start. | Add help button to header. |
+| **Tour anchors stay valid as UI evolves** | "Onboarding rot" is documented as the #1 reason tours stop working 3 months after launch. Anchor steps to stable `data-tour-id="..."` attributes, not to CSS selectors that change. | **LOW** — discipline, not code complexity. Add a tour-anchor lint check. | Component IDs. |
+
+#### Differentiators
+
+| Feature | Value Proposition | Complexity | v1 Dependency |
+|---|---|---|---|
+| **"Show me an example" button on the upload empty state** | One click loads a known training book (e.g. *Dracula*) as if the user had uploaded it, so they see the full classification + viz flow without needing their own text. Hugely lowers the activation barrier. | **LOW-MEDIUM** — backend endpoint to "classify a sample book" reusing existing pipeline; frontend wires it. | Upload + classification flow from v1 Phase 2. |
+| **Interactive tour step that uses the user's actual data** | Once the user has uploaded a book, a contextual tooltip pops up explaining "this dot is your book" with the actual prediction. Tour built on user data is dramatically more memorable. ([Product tour best practices 2026](https://www.guideflow.com/blog/product-tour-best-practices) discusses contextual vs. one-time tours.) | **MEDIUM** — needs tour to be re-triggerable on first-upload event. | Upload flow event hook. |
+| **Pipeline walkthrough integrated with tour** | The v1 walkthrough dialog already explains the math. Step 5 of the tour can be "Want to know how the algorithm works? Open the pipeline walkthrough" with the button highlighted. Cross-promotes the explainer. | **LOW** — link existing walkthrough into tour step. | v1 walkthrough dialog. |
+
+#### Anti-Features
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|---|---|---|
+| **7+ step tour** | Completion craters to 16% at 7 steps. The temptation to "explain everything" is the death of onboarding. | Cap at 5 steps. Defer secondary explanations to the in-context walkthrough dialog. |
+| **Forced tour (no skip)** | Modal-blocking, no-skip tours produce hatred. | Always skippable, dismissable, re-triggerable. |
+| **Tour explaining math instead of UI** | A tour that explains TDA, persistent homology, and TF-IDF in 5 steps will be incomprehensible and the user will skip. | Tour explains *what to click and where*. The walkthrough dialog explains the math. Different jobs. |
+| **Auto-play VR animation as the "wow moment"** | Already an anti-feature from v1. The tour should not trigger the animation. | Tour step *points* at the animation control; user starts it. |
+
+### 4c. Empty States
+
+#### Table Stakes
+
+| Feature | Why Table Stakes | Complexity | v1 Dependency |
+|---|---|---|---|
+| **Upload area empty state with clear CTA + example button** | Currently the upload box says "Drop a .txt file." A good empty state explains *why* and *what next* — "Drop a .txt file (max 5MB) to see where your book lives in semantic space. Or [try an example] first." | **LOW** — text + example-button wiring. | Upload component, example-book endpoint. |
+| **Comparison view: 0-1 genre selected** | The comparison view only makes sense with 2 genres. With 0 or 1 selected, it currently looks broken. A friendly empty state ("Pick two genres to compare their topology") prevents confusion. | **LOW** — conditional render. | Comparison component. |
+| **Failed-classification empty state** | If upload succeeds but classification fails (rare but possible — e.g. too few unique words), the user gets a generic error. A specific empty state ("Your text has only 150 unique words; the classifier needs ~500 for meaningful results. Try a longer excerpt.") preserves trust. | **LOW** — error mapping. | Existing error handling. |
+| **No-explanation empty state in the explainability panel** | Before the user has uploaded a book, the new explainability panel should show a placeholder ("Upload a book to see why the classifier predicts its genre"), not an empty card. | **LOW** — conditional render. | Explainability panel. |
+
+#### Anti-Features
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|---|---|---|
+| **"No data"-style placeholders** | Generic, useless. Tells the user nothing about what to do. | Always include a specific reason + specific CTA. ([Carbon Design System: Empty states](https://carbondesignsystem.com/patterns/empty-states-pattern/) is the canonical reference.) |
+| **AI-generated starter content** | Some 2026 SaaS empty states use LLM to generate placeholder data. For this app, generating fake books is misleading and the bundled corpus already serves the "starter content" purpose. | Point at the bundled corpus as the starter content. |
+
+---
+
+## Feature Dependencies
 
 ```
-Word2Vec model
-  -> TF-IDF weights (per book)
-    -> Point clouds
-      -> Dimensionality reduction (for viz)
-      -> Persistent homology (for classification)
-        -> Persistence images
-          -> Feature vectors
-            -> SVM classification
+Phase 6 (Bug Sweep)
+  ├──>  H₂ heatmap (depends on H₂ being computed and cached)
+  ├──>  BookSlider revival (depends on /api/corpus/books endpoint)
+  └──>  Persistence-diagram dot rescaling (independent, frontend-only)
+
+Phase 7 (Corpus Spike — RESEARCH OUTPUT)
+  └──>  Phase 8 (Corpus Expansion)
+            ├──>  v1 baseline measurement (must precede retraining)
+            ├──>  Reproducible build_corpus.py (depends on spike's source recommendation)
+            └──>  Full pipeline rerun → new models in GitHub Release
+
+Phase 8 (Corpus Expansion)
+  └──>  Phase 9 (Classification Depth) — explainability nearest-neighbour
+        retrieval is more compelling with more training books
+
+Phase 9 (Classification Depth)
+  ├──>  Top-N predictions
+  │       ├──>  Calibrated probabilities (Platt scaling, sklearn flag)
+  │       └──>  Probability-bar UI (depends on backend returning all class scores)
+  └──>  "Why this genre"
+          ├──>  Nearest-neighbour retrieval (depends on cached training-set features)
+          ├──>  Driving-words highlight (depends on TF-IDF + genre centroids)
+          └──>  Feature-track decomposition (depends on knowing α and slice boundaries)
+
+Phase 10 (Visual Polish)
+  ├──>  Dark mode (independent of all other v2 work, but TOUCHES every component)
+  ├──>  Onboarding tour (depends on stable component data-tour-id anchors)
+  └──>  Empty states (light dependencies on Phases 8 and 9 for context-aware copy)
 ```
 
-When a parameter changes, only recompute the affected subtree. For example, changing the projection method (PCA to UMAP) only recomputes the visualization projection — it does not touch persistent homology or classification.
+### Critical Dependency Notes
 
-### Loading State Patterns
+- **Phase 7 → 8 hard dependency**: Phase 8 cannot start without the spike's recommendation. The user explicitly chose to gate corpus expansion on research because v1 made arbitrary choices. Respect that gate.
+- **Phase 6 → 9 soft dependency**: The bug sweep should ideally land before Phase 9 because explainability touches the prediction UI and bug fixes (like dot scaling) are easier to QA when nothing else is moving in that area. But they are not blocking.
+- **Phase 8 → 9 ordering**: Top-N and explainability are more credible with more training data. If Phase 8 expands the corpus to 8 books × 5 genres, the "nearest training books" panel becomes genuinely useful; with v1's 3×5 it's a curiosity.
+- **Phase 10 independence**: Dark mode and onboarding don't depend on the classifier work, BUT dark mode touches every component. Doing it after Phase 9 means redoing colour decisions on the new explainability UI. Doing it before Phase 9 means Phase 9 must build dark-mode-aware from the start. Recommendation: do dark mode AFTER Phase 9 lands the new UI, in a single pass.
+- **Anti-pattern conflict — auto-play animations vs onboarding**: The v1 anti-feature "no auto-play VR animation" must be respected by the tour. If the tour highlights the VR slider, do not auto-start the animation.
 
-- **Skeleton screens** for fast updates (show the layout with placeholder content).
-- **Progress bars with stage labels** for slow computations ("Computing Vietoris-Rips filtration... 45%").
-- **Stale data overlay** for background recomputation: dim the current visualization slightly, show "Updating..." badge, replace when new data arrives. User can still interact with stale data.
-- **Cancel button** for any computation over 2 seconds. Use web worker termination + restart pattern.
+---
 
-### Server vs. Client Computation
+## v2.0 MVP Definition
 
-- **Client-side** (web workers): Dimensionality reduction on pre-computed embeddings, persistence image rendering, 3D scene updates, TF-IDF threshold filtering.
-- **Server-side**: Word2Vec training, persistent homology (Ripser), SVM training/prediction, initial corpus processing.
+### Must Ship (v2.0 cannot launch without these)
 
-**Confidence: MEDIUM-HIGH** — patterns synthesized from Giotto-TDA caching approach, general reactive UI best practices, and Plotly/d3 interaction patterns. The tiered model is an original synthesis for this project's specific computation profile.
+- [ ] H₂ homology computed and exposed (Phase 6) — UI already advertises it
+- [ ] Persistence-diagram dot scaling fix (Phase 6) — current state is unreadable
+- [ ] BookSlider wired (Phase 6) — v1 feature is dead
+- [ ] Documented corpus sourcing methodology (Phase 7) — research output
+- [ ] Expanded corpus with measurable accuracy improvement (Phase 8) — milestone goal
+- [ ] Top-N predictions with probability bars (Phase 9) — most-visible classifier upgrade
+- [ ] Nearest-neighbour explainability panel (Phase 9) — credible "why" minimum
+- [ ] Dark mode (system + manual + persisted) (Phase 10) — 2026 default expectation
+- [ ] 3–5 step onboarding tour (Phase 10) — first-load friction is real
 
-## Corpus Management Patterns
+### Should Ship (v2.0 is better with these)
 
-### Upload Flow
+- [ ] Reproducible `build_corpus.py` (Phase 8) — defensibility
+- [ ] Driving-words highlight panel (Phase 9) — completes the "why" story
+- [ ] Feature-track decomposition (Phase 9) — unique-to-this-app explanation
+- [ ] "Show me an example" button on upload (Phase 10) — activation booster
+- [ ] Empty-state polish across the app (Phase 10) — consistency
 
-1. **Pre-upload expectations**: Show accepted format (.txt), size limit (e.g., 5MB), and what will happen ("Your text will be tokenized, weighted by TF-IDF, and classified").
-2. **Drag-and-drop zone** with fallback file picker button. Large, obvious drop target.
-3. **Client-side validation before upload**: Check file extension, file size, basic encoding sniff. Reject immediately with specific reason.
-4. **Upload progress bar** (for the HTTP transfer itself).
-5. **Server-side processing pipeline with stage updates**:
-   - "Tokenizing text..." (fast)
-   - "Computing TF-IDF weights..." (fast)
-   - "Building point cloud..." (fast)
-   - "Computing persistent homology..." (slow — show progress %)
-   - "Running classifier..." (fast)
-   - "Generating projections..." (medium)
-6. **Result display**: Genre prediction with confidence score, then the book appears in the visualization.
+### Defer to v2.x or v3 (Differentiator, not blocking)
 
-### Validation Rules
+- [ ] Multi-label / hierarchical classification (architectural change)
+- [ ] Counterfactual explanations ("remove these words")
+- [ ] Calibration plot in advanced diagnostics
+- [ ] Stage-by-stage proximity strip (closest training book at each stage)
+- [ ] Custom theme tokens in settings drawer
 
-| Check | When | Error Message |
-|-------|------|---------------|
-| File extension | Client-side, before upload | "Only .txt files are accepted. Please save your text as a plain text file." |
-| File size | Client-side, before upload | "File exceeds 5MB limit. Try a shorter excerpt." |
-| Encoding | Server-side, after upload | "Could not read file encoding. Please save as UTF-8." |
-| Minimum word count | Server-side, after tokenization | "Text contains only 150 unique words (minimum: 500). The analysis needs more text for meaningful results." |
-| Language detection | Server-side, after tokenization | "Text appears to be in French. This tool currently supports English text only." |
+---
 
-### Error Recovery
+## Prioritisation Matrix
 
-- Failed uploads: Retain the file reference so user can retry without re-selecting.
-- Processing failures: Show which stage failed and why. Offer "Try again" button.
-- Partial results: If classification succeeds but visualization projection fails, show the classification result and retry the visualization.
+| Feature | User Value | Implementation Cost | Priority |
+|---|---|---|---|
+| H₂ homology + tooltip | MEDIUM | MEDIUM | **P1** |
+| Persistence-diagram dot scaling | HIGH (currently broken) | LOW | **P1** |
+| BookSlider revival | MEDIUM | LOW-MEDIUM | **P1** |
+| Corpus sourcing spike | HIGH (foundational) | LOW (research) | **P1** |
+| Corpus expansion | HIGH (accuracy goal) | MEDIUM | **P1** |
+| Top-N + probability bars | HIGH | MEDIUM | **P1** |
+| Nearest-neighbour explainability | HIGH | LOW | **P1** |
+| Dark mode | MEDIUM-HIGH (2026 default) | MEDIUM | **P1** |
+| Onboarding tour | MEDIUM-HIGH (first-load friction) | LOW-MEDIUM | **P1** |
+| Driving-words highlight | MEDIUM-HIGH | MEDIUM | **P2** |
+| Feature-track decomposition | MEDIUM | MEDIUM | **P2** |
+| Reproducible build_corpus.py | MEDIUM (defensibility) | MEDIUM | **P2** |
+| "Show me an example" | HIGH (activation) | LOW-MEDIUM | **P2** |
+| Empty-state polish | LOW-MEDIUM | LOW | **P2** |
+| Entropy/uncertainty badge | LOW-MEDIUM | LOW | **P2** |
+| Calibration plot | LOW (researcher niche) | MEDIUM | **P3** |
+| Counterfactual explanations | MEDIUM | HIGH | **P3** |
+| Custom theme tokens | LOW | MEDIUM | **P3** |
+| Multi-label classification | HIGH but architectural | HIGH | **P3 (v3)** |
 
-**Confidence: MEDIUM** — patterns from general file upload UX best practices applied to this specific domain. No direct precedent for "upload book for TDA classification" exists.
+**Priority key:** P1 = must have for v2.0 launch • P2 = ship if time permits in v2.0 • P3 = defer to v2.x or v3
 
-## 3D Viz UX Patterns
+---
 
-### Essential Interactions (from TensorFlow Projector model)
+## Comparable Tools (for v2-relevant features only)
 
-| Interaction | Implementation | Why |
-|-------------|---------------|-----|
-| **Orbit rotation** | Click + drag on empty space | Primary exploration mode. Must be smooth (60fps). |
-| **Pan** | Right-click + drag OR Shift + click + drag | Navigate to different regions without losing orientation. |
-| **Zoom** | Scroll wheel | Zoom into dense clusters. |
-| **Click to select point** | Click on point, highlight it, show details in side panel | Primary data inspection mode. |
-| **Hover tooltip** | Hover shows word + brief metadata | Quick scanning without committing to selection. |
-| **Search and highlight** | Text input highlights matching words in the scatter | Finding specific words in a cloud of thousands. |
-| **Reset camera** | Button + keyboard shortcut (R) | Users get disoriented after aggressive rotation. Instant recovery is critical. |
-| **Nearest neighbors** | Click point, see N nearest neighbors highlighted and listed | TensorFlow Projector's best feature. Shows local embedding structure. |
+| Feature | Comparable App | What They Do | Our Approach |
+|---|---|---|---|
+| Top-N with probability bars | HuggingFace Spaces text-classification demos, TFHub demos | Horizontal bars per class, % labels, ordered by score | Same pattern, integrated with existing genre colour palette |
+| Token-level "why" | LIME demos, BERTViz | Highlight tokens by attribution score | NOT directly applicable to topology pipeline — use TF-IDF + nearest-centroid proxy with honest disclosure |
+| Nearest training examples | scikit-learn `kneighbors` demos, image-classification "similar images" UI | "Closest examples from training set" panel | Apply to feature-vector space; show top 3–5 training books |
+| Dark mode 3D viz | Observable notebooks, Plotly theme="plotly_dark" | Adjust scene background + categorical palette for dark | R3F `<color attach="background">` driven by Zustand theme store; hand-picked dark palette |
+| Onboarding tour | Userpilot, Appcues, Driver.js demos | 3-5 step spotlight with skip + persist | Driver.js (MIT, 5KB, framework-agnostic); 4 steps |
+| Empty state with starter content | Linear, Notion, Figma | "Try an example" prefilled action | Sample-book classify endpoint reusing existing pipeline |
 
-### Known Frustrations with 3D Scatter Plots
+---
 
-| Frustration | Mitigation |
-|-------------|------------|
-| **Occlusion** — points hidden behind others | Adjustable point opacity/size. Toggle to 2D. Rotation. Selection highlights through occlusion. |
-| **Disorientation** — losing sense of axes after rotation | Persistent axis indicator (small XYZ widget in corner). Reset camera button. Optional grid floor plane. |
-| **Meaningless axes** — PCA/UMAP dimensions have no semantic meaning | Do NOT label axes with misleading names. Label as "Component 1" or simply hide axis labels. Show explained variance % for PCA. |
-| **Performance with many points** — WebGL struggles above 100K-200K points | Word vocabularies will be 5K-50K points — well within WebGL limits. Use Plotly's WebGL scatter3d or Three.js with instanced rendering. |
-| **Accidental navigation** — trying to click a point but rotating instead | Distinct click vs. drag detection (e.g., click = mousedown + mouseup within 200ms and 5px movement threshold). |
-| **Lost selection** — rotating clears the selection | Persist selection through camera changes. Selected point stays highlighted. |
+## Confidence Assessment
 
-### Multi-View Coordination
+| Area | Level | Reason |
+|---|---|---|
+| Corpus sourcing landscape | **HIGH** | Multiple academic studies + active 2025-26 research surveyed; Gutenberg, BookCorpus, Goodreads tradeoffs well-documented |
+| Top-N + Platt calibration | **HIGH** | scikit-learn docs are authoritative; Platt scaling and `decision_function` semantics are settled |
+| SVM kernel explainability | **MEDIUM-HIGH** | Nearest-neighbour-style ante-hoc explanation is well-established; mapping LIME/SHAP to TDA pipelines is genuinely novel and under-researched — recommendation is therefore conservative (proxy + disclosure rather than pretending strict attribution works) |
+| H₂ homology utility | **MEDIUM** | Computationally clear; *interpretive* value for text-genre data is empirical — H₂ voids in word-embedding clouds are not as well-studied as H₀/H₁. The spike + Phase 9 experiments will validate whether H₂ improves accuracy or just looks impressive |
+| Dark mode 3D viz patterns | **HIGH** | R3F + Three.js theming is well-documented; categorical-palette pitfalls are well-known |
+| Onboarding tour UX | **HIGH** | 2026 best-practice guides converge: 3-5 steps, skippable, anchor-stable, contextual; Driver.js / Reactour licensing analysis is current |
+| Empty state patterns | **HIGH** | Carbon, SAP Fiori, and SaaS-pattern guides converge on "specific reason + specific CTA + starter content" |
 
-The app has multiple synchronized views (scatter plot, persistence image, Vietoris-Rips animation). Coordination patterns:
-
-- **Brushing and linking**: Selection in one view highlights corresponding elements in all views.
-- **Master-detail**: Scatter plot is the master view; side panels show details for the current selection.
-- **Synchronized camera**: The Vietoris-Rips plot and the main scatter plot should NOT share camera state — they show different things. Independent cameras.
-- **Consistent color mapping**: Same genre = same color everywhere. Define a palette once, use it in all views.
-
-**Confidence: HIGH** — TensorFlow Projector, Plotly 3D scatter, and 3D visualization UX research are well-documented domains.
-
-## Feature Priority Summary
-
-| Feature | Priority | Complexity | Phase | Notes |
-|---------|----------|------------|-------|-------|
-| 3D scatter with PCA/UMAP/t-SNE/KPCA | P0 - Core | Medium | 1 | Foundation of all visualization |
-| Genre color coding | P0 - Core | Low | 1 | Minimum viable visual encoding |
-| Hover/click point inspection | P0 - Core | Low | 1 | Table stakes for any scatter viz |
-| TF-IDF brightness/size encoding | P0 - Core | Medium | 1 | Signature differentiator |
-| Genre toggle (illuminate one genre) | P0 - Core | Low | 1 | Core exploration interaction |
-| Per-book slider | P0 - Core | Medium | 1 | Key differentiator for subgenre exploration |
-| Persistence image heatmap panel | P0 - Core | Medium | 2 | Second visual pillar (topology viz) |
-| H0/H1/H2 tabs | P0 - Core | Low | 2 | Essential context for persistence images |
-| Animated Vietoris-Rips plot | P0 - Core | High | 2 | Third visual pillar (filtration animation) |
-| Epsilon slider for Vietoris-Rips | P0 - Core | Medium | 2 | Controls the animation |
-| Genre comparison view | P1 - Important | Medium | 3 | Side-by-side comparative analysis |
-| Genre classifier (upload + predict) | P1 - Important | High | 3 | Closes the "classify my book" loop |
-| Pipeline explanation walkthrough | P1 - Important | Medium | 3 | Educational value, differentiation |
-| Live parameter controls (basic) | P1 - Important | Medium | 2 | Key sliders for TF-IDF threshold, point count |
-| Live parameter controls (advanced) | P2 - Nice | High | 4 | Full pipeline recomputation |
-| Progress indicators (staged) | P0 - Core | Medium | 1 | Without these, app feels broken during computation |
-| Export (PNG/SVG/CSV) | P1 - Important | Low | 2 | Researchers need publication figures |
-| Search and highlight words | P1 - Important | Low | 2 | Find specific words in the cloud |
-| Nearest neighbors panel | P2 - Nice | Medium | 3 | Shows local embedding structure |
-| Keyboard shortcuts | P2 - Nice | Low | 3 | Power user efficiency |
-| Reset camera button | P0 - Core | Low | 1 | Users WILL get disoriented |
-| 2D projection toggle | P1 - Important | Low | 2 | Mitigates 3D frustrations |
-| Shareable state URLs | P2 - Nice | Medium | 4 | Encoding params in URL for sharing specific views |
-| Stale data overlay during recompute | P1 - Important | Medium | 2 | Users can keep exploring while updates compute |
-
-### Phase Grouping Rationale
-
-- **Phase 1**: Get the core 3D scatter visualization working with the bundled corpus. This is the "wow" moment — TF-IDF brightness on word embeddings with genre coloring.
-- **Phase 2**: Add the topology visualization layer (persistence images, Vietoris-Rips animation) and basic parameter controls. This completes the visual story.
-- **Phase 3**: Add the interactive features that close loops (classifier upload, genre comparison, pipeline explanation). These require a stable foundation.
-- **Phase 4**: Polish and power-user features (advanced parameter tuning, shareable URLs, full export suite).
+---
 
 ## Sources
 
-- [TensorFlow Embedding Projector](https://projector.tensorflow.org/)
-- [TensorFlow Embedding Projector paper](https://arxiv.org/pdf/1611.05469)
-- [Giotto-TDA paper](https://arxiv.org/pdf/2004.02551)
-- [KeplerMapper documentation](https://kepler-mapper.scikit-tda.org/en/latest/html-visualization-features.html)
-- [TDAview paper](https://academic.oup.com/bioinformatics/article/36/18/4805/5866542)
-- [TopoEmbedding paper](https://arxiv.org/abs/2204.09783)
-- [VisualizePH](https://github.com/IuricichF/VisualizePH)
-- [Voyant Tools](https://guides.library.upenn.edu/penntdm/tools/voyant)
-- [3D visualization best practices](https://www.highcharts.com/blog/best-practices/3d-graph-useful-visualization-or-misleading-illusion/)
-- [3D visualization pitfalls](https://clauswilke.com/dataviz/no-3d.html)
-- [Plotly WebGL performance](https://plotly.com/python/performance/)
-- [Web worker cancellation patterns](https://webjose.hashnode.dev/finally-cancel-web-workers-work-without-terminating-the-worker)
-- [File upload UX best practices](https://uploadcare.com/blog/file-uploader-ux-best-practices/)
-- [Async workflow UI patterns](https://blog.logrocket.com/ux-design/ui-patterns-for-async-workflows-background-jobs-and-data-pipelines/)
-- [Debouncing in React](https://www.developerway.com/posts/debouncing-in-react)
+### Corpus sourcing
+- [Gutenberg Genre Identification corpus (~1000 books, 10 genres)](https://github.com/gjoseph16/Genre-Identification-on-a-sub-set-of-Gutenberg-Corpus)
+- [Survey of Methods in Computational Literary Studies — Corpus Building for Genre Analysis](https://methods.clsinfra.io/corpus-genre.html)
+- [Innovatiana: Gutenberg dataset overview](https://www.innovatiana.com/en/datasets/gutenberg-dataset)
+- [Adaptive Data-Resilient Multi-Modal Hierarchical Multi-Label Book Genre Identification (2025)](https://arxiv.org/pdf/2505.03839)
+- [Book Riot: Goodreads and the curious case of the wrong genres](https://bookriot.com/goodreads-and-genre-labels/)
+- [BookCorpus background](https://handwiki.org/wiki/BookCorpus)
+- [Enhancing book genre classification with BERT (2025)](https://peerj.com/articles/cs-2934.pdf)
+- [Integrated ensemble of BERT- and feature-based models (2025)](https://arxiv.org/html/2504.08527v1)
+
+### TDA / H₂ / persistence diagrams
+- [Unveiling Topological Structures from Language: A Comprehensive Survey of TDA Applications in NLP (2024)](https://arxiv.org/html/2411.10298v3)
+- [Persistent Homology for High-dimensional Data Based on Spectral Methods (NeurIPS 2024)](https://proceedings.neurips.cc/paper_files/paper/2024/file/4a32a646254d2e37fc74a38d65796552-Paper-Conference.pdf)
+- [A Novel Method of Extracting Topological Features from Word Embeddings](https://arxiv.org/pdf/2003.13074)
+- [An Introduction to a New Text Classification and Visualization Using TDA (arXiv 1906.01726)](https://arxiv.org/pdf/1906.01726)
+- [Estimating class separability of text embeddings with persistent homology](https://arxiv.org/pdf/2305.15016)
+- [AwesomeTDA4NLP curated list](https://github.com/AdaUchendu/AwesomeTDA4NLP)
+- [A flat persistence diagram for improved visualization of persistent homology](https://arxiv.org/pdf/1812.04567)
+
+### Classification confidence + calibration
+- [scikit-learn SVM documentation (Platt scaling, decision_function)](https://scikit-learn.org/stable/modules/svm.html)
+- [Useful Confidence Measures: Beyond the Max Score (entropy, margin)](https://arxiv.org/pdf/2210.14070)
+- [Platt scaling — Wikipedia](https://en.wikipedia.org/wiki/Platt_scaling)
+- [How and When to Use a Calibrated Classification Model with scikit-learn](https://machinelearningmastery.com/calibrated-classification-model-in-scikit-learn/)
+
+### Explainability
+- [Task-Specific Embeddings for Ante-Hoc Explainable Text Classification (kNN over kernel SVM)](https://arxiv.org/pdf/2212.00086)
+- [More Than Words: Towards Better Quality Interpretations of Text Classifiers](https://arxiv.org/pdf/2112.12444)
+- [Many Faces of Feature Importance — Comparing Built-in and Post-hoc Methods](https://arxiv.org/pdf/1910.08534)
+- [A Perspective on Explainable AI Methods: SHAP and LIME (Wiley 2025)](https://advanced.onlinelibrary.wiley.com/doi/10.1002/aisy.202400304)
+
+### Dark mode / theming
+- [Mike Gold: Dark Mode for r3f three.js — Step-by-Step Review](https://mike.gold/notes/x-bookmarks/web-3d/dark-mode-for-r3f-threejs-a-step-by-step-review)
+- [Dark Mode Charts: Design Best Practices 2026](https://www.cleanchart.app/blog/dark-mode-charts)
+- [Dark Mode Done Right: Best Practices for 2026](https://medium.com/@social_7132/dark-mode-done-right-best-practices-for-2026-c223a4b92417)
+- [Implementing Dark Mode for Data Visualizations: Design Considerations](https://ananyadeka.medium.com/implementing-dark-mode-for-data-visualizations-design-considerations-66cd1ff2ab67)
+- [react-three-fiber background-color examples](https://onion2k.github.io/r3f-by-example/examples/basic/background-color/)
+
+### Onboarding
+- [Best Open-Source Product Tour Libraries 2026 (Driver.js, Reactour, Shepherd, Intro)](https://userorbit.com/blog/best-open-source-product-tour-libraries)
+- [Driver.js vs Intro.js vs Shepherd.js vs Reactour](https://inlinemanual.com/blog/driverjs-vs-introjs-vs-shepherdjs-vs-reactour/)
+- [Product tour best practices 2026 (3-step 72%, 7-step 16% completion)](https://www.guideflow.com/blog/product-tour-best-practices)
+- [Product tour UI/UX best onboarding patterns](https://www.appcues.com/blog/product-tours-ui-patterns)
+
+### Empty states
+- [Carbon Design System: Empty states pattern](https://carbondesignsystem.com/patterns/empty-states-pattern/)
+- [SAP Fiori: Designing for Empty States](https://www.sap.com/design-system/fiori-design-web/v1-96/foundations/best-practices/global-patterns/designing-for-empty-states)
+- [SaaS Empty State Design: 9 Patterns That Drive Activation](https://pixxen.com/saas-empty-state-design/)
+- [Empty State UX Examples & Best Practices — Pencil & Paper](https://www.pencilandpaper.io/articles/empty-states)
+
+---
+*Feature research for: Literary Genre Topology v2.0 — Accuracy, Depth, and Polish*
+*Researched: 2026-05-22*

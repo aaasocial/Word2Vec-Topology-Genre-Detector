@@ -1,518 +1,558 @@
-# Pitfalls Research
+# Pitfalls Research — v2.0
 
-**Domain:** Literary Genre Topology (NLP + TDA + Interactive 3D Web Visualization)
-**Researched:** 2026-04-11
+**Domain:** Adding accuracy, depth, and polish features to an already-deployed Literary Genre Topology web app
+**Researched:** 2026-05-22
+**Confidence:** HIGH (most pitfalls verified against official docs / well-known failure modes; some are mechanically derived from v1 invariants)
 
----
-
-## Word2Vec Pitfalls
-
-### Critical: Corpus Too Small for Meaningful Embeddings
-
-**What goes wrong:** Word2Vec trained on a small literary corpus (e.g., 30 books, ~3-5M tokens total) produces unstable embeddings where nearest-neighbor relationships shift dramatically between training runs. Genre-distinctive vocabulary ends up with near-random vectors because individual words appear too few times for gradient descent to converge.
-
-**Why it happens:** Word2Vec needs millions of co-occurrence observations to learn stable geometry. Research shows Word2Vec underperforms LSA on corpora below ~10M words. Literary corpora of 30-50 books (~50-80k words each) yield only 1.5-4M tokens -- right at the danger zone. Rare but genre-critical words (e.g., "eldritch" for horror, "warp-drive" for sci-fi) may appear fewer than 5 times total, producing garbage vectors.
-
-**Consequences:** The entire downstream pipeline (TF-IDF weighting, point clouds, persistent homology, classification) operates on meaningless geometry. Results look plausible but are not reproducible.
-
-**Prevention:**
-- Set `min_count` conservatively (5-10) to exclude words without enough training signal. Accept smaller vocabulary rather than noisy vectors.
-- Use `vector_size=100-150` rather than 300 for small corpora -- fewer parameters need fewer observations to train.
-- Use `window=10-15` (larger windows) to capture topical/semantic relationships rather than syntactic ones. Genre signal is semantic, not syntactic. Small windows (2-5) capture syntax which is less genre-distinctive.
-- Fix `seed` and set `workers=1` for reproducibility. Run training 3 times and compare nearest-neighbor stability as a smoke test.
-- Consider supplementing with a pre-trained embedding (GloVe/fastText) and fine-tuning on the literary corpus. This gives rare words a reasonable starting point.
-
-**Detection:** Compare cosine similarity rankings for known genre-distinctive words across 3 training runs. If top-10 neighbors change substantially, embeddings are unstable.
-
-**Phase:** Must be validated in the very first phase. If embeddings are garbage, nothing downstream works.
-
-**Confidence:** HIGH (well-documented in literature)
+> This document covers **only** pitfalls specific to v2.0 work. For domain-level NLP/TDA/3D pitfalls that already shipped (small-corpus W2V instability, IDF instability, VR computational explosion, projection-destroys-topology, etc.), see `.planning/research/v1/PITFALLS.md`. Do not re-litigate v1 work here.
 
 ---
 
-### Moderate: Window Size Controls What the Embedding Captures
+## Critical Pitfalls
 
-**What goes wrong:** Default window size (~5) optimizes for syntactic similarity. Words that appear in similar grammatical contexts cluster together regardless of genre. Genre signal requires larger windows that capture topical co-occurrence.
+### Pitfall 1: Word2Vec Retraining Silently Rotates the Embedding Space (Invariant #1 Violation)
 
-**Why it happens:** Small windows make "ran" and "walked" similar (both follow "he/she"). Large windows (10-20) make "spaceship" and "galaxy" similar (both appear in sci-fi paragraphs). Genre classification needs the latter.
+**What goes wrong:**
+Adding new books to the corpus and re-running `01_train_word2vec.py` produces a new model whose vectors are an arbitrary rotation/reflection of the v1 vectors. Any cached v1 artifact that references coordinates — pre-computed persistence diagrams, projections (PCA/UMAP), point clouds, persistence images, the trained SVM, cached topology animations — becomes geometrically meaningless against the new vectors. The app keeps serving them because Redis cache keys hash by `(step_name, params)`, not by model identity. Result: visualizations look plausible but the points are in a different coordinate system than the SVM was trained on.
 
-**Prevention:** Use window=10-15 for skip-gram. Validate by checking that known genre-specific word pairs (e.g., "vampire"-"blood", "detective"-"clue") have higher cosine similarity than syntactically-similar but genre-unrelated pairs.
+**Why it happens:**
+Skip-gram Word2Vec is initialized randomly, trained with non-deterministic SGD updates, and has rotational invariance — `R·W` for any orthogonal `R` is an equally valid optimum. Even with `seed` fixed and `workers=1`, adding a single new book changes the vocabulary, the random-init shapes, and the gradient trajectory. The new model is not just "slightly different" — it lives in a fundamentally different coordinate system. Teams forget this because the v1 mental model is "Word2Vec is deterministic with seed=X" — which is true *for the same input data*, not across corpora.
 
-**Confidence:** HIGH
+**How to avoid:**
+- **Treat every retrain as a hard cache bust.** Hash the *model file's sha256* into every downstream cache key, not just hyperparameters. Pattern: `cache_key = sha256(step_name, params, w2v_model_hash)`.
+- **Encode model identity in the content-addressed cache.** v1 already uses `sha256(step_name, params)`. Extend to `sha256(step_name, params, embedding_provenance)` where `embedding_provenance` includes the model file hash and the corpus manifest hash (sorted list of book IDs + their text hashes).
+- **Force full pipeline rebuild on corpus change.** When `corpus/books.yaml` changes, run `scripts/01 → 02 → 03 → 04 → 05 → 06` end-to-end. Never partial-rebuild. Add a `make rebuild-all` target.
+- **If you ever need to compare v1 vs v2 features in the same coordinate system** (e.g., for explainability "show neighbors from v1"), apply Orthogonal Procrustes alignment on shared vocabulary using gensim-compatible code (e.g., the zhicongchen gist). This is *only* for comparison, never for serving — production should always use the latest model end-to-end.
+- **Pin the SVM training data lineage.** Save alongside the SVM: model hash, corpus manifest hash, feature-track normalization stats, α. Refuse to load an SVM whose lineage doesn't match the currently-loaded W2V model.
 
----
+**Warning signs:**
+- Accuracy drops sharply (>10pp) after retrain with "no other changes."
+- 3D scatter looks reflected/rotated compared to v1 screenshots.
+- Cached persistence images render but the SVM predicts random-looking labels.
+- The pre-computed cache directory has files older than the W2V model file.
 
-### Moderate: OOV Words from User Uploads
-
-**What goes wrong:** A user uploads a book containing words not in the training vocabulary. These words are silently dropped, potentially losing the most genre-distinctive vocabulary of the uploaded book (neologisms in sci-fi, archaic terms in historical fiction).
-
-**Why it happens:** Word2Vec has a fixed vocabulary after training. Any word not seen during training has no vector.
-
-**Prevention:**
-- Use fastText-style subword embeddings (gensim's FastText) instead of pure Word2Vec. Subword models can synthesize vectors for unseen words from character n-grams. This is the single most impactful change for user-upload robustness.
-- If sticking with Word2Vec, log OOV percentage per uploaded book and warn users when it exceeds 15-20%.
-- Never silently drop OOV words -- surface the count in the UI so users understand the limitation.
-
-**Confidence:** HIGH
-
----
-
-### Minor: Non-Deterministic Training
-
-**What goes wrong:** Multi-threaded Word2Vec training is non-deterministic. Different runs produce different embeddings, making debugging impossible and A/B comparisons of parameter changes unreliable.
-
-**Prevention:** Set `workers=1` during development/evaluation. Accept the performance cost. Only switch to multi-worker for final production training where reproducibility is less critical than speed.
-
-**Confidence:** HIGH
+**Phase to address:** Phase 8 (Corpus Expansion). This must be the *first* engineering task of Phase 8 — before any new books are added, the rebuild pipeline must hash the model into cache keys, and there must be a smoke test that detects stale cache after retrain.
 
 ---
 
-## TF-IDF Pitfalls
+### Pitfall 2: H₂ Computation Hangs the Worker (No O(n³) → O(n⁴) Cliff Handling)
 
-### Critical: IDF Instability with Few Documents
+**What goes wrong:**
+Enabling H₂ in the ripser call (`maxdim=2`) on a 500-word point cloud takes the per-book homology step from ~5 seconds to many minutes — or runs out of memory. The arq worker holds the job, the SSE channel stays open, the UI shows a spinner forever, and the user assumes the app is broken. Worse: if multiple users trigger H₂ simultaneously, the worker pool saturates and *all* requests stall, including those that didn't ask for H₂.
 
-**What goes wrong:** With only 30-50 books, IDF scores are extremely coarse. A word appearing in 1 book vs. 2 books causes IDF to jump from log(30/1)=3.4 to log(30/2)=2.7 -- a 20% drop from a single additional occurrence. Adding or removing one book from the corpus can significantly change the IDF landscape and therefore all downstream point clouds and topology.
+**Why it happens:**
+Vietoris-Rips at dimension `d` enumerates all `(d+1)`-cliques. Going from H₁ to H₂ moves from "all triangles" (O(n³) worst case) to "all tetrahedra" (O(n⁴) worst case). Ripser is highly optimized and exploits sparsity — for 500 points with reasonable ε_max it often *does* finish in tens of seconds — but the variance is enormous and depends heavily on local geometry. v1 PITFALLS.md already noted "H_2 likely infeasible above ~2k points"; v2's mistake would be assuming "we're at 500 points so we're safe." The cliff is local-geometry-dependent, not point-count-dependent.
 
-**Why it happens:** IDF = log(N/df). With small N, the denominator increments in large relative steps.
+**How to avoid:**
+- **Bench H₂ on every bundled book before shipping.** Add `scripts/bench_h2.py` that times H₂ for each book at the current word_count cap and records P50/P95/max. Fail CI if any book exceeds 30 seconds.
+- **Hard timeout in the worker.** Wrap the H₂ call in `concurrent.futures` with `timeout=60s`. On timeout, return an `H2Unavailable` result (not an exception). The frontend renders a friendly "H₂ skipped: too sparse/dense for tractable computation" instead of a spinner.
+- **Tighten `thresh` (ε_max) specifically for H₂.** Pass `thresh = np.percentile(pairwise_distances, 75)` (not 95th as for H₀/H₁). H₂ features near the diameter of the cloud are almost always noise; cutting them saves the worst-case runtime explosion.
+- **Pre-compute H₂ for the bundled corpus at deploy time, never live.** User uploads should compute H₀+H₁ only unless an "include H₂" toggle is explicitly flipped (and even then, behind the timeout).
+- **Separate the worker queue:** route H₂-enabled jobs to a dedicated queue with `max_concurrent=1` so a slow H₂ job can never starve the H₀/H₁ pipeline serving other users.
 
-**Consequences:** Persistent homology results are sensitive to corpus composition rather than genre structure. The "topological signature" of a genre may actually be an artifact of which specific books happen to be in the corpus.
+**Warning signs:**
+- Worker memory crosses 1.5GB during a single homology call.
+- A single H₂ run takes >20s on the bench script.
+- Railway dashboard shows worker CPU pinned at 100% on a single job for minutes.
+- SSE `progress` events stop arriving (`computing_homology` is the last event for a long time).
 
-**Prevention:**
-- Use smoothed IDF: `log(1 + N/(1 + df))` to dampen the effect of single-document changes.
-- Test robustness by running leave-one-book-out on the corpus and checking whether persistence diagrams change qualitatively. If they do, the TF-IDF weighting is too fragile.
-- Document this limitation prominently. The system's reliability improves with more books per genre.
-- Consider sub-linear TF (1 + log(tf)) to prevent very long books from dominating through raw term frequency.
-
-**Detection:** Compute the coefficient of variation of IDF scores across bootstrap samples of the corpus. If CV > 0.3 for important words, IDF is too noisy.
-
-**Confidence:** HIGH (basic statistics)
-
----
-
-### Moderate: Genre Imbalance Skews IDF
-
-**What goes wrong:** If the corpus has 15 romance novels and 3 sci-fi novels, words common across romance appear in many documents and get low IDF, while sci-fi-specific words appear in few documents and get high IDF. This is correct IDF behavior, but it means sci-fi books will have more extreme TF-IDF values, making their point clouds geometrically different from romance point clouds for reasons of corpus composition rather than genre structure.
-
-**Prevention:**
-- Balance the corpus: aim for equal books per genre (minimum 5 per genre, ideally 8-10+).
-- Alternatively, compute IDF within-genre and normalize, but this introduces genre labels into the "unsupervised" TF-IDF step, creating a subtle circular dependency.
-- The cleanest fix: balance the corpus and accept IDF as-is.
-
-**Confidence:** MEDIUM
+**Phase to address:** Phase 6 (v1 Bug-Fix Sweep). H₂ is the headline carry-over and needs hard guards before it ships to users. The bench + timeout + queue separation must land together — none on its own is enough.
 
 ---
 
-### Minor: Common Words Surviving Stopword Removal
+### Pitfall 3: H₂ Empty Diagrams Are the Common Case, Not the Error Case
 
-**What goes wrong:** Words like "said", "would", "just", "like" survive standard stopword lists but appear in nearly every book. They get low TF-IDF but nonzero, creating a dense cluster of near-zero-weight words in the point cloud that adds computational cost to persistent homology without topological signal.
+**What goes wrong:**
+The team enables H₂, runs it on a book, gets back an empty persistence diagram, and assumes the implementation is broken. They start debugging ripser parameters. In fact: H₂ being empty is **expected** for most ~500-point clouds in 100D embedding space — there simply aren't enough points to form persistent voids. The UI then either crashes (assumes ≥1 point), renders a blank chart with no explanation (user thinks the app is broken), or worse, renders a misleading "no H₂ features detected ✓" message that hides the limitation.
 
-**Prevention:** After TF-IDF computation, apply a minimum TF-IDF threshold to exclude words below it from the point cloud. This is already implied by the "top-K words by TF-IDF" approach but should be explicit. A threshold of the bottom 30-50% of TF-IDF scores is a reasonable starting point.
+**Why it happens:**
+v1 PITFALLS.md flagged this directly: "in high dimensions, distances concentrate around their mean. A sparse point cloud (500 words in 100D) fills essentially none of the space." H₂ measures voids — closed 2D surfaces that bound an empty 3D region. In a sparse high-D cloud, voids either don't form or form only at filtration values so large that everything is one big simplex.
 
-**Confidence:** HIGH
+**How to avoid:**
+- **Distinguish "empty diagram" from "computation failed."** ripser returns `np.empty((0, 2))` for H₂ when there are no features; this is a valid result, not an error. Make sure the persistence-image step handles empty arrays and produces an all-zeros image (not a NaN or crash).
+- **UI copy must be honest.** For empty H₂: "No 2-dimensional voids detected — typical for sparse high-dimensional point clouds at this vocabulary size." Not "✓ All clean."
+- **Don't feed empty H₂ persistence images into the SVM feature vector.** If H₂ images are always zeros across the corpus, they add 400 zero-dimensions of noise to an already underpowered feature vector. Either (a) gate H₂ inclusion in feature concatenation on "≥30% of training books had non-empty H₂," or (b) make H₂ display-only — never a classification input — in v2.
+- **Add a "diagram is empty" test fixture.** Unit-test the H₂ pipeline with a deliberately-too-small point cloud (e.g., 50 random points in 100D) and assert the system handles it gracefully.
 
----
+**Warning signs:**
+- Every book's H₂ diagram is empty.
+- H₂ persistence image features show zero variance across the corpus.
+- Adding H₂ to the SVM feature vector decreases LOOCV accuracy.
+- UI throws on `Math.max(...[])` or `dot.scale = 0/0` when the diagram is empty.
 
-## Persistent Homology Pitfalls
-
-### Critical: Weighted Vietoris-Rips Is Not a Standard Off-the-Shelf Feature
-
-**What goes wrong:** The project specifies "Vietoris-Rips filtration, weighted by TF-IDF" where "heavy TF-IDF words grow balls faster." This is NOT how standard weighted Rips works in existing libraries. Standard WeightedRipsPersistence in giotto-tda uses distance-to-measure (DTM) weighting, which assigns weights based on local density (outlier detection), not per-point importance weights.
-
-**Why it happens:** The project's weighting concept (important words = faster ball growth = earlier appearance in filtration) requires modifying the effective distance metric. Specifically, if word i has TF-IDF weight w_i, its "ball" at filtration parameter epsilon has effective radius w_i * epsilon. Two words i,j form an edge when d(i,j) <= w_i * epsilon + w_j * epsilon. This is a custom weighted filtration that does NOT match DTM weighting.
-
-**Consequences:** You cannot simply pass TF-IDF weights to giotto-tda's WeightedRipsPersistence and get the intended behavior. The DTM weights would treat low-TF-IDF words as "outliers" and suppress them, which is sort of similar but mathematically different.
-
-**Prevention:**
-- **Option A (recommended):** Implement the custom weighted filtration by modifying the distance matrix. Given points with positions p_i and weights w_i, compute a modified distance matrix where d_weighted(i,j) = d(i,j) / (w_i + w_j). Then run standard (unweighted) Vietoris-Rips on this modified distance matrix. This is mathematically equivalent to the "balls grow at different rates" model and works with any standard Ripser/giotto-tda implementation.
-- **Option B:** Use giotto-tda's WeightedRipsPersistence with a custom callable that returns TF-IDF weights. This is supported (the `weights` parameter accepts callables returning 1D arrays) but the mathematical semantics are DTM-style, not the "ball growth rate" model described in the project spec.
-- **Option C:** Accept DTM-style weighting and reframe the project description. DTM weighting suppresses outlier words (low-density regions), which overlaps with but is not identical to TF-IDF importance weighting.
-- Whichever option: document the exact mathematical definition of the filtration used, because "weighted Vietoris-Rips" is ambiguous.
-
-**This needs a spike.** The mathematical translation from "TF-IDF weights control ball growth rate" to a concrete distance matrix modification must be validated before building the pipeline.
-
-**Confidence:** HIGH (verified against giotto-tda docs)
+**Phase to address:** Phase 6 (v1 Bug-Fix Sweep). Empty-diagram handling is the first thing to test once H₂ is wired in.
 
 ---
 
-### Critical: Computational Explosion with Point Count
+### Pitfall 4: Comparing v2 Accuracy to v1 Without a Held-Out Test Set
 
-**What goes wrong:** Vietoris-Rips complex construction is O(n^d) where n is point count and d is the maximum homology dimension. For H_1 (1-dimensional holes), you need all triangles; for H_2, all tetrahedra. With 5,000 words per book, the number of potential triangles is C(5000,3) ~ 20 billion.
+**What goes wrong:**
+The team adds 30 new books in Phase 8, retrains, and runs LOOCV on the expanded corpus. LOOCV reports 89% vs v1's 83%. Everyone celebrates "+6pp accuracy." But the v1 baseline was LOOCV on 15 books, the v2 measurement is LOOCV on 45 books, the books are different books with different lengths and different OOV rates, and there is no held-out test set. The comparison is meaningless — the numbers can't be subtracted.
 
-**Practical limits based on benchmarks:**
-- **< 500 points:** Fast, seconds on a laptop. Safe for all homology dimensions.
-- **500-2,000 points:** Minutes for H_0 and H_1. Feasible but needs max_edge_length cutoff.
-- **2,000-5,000 points:** H_0 feasible in minutes, H_1 may take tens of minutes to hours. H_2 likely infeasible.
-- **5,000-10,000 points:** H_0 only, and even that may require sparse approximations. H_1 likely requires hours and 16GB+ RAM.
-- **> 10,000 points:** Requires subsampling, landmarks, or approximate methods.
+**Why it happens:**
+"Measurable accuracy improvement vs v1 baseline" sounds well-defined but isn't. LOOCV is a property of (data, model) jointly — changing the data changes the cross-validation distribution. v1 PITFALLS.md noted LOOCV variance is ±5pp on small corpora; v2 risks comparing two noisy estimates from different distributions and treating the difference as signal.
 
-**Why it happens:** Ripser is highly optimized but the combinatorial explosion is fundamental. The distance matrix alone for 10,000 points in 100D is 10,000^2 * 8 bytes = 800MB.
+**How to avoid:**
+- **Lock down a v1-frozen test set BEFORE expanding the corpus.** Reserve the v1 15-book corpus (or a held-out fraction of it) as the comparison baseline. After Phase 8 retrain, evaluate the v2 SVM on this exact same set. That's an apples-to-apples comparison.
+- **Report three numbers, not one:** (1) v2 LOOCV on full new corpus, (2) v2 evaluated on v1-frozen test, (3) v1 LOOCV on v1 corpus. Improvement claims must reference (2) vs (3).
+- **Permutation test, every time.** For each accuracy number reported, also report the permutation null (100 label-shuffle runs). Confidence interval = real accuracy minus 95th percentile of null. v1 already does this in `scripts/06_validate.py` — extend it, don't bypass it.
+- **Report per-genre F1, not just overall accuracy.** Class imbalance from naive corpus expansion (see Pitfall 5) inflates accuracy while specific genres regress.
+- **Pin α and k_clusters before measurement.** v1's α and K were chosen empirically; if Phase 8 also sweeps these, you're optimizing two things at once and you can't attribute improvement to the corpus. Do the corpus expansion first with v1 α/K, *then* a separate Phase 8b retunes hyperparameters with a documented validation protocol.
 
-**Consequences:** A user uploads a long novel (100k words), TF-IDF selects the top 5,000, and the server hangs for 30 minutes computing persistent homology.
+**Warning signs:**
+- The phrase "v2 is X% better than v1" appears anywhere without specifying *which* test set.
+- LOOCV accuracy on the full new corpus is the only number being tracked.
+- α or k_clusters changed between v1 and v2 measurements.
+- Per-genre confusion matrix is missing from the validation report.
 
-**Prevention:**
-- **Hard cap at 500-1,000 words per book for persistent homology input.** This is the most important performance lever. Use TF-IDF ranking to select the most genre-distinctive words.
-- Set `max_edge_length` (epsilon_max) to a reasonable cutoff (e.g., 95th percentile of pairwise distances) to avoid computing simplices at unrealistically large filtration values.
-- Compute only H_0 and H_1. H_2 (voids) is computationally expensive and unlikely to yield interpretable signal in word embedding space.
-- Use Ripser (via giotto-tda or ripser.py) rather than GUDHI for standard Rips -- Ripser is 40x faster and 15x more memory efficient.
-- Implement server-side timeouts (30-60 seconds) that return a partial result or error rather than hanging.
-
-**Detection:** Benchmark with 100, 300, 500, 1000, 2000 words and plot runtime. Identify the knee of the curve for your hardware.
-
-**Confidence:** HIGH (verified against benchmarks and documentation)
+**Phase to address:** Phase 7 (Corpus Sourcing Research Spike) defines the protocol; Phase 8 (Corpus Expansion) executes it. Phase 7 should produce a written `VALIDATION_PROTOCOL.md` that Phase 8 follows verbatim.
 
 ---
 
-### Moderate: H_1/H_2 Features May Not Be Meaningful in Word Embedding Space
+### Pitfall 5: Train/Test Leakage via Author Overlap When Adding Project Gutenberg Books
 
-**What goes wrong:** Persistent homology detects "loops" (H_1) and "voids" (H_2) in the point cloud. But word embedding space is high-dimensional (100-300D) and the point cloud is sparse relative to the ambient dimension. In such spaces, points are approximately equidistant (concentration of measure), making genuine topological features unlikely. What you observe may be noise topology rather than genre-characteristic structure.
+**What goes wrong:**
+The team grows the corpus by adding more books from authors already in v1 (e.g., adding 4 more H.G. Wells books to sci-fi, 3 more Poe to horror, 5 more Austen to romance). LOOCV accuracy jumps to 95%+. They ship. On real user uploads from unseen authors, accuracy is 60%. The SVM learned **author style**, not **genre**.
 
-**Why it happens:** In high dimensions, distances concentrate around their mean. A sparse point cloud (500 words in 100D) fills essentially none of the space. Loops that appear in the persistence diagram may just be artifacts of the point cloud being too sparse to distinguish signal from noise.
+**Why it happens:**
+Project Gutenberg's "easy" books are concentrated in a small number of prolific public-domain authors. Naive corpus expansion picks the same authors repeatedly. The persistence images of two Wells novels are very similar to each other (same vocabulary distribution, same TF-IDF profile) but not because they're sci-fi — because they're Wells. LOOCV treats each book as independent and so this leakage is invisible to standard CV; the held-out fold is "another Wells novel" which the model recognizes from "other Wells features."
 
-**Consequences:** Persistence images encode noise topology, and the SVM learns to classify noise patterns that happen to correlate with genre labels by chance (overfitting).
+**How to avoid:**
+- **GroupKFold by author**, not LOOCV by book, once the corpus has multi-book authors. scikit-learn's `GroupKFold(groups=author)` ensures all books by one author land in the same fold.
+- **Cap books-per-author at 1 in the bundled corpus** unless you have >5 authors per genre. If you want N books per genre, use N distinct authors before adding a second book by any single author.
+- **Track author in `corpus/books.yaml`.** Add an `author` field. The metadata endpoint (BookSlider — see Pitfall 12) should surface it. Phase 7 research must include "what's the distribution of authors per genre in our planned corpus."
+- **Anti-author smoke test:** train SVM holding out all books by one specific author, then predict that author's books. Repeat for each multi-book author. If held-out-author accuracy drops >15pp vs LOOCV, you have author leakage.
+- **Document the limitation in PROJECT.md.** If author-controlled CV is infeasible (e.g., not enough distinct authors per genre), explicitly say so. Don't hide it.
 
-**Prevention:**
-- Focus on H_0 (connected components) which is robust and interpretable: it measures cluster structure.
-- Treat H_1 features with long persistence as potentially meaningful but validate by permutation testing: shuffle genre labels and check whether H_1 persistence images still separate genres. If they do, the signal is spurious.
-- Consider using cosine distance rather than Euclidean for Rips filtration, since word2vec semantics are angular.
-- Do NOT expect H_2 to be informative. Include it in exploratory analysis but do not depend on it for classification.
+**Warning signs:**
+- The same author appears 3+ times in one genre.
+- Per-author held-out accuracy is dramatically lower than LOOCV accuracy.
+- The team is debating "but if we drop these Wells books we lose all our sci-fi training data."
+- User-uploaded books (unseen authors) get much lower confidence than bundled corpus books.
 
-**Confidence:** MEDIUM (theoretical concern well-grounded; empirical impact on this specific application unclear)
-
----
-
-### Moderate: Persistence Image Parameter Sensitivity
-
-**What goes wrong:** Persistence images require choosing sigma (bandwidth), grid resolution, and a weighting function. Poor choices produce degenerate images: too-small sigma creates spiky, overfitting-prone images; too-large sigma smears all topological features into a uniform blob.
-
-**Practical guidance:**
-- **Sigma:** Start with sigma proportional to the interquartile range of persistence values. Adams et al. (2017) show classification accuracy is "fairly robust" to sigma, but extreme values (sigma < 0.01 or sigma > 10 relative to persistence scale) cause problems.
-- **Resolution:** 20x20 is a standard starting point (400 features). Going finer (50x50 = 2500) adds features without proportional signal in small datasets. Going coarser (5x5 = 25) loses detail.
-- **Weighting:** Linear ramp weighting (weight = persistence) is standard; it downweights short-lived features (noise) and upweights long-lived features (signal).
-
-**Prevention:**
-- Use persim (scikit-tda) or giotto-tda's PersistenceImage with default parameters as a baseline.
-- Grid-search sigma over [0.01, 0.05, 0.1, 0.5, 1.0] relative to the persistence range.
-- Fix resolution at 20x20 unless there's a strong reason to change it.
-
-**Confidence:** MEDIUM (Adams et al. is authoritative; specific values need empirical tuning)
+**Phase to address:** Phase 7 (research must surface this) and Phase 8 (must implement GroupKFold + author-balance constraints).
 
 ---
 
-### Minor: Cosine vs. Euclidean Distance for Rips Filtration
+### Pitfall 6: Class Imbalance Sneaks In via "Add Whatever's Available"
 
-**What goes wrong:** Word2Vec similarity is conventionally measured by cosine similarity, but Vietoris-Rips uses a metric (typically Euclidean). If embeddings are not L2-normalized, Euclidean distance conflates magnitude (word frequency-related) with direction (semantic). Two words could be semantically similar (small angle) but far apart in Euclidean distance because one has a large magnitude.
+**What goes wrong:**
+Phase 8 expansion ends up with 12 horror, 8 sci-fi, 5 romance — because horror has more public-domain books available and the team didn't enforce balance. The SVM achieves 80% LOOCV accuracy mainly by predicting "horror" more often. Romance F1 drops from 0.83 (v1, balanced 5/5/5) to 0.55 (v2, imbalanced 5/8/12).
 
-**Prevention:** L2-normalize all word vectors before computing the distance matrix for Rips filtration. This makes Euclidean distance proportional to cosine distance: d_euclidean(u/||u||, v/||v||) = sqrt(2(1 - cos(u,v))). This is standard practice.
+**Why it happens:**
+Corpus sourcing is opportunistic; some genres have more available books than others. Without an explicit cap, the corpus drifts toward whatever's easy to scrape.
 
-**Confidence:** HIGH
+**How to avoid:**
+- **Pre-declare per-genre book counts in Phase 7 output.** Phase 7's recommendation doc must specify "target N books per genre" as a hard constraint, not a guideline.
+- **Enforce balance at corpus-load time.** `corpus/books.yaml` validation: refuse to load if `max(per_genre_count) > min(per_genre_count) + 2`. Make this a startup check, not a runtime check.
+- **Use `class_weight='balanced'` in the SVC** as a defense-in-depth measure. This already may be set in v1; verify.
+- **Report macro-F1 as the primary metric**, not accuracy. Macro-F1 makes imbalance immediately visible. Phase 7's validation protocol should mandate macro-F1.
 
----
+**Warning signs:**
+- Per-genre confusion matrix shows one row much larger than others.
+- Accuracy is high but macro-F1 is much lower than accuracy.
+- The bundled-corpus loader doesn't validate per-genre counts.
 
-## SVM Classification Pitfalls
-
-### Critical: 450 Features with 30 Samples Is Severe Overfitting Territory
-
-**What goes wrong:** The feature vector is persistence_image (400D at 20x20) + cluster_distribution (50D) = 450 dimensions. With only 30 books, the ratio is 15 features per sample. This is deep in the "p >> n" regime where any classifier can find a separating hyperplane by chance.
-
-**Why it happens:** In 450-dimensional space, 30 points are always linearly separable (for up to 450 classes). The SVM will find a perfect fit that does not generalize.
-
-**Consequences:** Leave-one-out CV reports high accuracy that does not replicate on new data. The entire classification pipeline appears to work but is memorizing, not learning.
-
-**Prevention:**
-- **Reduce dimensionality aggressively.** Apply PCA to the persistence image to retain 90-95% variance (likely 5-20 components, not 400). Do the same for cluster distributions. Target a total feature vector of 20-50 dimensions max.
-- **Strong regularization.** Use small C values in the SVM (C=0.01 to 1.0). RBF kernel SVMs are somewhat resistant to the curse of dimensionality because they depend on pairwise kernel values rather than individual dimensions, but this resistance has limits.
-- **Permutation testing.** After computing LOOCV accuracy, run the same pipeline with shuffled labels 100 times. If the real accuracy is not significantly above the permutation distribution, the classifier is fitting noise.
-- **Fewer genres.** With 30 books across 5 genres (6 per genre), expect high variance. With 30 books across 10 genres (3 per genre), the task is almost certainly underpowered. Keep genre count to 3-5 with the bundled corpus.
-
-**Confidence:** HIGH (fundamental statistical concern)
+**Phase to address:** Phase 7 (protocol) + Phase 8 (enforcement at load time).
 
 ---
 
-### Moderate: Leave-One-Out CV Variance with Small Datasets
+### Pitfall 7: Treating `decision_function` Output as a Confidence Score
 
-**What goes wrong:** LOOCV on 30 samples produces 30 correlated estimates. The variance of the accuracy estimate is high because each training fold differs by only one sample. A single unusual book can swing accuracy by 3-5 percentage points. Results like "83% accuracy" could easily be "73% or 93%" on a different corpus of the same size.
+**What goes wrong:**
+For top-N predictions, the team calls `svm.decision_function(x)`, sorts the resulting scores, takes the top 3, and labels them "Sci-Fi (0.87), Horror (0.42), Romance (-0.15)". The numbers look like confidences. They aren't. They're signed margins (distances to hyperplanes in OvR), unbounded, not comparable across binary sub-classifiers, and they don't sum to 1. A user sees "0.87 sci-fi" and assumes 87% probability. The app is now lying to users.
 
-**Why it happens:** LOOCV averaging n models trained on nearly identical data produces high-variance estimates. Recent research (2025) shows LOOCV can also suffer from distributional bias when class ratios are imbalanced.
+**Why it happens:**
+`decision_function` is the natural API on `SVC` and returns nice-looking floats. `predict_proba` requires `probability=True` and triggers libsvm's built-in Platt scaling, which the team may have left off in v1 because it was slower and they didn't need probabilities. Now they need probabilities but reach for the wrong method.
 
-**Prevention:**
-- Report confidence intervals, not point estimates. Use bootstrapped LOOCV or repeated stratified K-fold (K=5, repeated 10 times) as a sanity check.
-- Be honest in the UI: display accuracy as a range, not a single number.
-- Include the permutation baseline (see above) so users can see whether the accuracy is meaningful.
+**How to avoid:**
+- **Enable `probability=True` on the SVC** and use `predict_proba` for top-N display. This triggers libsvm's built-in 5-fold internal CV Platt scaling. The output sums to 1 across classes and is calibrated (approximately).
+- **Re-train with `probability=True`** — it changes the fit slightly because of the internal CV. Don't take a v1 SVM and bolt `probability=True` onto it; retrain end-to-end.
+- **For small datasets, also consider `CalibratedClassifierCV(base, method='sigmoid', cv=...)`** — but be aware that with <30 samples per fold, sigmoid calibration is itself noisy. Test both ("libsvm built-in" vs "CalibratedClassifierCV around SVC") and pick the one with better Brier score on the v1-frozen test set.
+- **Display intervals, not just point estimates.** Bootstrap the test-time calibration to get an uncertainty band on the top-N probabilities. "Sci-fi: 70-85% likely" is more honest than "Sci-fi: 0.78".
+- **Sanity check:** if `predict_proba` ever disagrees with `predict` (the most-probable class isn't the predicted class), libsvm warned this can happen — log and surface as a "low-confidence prediction" warning to the user.
 
-**Confidence:** HIGH
+**Warning signs:**
+- Top-N values don't sum to 1.
+- Top-N values are sometimes negative.
+- The top-N display says "0.87 confidence" but `predict()` returns a different class.
+- The team is debating "should we just softmax the decision_function output?" (Answer: no, this is not calibration.)
 
----
+**Phase to address:** Phase 9 (Classification Depth).
 
-### Moderate: Class Imbalance
-
-**What goes wrong:** If the bundled corpus has 10 romance novels and 3 horror novels, the SVM baseline (always predict "romance") achieves 33% accuracy. LOOCV accuracy of 50% looks good but is barely above chance. Worse, the SVM may learn to always predict the majority class.
-
-**Prevention:**
-- Balance the corpus (equal books per genre).
-- Use `class_weight='balanced'` in scikit-learn's SVC.
-- Report per-class precision/recall in addition to overall accuracy.
-- Use macro-averaged F1 rather than accuracy as the primary metric.
-
-**Confidence:** HIGH
+**Source confidence:** HIGH. See [scikit-learn SVM probability calibration docs](https://scikit-learn.org/stable/modules/svm.html#scores-and-probabilities) and [CalibratedClassifierCV docs](https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html).
 
 ---
 
-## 3D Visualization Pitfalls
+### Pitfall 8: SHAP/LIME on the Full Pipeline Times Out the Worker
 
-### Critical: Projection Destroys Topology -- The Visualization Lies
+**What goes wrong:**
+"Why this genre" feature attempts to use SHAP `KernelExplainer` on the trained SVM-with-RBF-kernel. The explainer is model-agnostic and treats the SVM as a black box, making it O(n_background * n_features) per prediction. With 30 background samples × 450 features, a single explanation takes 30-120 seconds. Users click the "why?" button and wait forever; multiple concurrent clicks pile up; arq workers stall.
 
-**What goes wrong:** Persistent homology is computed in the full N-dimensional embedding space (100-300D). The 3D visualization shows a PCA/UMAP/t-SNE projection. Topological features visible in 3D (apparent clusters, gaps, loops) may not correspond to actual high-dimensional topology. Conversely, real topological features may be invisible in the projection. Users will naturally assume "what I see is what the math computed" -- this is false.
+**Why it happens:**
+Kernel SHAP is famously slow on SVM-RBF — there's an [open bug on the SHAP repo](https://github.com/shap/shap/issues/3747) noting "KernelExplainer really slow on sklearn SVM with RBF Kernel." It's not a misconfiguration; it's a known limitation. Teams add SHAP because it's the obvious choice for explainability and discover the cost too late.
 
-**Why it happens:** Dimensionality reduction from 100D to 3D necessarily destroys most of the geometric structure. t-SNE and UMAP specifically distort distances and can create spurious clusters or merge real ones. Recent research (2025) demonstrates that "two forms of map discontinuity distort visualizations: one exaggerates cluster separation and the other creates spurious local structures."
+**How to avoid:**
+- **Don't use Kernel SHAP for live explanations.** Use cheaper alternatives:
+  - **Nearest training neighbors:** for "why sci-fi", show the 3 closest training books in feature space (cosine distance on the concatenated normalized feature vector). This is O(N_train) and immediate. Pair with the books' titles + thumbnails.
+  - **Per-feature-track contribution:** decompose the prediction into "topology contribution vs cluster contribution" by re-predicting with one track zeroed out. Two extra SVM calls, both fast.
+  - **Per-word evidence:** identify the top-10 highest-TF-IDF words in the uploaded book that have nearest-neighbor word-vectors clustered in the predicted-genre region. Cheap to compute, intuitive for users.
+- **If Kernel SHAP is required**, precompute background distribution at train time (k-means cluster 20-50 representative training examples instead of all 45+ books). This makes per-prediction SHAP closer to 5-10 seconds.
+- **Run SHAP off the request path.** Treat "why this genre" as a separate background job, enqueued via arq, polled by SSE. Same pattern as the homology computation. Never compute SHAP synchronously inside an HTTP handler.
+- **Cache SHAP results per (book_hash, model_hash).** Same content-addressed cache pattern. Once explained, the explanation never needs to be recomputed unless the model changes.
 
-**Consequences:** Users draw incorrect conclusions about genre relationships. A sci-fi cluster that appears far from fantasy in 3D might actually overlap in 100D. The animated Vietoris-Rips in 3D shows edges forming between projected points, but the actual filtration in N-D connects different points at different times.
+**Warning signs:**
+- "Why this genre" requests take >10 seconds on the bundled corpus.
+- SHAP runs blocking the FastAPI event loop.
+- Worker memory usage spikes during explanation.
+- Caching strategy is "recompute on every click."
 
-**Prevention:**
-- **Explicit disclaimers in the UI.** Label every 3D view with "This is a projection. Distances and structures may not reflect the full-dimensional computation."
-- **Show the variance explained** (for PCA) or stress metric (for MDS). If PCA explains 15% of variance in 3 components, say so prominently.
-- **Let users switch projection methods** and observe what changes vs. what stays stable. Stable structures across PCA, UMAP, and t-SNE are more trustworthy.
-- **The Vietoris-Rips animation must use N-D computation projected to 3D**, not 3D-computed Rips. This means edges appear when the N-D distance criterion is met, even if the 3D projected distance looks wrong. This is confusing but mathematically honest. Add a tooltip: "Edges form when words are close in 100D space, which may not match their apparent distance in this 3D view."
+**Phase to address:** Phase 9 (Classification Depth).
 
-**Confidence:** HIGH (well-documented limitation of DR methods)
-
----
-
-### Critical: Animated Vietoris-Rips Edge Count Explosion
-
-**What goes wrong:** At small epsilon, few edges exist. As epsilon grows, edge count grows as O(n^2). For 500 words, the maximum is C(500,2) = 124,750 edges. For 1,000 words, it's ~500,000. For 2,000 words, ~2 million. Three.js can handle 50-100k line segments at 60fps but will choke above that. Triangles (for 2-simplices) are even worse.
-
-**Consequences:** The epsilon slider animation becomes increasingly laggy, then the browser tab crashes at high epsilon values.
-
-**Prevention:**
-- **Cap the visualization vocabulary at 300-500 words.** Even if persistent homology uses 1,000 words for computation, the 3D animation should only render a subset.
-- **Progressive rendering:** At each epsilon, only draw edges for the current frame. Don't accumulate all edges from 0 to epsilon -- use instanced rendering or GPU-side filtering.
-- **LOD (level of detail):** At high epsilon where most points are connected, switch to a convex hull or alpha shape visualization instead of individual edges.
-- **Throttle the epsilon slider** so it doesn't update on every pixel of mouse movement. Debounce to ~10 updates/second.
-- **Never render 2-simplices (triangles) as filled geometry.** The count is cubic. Show edges only, with births/deaths of topological features highlighted as colored markers.
-- Use Three.js BufferGeometry with pre-allocated buffers. Avoid creating/destroying geometry objects per frame.
-
-**Confidence:** HIGH (verified against Three.js performance data)
+**Source confidence:** HIGH. SHAP repo issue confirms known slowness; nearest-neighbor + per-track decomposition is standard practice.
 
 ---
 
-### Moderate: WebGL Limits on Point Count and Interactivity
+### Pitfall 9: Persistence-Image Feature Importance Is Meaningless Without Normalization Awareness
 
-**What goes wrong:** 50k+ points in Three.js with picking (hover to see word labels) requires spatial indexing. Without it, raycasting against 50k points per mouse move creates jank. GPU point size limits (gl_PointSize typically capped at 64-256px depending on hardware) affect visual design.
+**What goes wrong:**
+The team computes feature importance on the 450-dimensional concatenated feature vector to surface "the persistence image pixels that mattered most." They display a heatmap of importance over the persistence image grid. But: (a) persistence-image pixels are correlated (a single long-persistence point contributes to many neighboring pixels via the Gaussian smoothing), so "pixel (12, 7) was important" is not interpretable; (b) the feature vector was L2-normalized and α-weighted before SVM training, so raw importance scores reflect the post-normalization geometry, not the topological feature; (c) the team forgets cluster-distribution dimensions are also in the same feature vector and conflates the two tracks in the explanation.
 
-**Prevention:**
-- Use BufferGeometry with a single Points object (one draw call).
-- Implement k-d tree or octree for picking (three-mesh-bvh or similar).
-- Keep point size small (1-5px) for the full cloud; enlarge on hover/selection only.
-- For >10k words, provide a search/filter to highlight specific words rather than relying on visual scanning.
-- Center all data near the origin to avoid floating-point precision issues in WebGL.
+**Why it happens:**
+"Feature importance" sounds objective. In an engineered, normalized, concatenated feature space, individual feature dimensions don't correspond to interpretable units. v1 PITFALLS.md noted "persistence images encode noise topology"; v2's version is "persistence-image feature importance reifies that noise into a chart that looks meaningful."
 
-**Confidence:** HIGH
+**How to avoid:**
+- **Don't expose per-pixel persistence-image importance.** It is not interpretable. Aggregate to interpretable units:
+  - **By homology dimension:** "H₀ contributed X%, H₁ contributed Y%, H₂ contributed Z%."
+  - **By feature track:** "Topology track: X% / Cluster track: Y%."
+  - **By persistence point:** trace each pixel of importance back to the persistence diagram point(s) whose Gaussian covers that pixel; show the underlying (birth, death) point on the diagram, not the smoothed pixel. This is faithful to the actual topological feature.
+- **Document the normalization explicitly** in the explanation UI: "Importance is computed after L2-normalization of each feature track and α-weighted concatenation. Raw word-level importance requires interpreting back through the pipeline."
+- **For nearest-neighbor explanations specifically:** distance in *feature space* ≠ distance in *word2vec space*. Two books can be feature-space neighbors (similar persistence images, similar cluster distributions) while having no vocabulary overlap. Be careful when claiming "this book is similar because they share these words." Use feature-space nearest-neighbor for the *prediction explanation*, but compute word-level overlap separately if you want to surface shared vocabulary.
 
----
+**Warning signs:**
+- The "why this genre" panel shows a heatmap of persistence image pixels with no further interpretation.
+- The team can't articulate why a specific pixel was important without hand-waving.
+- Nearest-neighbor in feature space surfaces books with zero shared vocabulary.
 
-## Parameter Sensitivity Pitfalls
-
-### Critical: Pathological Parameter Combinations
-
-**What goes wrong:** Certain parameter combinations produce meaningless or degenerate results without any obvious error:
-
-| Parameter Combo | Pathology |
-|----------------|-----------|
-| Small corpus + fine persistence image grid (50x50) | 2,500 features from ~30 samples. Guaranteed overfitting. |
-| Small vocab per book (< 100 words) + high homology dim (H_2) | Too few points for voids to be meaningful. H_2 is empty or noise. |
-| Very large window size (>20) + small books | Context windows larger than paragraphs capture document-level co-occurrence, not word-level semantics. |
-| alpha=0 (cluster-only) or alpha=1 (topology-only) | Loses the complementary signal. The whole point is both. |
-| Large epsilon_max + many words | Edge explosion in visualization; computation timeout in homology. |
-| Very small sigma in persistence images | Spiky images that overfit to individual persistence points. |
-
-**Prevention:**
-- Define valid parameter ranges in the UI. Don't let users set grid resolution above 25x25 or vocabulary above 1,000 for homology.
-- Implement "smart defaults" that adapt to corpus size: if N_books < 20, auto-reduce persistence image resolution to 10x10.
-- Show warnings when parameter combinations enter dangerous territory (e.g., "Feature dimension exceeds sample count -- results may be unreliable").
-
-**Confidence:** HIGH
+**Phase to address:** Phase 9 (Classification Depth).
 
 ---
 
-### Moderate: Cliff-Edge vs. Smooth Parameters
+### Pitfall 10: Persistence-Diagram Dot Scaling Fix Breaks H₀ "Infinite Persistence" Rendering
 
-**What goes wrong:** Some parameters degrade gracefully; others hit sudden failure modes.
+**What goes wrong:**
+The persistence-diagram dot scaling fix changes from "size = constant" to "size = f(persistence)" to make long-persistence features prominent. The naive implementation `size = k * (death - birth)` blows up for H₀ where one component has `death = infinity` (it never dies — it's the connected component containing all data). The dot disappears off-screen, the rest of the chart auto-rescales around it, or the rendering library throws.
 
-**Smooth (safe to expose as sliders):**
-- alpha (topology/cluster weighting): interpolates smoothly between two feature tracks
-- sigma (persistence image bandwidth): smooth effect on image blurriness
-- Projection method perplexity/n_neighbors: gradual effect on cluster tightness
+**Why it happens:**
+Persistence diagrams conventionally render the infinitely-persistent H₀ component on a horizontal line at the top of the chart, not inside the (birth, death) scatter. Teams fixing dot scaling often touch only the inner scatter logic and forget the infinity-line case. Or they keep ripser's `np.inf` sentinel in death values and let it propagate into a `size` formula.
 
-**Cliff-edge (dangerous as live sliders):**
-- min_count for Word2Vec: dropping below the threshold suddenly includes thousands of garbage words
-- max_words for homology: above ~1,000, runtime jumps from seconds to minutes
-- epsilon_max: above a threshold, edge count explodes combinatorially
-- K (cluster count): wrong K produces meaningless cluster distributions (but this is a standard hyperparameter tuning problem)
+**How to avoid:**
+- **Separate the infinite-persistence rendering path.** ripser returns `np.inf` for the unbounded H₀ component. Filter `np.isinf(deaths)` out before the dot-scaling computation and render those points on a dedicated "infinite persistence" line/marker with a fixed size + tooltip.
+- **Use log-scale size or sqrt-scale size, not linear.** Long-persistence outliers dominate linear scaling and crush the rest. `size = base + scale * sqrt(persistence / max_finite_persistence)` is more readable.
+- **Cap dot size.** `size = min(size, max_size)` so one outlier doesn't blow up the chart.
+- **Test fixture: a single book with a known long-persistence H₁ feature.** Snapshot test the rendered SVG/canvas before/after the fix.
 
-**Prevention:**
-- For cliff-edge parameters, use discrete presets ("fast/balanced/thorough") rather than continuous sliders.
-- For max_words, show estimated computation time before running.
-- For epsilon_max, show estimated edge count before animating.
+**Warning signs:**
+- Dots in the diagram are invisible (size = 0) or off-screen (size = ∞).
+- The chart auto-scales around a single dot, hiding everything else.
+- `np.inf` appears in browser-side error logs.
+- The fix works for H₁ but H₀ tab shows nothing.
 
-**Confidence:** MEDIUM (cliff-edge locations need empirical calibration)
-
----
-
-## Deployment Pitfalls
-
-### Critical: Memory Footprint of Word2Vec Model
-
-**What goes wrong:** A Word2Vec model with 50,000 vocabulary words at 100 dimensions requires 50,000 * 100 * 4 bytes * 3 matrices = ~57MB during training. After training, using only KeyedVectors reduces this to ~19MB (one matrix). With 150D: ~29MB. This is manageable for a single user but problematic if the full model is loaded per-session.
-
-**For reference:** Pre-trained Google News Word2Vec (3M words, 300D) is ~3.6GB. You are NOT using this, but users may expect it.
-
-**Prevention:**
-- Train a domain-specific model with limited vocabulary (10k-50k words). This is already the plan.
-- After training, save only KeyedVectors (not the full model with training weights).
-- Use memory-mapped loading (`mmap='r'`) so the OS can share the model across processes.
-- For a hosted web app, load the model once at server startup, not per-request.
-
-**Confidence:** HIGH (verified memory formula against gensim docs)
+**Phase to address:** Phase 6 (v1 Bug-Fix Sweep).
 
 ---
 
-### Critical: Concurrent Persistent Homology Computations
+## Moderate Pitfalls
 
-**What goes wrong:** Each persistent homology computation for a user-uploaded book may take 5-60 seconds and consume 100MB-1GB RAM (depending on word count). If 10 users upload simultaneously, the server needs 1-10GB RAM and 10 CPU-saturated threads. On a single-server deployment, this causes request timeouts and potential OOM kills.
+### Pitfall 11: LOOCV Cost Explodes Quadratically with Corpus Size
 
-**Prevention:**
-- **Queue-based architecture.** User uploads go into a task queue (Celery, RQ, or similar). Workers process one-at-a-time with configurable concurrency.
-- **Hard resource limits.** Cap words-per-book at 500-1000 for homology. Set computation timeout at 60 seconds.
-- **Pre-compute bundled corpus results.** All persistent homology for the bundled corpus should be computed at build time and cached. Only user uploads trigger live computation.
-- **Show progress/status.** "Computing topological features... estimated 15 seconds" with a real progress indicator, not a spinner.
+**What goes wrong:**
+v1: 15 books × LOOCV = 15 full pipeline runs at validation time. Phase 8 doubles the corpus to 30 books = 30 runs at >2x per-run cost (because TF-IDF and SVM are larger). Total validation cost is ~4-6x. CI starts timing out. The team disables LOOCV in CI to make the build green, losing the safety net.
 
-**Confidence:** HIGH
+**Why it happens:**
+LOOCV is the right tool for small corpora but its cost is N × per-fold-cost, and per-fold cost itself grows with N. For homology specifically, each leave-one-out fold requires re-running TF-IDF and persistent homology on (N-1) books.
 
----
+**How to avoid:**
+- **Cache aggressively.** Per-book persistence diagrams don't change when *another* book is held out — TF-IDF does, point clouds do, but homology output for fixed weighted point clouds is cacheable per `(book_id, corpus_manifest_hash)`. Add this caching layer in Phase 8.
+- **Switch from LOOCV to repeated stratified K-fold** (K=5, repeat 10x) once N ≥ 25. Same statistical power, much cheaper.
+- **Parallelize the folds.** `joblib.Parallel(n_jobs=-1)` over folds. Each fold is independent. Move LOOCV from a serial script to a fan-out job.
+- **Don't run LOOCV on every CI commit.** Run on demand or nightly. CI should only verify the pipeline starts and produces non-zero outputs, not full statistical validation.
 
-### Moderate: User Upload Handling
+**Warning signs:**
+- `scripts/06_validate.py` takes >10 minutes.
+- CI was disabled because validation was too slow.
+- Manual validation is now an ad-hoc thing the team does "when it feels ready."
 
-**What goes wrong:** Users will upload:
-- Non-UTF8 files (Latin-1, Windows-1252, etc.) causing decode errors
-- PDF/DOCX/EPUB instead of plain text
-- 500MB files (complete works of someone)
-- Files in languages other than English (breaking the English-centric preprocessing)
-- Adversarial inputs (extremely long "words", binary data disguised as .txt)
-
-**Prevention:**
-- Accept only .txt files. Reject other formats with a clear error message pointing to conversion tools.
-- Enforce a file size limit (5MB is generous -- that's ~1 million words).
-- Use `chardet` or `charset-normalizer` to detect encoding and convert to UTF-8.
-- After tokenization, reject if >50% of tokens are not in a basic English dictionary (flags non-English or binary files).
-- Sanitize: strip null bytes, limit maximum word length to 50 characters, limit maximum vocabulary to 100k unique tokens.
-
-**Confidence:** HIGH
+**Phase to address:** Phase 8 (Corpus Expansion).
 
 ---
 
-### Moderate: Cold Start and Pre-computation
+### Pitfall 12: BookSlider Metadata Endpoint Becomes a JSON Dump
 
-**What goes wrong:** If the app computes everything on first load, the user waits 2-5 minutes before seeing anything. Word2Vec training alone on a 3M token corpus takes 30-120 seconds.
+**What goes wrong:**
+The corpus metadata endpoint to wire BookSlider returns the entire book object including the full preprocessed token list ("for completeness"). Payload is 5-50MB per genre. BookSlider triggers a network round-trip on every navigation event, the React Query cache fills the browser's memory, and the slider stutters.
 
-**Prevention:**
-- Pre-train the Word2Vec model at build/deploy time. Ship the trained KeyedVectors as a static asset.
-- Pre-compute TF-IDF, persistence diagrams, persistence images, and cluster distributions for the bundled corpus.
-- The first page load should display pre-computed results instantly. Live computation only happens for parameter changes and user uploads.
-- Cache parameter-specific results (e.g., persistence images at sigma=0.1, resolution=20 with word_count=500) so repeated parameter exploration doesn't re-trigger homology.
+**Why it happens:**
+"Metadata" is under-specified. The endpoint is built once, lazily includes everything, and the team forgets that the same data flows through TF-IDF, the point-cloud step, etc. The metadata endpoint becomes a convenience dumping ground.
 
-**Confidence:** HIGH
+**How to avoid:**
+- **Define metadata precisely.** For BookSlider it should be: `{id, title, author, genre, word_count, top_10_tfidf_words, thumbnail_url?, gutenberg_id?}`. Nothing else. <2KB per book. The full corpus's metadata fits in <100KB.
+- **One endpoint, one purpose.** `GET /api/corpus/books` returns the flat list, no pagination needed for <100 books. `GET /api/corpus/books/{id}/point_cloud` is a separate endpoint for the heavyweight data.
+- **Cache with React Query at `staleTime: Infinity`** since corpus metadata only changes on retrain. The v1 STATE.md notes this pattern is already established.
+- **Generate book thumbnails at build time** from a deterministic embedding-based hash (e.g., a 64x64 PCA-projected scatter rendered to PNG). Don't try to dynamically render thumbnails per-request.
 
----
+**Warning signs:**
+- Metadata endpoint response is >100KB total.
+- BookSlider feels laggy.
+- The metadata endpoint is being hit on every render.
 
-### Minor: Server-Side vs. Client-Side Computation Boundary
-
-**What goes wrong:** Running Word2Vec or Ripser in the browser via WASM is theoretically possible but practically slow and memory-constrained. However, running all computation server-side means every parameter change requires a round-trip, making the "live adjustable" experience laggy.
-
-**Prevention:**
-- **Server-side:** Word2Vec training, persistent homology, SVM training/prediction. These are compute-heavy and benefit from optimized C extensions.
-- **Client-side:** 3D rendering (Three.js), persistence image display (2D canvas), parameter UI, projection (PCA/UMAP can run client-side for <10k points using umap-js or similar).
-- **Hybrid:** Pre-compute results for a grid of parameter values and interpolate client-side. For example, pre-compute persistence images at 5 sigma values and let the client interpolate.
-
-**Confidence:** MEDIUM
+**Phase to address:** Phase 6 (v1 Bug-Fix Sweep).
 
 ---
 
-## Critical Unknowns
+### Pitfall 13: Three.js Scene Background Doesn't Follow Theme Switches
 
-These are things that could fundamentally undermine the project and need spike/prototype validation before committing to the architecture:
+**What goes wrong:**
+Dark mode toggle changes `<html class="dark">` and Tailwind dark-variant styles take effect immediately for the page. But the R3F `<Canvas>` background was set via `<color attach="background" args={['#ffffff']} />` (a Three.js scene property), not via CSS. The 3D scene stays bright white inside a dark page, blinding the user. Or: scatter points were dark-colored to contrast with a light background and are now invisible.
 
-### 1. Does Persistent Homology Actually Distinguish Genres?
+**Why it happens:**
+The Three.js scene is a WebGL surface, not a DOM node. CSS doesn't reach it. The R3F default behavior is actually transparent (page bleeds through), but if anyone added an explicit `<color attach="background">` to fix a different bug, it overrides this.
 
-**The question:** When you compute persistence diagrams for 30 books across 5 genres, do books of the same genre produce more similar persistence images than books of different genres? Or is the topological signal swamped by noise, book length effects, and author style?
+**How to avoid:**
+- **Either** remove all explicit `<color attach="background">` and rely on the canvas being transparent over a CSS-themed page background, **or** thread the current theme into the R3F scene via Zustand and update `scene.background` on theme change. The first is simpler; the second is necessary if you want a different scene color than the page background.
+- **Re-validate point colors against both themes.** Compute contrast ratios. Genre colors that work on white may be invisible on `#0a0a0a`. Define theme-specific palettes — not just CSS variables but explicit `colors.light.horror = '#7a0000'` / `colors.dark.horror = '#ff5252'`.
+- **Test the genre-brightness toggle in both themes.** v1 uses TF-IDF brightness — at low brightness on dark background, points should fade to background, not become invisible black dots that look like nothing rendered.
+- **Don't re-create the canvas on theme switch.** R3F mounts a WebGL context which is expensive to recreate. Theme change should update materials/colors imperatively, not unmount the canvas. Verify by checking for canvas DOM churn in DevTools when toggling theme.
+- **User-supplied colors (genre palette overrides) need theme-aware fallbacks.** A user picks pure black for romance; that's invisible on dark mode. Either warn at picker time, auto-invert at theme switch, or clamp the saturation/luminance.
 
-**Why it matters:** The entire project premise depends on this. If persistence images are genre-invariant (all books look the same) or author-specific (not genre-specific), the classification pipeline is fundamentally flawed.
+**Warning signs:**
+- Toggling theme shows a white flash inside the 3D viewport.
+- Genre dots are invisible in one theme.
+- DevTools shows the canvas element being unmounted/remounted on theme change.
+- WebGL context loss errors after multiple theme toggles.
 
-**How to validate:** Build a minimal prototype with 5 books per genre for 3 genres. Compute persistence images. Visualize them. Run a permutation test: does a simple classifier beat random with shuffled labels? This should be done in Phase 1 before building any web infrastructure.
+**Phase to address:** Phase 10 (Visual Polish).
 
-**Risk level:** HIGH. This is the existential risk.
-
-### 2. Weighted Filtration Mathematical Validity
-
-**The question:** Is the TF-IDF-weighted filtration (where heavy words grow balls faster) mathematically well-defined and producing valid persistence diagrams? The modified distance matrix approach (dividing distances by weight sums) may violate metric properties (triangle inequality), which could make Ripser produce incorrect results.
-
-**How to validate:** Prove or empirically verify that the modified distance matrix is a valid metric. If not, determine whether the violation matters in practice (Ripser may still work but results may not have the standard stability guarantees).
-
-**Risk level:** HIGH. Silent mathematical errors are the worst kind.
-
-### 3. Sufficient Corpus Size for the Pipeline
-
-**The question:** Is a bundled corpus of 30-50 books enough to simultaneously:
-- Train meaningful Word2Vec embeddings
-- Compute stable IDF scores
-- Produce distinguishable persistence images
-- Train a generalizing SVM
-
-Each step has its own minimum data requirement. The pipeline's minimum is the maximum of these individual minimums. What is that number?
-
-**How to validate:** Start with 5 books per genre (3 genres = 15 books). Add 5 more per genre incrementally. At each step, measure: embedding stability, IDF coefficient of variation, persistence image inter-vs-intra-genre distance, LOOCV accuracy. Find the knee where results stabilize.
-
-**Risk level:** MEDIUM-HIGH. The answer determines whether the project ships with 30 or 100+ books.
-
-### 4. End-to-End Latency for User Uploads
-
-**The question:** When a user uploads a book, how long until they see results? The pipeline is: tokenize -> TF-IDF (using pre-computed IDF) -> select top words -> look up vectors -> compute Rips -> persistence image -> concatenate -> SVM predict -> update 3D view. What is the realistic end-to-end time on commodity server hardware?
-
-**How to validate:** Benchmark each step. The bottleneck is almost certainly Rips computation. Determine the maximum word count that keeps total time under 10 seconds.
-
-**Risk level:** MEDIUM. Affects UX significantly but has known engineering solutions (reduce word count, pre-compute, queue).
+**Source confidence:** HIGH. See [Dark Mode for r3f threejs walkthrough](https://mike.gold/notes/x-bookmarks/web-3d/dark-mode-for-r3f-threejs-a-step-by-step-review) and [R3F background-color example](https://onion2k.github.io/r3f-by-example/examples/basic/background-color/).
 
 ---
 
-## Phase-Specific Warnings
+### Pitfall 14: Onboarding Tour Breaks When DOM Structure Changes
 
-| Phase Topic | Likely Pitfall | Mitigation |
-|-------------|---------------|------------|
-| Word2Vec training | Corpus too small, unstable embeddings | Validate with nearest-neighbor stability test before proceeding |
-| TF-IDF computation | IDF instability with few books | Use smoothed IDF, test leave-one-book-out robustness |
-| Persistent homology | Weighted filtration not standard, computational explosion | Spike the math first, hard-cap word count at 500-1000 |
-| Persistence images | Parameter sensitivity | Start with defaults (20x20, sigma=0.1), tune later |
-| SVM classification | 450D features / 30 samples overfitting | PCA down to 20-50D, permutation test, strong regularization |
-| 3D visualization | Projection lies, edge explosion | Disclaimers, cap viz vocabulary at 300-500, LOD rendering |
-| Parameter UI | Pathological combinations | Constrain ranges, show warnings, use presets for cliff-edge params |
-| User uploads | Encoding, size, format, adversarial input | Strict validation, size limits, timeout |
-| Deployment | Memory, concurrency, cold start | Pre-compute bundled corpus, queue uploads, mmap model |
+**What goes wrong:**
+The tour anchors on CSS selectors / `data-tour="step-3"` attributes. A later Phase 10 polish refactor renames a component, or moves the settings drawer behind a tab. The tour silently fails: the target element doesn't exist, the highlight overlay covers blank space, the tooltip points at nothing, the "Next" button is unreachable. New users get a broken first-run experience and the team doesn't notice because they always skip the tour.
+
+**Why it happens:**
+Tour libraries (Joyride, driver.js, intro.js) are decoupled from the components they target. There's no compile-time check that `data-tour="settings-drawer"` exists. When the DOM changes, the tour silently misaligns.
+
+**How to avoid:**
+- **Centralize tour anchors.** A single `src/tour/anchors.ts` exports symbolic constants. Components import them: `<button data-tour={TOUR.STEP_OPEN_SETTINGS}>`. The tour config references the same constants. Refactor a component → grep the constant → fix the anchor.
+- **Tour smoke test in CI.** A Playwright test that walks the tour end-to-end and asserts each step's target element exists and is visible.
+- **Graceful fallback for missing anchors.** Tour library config `missingElement: 'skip'` instead of `'error'`. Better to skip a step than to dead-end the user.
+- **Detect first-load robustly.** localStorage isn't always available — Safari Private mode, incognito with strict privacy, embedded webviews. Wrap localStorage in try/catch; default to "first-time" if read fails. Don't crash the app, just show the tour again next time.
+- **ESC and click-outside.** Existing modal stack (settings drawer, upload dialog, pipeline-explanation dialog from v1) needs explicit z-index coordination. Test: open the tour, then click "Open settings" — does the settings drawer pop over the tour, or under it? Either is acceptable but must be intentional.
+- **Provide a re-trigger.** "Help → Take the tour again" menu item. Users will close it accidentally and ask "how do I see that again."
+
+**Warning signs:**
+- Tour overlay appears with no tooltip visible.
+- Tour highlights cover blank screen areas.
+- The team has to manually walk the tour to verify it works.
+- localStorage exceptions in error monitoring.
+
+**Phase to address:** Phase 10 (Visual Polish). Specifically: tour smoke test must land before the first PR that adds new components, so subsequent refactors get caught.
+
+**Source confidence:** MEDIUM-HIGH. Common knowledge in onboarding-library practice; see [driver.js practice writeup](https://dev.to/newbe36524/elegantly-implementing-new-user-onboarding-in-react-hagicodes-driverjs-practice-12de).
+
+---
+
+### Pitfall 15: ROADMAP/STATE Files Get Wiped Again (Root Cause Unaddressed)
+
+**What goes wrong:**
+v1 closed with ROADMAP.md and STATE.md at 0 bytes on disk. The v2 rebuild restores them. Two milestones later, they're wiped again. The team has no record of what happened and rebuilds from git history again.
+
+**Why it happens (most likely root causes, in order of likelihood):**
+1. **GSD command bug:** a `/gsd-complete-milestone` or similar wrote an empty file due to a template-rendering error (template variable not substituted, write before render completed).
+2. **Editor truncation:** opened in a tool that saves as empty when content fails to load.
+3. **Merge conflict resolution:** "ours/theirs" pick resolved to an empty side.
+4. **Local script:** an `archive` / `clear` workflow ran against the wrong target.
+5. **Git LFS misconfiguration:** ROADMAP.md or STATE.md accidentally got tracked by LFS and the pointer was followed instead of fetched.
+
+**How to avoid:**
+- **Pre-commit hook: refuse to commit 0-byte planning docs.** Pattern:
+  ```bash
+  for f in .planning/ROADMAP.md .planning/STATE.md .planning/PROJECT.md; do
+    if [ -e "$f" ] && [ ! -s "$f" ]; then
+      echo "ERROR: $f is empty. Refusing commit."
+      exit 1
+    fi
+  done
+  ```
+- **CI check: same gate, as a backstop** in case the hook is bypassed.
+- **Git attribute: never LFS these files.** Add to `.gitattributes`:
+  ```
+  .planning/**/*.md -lfs -filter -diff -merge
+  ```
+- **Audit how the files got wiped before:** check `git log -p -- .planning/ROADMAP.md` for the commit that emptied them, identify the command/PR that did it, and patch that workflow.
+- **Backup snapshot in `.planning/.snapshots/`:** a git hook that copies the current ROADMAP/STATE on every commit so even if they get wiped, the previous version is one directory away.
+
+**Warning signs:**
+- A planning file's size suddenly drops to 0 in `git status`.
+- A diff shows the entire file deleted with no replacement.
+- A PR is +0/-200 on a planning file with no rationale.
+
+**Phase to address:** Phase 6 (v1 Bug-Fix Sweep), as one of the carry-overs explicitly listed. Add the pre-commit hook in the same PR that restores the files.
+
+---
+
+## Technical Debt Patterns
+
+| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
+|---|---|---|---|
+| Skip Procrustes alignment between v1 and v2 embeddings | Don't have to write alignment code | v1 vs v2 comparisons require always-running both pipelines; can't show "this v1 prediction would now be different" | Always — we're not exposing v1 in v2; clean break is fine |
+| Use `decision_function` for top-N display | Don't have to retrain SVM with `probability=True` | App lies to users; numbers aren't probabilities | Never. If top-N ships, calibration must ship. |
+| Disable LOOCV in CI to make build green | CI is fast | No safety net catches accuracy regressions | Acceptable if replaced by a nightly run on a dedicated runner, not deleted |
+| Cache H₂ results without versioning by model hash | Quick "looks fast" demo | Stale H₂ served against new W2V model = garbage | Never. Model-hash key is mandatory once Phase 8 retrains. |
+| Use SHAP without precomputed background | Easy first implementation | 30-120s per "why this genre" click | Acceptable only during development; remove before users see it |
+| Skip GroupKFold by author | Easier code; nicer LOOCV numbers | App learns author style, not genre; real-world accuracy collapses | Never once any author has >1 book |
+| Bundle full token lists in BookSlider metadata | One endpoint to maintain | Megabyte payloads, slow UI | Never. Define metadata schema strictly. |
+| Re-create R3F canvas on theme switch | Easier than threading theme into scene state | WebGL context churn; visible flash | Never. Update colors imperatively. |
+
+---
+
+## Integration Gotchas
+
+| Integration | Common Mistake | Correct Approach |
+|---|---|---|
+| arq worker + H₂ | Submit H₂ to default queue | Dedicated `homology_h2` queue with `max_concurrent=1` and 60s timeout wrapper |
+| Redis cache + model retrain | Hash only by `(step_name, params)` | Hash by `(step_name, params, w2v_model_sha256, corpus_manifest_sha256)` |
+| SSE + slow background jobs | Hold the SSE channel open indefinitely | Heartbeat every 5s; if no progress event for 30s, send a `stalled` event so the UI can show "still working…" |
+| SVC + probability calibration | Retrofit `probability=True` on existing model | Full retrain. The internal Platt CV changes the fit slightly. |
+| ripser output → persistence image | Pass `np.inf` death values into the image computation | Filter or clamp infinite persistence; handle empty diagrams as zero-image not error |
+| React Query + corpus metadata | `staleTime: 0` (default) → refetch on every mount | `staleTime: Infinity` since corpus only changes on retrain; manual invalidation on admin retrain trigger |
+| Tailwind dark variants + R3F | Assume CSS reaches the canvas | Thread theme via Zustand; update Three.js materials/scene.background imperatively |
+| `corpus/books.yaml` + model loading | Load books and W2V independently | Validate at startup: corpus manifest hash in W2V metadata must match loaded `books.yaml` |
+
+---
+
+## Performance Traps
+
+| Trap | Symptoms | Prevention | When It Breaks |
+|---|---|---|---|
+| H₂ on user uploads | Worker pinned at 100%, SSE silent for minutes | Disable H₂ for uploads; precompute for bundled only; hard timeout | Any single book whose local geometry triggers cliques cascade |
+| SHAP Kernel Explainer in-request | "Why this genre" takes 30-120s | Move to background job; use nearest-neighbor as primary explanation | First user click on "why?" |
+| Persistence-image grid at 50×50 with 30-45 books | LOOCV slow; SVM trains on 2500 noise features | Cap grid at 20×20 in production; expose 50×50 only behind an "experimental" flag | Once Phase 8 doubles corpus, SVM training is 4× slower |
+| LOOCV on 50+ books | CI timeouts | Switch to repeated stratified 5-fold; parallelize folds; cache per-book homology | At ~30 books on a typical CI runner |
+| BookSlider re-fetching on every render | Slider stutters | React Query `staleTime: Infinity`; flat metadata <100KB total | Immediately if `staleTime` left at default |
+| R3F canvas unmount/remount on theme switch | Visible flash; WebGL context warnings | Imperative material/scene updates; canvas stays mounted | First theme toggle |
+| Tour smoke test missing | Tour silently misaligns after refactor | Playwright walk-through in CI | First Phase 10 component rename |
+
+---
+
+## Mathematical Invariant Pitfalls
+
+Specifically called out per quality-gate requirement.
+
+| Invariant (from PROJECT.md) | v2 Risk | Prevention |
+|---|---|---|
+| **(1) Single shared Word2Vec space** | Corpus expansion in Phase 8 retrains W2V → new coordinate system → all cached artifacts become coordinate-mismatched. See Pitfall 1. | Hash model identity into every cache key; force full rebuild on corpus change; treat retrain as a hard cache bust |
+| **(2) Persistent homology in full N-D, not reduced** | H₂ tooltip / dot-scaling fix work might be tempted to "just use the 3D points we already have for visualization" to make the diagram match what the user sees. This would silently swap N-D homology for 3D homology. | Mathematical computations strictly use N-D vectors; visualization layer never produces inputs to homology |
+| **(3) TF-IDF computed without genre labels** | Class-imbalance fixes (Pitfall 6) might tempt the team to "fit IDF within each genre" to balance scores. This injects genre labels into the unsupervised step. | Keep IDF corpus-wide; balance the corpus instead; if balance can't be achieved, accept the asymmetry rather than label-leak |
+| **(4) Both feature tracks L2-normalized before α-concat** | Adding new features (H₂ track, additional cluster features) might be concatenated *before* normalization "for simplicity." This silently shifts the α balance and breaks the comparability of the trained SVM with v1. | Every track is L2-normalized independently before concatenation, including the new H₂ track. Add a unit test asserting `np.allclose(np.linalg.norm(track), 1.0)` per track. |
+
+---
+
+## "Looks Done But Isn't" Checklist
+
+Phase 6 (Bug-Fix Sweep):
+- [ ] **H₂ computed:** Often missing per-book bench results — verify `bench_h2.py` runs on every bundled book with P95 < 30s
+- [ ] **H₂ tooltip working:** Often missing the empty-diagram case — verify rendering with a deliberately-too-small fixture (no crashes, honest copy)
+- [ ] **Persistence-diagram dot scaling:** Often missing the H₀ infinite-persistence path — verify infinity dots render separately, finite dots scale by sqrt
+- [ ] **BookSlider wired:** Often missing payload-size discipline — verify `/api/corpus/books` is <100KB total
+- [ ] **ROADMAP/STATE restored:** Often missing the prevention layer — verify pre-commit hook rejects 0-byte planning files
+
+Phase 7 (Corpus Sourcing Research):
+- [ ] **Recommendation doc:** Often missing the per-genre count constraint — verify it specifies hard numbers, not "aim for"
+- [ ] **Validation protocol:** Often missing the v1-frozen test set definition — verify the exact 15 books and the held-out fraction are pinned
+- [ ] **Author distribution audit:** Often missing — verify the proposed corpus has GroupKFold-feasible author distribution
+
+Phase 8 (Corpus Expansion):
+- [ ] **Cache invalidation:** Often missing model-hash inclusion — verify cache keys include `w2v_model_sha256`
+- [ ] **GroupKFold by author:** Often missing in v1 carry-over LOOCV scripts — verify `scripts/06_validate.py` uses author groups
+- [ ] **Permutation test:** Often missing on the new corpus — verify it runs and the null distribution is reported
+- [ ] **v1-frozen test eval:** Often missing — verify the v2 SVM is evaluated on the held-out v1 set, not just LOOCV on full new corpus
+- [ ] **Per-genre F1 reported:** Often missing — verify macro-F1 is the headline metric
+
+Phase 9 (Classification Depth):
+- [ ] **Calibrated top-N:** Often missing — verify SVC was retrained with `probability=True` and `predict_proba` is used
+- [ ] **Top-N sums to 1:** Often missing — verify with a unit test
+- [ ] **Explainability not Kernel SHAP synchronous:** Often missing — verify "why?" is a background job, not in the request handler
+- [ ] **Nearest-training-books explanation:** Often missing the feature-space vs word2vec-space distinction in the UI copy
+
+Phase 10 (Visual Polish):
+- [ ] **Dark mode covers R3F canvas:** Often missing — verify scene background updates on theme switch with no canvas remount
+- [ ] **Genre color contrast in both themes:** Often missing — verify with axe / contrast-ratio tooling
+- [ ] **Tour smoke test:** Often missing in CI — verify Playwright run walks every step
+- [ ] **Tour anchors centralized:** Often missing — verify `src/tour/anchors.ts` is the only source of truth
+- [ ] **Tour re-trigger:** Often missing — verify "Help → Take the tour again" exists and works
+- [ ] **Empty-state copy:** Often missing for the "no books uploaded" / "no H₂ features" / "low confidence prediction" cases
+
+---
+
+## Recovery Strategies
+
+| Pitfall | Recovery Cost | Recovery Steps |
+|---|---|---|
+| Stale cache after retrain (Pitfall 1) | LOW | `redis-cli FLUSHDB` for the cache DB; restart workers; first requests pay the recompute cost. Always recoverable if no in-flight commits depend on it. |
+| H₂ hanging worker (Pitfall 2) | LOW | arq worker timeout + restart; user gets `H2Unavailable`. No data loss. |
+| Author leakage discovered post-deploy (Pitfall 5) | MEDIUM | Re-run validation with GroupKFold; if accuracy collapses, retract the accuracy claim publicly; either restructure corpus (drop duplicates per author) or document the limitation. No code rollback needed but trust is dented. |
+| Class imbalance shipped (Pitfall 6) | LOW-MEDIUM | Either expand the under-represented genre (Phase 8 rerun) or document and add `class_weight='balanced'` and accept the asymmetry |
+| `decision_function` mislabeled as probability (Pitfall 7) | MEDIUM | Retrain SVM with `probability=True`; redeploy model; the bug was in the UI label not the math, so no historical data is corrupted. |
+| SHAP synchronous, users waited 60s (Pitfall 8) | LOW | Move to arq job; add SSE channel; clear in-flight requests with a `please retry` message |
+| Persistence-image importance heatmap shipped (Pitfall 9) | LOW (UI-only) | Replace with per-track / per-dimension aggregation; ship hotfix. No backend changes. |
+| ROADMAP/STATE wiped again (Pitfall 15) | LOW (if snapshots exist) / HIGH (if not) | Restore from `.planning/.snapshots/`; if no snapshots, reconstruct from git log + memory — the second time around is slower. Then add the prevention. |
+
+---
+
+## Pitfall-to-Phase Mapping
+
+| Pitfall | Prevention Phase | Verification |
+|---|---|---|
+| 1: W2V retrain rotates space | Phase 8 | Cache key tests include model hash; smoke test "old cache + new model = cache miss" |
+| 2: H₂ performance cliff | Phase 6 | `bench_h2.py` P95 <30s on bundled corpus; worker timeout test |
+| 3: Empty H₂ diagrams | Phase 6 | Fixture test with too-small cloud; UI snapshot for empty state |
+| 4: v2 vs v1 accuracy comparison without held-out test | Phase 7 (define) + Phase 8 (execute) | Validation report contains both LOOCV and v1-frozen-test numbers |
+| 5: Author leakage | Phase 7 (surface) + Phase 8 (enforce) | GroupKFold used; per-author held-out test reported |
+| 6: Class imbalance from corpus expansion | Phase 7 (constrain) + Phase 8 (validate at load time) | Startup check on per-genre counts; macro-F1 reported |
+| 7: `decision_function` as probability | Phase 9 | Unit test: top-N values sum to 1; integration test on calibrated outputs |
+| 8: SHAP synchronous | Phase 9 | "Why?" endpoint is async/queued; explanation completes <5s on bundled corpus |
+| 9: Persistence-image feature importance misleading | Phase 9 | UI shows aggregated importance, not per-pixel; copy mentions normalization |
+| 10: Persistence-diagram dot scaling breaks H₀ | Phase 6 | Snapshot test of diagram with infinite-persistence point |
+| 11: LOOCV cost explosion | Phase 8 | Validation runtime measured; switch to K-fold if >5 min |
+| 12: BookSlider metadata payload bloat | Phase 6 | Metadata endpoint <100KB total; React Query `staleTime: Infinity` |
+| 13: R3F canvas doesn't follow theme | Phase 10 | Visual regression test in both themes; no canvas remount on toggle |
+| 14: Tour breaks on DOM change | Phase 10 | Playwright smoke test of tour in CI; centralized anchors |
+| 15: ROADMAP/STATE wiped | Phase 6 | Pre-commit hook rejects 0-byte planning files; CI gate; backup snapshots |
 
 ---
 
 ## Sources
 
-- [Gensim Word2Vec documentation](https://radimrehurek.com/gensim/models/word2vec.html)
-- [Adams et al. (2017) - Persistence Images: A Stable Vector Representation](https://jmlr.org/papers/volume18/16-337/16-337.pdf)
-- [Giotto-TDA WeightedRipsPersistence documentation](https://giotto-ai.github.io/gtda-docs/latest/modules/generated/homology/gtda.homology.WeightedRipsPersistence.html)
-- [Ripser: efficient computation of Vietoris-Rips persistence barcodes](https://link.springer.com/article/10.1007/s41468-021-00071-5)
-- [Persim Persistence Images documentation](https://persim.scikit-tda.org/en/latest/notebooks/Persistence%20images.html)
-- [TDA for NLP survey (2024)](https://arxiv.org/html/2411.10298)
-- [Stop Misusing t-SNE and UMAP (2025)](https://arxiv.org/html/2506.08725v2)
-- [Distributional bias in LOOCV (2025)](https://www.science.org/doi/10.1126/sciadv.adx6976)
-- [Three.js Point Cloud Limitations](https://discourse.threejs.org/t/point-cloud-limitations/38805)
-- [GUDHI WeightedRipsComplex documentation](https://gudhi.inria.fr/python/latest/rips_complex_user.html)
-- [Optimizing word embeddings for small datasets (2024)](https://www.nature.com/articles/s41598-024-66319-z)
+- v1 PITFALLS document: `.planning/research/v1/PITFALLS.md` (referenced extensively; not repeated)
+- [scikit-learn — Probability calibration (1.16)](https://scikit-learn.org/stable/modules/calibration.html)
+- [scikit-learn — Support Vector Machines — Scores and probabilities](https://scikit-learn.org/stable/modules/svm.html#scores-and-probabilities)
+- [scikit-learn — CalibratedClassifierCV](https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html)
+- [SHAP issue #3747 — KernelExplainer slow on sklearn SVM with RBF Kernel](https://github.com/shap/shap/issues/3747)
+- [Domino — SHAP and LIME: pros and cons](https://domino.ai/blog/shap-lime-python-libraries-part-1-great-explainers-pros-cons)
+- [Procrustes alignment for gensim Word2Vec models (gist by zhicongchen)](https://gist.github.com/zhicongchen/9e23d5c3f1e5b1293b16133485cd17d8)
+- [When Embedding Models Meet: Procrustes Bounds and Applications (arXiv 2510.13406)](https://arxiv.org/pdf/2510.13406)
+- [Dark Mode for r3f threejs walkthrough (Michael Gold)](https://mike.gold/notes/x-bookmarks/web-3d/dark-mode-for-r3f-threejs-a-step-by-step-review)
+- [R3F by example — background-color](https://onion2k.github.io/r3f-by-example/examples/basic/background-color/)
+- [Elegantly Implementing New User Onboarding in React (driver.js)](https://dev.to/newbe36524/elegantly-implementing-new-user-onboarding-in-react-hagicodes-driverjs-practice-12de)
+- [Benchmarking R packages for Persistent Homology (R Journal 2021)](https://journal.r-project.org/articles/RJ-2021-033/RJ-2021-033.pdf)
+- [Faster computation of degree-1 persistent homology using the reduced Vietoris-Rips filtration (arXiv 2307.16333)](https://arxiv.org/pdf/2307.16333)
+- [FastAPI cache invalidation strategies](https://oneuptime.com/blog/post/2026-02-02-fastapi-cache-invalidation/view)
 
 ---
 
-*Pitfalls analysis: 2026-04-11*
+*Pitfalls research for: Literary Genre Topology v2.0 (Phases 6-10)*
+*Researched: 2026-05-22*
