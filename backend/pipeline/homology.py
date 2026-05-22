@@ -29,10 +29,19 @@ def compute_book_homology(
 ) -> np.ndarray:
     """Compute VR persistent homology for one book.
 
+    v2 (Plan 06-04): H1 only. H0 is degenerate in the weighted VR construction
+    (all components born at filtration time 0). H2 deferred to v3 -- sparse
+    high-D point clouds rarely contain voids and the O(n^4) runtime cliff is
+    not worth the engineering for empirical-zero gain (see PROJECT.md Key
+    Decisions; PITFALLS.md sections 2 and 3). The ``homology_dims`` parameter
+    is retained on the signature for v3 forward-compat, but is asserted equal
+    to ``[1]`` at runtime -- callers that try ``[0]``/``[2]``/``[0,1,2]`` will
+    fail loudly rather than silently degrade.
+
     Args:
         vectors: (n, dim) word vectors
         tfidf_weights: (n,) TF-IDF weights
-        homology_dims: list of homology dimensions to compute (default [1])
+        homology_dims: must be ``[1]`` (default). Other values raise AssertionError.
         epsilon_max: maximum filtration radius
         cancel_event: If set, raises asyncio.CancelledError before computation
 
@@ -44,16 +53,18 @@ def compute_book_homology(
 
     if homology_dims is None:
         homology_dims = [1]
+    assert homology_dims == [1], (
+        f"v2 only supports homology_dims=[1]; got {homology_dims}. "
+        "H0 degenerate, H2 deferred -- see PROJECT.md Key Decisions."
+    )
 
     from ripser import ripser
     dist_matrix = build_weighted_distance_matrix(vectors, tfidf_weights)
-    max_dim = max(homology_dims)
-    result = ripser(dist_matrix, maxdim=max_dim, thresh=epsilon_max, distance_matrix=True)
+    result = ripser(dist_matrix, maxdim=1, thresh=epsilon_max, distance_matrix=True)
 
     rows = []
-    for dim in homology_dims:
-        for birth, death in result['dgms'][dim]:
-            rows.append([birth, death, float(dim)])
+    for birth, death in result['dgms'][1]:
+        rows.append([birth, death, 1.0])
 
     arr = np.array(rows, dtype=np.float32) if rows else np.zeros((0, 3), dtype=np.float32)
     return arr[np.newaxis, :, :]

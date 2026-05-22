@@ -322,21 +322,10 @@ def precompute_persistence_images(window: int = None, force: bool = False) -> No
 
     from backend.pipeline.features import diagram_to_birth_persistence
 
-    homology_dims = [0, 1]
-    # Check if any H2 data exists
-    sample_book = None
-    for genre, book_list in books_data['genres'].items():
-        if book_list:
-            sample_book = book_list[0]
-            break
-    if sample_book:
-        gid = str(sample_book['gutenberg_id'])
-        diag_path = features_dir / f'diagrams_{gid}_w{window}.npy'
-        if diag_path.exists():
-            diag = np.load(str(diag_path), allow_pickle=True)
-            if diag.shape[0] > 0 and np.any(diag[0][:, 2] == 2):
-                homology_dims.append(2)
-                log.info('H2 data detected, including dimension 2')
+    # Plan 06-04: H1 only. H0 dropped (degenerate in weighted VR -- all births
+    # collapse to filtration time 0); H2 deferred to v3 (PROJECT.md Key
+    # Decisions; PITFALLS.md sections 2 and 3).
+    homology_dims = [1]
 
     # Per-genre persistence images
     for genre, book_list in books_data['genres'].items():
@@ -439,17 +428,8 @@ def precompute_persistence_diagrams(window: int = None, force: bool = False) -> 
     with open(corpus_path) as f:
         books_data = yaml.safe_load(f)
 
-    homology_dims = [0, 1]
-    sample_book = next(
-        (b for books in books_data['genres'].values() for b in books), None
-    )
-    if sample_book:
-        gid = str(sample_book['gutenberg_id'])
-        diag_path = features_dir / f'diagrams_{gid}_w{window}.npy'
-        if diag_path.exists():
-            diag = np.load(str(diag_path), allow_pickle=True)
-            if diag.shape[0] > 0 and np.any(diag[0][:, 2] == 2):
-                homology_dims.append(2)
+    # Plan 06-04: H1 only (see note in precompute_persistence_images).
+    homology_dims = [1]
 
     # Per-genre diagrams (aggregate all books)
     for genre, book_list in books_data['genres'].items():

@@ -101,18 +101,38 @@ def test_diagram_to_birth_persistence_empty():
 
 
 def test_diagram_to_birth_persistence_extracts_h1():
-    # Create diagram with H0 and H1 entries
+    # Mixed-dim fixture: diagram_to_birth_persistence(dim=1) must select only
+    # H1 rows even if non-H1 rows are present (legacy / forward-compat).
     data = np.array([
-        [0.0, 0.5, 0.0],  # H0
+        [0.0, 0.5, 0.0],  # non-H1 (legacy)
         [0.1, 0.8, 1.0],  # H1
         [0.2, 0.6, 1.0],  # H1
-        [0.3, 0.9, 0.0],  # H0
+        [0.3, 0.9, 0.0],  # non-H1 (legacy)
     ], dtype=np.float32)[np.newaxis, :, :]
     result = diagram_to_birth_persistence(data, dim=1)
     assert result.shape == (2, 2)
     # persistence = death - birth
     np.testing.assert_almost_equal(result[0, 1], 0.7)  # 0.8 - 0.1
     np.testing.assert_almost_equal(result[1, 1], 0.4)  # 0.6 - 0.2
+
+
+def test_compute_book_homology_rejects_non_h1_dims():
+    """v2 (Plan 06-04): compute_book_homology asserts homology_dims == [1].
+
+    H0 degenerate in weighted VR; H2 deferred to v3 (PROJECT.md Key Decisions;
+    PITFALLS.md sections 2 and 3).
+    """
+    from backend.pipeline.homology import compute_book_homology
+    vectors = np.random.randn(20, 50).astype(np.float32)
+    weights = np.random.rand(20).astype(np.float32)
+    for bad_dims in ([0], [2], [0, 1], [0, 1, 2]):
+        with pytest.raises(AssertionError, match='H0 degenerate, H2 deferred'):
+            compute_book_homology(
+                vectors=vectors,
+                tfidf_weights=weights,
+                homology_dims=bad_dims,
+                epsilon_max=1.0,
+            )
 
 
 def test_persistence_imager_output_shape():

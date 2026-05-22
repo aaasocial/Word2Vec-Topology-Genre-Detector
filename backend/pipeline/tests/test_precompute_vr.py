@@ -68,13 +68,14 @@ def test_edge_tuple_structure(random_data):
 
 
 def test_feature_type_values(random_data):
+    """v2 (Plan 06-04): feature_type is 0 (generic) or 1 (H1 boundary)."""
     words, vectors, tfidf_weights, positions = random_data
     result = precompute_vr_edges(
         words=words, vectors=vectors, tfidf_weights=tfidf_weights,
         epsilon_max=10.0, projection_coords=positions,
     )
     for edge in result['edges']:
-        assert edge[3] in {0, 1, 2}, f'feature_type must be 0, 1, or 2, got {edge[3]}'
+        assert edge[3] in {0, 1}, f'feature_type must be 0 or 1, got {edge[3]}'
 
 
 def test_result_keys(random_data):
@@ -108,7 +109,7 @@ def test_h1_loop_detection():
     result = precompute_vr_edges(
         words=words, vectors=base, tfidf_weights=tfidf_weights,
         epsilon_max=10.0, projection_coords=positions,
-        homology_dims=[0, 1],
+        homology_dims=[1],
     )
     feature_types = [e[3] for e in result['edges']]
     assert 1 in feature_types, 'Expected at least one H1 boundary edge for a square configuration'

@@ -1,8 +1,12 @@
 """Build-time VR edge precomputation with feature_type labeling.
 
 Computes all Vietoris-Rips edges up to epsilon_max for each genre,
-labels edges by topological significance (H0/H1/H2 boundary membership),
+labels edges by topological significance (H1 boundary membership),
 and caches as compact JSON for browser-side filtration.
+
+v2 (Plan 06-04): H1-only labelling. H0 boundary tracking dropped (edges that
+form connected components are the generic case -- ft=0); H2 dropped (deferred
+to v3 -- PROJECT.md Key Decisions; PITFALLS.md sections 2 and 3).
 
 Run standalone:
   python -m backend.pipeline.precompute_vr
@@ -39,21 +43,32 @@ def precompute_vr_edges(
 ) -> dict:
     """Compute VR edges with feature_type labeling.
 
+    v2 (Plan 06-04): H1 only. H0 boundary tracking dropped (an edge that forms
+    a connected component is the generic case, labelled ft=0); H2 dropped
+    (deferred to v3). The ``homology_dims`` parameter is retained for v3
+    forward-compat and is asserted equal to ``[1]`` at runtime so any caller
+    passing ``[0]``/``[0,1]``/``[2]`` against the v2 build fails loudly.
+
     Args:
         words: Word list for index mapping.
         vectors: (n, dim) word vectors.
         tfidf_weights: (n,) TF-IDF weights.
         epsilon_max: Maximum filtration radius.
         projection_coords: (n, 3) 3D coordinates from current projection.
-        homology_dims: Homology dimensions to compute (default [0, 1]).
+        homology_dims: must be ``[1]`` (default). Other values raise AssertionError.
 
     Returns:
         {words, edges, epsilon_max, positions} where edges are
         [idx_a, idx_b, eps_birth, feature_type] sorted by eps_birth.
-        feature_type: 0=H0, 1=H1 boundary, 2=H2 boundary.
+        feature_type: 0=non-boundary (generic / connected-component edge),
+        1=H1 boundary.
     """
     if homology_dims is None:
-        homology_dims = [0, 1]
+        homology_dims = [1]
+    assert homology_dims == [1], (
+        f"v2 only supports homology_dims=[1]; got {homology_dims}. "
+        "H0 degenerate, H2 deferred -- see PROJECT.md Key Decisions."
+    )
 
     n = len(words)
 
@@ -68,25 +83,19 @@ def precompute_vr_edges(
     # Build weighted distance matrix
     dist_matrix = build_weighted_distance_matrix(vectors, tfidf_weights)
 
-    # Run ripser to get persistence diagrams
+    # Run ripser to get persistence diagrams (H1 only).
     from ripser import ripser
-    max_dim = max(homology_dims)
-    result = ripser(dist_matrix, maxdim=max_dim, thresh=epsilon_max, distance_matrix=True)
+    result = ripser(dist_matrix, maxdim=1, thresh=epsilon_max, distance_matrix=True)
 
-    # Identify H1/H2 boundary birth edges
-    # For each persistence pair, the birth value corresponds to the distance
-    # of the edge that created the topological feature.
-    boundary_births: dict[int, set] = {}  # {feature_type: set of (i,j) edge tuples}
-    for dim in homology_dims:
-        if dim == 0:
-            continue  # H0 edges are generic connected component edges
-        boundary_births[dim] = set()
-        if dim < len(result['dgms']):
-            for birth, death in result['dgms'][dim]:
-                if np.isinf(death) or np.isinf(birth):
-                    continue
-                # Find the edge (i, j) whose distance matches this birth value
-                _label_birth_edge(dist_matrix, birth, dim, boundary_births)
+    # Identify H1 boundary birth edges. For each persistence pair, the birth
+    # value corresponds to the distance of the edge that created the loop.
+    boundary_births: dict[int, set] = {1: set()}
+    if 1 < len(result['dgms']):
+        for birth, death in result['dgms'][1]:
+            if np.isinf(death) or np.isinf(birth):
+                continue
+            # Find the edge (i, j) whose distance matches this birth value
+            _label_birth_edge(dist_matrix, birth, 1, boundary_births)
 
     # Extract upper triangle edges within epsilon_max
     edges = []
@@ -94,12 +103,9 @@ def precompute_vr_edges(
         for j in range(i + 1, n):
             d = dist_matrix[i, j]
             if d <= epsilon_max:
-                # Determine feature_type
-                ft = 0  # default H0
-                for dim in sorted(boundary_births.keys(), reverse=True):
-                    if (i, j) in boundary_births[dim]:
-                        ft = dim
-                        break
+                # Determine feature_type: 1 if this edge births an H1 loop,
+                # otherwise 0 (generic / connected-component edge).
+                ft = 1 if (i, j) in boundary_births[1] else 0
                 edges.append([i, j, round(float(d), 5), ft])
 
     # Sort by eps_birth ascending (critical for drawRange optimization)

@@ -26,7 +26,7 @@ STEP_MESSAGES = {
     'tokenize': 'Tokenizing text...',
     'tfidf': 'Computing TF-IDF weights...',
     'pointcloud': 'Building point cloud...',
-    'homology': 'Computing persistent homology (step 4/6)...',
+    'homology': 'Computing H1 persistent homology (step 4/6)...',
     'features': 'Building feature vector (step 5/6)...',
     'classify': 'Classifying genre...',
 }

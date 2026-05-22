@@ -13,7 +13,28 @@ from typing import Literal
 import yaml
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, BeforeValidator, field_validator
+from typing_extensions import Annotated
+
+
+# v2 (Plan 06-04) H1-only ``dim`` query parameter.
+#
+# FastAPI 0.135 does not auto-coerce query strings into ``Literal[1]`` (it
+# compares the raw string ``"1"`` against the int literal ``1`` and fails the
+# match). The BeforeValidator runs ``int()`` first, after which ``Literal[1]``
+# enforces the H1-only contract -- ``?dim=0`` and ``?dim=2`` both return 422.
+# The ``Literal[1]`` annotation is the load-bearing part: it's the type any
+# future v3 expansion will widen, and the SUMMARY's grep verification keys on
+# this exact spelling.
+def _coerce_dim_to_int(v: object) -> object:
+    """Convert query-string ``dim`` to int before Literal[1] validation."""
+    try:
+        return int(v)  # type: ignore[arg-type]
+    except (TypeError, ValueError):
+        return v
+
+
+H1Dim = Annotated[Literal[1], BeforeValidator(_coerce_dim_to_int)]
 
 from backend.cache.store import cache_key, cache_get
 from backend.pipeline.precompute_viz import (
@@ -123,17 +144,18 @@ async def get_tfidf_book(gutenberg_id: str) -> dict:
 
 
 @router.get('/persistence/{genre}')
-async def get_persistence_image(genre: str, dim: int = 0) -> dict:
+async def get_persistence_image(genre: str, dim: H1Dim = 1) -> dict:
     """Return pre-computed persistence image for a genre.
 
+    v2 (Plan 06-04): serves H1 only. ``dim`` is narrowed to ``Literal[1]`` --
+    FastAPI rejects ``dim=0`` and ``dim=2`` with 422 (H0 degenerate, H2
+    deferred to v3 -- see PROJECT.md Key Decisions).
+
     Validates genre against known genre list (T-4-01).
-    Validates dim in {0, 1, 2} (T-4-01).
     Response: {data: number[], M: number, dim: number, vmin: number, vmax: number}
     """
     if genre not in _KNOWN_GENRES:
         raise HTTPException(status_code=404, detail=f'Genre not found: {genre}')
-    if dim not in (0, 1, 2):
-        raise HTTPException(status_code=400, detail=f'Invalid homology dimension: {dim}. Must be 0, 1, or 2.')
     data = get_cached_persistence_image(genre, dim, _DEFAULT_WINDOW, is_book=False)
     if data is None:
         raise HTTPException(
@@ -144,11 +166,12 @@ async def get_persistence_image(genre: str, dim: int = 0) -> dict:
 
 
 @router.get('/persistence/book/{gutenberg_id}')
-async def get_persistence_image_book(gutenberg_id: str, dim: int = 0) -> dict:
+async def get_persistence_image_book(gutenberg_id: str, dim: H1Dim = 1) -> dict:
     """Return pre-computed persistence image for a specific book.
 
+    v2 (Plan 06-04): serves H1 only -- see ``get_persistence_image``.
+
     Validates gutenberg_id is a positive integer (T-4-02).
-    Validates dim in {0, 1, 2}.
     Response: {data: number[], M: number, dim: number, vmin: number, vmax: number}
     """
     if not _GUTENBERG_ID_RE.match(gutenberg_id):
@@ -156,8 +179,6 @@ async def get_persistence_image_book(gutenberg_id: str, dim: int = 0) -> dict:
             status_code=400,
             detail=f'Invalid gutenberg_id: must be a positive integer, got {gutenberg_id!r}',
         )
-    if dim not in (0, 1, 2):
-        raise HTTPException(status_code=400, detail=f'Invalid homology dimension: {dim}. Must be 0, 1, or 2.')
     data = get_cached_persistence_image(gutenberg_id, dim, _DEFAULT_WINDOW, is_book=True)
     if data is None:
         raise HTTPException(
@@ -168,16 +189,15 @@ async def get_persistence_image_book(gutenberg_id: str, dim: int = 0) -> dict:
 
 
 @router.get('/persistence-diagram/{genre}')
-async def get_persistence_diagram_genre(genre: str, dim: int = 1) -> dict:
+async def get_persistence_diagram_genre(genre: str, dim: H1Dim = 1) -> dict:
     """Return raw persistence diagram (birth/death scatter points) for a genre.
 
-    Validates genre and dim.
+    v2 (Plan 06-04): serves H1 only -- see ``get_persistence_image``.
+
     Response: {points: [number, number][], dim: number, epsilon_max: number}
     """
     if genre not in _KNOWN_GENRES:
         raise HTTPException(status_code=404, detail=f'Genre not found: {genre}')
-    if dim not in (0, 1, 2):
-        raise HTTPException(status_code=400, detail=f'Invalid homology dimension: {dim}.')
     data = get_cached_persistence_diagram(genre, dim, _DEFAULT_WINDOW, is_book=False)
     if data is None:
         raise HTTPException(
@@ -188,15 +208,16 @@ async def get_persistence_diagram_genre(genre: str, dim: int = 1) -> dict:
 
 
 @router.get('/persistence-diagram/book/{gutenberg_id}')
-async def get_persistence_diagram_book(gutenberg_id: str, dim: int = 1) -> dict:
-    """Return raw persistence diagram for a specific book."""
+async def get_persistence_diagram_book(gutenberg_id: str, dim: H1Dim = 1) -> dict:
+    """Return raw persistence diagram for a specific book.
+
+    v2 (Plan 06-04): serves H1 only -- see ``get_persistence_image``.
+    """
     if not _GUTENBERG_ID_RE.match(gutenberg_id):
         raise HTTPException(
             status_code=400,
             detail=f'Invalid gutenberg_id: must be a positive integer, got {gutenberg_id!r}',
         )
-    if dim not in (0, 1, 2):
-        raise HTTPException(status_code=400, detail=f'Invalid homology dimension: {dim}.')
     data = get_cached_persistence_diagram(gutenberg_id, dim, _DEFAULT_WINDOW, is_book=True)
     if data is None:
         raise HTTPException(
