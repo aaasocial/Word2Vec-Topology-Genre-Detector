@@ -112,8 +112,10 @@ Persistent homology scales poorly with point count (Vietoris-Rips complex constr
 | Ripser over giotto-tda for homology | Simpler API, no subprocess timeout wrapper; matches Phase 1 weighted-distance math | Validated — v1.0 (Phase 2) |
 | Models shipped as GitHub Release asset | Avoids LFS quota on Railway builds; container downloads at start via RELEASE_URL | Validated — v1.0 (Phase 5) |
 | v2: corpus expansion preceded by research spike | User wants accuracy improvement grounded in how comparable projects source training data, not arbitrary additions | — Pending (v2.0 Phase 7) |
-| v2: bug-fix phase first, then features | Clean slate before new features makes verification easier; resolves v1 carry-overs (H₂, BookSlider, persistence-diagram scaling, empty ROADMAP/STATE) | — Pending (v2.0 Phase 6) |
-| v2: H₀ and H₂ removed from UI | H₀ mathematically degenerate in weighted Vietoris-Rips (birth axis collapses to filtration time 0); H₂ deferred to v3 — sparse high-D point clouds rarely contain voids and the O(n⁴) runtime cliff (PITFALLS.md §2) is not worth the engineering for empirical-zero gain (PITFALLS.md §3) | — Pending (v2.0 Phase 6, BUG-01) |
+| v2: bug-fix phase first, then features | Clean slate before new features makes verification easier; resolves v1 carry-overs (H₂, BookSlider, persistence-diagram scaling, empty ROADMAP/STATE) | Validated — v2.0 (Phase 6) |
+| v2: H₀ and H₂ removed from UI | H₀ mathematically degenerate in weighted Vietoris-Rips (birth axis collapses to filtration time 0); H₂ deferred to v3 — sparse high-D point clouds rarely contain voids and the O(n⁴) runtime cliff (PITFALLS.md §2) is not worth the engineering for empirical-zero gain (PITFALLS.md §3) | Validated — v2.0 (Phase 6, BUG-01) |
+| Cache key includes corpus_hash + w2v_model_sha256 | Latent v1 footgun: cache key omitted model-lineage inputs, so a retrain could silently return stale precomputed artifacts. Lands before Phase 8 retrain to avoid mid-flight migration. | Validated — v2.0 (Phase 6, BUG-05) |
+| Planning files protected by pre-commit + CI + snapshots | v1 ROADMAP/STATE were wiped to 0 bytes by a GSD wrap-up template (commit 336eb7c, 2026-04-13). Hook rejects 0-byte commits to `.planning/**/*.md`; `.gitattributes` excludes from LFS; CI is a backstop. | Validated — v2.0 (Phase 6, BUG-04) |
 
 ## Evolution
 
@@ -133,4 +135,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-22 — v2.0 milestone initialized (v1.0 shipped 2026-04-13)*
+*Last updated: 2026-05-23 — Phase 6 (v1 bug-fix sweep) complete: BUG-01..BUG-05 closed; v2.0 cleared for retrain/feature phases*
