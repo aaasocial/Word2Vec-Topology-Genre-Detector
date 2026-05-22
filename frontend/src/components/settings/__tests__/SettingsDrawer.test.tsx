@@ -10,7 +10,6 @@ describe('SettingsDrawer', () => {
       dirtyParams: new Set<string>(),
       isRecomputing: false,
       isRetraining: false,
-      h2Enabled: false,
     })
   })
 

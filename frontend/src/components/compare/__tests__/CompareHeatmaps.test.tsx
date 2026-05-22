@@ -6,8 +6,8 @@ import { useVisualizationStore } from '@/stores/visualizationStore'
 import * as heatmapLib from '@/lib/heatmap'
 
 // Mock usePersistenceImage
-const mockDataA = { data: [0, 1, 2, 3], M: 2, dim: 0, vmin: 0, vmax: 3 }
-const mockDataB = { data: [1, 2, 3, 4], M: 2, dim: 0, vmin: 1, vmax: 4 }
+const mockDataA = { data: [0, 1, 2, 3], M: 2, dim: 1, vmin: 0, vmax: 3 }
+const mockDataB = { data: [1, 2, 3, 4], M: 2, dim: 1, vmin: 1, vmax: 4 }
 
 vi.mock('@/hooks/usePersistenceImage', () => ({
   usePersistenceImage: vi.fn((genreOrBookId: string | null) => {
@@ -28,7 +28,8 @@ describe('CompareHeatmaps', () => {
       compareMode: true,
       selectedGenre: 'romance',
       compareGenre: 'mystery',
-      selectedHomologyDim: 0,
+      // v2 (Plan 06-04): H₁ only — H₀ removed (degenerate in weighted VR).
+      selectedHomologyDim: 1,
     })
   })
 

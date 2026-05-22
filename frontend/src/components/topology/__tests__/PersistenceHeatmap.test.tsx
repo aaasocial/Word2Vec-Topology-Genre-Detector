@@ -28,8 +28,7 @@ beforeEach(() => {
   useVisualizationStore.setState({
     selectedGenre: null,
     selectedBookId: null,
-    selectedHomologyDim: 0,
-    h2Enabled: false,
+    selectedHomologyDim: 1,
   })
 })
 
@@ -45,7 +44,7 @@ describe('PersistenceHeatmap', () => {
     const mockData = {
       data: [0.1, 0.2, 0.3, 0.4],
       M: 2,
-      dim: 0,
+      dim: 1,
       vmin: 0.1,
       vmax: 0.4,
     }
@@ -70,7 +69,7 @@ describe('PersistenceHeatmap', () => {
     const mockData = {
       data: [0.1, 0.2, 0.3, 0.4],
       M: 2,
-      dim: 0,
+      dim: 1,
       vmin: 0.1,
       vmax: 0.4,
     }
@@ -85,7 +84,7 @@ describe('PersistenceHeatmap', () => {
     const mockData = {
       data: [0.1, 0.2, 0.3, 0.4],
       M: 2,
-      dim: 0,
+      dim: 1,
       vmin: 0.10,
       vmax: 0.40,
     }

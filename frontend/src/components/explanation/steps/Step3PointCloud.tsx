@@ -78,8 +78,8 @@ export function Step3PointCloud() {
         </p>
         <p style={{ margin: 0 }}>
           Words from the same genre naturally cluster together because they share semantic
-          context. These clusters form topological shapes -- loops, voids, and connected
-          components -- that characterize each genre's geometric signature.
+          context. These clusters form H₁ loops — the topological shapes that v2 uses to
+          characterise each genre's geometric signature.
         </p>
       </div>
     </div>

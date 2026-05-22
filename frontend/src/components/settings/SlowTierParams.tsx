@@ -25,8 +25,6 @@ export function SlowTierParams() {
   const dirtyParams = useVisualizationStore((s) => s.dirtyParams)
   const addDirtyParam = useVisualizationStore((s) => s.addDirtyParam)
   const removeDirtyParam = useVisualizationStore((s) => s.removeDirtyParam)
-  const h2Enabled = useVisualizationStore((s) => s.h2Enabled)
-  const setH2Enabled = useVisualizationStore((s) => s.setH2Enabled)
   const isRecomputing = useVisualizationStore((s) => s.isRecomputing)
 
   // Track local param values (start at defaults = "last computed")
@@ -58,21 +56,10 @@ export function SlowTierParams() {
     [addDirtyParam, removeDirtyParam, lastComputed],
   )
 
-  const handleH2Toggle = useCallback(() => {
-    const next = !h2Enabled
-    setH2Enabled(next)
-    if (next) {
-      addDirtyParam('h2')
-    } else {
-      removeDirtyParam('h2')
-    }
-  }, [h2Enabled, setH2Enabled, addDirtyParam, removeDirtyParam])
-
   const handleRecompute = useCallback(() => {
     // Collect changed params
     const changed: Record<string, number> = {}
     for (const key of dirtyParams) {
-      if (key === 'h2') continue
       if (values[key] !== undefined) changed[key] = values[key]
     }
     // Trigger recompute via useRecompute hook (wired by parent)
@@ -115,26 +102,8 @@ export function SlowTierParams() {
         </div>
       ))}
 
-      {/* H2 toggle */}
-      <label
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          cursor: 'pointer',
-          fontSize: 12,
-          color: '#9090A0',
-        }}
-      >
-        <input
-          type="checkbox"
-          aria-label="Enable H2 computation"
-          checked={h2Enabled}
-          onChange={handleH2Toggle}
-          style={{ accentColor: '#6366F1' }}
-        />
-        Enable H2 computation
-      </label>
+      {/* H₂ toggle removed in Plan 06-04 (BUG-01): H₂ deferred to v3
+          (PROJECT.md Key Decisions; PITFALLS.md §2-3). */}
 
       {/* Dirty badge */}
       {isDirty && (

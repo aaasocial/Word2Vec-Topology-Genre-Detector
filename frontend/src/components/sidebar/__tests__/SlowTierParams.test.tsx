@@ -19,7 +19,6 @@ describe('SlowTierParams', () => {
     useVisualizationStore.setState({
       dirtyParams: new Set<string>(),
       isRecomputing: false,
-      h2Enabled: false,
     })
   })
 
@@ -37,12 +36,8 @@ describe('SlowTierParams', () => {
     expect(useVisualizationStore.getState().dirtyParams.has('sigma')).toBe(true)
   })
 
-  it('H2 toggle adds "h2" to dirtyParams when enabled', () => {
-    render(<SlowTierParams />)
-    const h2Toggle = screen.getByLabelText(/enable h2/i)
-    fireEvent.click(h2Toggle)
-    expect(useVisualizationStore.getState().dirtyParams.has('h2')).toBe(true)
-  })
+  // H₂ toggle test deleted in Plan 06-04 — H₂ removed from v2 settings drawer
+  // (CONTEXT.md <domain> recast / PROJECT.md Key Decisions / PITFALLS.md §2-3).
 
   it('Recompute button is disabled when dirtyParams is empty', () => {
     render(<SlowTierParams />)

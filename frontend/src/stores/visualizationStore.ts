@@ -2,7 +2,11 @@ import { create } from 'zustand'
 import type { ProjectionKey } from '@/types/scatter'
 
 export type TabKey = 'scatter' | 'topology' | 'compare'
-export type HomologyDim = 0 | 1 | 2
+// v2: H₁ only. H₀ removed (degenerate in weighted Vietoris-Rips — all births
+// collapse to filtration time 0). H₂ deferred to v3 (PROJECT.md Key Decisions
+// / PITFALLS.md §2-3). The literal-1 single-value type preserves the store
+// interface for v3 forward-compat while making misuse a compile error today.
+export type HomologyDim = 1
 
 interface VisualizationState {
   projection: ProjectionKey
@@ -30,7 +34,6 @@ interface VisualizationState {
   isRecomputing: boolean
   isRetraining: boolean
   dirtyParams: Set<string>
-  h2Enabled: boolean
   setProjection: (p: ProjectionKey) => void
   setSelectedGenre: (g: string | null) => void
   setSelectedBook: (id: string | null) => void
@@ -58,7 +61,6 @@ interface VisualizationState {
   addDirtyParam: (p: string) => void
   removeDirtyParam: (p: string) => void
   clearDirtyParams: () => void
-  setH2Enabled: (v: boolean) => void
 }
 
 export const useVisualizationStore = create<VisualizationState>()((set) => ({
@@ -77,7 +79,7 @@ export const useVisualizationStore = create<VisualizationState>()((set) => ({
   cameraResetCounter: 0,
   // Phase 4 defaults
   activeTab: 'scatter',
-  selectedHomologyDim: 0,
+  selectedHomologyDim: 1,
   vrEpsilon: 0,
   compareMode: false,
   compareGenre: null,
@@ -87,7 +89,6 @@ export const useVisualizationStore = create<VisualizationState>()((set) => ({
   isRecomputing: false,
   isRetraining: false,
   dirtyParams: new Set<string>(),
-  h2Enabled: false,
   setProjection: (p) => set({ projection: p }),
   setSelectedGenre: (g) => set({ selectedGenre: g }),
   setSelectedBook: (id) => set({ selectedBookId: id }),
@@ -119,5 +120,4 @@ export const useVisualizationStore = create<VisualizationState>()((set) => ({
     return { dirtyParams: next }
   }),
   clearDirtyParams: () => set({ dirtyParams: new Set<string>() }),
-  setH2Enabled: (v) => set({ h2Enabled: v }),
 }))

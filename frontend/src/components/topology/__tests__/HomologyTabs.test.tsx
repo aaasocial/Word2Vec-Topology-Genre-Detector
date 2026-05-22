@@ -1,49 +1,30 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { HomologyTabs } from '../HomologyTabs'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 
+// v2 (Plan 06-04): tabs scrubbed to H₁ only. H₀ removed (degenerate in
+// weighted VR — all births collapse to filtration time 0). H₂ deferred to v3
+// (PROJECT.md Key Decisions / PITFALLS.md §2-3). The legacy three-tab and
+// disabled-H₂ cases were deleted, not commented out (D-03).
 beforeEach(() => {
   useVisualizationStore.setState({
-    selectedHomologyDim: 0,
-    h2Enabled: false,
+    selectedHomologyDim: 1,
   })
 })
 
 describe('HomologyTabs', () => {
-  it('renders 3 tabs: H0, H1, H2', () => {
+  it('renders exactly one tab labelled H1', () => {
     render(<HomologyTabs />)
-    expect(screen.getByText('H0')).toBeInTheDocument()
+    const tabs = screen.getAllByRole('tab')
+    expect(tabs).toHaveLength(1)
     expect(screen.getByText('H1')).toBeInTheDocument()
-    expect(screen.getByText('H2')).toBeInTheDocument()
   })
 
-  it('H2 tab is disabled when h2Enabled=false', () => {
+  it('the single H1 tab is marked selected and non-interactive', () => {
     render(<HomologyTabs />)
-    const h2 = screen.getByText('H2')
-    expect(h2).toHaveAttribute('aria-disabled', 'true')
-    expect(h2).toHaveAttribute('title', 'Enable H2 in Settings')
-  })
-
-  it('H2 tab is enabled when h2Enabled=true', () => {
-    useVisualizationStore.setState({ h2Enabled: true })
-    render(<HomologyTabs />)
-    const h2 = screen.getByText('H2')
-    expect(h2).toHaveAttribute('aria-disabled', 'false')
-  })
-
-  it('clicking H1 updates selectedHomologyDim', async () => {
-    const user = userEvent.setup()
-    render(<HomologyTabs />)
-    await user.click(screen.getByText('H1'))
-    expect(useVisualizationStore.getState().selectedHomologyDim).toBe(1)
-  })
-
-  it('clicking disabled H2 does not update dimension', async () => {
-    const user = userEvent.setup()
-    render(<HomologyTabs />)
-    await user.click(screen.getByText('H2'))
-    expect(useVisualizationStore.getState().selectedHomologyDim).toBe(0)
+    const tab = screen.getByRole('tab')
+    expect(tab).toHaveAttribute('aria-selected', 'true')
+    expect(tab).toHaveAttribute('tabIndex', '-1')
   })
 })

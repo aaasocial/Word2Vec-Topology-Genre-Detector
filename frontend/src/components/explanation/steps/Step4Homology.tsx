@@ -98,9 +98,11 @@ export function Step4Homology() {
           current threshold.
         </p>
         <p style={{ margin: 0 }}>
-          Persistent homology tracks when topological features (connected components, loops,
-          voids) appear and disappear during this filtration. Features that persist across many
-          epsilon values represent genuine geometric structure of the genre.
+          Persistent homology tracks when H₁ loops appear and disappear during this
+          filtration. Loops that persist across many epsilon values represent genuine
+          geometric structure of the genre. (v2 ships H₁-only — H₀ is degenerate in the
+          weighted Vietoris-Rips construction and H₂ is deferred to v3; see
+          PROJECT.md Key Decisions.)
         </p>
       </div>
     </div>
