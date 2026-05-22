@@ -53,7 +53,7 @@
 ### Visualization — Topology Views
 
 - [x] **TOPO-01**: User sees a 2D heatmap of the persistence image for the currently selected genre or book, with axes labeled (scale, persistence) after the 45-degree coordinate rotation
-- [x] **TOPO-02**: User can switch the persistence image between H₀, H₁, and H₂ tabs (H₂ tab disabled unless H₂ toggle is on)
+- [x] **TOPO-02**: User views the H₁ persistence image (H₀ and H₂ removed in v2.0 — H₀ degenerate in weighted Vietoris-Rips, H₂ deferred to v3 — see PROJECT.md Key Decisions). v1 originally shipped three tabs; the H₀/H₂ tabs were removed in Phase 6 (BUG-01).
 - [x] **TOPO-03**: User sees a separate 3D scatter plot showing the animated Vietoris-Rips filtration — same word positions from the selected projection, separate camera
 - [x] **TOPO-04**: User controls a filtration radius slider (ε) in the Vietoris-Rips plot; as ε increases, edges appear between words whose TF-IDF-weighted balls have overlapped
 - [x] **TOPO-05**: When a topological feature (H₁ loop, H₂ void) is born or dies at the current ε value, the relevant boundary edges are highlighted in a distinct color
@@ -118,7 +118,7 @@
 
 ### Bug-Fix Sweep (Phase 6)
 
-- [ ] **BUG-01**: System computes H₂ persistent homology and exposes it via the H₂ heatmap tab; tooltip on the disabled H₂ control surfaces guidance ("Enable H₂ in Settings"). Backed by `ripser(maxdim=2)` with a hard timeout and dedicated worker queue per `PITFALLS.md §2`.
+- [ ] **BUG-01**: System removes the H₂ UI tab, the H₂ settings toggle, and all backend `homology_dims=2` plumbing. Bonus cleanup: H₀ tab also removed (degenerate in weighted Vietoris-Rips — all components born at filtration time 0). UI ships H₁-only. H₂ deferred to v3; rationale recorded in PROJECT.md Key Decisions and CONTEXT.md `<domain>` block for Phase 6.
 - [ ] **BUG-02**: Persistence-diagram dots scale by sqrt(persistence) for finite points; H₀ infinite-persistence points use a dedicated marker so all classes are readable at any zoom level (`PITFALLS.md §10`).
 - [ ] **BUG-03**: BookSlider fetches book metadata from a new `GET /api/corpus/genres/{genre}/books` endpoint and lets the user slide through every book within the selected genre, with title + author + word count surfaced.
 - [ ] **BUG-04**: ROADMAP.md and STATE.md are restored as living planning documents; a pre-commit hook rejects 0-byte commits to `.planning/**/*.md` to prevent recurrence (`PITFALLS.md §15`).

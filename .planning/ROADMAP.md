@@ -47,7 +47,7 @@
 - Visual polish: dark mode / theming refinement, onboarding tour, empty-state polish.
 
 **Milestone success criteria** (TRUE when v2.0 ships):
-1. User can see all three homology dimensions (H₀, H₁, H₂) populated in the persistence-image tab for bundled-corpus books, with honest "no voids detected" copy when H₂ is empty.
+1. User no longer sees a misleading disabled H₂ tab; the H₀ tab is also removed (mathematically degenerate in weighted Vietoris-Rips — all births collapse to filtration time 0); the persistence-image view ships H₁-only honestly. H₂ deferred to v3 (sparse high-D point clouds rarely contain voids and the O(n⁴) runtime cliff is not worth the engineering for empirical-zero gain — see PROJECT.md Key Decisions; PITFALLS.md §2-3).
 2. User can slide BookSlider through every book in a selected genre and see title, author, and word count for each.
 3. User uploads a book and receives a top-3 ranked prediction with calibrated probabilities summing to 1, plus a "why this genre?" explanation showing the 3–5 nearest training books and per-track contribution percentages.
 4. User can toggle light / dark / system theme and the choice persists across reloads; the R3F scene background follows the theme without canvas remount.
@@ -106,23 +106,28 @@ Phases 6, 7, 8, 9 ────────────────────�
 **Requirements:** BUG-01, BUG-02, BUG-03, BUG-04, BUG-05
 
 **Success Criteria** (what must be TRUE):
-  1. User sees a populated H₂ persistence-image heatmap for every bundled book where ripser returns non-empty H₂ — empty diagrams render honestly ("No 2-dimensional voids detected — typical for sparse high-dimensional point clouds") and never crash the UI.
+  1. H₂ tab fully removed (no longer shows a misleading disabled tab); the H₀ tab is also removed (degenerate in weighted Vietoris-Rips — all births at filtration time 0); H₁ ships honestly. REQUIREMENTS.md BUG-01 and TOPO-02 are updated to reflect the removal. PROJECT.md Key Decisions records the H₀ degeneracy rationale and the H₂ v3 deferral.
   2. User views persistence diagrams where finite dots scale by sqrt(persistence) and H₀ infinite-persistence points are rendered on a dedicated marker — both visible at any zoom level.
   3. User selects a genre and slides BookSlider through every book in that genre, seeing title, author, and word count for each book; the `GET /api/corpus/genres/{genre}/books` payload is under 100KB total.
   4. ROADMAP.md and STATE.md are non-empty in `git status`; a pre-commit hook rejects any future 0-byte commit to `.planning/**/*.md`; `.gitattributes` excludes planning files from LFS.
   5. The content-addressed cache key includes `corpus_hash` (sha256 of `books.yaml`) and `w2v_model_sha256` everywhere on disk; a smoke test confirms "old cache + new model = cache miss" before Phase 8 even starts.
 
-**Plans:** TBD
+**Plans:** 5 plans
+  - [x] 06-01-PLAN.md — BUG-04: planning-file 0-byte protection (pre-commit hook + installer + .gitattributes + CI backstop + snapshot recovery + audit)
+  - [x] 06-02-PLAN.md — BUG-02: H₁ persistence-diagram sqrt dot scaling + infinity top-strip + Vitest fixtures
+  - [x] 06-03-PLAN.md — BUG-03: BookSlider metadata endpoint (GET /api/corpus/genres/{genre}/books) + corpus.yaml author/word_count + top_10_tfidf_words sidecar + Sidebar rewire
+  - [ ] 06-04-PLAN.md — BUG-01: H₂ + H₀ removal sweep (frontend + backend + EXPLAIN-01 copy + ROADMAP/REQUIREMENTS/PROJECT.md doc updates)
+  - [ ] 06-05-PLAN.md — BUG-05: cache_key + corpus_hash + w2v_model_sha256 + eager cache flush + SVM lineage guard + D-24 smoke test
 
 **UI hint:** yes
 
 **Key pitfalls owned by this phase** (`PITFALLS.md`):
-- §2 — H₂ O(n⁴) runtime cliff — mitigated with `scripts/bench_h2.py` P95 <30s gate, 60s worker timeout returning `H2Unavailable`, dedicated queue with `max_concurrent=1`.
-- §3 — Empty H₂ diagrams are the common case, not the error case — fixture test with a deliberately-too-small cloud asserts graceful handling; UI copy is honest.
-- §10 — Persistence-diagram dot scaling breaks H₀ infinite-persistence — `np.isinf(deaths)` filtered to dedicated marker; sqrt scale for finite dots; snapshot test.
+- §10 — Persistence-diagram dot scaling breaks H₁ infinite-persistence — `np.isinf(deaths)` filtered to a dedicated infinity-strip marker; sqrt scale for finite dots; snapshot test.
 - §12 — BookSlider metadata becomes a JSON dump — schema strictly `{id, title, author, genre, word_count, top_10_tfidf_words}`; <2KB per book; React Query `staleTime: Infinity`.
 - §15 — ROADMAP/STATE wiped again — pre-commit hook + `.gitattributes` + `.planning/.snapshots/` backup.
 - §1 — Latent cache-key bug — BUG-05 lands here, not in Phase 8, so the retrain phase doesn't have to engineer a cache migration mid-flight.
+
+> §2 / §3 are moot after BUG-01 was recast from "ship H₂" to "remove H₂ entirely" — see CONTEXT.md `<domain>` block and PROJECT.md Key Decisions. The bench gate, dedicated queue, and empty-H₂ fixture test are no longer load-bearing.
 
 ---
 
@@ -243,7 +248,7 @@ Phases 6, 7, 8, 9 ────────────────────�
 | 3. Frontend Core and 3D Visualization | 4/4 | Shipped (v1.0) | 2026-04 |
 | 4. Advanced Viz and Parameter Controls | 3/3 | Shipped (v1.0) | 2026-04 |
 | 5. Deployment and Public Access | 2/2 | Shipped (v1.0) | 2026-04-13 |
-| 6. v1 Bug-Fix Sweep | 0/? | Not started | — |
+| 6. v1 Bug-Fix Sweep | 0/5 | Planned | — |
 | 7. Corpus Sourcing Research Spike | 0/? | Not started | — |
 | 8. Corpus Expansion | 0/? | Not started (blocked on 6, 7) | — |
 | 9. Classification Depth | 0/? | Not started (blocked on 8) | — |

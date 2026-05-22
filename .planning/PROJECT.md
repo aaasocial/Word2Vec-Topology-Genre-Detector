@@ -113,6 +113,7 @@ Persistent homology scales poorly with point count (Vietoris-Rips complex constr
 | Models shipped as GitHub Release asset | Avoids LFS quota on Railway builds; container downloads at start via RELEASE_URL | Validated — v1.0 (Phase 5) |
 | v2: corpus expansion preceded by research spike | User wants accuracy improvement grounded in how comparable projects source training data, not arbitrary additions | — Pending (v2.0 Phase 7) |
 | v2: bug-fix phase first, then features | Clean slate before new features makes verification easier; resolves v1 carry-overs (H₂, BookSlider, persistence-diagram scaling, empty ROADMAP/STATE) | — Pending (v2.0 Phase 6) |
+| v2: H₀ and H₂ removed from UI | H₀ mathematically degenerate in weighted Vietoris-Rips (birth axis collapses to filtration time 0); H₂ deferred to v3 — sparse high-D point clouds rarely contain voids and the O(n⁴) runtime cliff (PITFALLS.md §2) is not worth the engineering for empirical-zero gain (PITFALLS.md §3) | — Pending (v2.0 Phase 6, BUG-01) |
 
 ## Evolution
 
