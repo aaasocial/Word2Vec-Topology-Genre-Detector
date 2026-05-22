@@ -25,6 +25,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scripts'))
 
 from backend.cache.store import cache_key, cache_put, cache_get, cache_exists
+from backend.cache.lineage import corpus_hash as _corpus_hash, w2v_model_sha256 as _w2v_model_sha256
 from backend.pipeline.homology import build_weighted_distance_matrix
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
@@ -142,7 +143,12 @@ def _label_birth_edge(
 
 def get_cached_vr_edges(genre: str, projection: str, window: int) -> Optional[dict]:
     """Retrieve cached VR edge data for a genre."""
-    key = cache_key('vr_edges', {'genre': genre, 'projection': projection, 'window': window})
+    key = cache_key(
+        'vr_edges',
+        {'genre': genre, 'projection': projection, 'window': window},
+        corpus_hash=_corpus_hash(),
+        w2v_model_sha256=_w2v_model_sha256(window),
+    )
     return cache_get(key)
 
 
@@ -169,13 +175,27 @@ def _precompute_vr_for_projection(
     for idx, pt in enumerate(scatter_points):
         word_to_scatter_idx[pt['word']] = idx
 
+    # Plan 06-05 / BUG-05: lineage for cache_key invalidation.
+    lineage_ch = _corpus_hash()
+    lineage_wh = _w2v_model_sha256(window)
+
     for genre, book_list in books_data['genres'].items():
-        ck = cache_key('vr_edges', {'genre': genre, 'projection': projection, 'window': window})
+        ck = cache_key(
+            'vr_edges',
+            {'genre': genre, 'projection': projection, 'window': window},
+            corpus_hash=lineage_ch,
+            w2v_model_sha256=lineage_wh,
+        )
         if not force and cache_exists(ck):
             log.info(f'  [{projection}] VR edges for {genre}: already cached')
             continue
 
-        genre_tfidf_key = cache_key('tfidf_genre', {'genre': genre, 'window': window})
+        genre_tfidf_key = cache_key(
+            'tfidf_genre',
+            {'genre': genre, 'window': window},
+            corpus_hash=lineage_ch,
+            w2v_model_sha256=lineage_wh,
+        )
         genre_tfidf = cache_get(genre_tfidf_key)
         if genre_tfidf is None:
             log.warning(f'  [{projection}] No TF-IDF data for {genre}, skipping')

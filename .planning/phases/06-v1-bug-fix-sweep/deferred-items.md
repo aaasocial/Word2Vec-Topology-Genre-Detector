@@ -68,3 +68,30 @@ phase-level cleanup or for a future plan.
 - **Owner:** Phase 06 cleanup (or whoever next touches the FastAPI
   ``/api/`` prefix migration in tests).
 
+## Discovered during Plan 06-05 (cache_key corpus_hash + w2v_model_sha256)
+
+### backend/tests/test_classify.py — 3/3 tests failing (wrong path prefix + redis dep)
+
+- **Discovered:** 2026-05-22 while running the in-scope cache suite to
+  verify the migration to the new ``cache_key()`` signature.
+- **Symptoms:**
+  - ``test_corpus_book_results_not_found``: calls ``GET /corpus/books/99999/results``
+    but the route is mounted at ``/api/corpus/books/{id}/results``; gets a
+    generic 404 from the SPA catch-all instead of the "pre-computed" detail.
+  - ``test_classify_returns_job_id_for_valid_file``: calls ``POST /classify``
+    but the route is at ``/api/classify``; gets 405 Method Not Allowed.
+    Even if rebased, the test still needs a running Redis (arq backend)
+    which is not available in this sandbox.
+  - ``test_corpus_book_results_found_after_cache``: same ``/api/`` prefix
+    bug; once that's fixed it would exercise my updated lineage path
+    (test now imports ``backend.cache.lineage`` and computes the same
+    hashes the route uses).
+- **Why deferred:** Same root cause as ``test_api.py`` (Plan 06-03) and
+  ``test_viz.py`` (Plan 06-04) -- the ``/api/`` prefix migration was never
+  rebased into these test files. Confirmed pre-existing on master HEAD
+  (``a922d1f``) with all my Plan 06-05 changes stashed.
+- **Owner:** Phase 06 cleanup (or whoever owns the ``/api/`` prefix
+  migration in tests). Plan 06-05 already updated the in-scope cache_key
+  call in ``test_corpus_book_results_found_after_cache`` for future
+  rebasing convenience.
+

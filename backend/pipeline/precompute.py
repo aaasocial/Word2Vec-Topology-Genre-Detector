@@ -30,6 +30,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scripts'))
 from utils import load_params
 
 from backend.cache.store import cache_key, cache_put
+from backend.cache.lineage import (
+    corpus_hash as _corpus_hash,
+    w2v_model_sha256 as _w2v_model_sha256,
+    write_svm_lineage,
+)
 from backend.pipeline.features import (
     diagram_to_birth_persistence,
     build_persistence_imager,
@@ -59,6 +64,14 @@ def precompute_all(window: int = None):
     project_root = Path(__file__).resolve().parents[2]
     models_dir = project_root / 'data' / 'models'
     features_dir = project_root / 'data' / 'features'
+
+    # --- Compute lineage hashes once (Plan 06-05 / BUG-05) ---
+    # corpus_hash + w2v_model_sha256 feed into every cache_key() below so that
+    # a corpus change OR a W2V retrain forces a cache miss on every artifact.
+    log.info('Computing lineage hashes (corpus + Word2Vec model)...')
+    lineage_ch = _corpus_hash()
+    lineage_wh = _w2v_model_sha256(window)
+    log.info(f'  corpus_hash={lineage_ch[:12]}... w2v_model_sha256={lineage_wh[:12]}...')
 
     # --- Load Phase 1 pre-trained models ---
     from gensim.models import Word2Vec
@@ -160,9 +173,12 @@ def precompute_all(window: int = None):
         labels.append(book['genre_idx'])
 
         # Cache per-book result
-        ck = cache_key('feature_vector', {
-            'gutenberg_id': gid, 'window': window, 'k': k, 'alpha': alpha,
-        })
+        ck = cache_key(
+            'feature_vector',
+            {'gutenberg_id': gid, 'window': window, 'k': k, 'alpha': alpha},
+            corpus_hash=lineage_ch,
+            w2v_model_sha256=lineage_wh,
+        )
         cache_put(ck, feature_vec)
 
         # Cache full book result (for GET /corpus/books/{id}/results)
@@ -173,9 +189,12 @@ def precompute_all(window: int = None):
             'feature_vector_shape': list(feature_vec.shape),
             'h1_points': int(diagram_to_birth_persistence(diagrams, dim=1).shape[0]),
         }
-        bk = cache_key('book_result', {
-            'gutenberg_id': gid, 'window': window, 'k': k, 'alpha': alpha,
-        })
+        bk = cache_key(
+            'book_result',
+            {'gutenberg_id': gid, 'window': window, 'k': k, 'alpha': alpha},
+            corpus_hash=lineage_ch,
+            w2v_model_sha256=lineage_wh,
+        )
         cache_put(bk, book_result)
         log.info(f'  Cached results for {gid}')
 
@@ -206,6 +225,20 @@ def precompute_all(window: int = None):
     svm_path = models_dir / 'svm_pipeline.joblib'
     joblib.dump(svm_pipeline, str(svm_path))
     log.info(f'Saved svm_pipeline.joblib ({X.shape[0]} samples, {len(genre_names)} classes)')
+
+    # Plan 06-05 / BUG-05 / D-25: pin SVM training-data lineage.
+    # The sidecar lets the API server refuse to load an SVM whose lineage
+    # doesn't match the currently-loaded W2V model (defense in depth on top
+    # of the cache_key fix). PITFALLS.md §1.
+    sidecar = write_svm_lineage(
+        svm_path,
+        window=window,
+        k_clusters=k,
+        alpha=alpha,
+        corpus_digest=lineage_ch,
+        w2v_digest=lineage_wh,
+    )
+    log.info(f'Saved SVM lineage sidecar: {sidecar.name}')
 
     log.info('Precomputation complete.')
 

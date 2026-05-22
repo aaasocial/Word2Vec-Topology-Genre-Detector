@@ -25,11 +25,17 @@ async def test_classify_returns_job_id_for_valid_file(client):
 
 @pytest.mark.integration
 async def test_corpus_book_results_found_after_cache(client, tmp_path, monkeypatch):
-    """Integration: cache populated -> GET returns cached data."""
+    """Integration: cache populated -> GET returns cached data.
+
+    Plan 06-05 / BUG-05: cache_key now requires corpus_hash + w2v_model_sha256.
+    The test must compute the SAME lineage values that the route under test
+    will compute, so the cached entry is reachable.
+    """
     import backend.cache.store as store_mod
     monkeypatch.setattr(store_mod, 'CACHE_DIR', tmp_path / 'cache')
 
     from backend.cache.store import cache_key, cache_put
+    from backend.cache.lineage import corpus_hash, w2v_model_sha256
     import sys
     from pathlib import Path
     sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scripts'))
@@ -39,12 +45,17 @@ async def test_corpus_book_results_found_after_cache(client, tmp_path, monkeypat
     k = params['features']['k_clusters']
     alpha = params['features']['alpha']
 
-    ck = cache_key('book_result', {
-        'gutenberg_id': '12345',
-        'window': window,
-        'k': k,
-        'alpha': alpha,
-    })
+    ck = cache_key(
+        'book_result',
+        {
+            'gutenberg_id': '12345',
+            'window': window,
+            'k': k,
+            'alpha': alpha,
+        },
+        corpus_hash=corpus_hash(),
+        w2v_model_sha256=w2v_model_sha256(window),
+    )
     test_data = {'gutenberg_id': '12345', 'genre': 'horror', 'title': 'Test Book'}
     cache_put(ck, test_data)
 

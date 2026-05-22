@@ -121,6 +121,10 @@ async def get_book_results(gutenberg_id: str):
     Returns 404 if precompute.py has not been run yet.
     """
     from backend.cache.store import cache_key, cache_get
+    from backend.cache.lineage import (
+        corpus_hash as _corpus_hash,
+        w2v_model_sha256 as _w2v_model_sha256,
+    )
     from utils import load_params
 
     params = load_params()
@@ -128,12 +132,20 @@ async def get_book_results(gutenberg_id: str):
     k = params['features']['k_clusters']
     alpha = params['features']['alpha']
 
-    ck = cache_key('book_result', {
-        'gutenberg_id': gutenberg_id,
-        'window': window,
-        'k': k,
-        'alpha': alpha,
-    })
+    # Plan 06-05 / BUG-05: lineage hashes are memoized on (path, mtime, size)
+    # in ``backend.cache.lineage`` so repeated requests don't re-stream the
+    # ~70 MB Word2Vec model.
+    ck = cache_key(
+        'book_result',
+        {
+            'gutenberg_id': gutenberg_id,
+            'window': window,
+            'k': k,
+            'alpha': alpha,
+        },
+        corpus_hash=_corpus_hash(),
+        w2v_model_sha256=_w2v_model_sha256(window),
+    )
     result = cache_get(ck)
 
     if result is None:
