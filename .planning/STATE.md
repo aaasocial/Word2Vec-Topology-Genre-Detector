@@ -5,8 +5,8 @@
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
 - **Phase:** 6 — v1 Bug-Fix Sweep
 - **Plan:** Not started (awaiting `/gsd-plan-phase 6`)
-- **Status:** Roadmap drafted; ready to plan Phase 6
-- **Last activity:** 2026-05-22 — Roadmap created; 25/25 v2 requirements mapped across Phases 6–10
+- **Status:** Context gathered (`06-CONTEXT.md`); ready for `/gsd-plan-phase 6`
+- **Last activity:** 2026-05-22 — Phase 6 discuss-phase complete. Key recast: BUG-01 changed from "ship H₂" to "remove H₂ entirely"; H₀ tab removal added as bonus cleanup. Milestone success criterion #1 + REQUIREMENTS BUG-01 + TOPO-02 wording need updating during planning.
 
 ## Milestone v2.0 — Phases
 
@@ -88,13 +88,14 @@ None. Phase 6 ready to plan via `/gsd-plan-phase 6`.
 **Next command:** `/gsd-plan-phase 6`
 
 **Reading order for the next session:**
-1. `.planning/ROADMAP.md` — Phase 6 details
-2. `.planning/research/SUMMARY.md` — overall v2 spine
-3. `.planning/research/ARCHITECTURE.md` §6 + §10 — Phase 6 file-level touchpoints
-4. `.planning/research/PITFALLS.md` §2, §3, §10, §12, §15, §1 — pitfalls owned by Phase 6
-5. `.planning/REQUIREMENTS.md` BUG-01..05 — Phase 6 requirements verbatim
+1. `.planning/phases/06-v1-bug-fix-sweep/06-CONTEXT.md` — locked decisions (read FIRST)
+2. `.planning/ROADMAP.md` — Phase 6 details (note: milestone success criterion #1 needs rewriting per CONTEXT)
+3. `.planning/research/SUMMARY.md` — overall v2 spine
+4. `.planning/research/ARCHITECTURE.md` §6 + §10 — Phase 6 file-level touchpoints
+5. `.planning/research/PITFALLS.md` §10, §12, §15, §1 — pitfalls still owned by Phase 6 (§2/§3 moot after H₂ removal)
+6. `.planning/REQUIREMENTS.md` BUG-01..05 + TOPO-02 — Phase 6 requirements (BUG-01 + TOPO-02 wording needs rewriting per CONTEXT)
 
 ---
 *v1.0 shipped: 2026-04-13*
 *v2.0 milestone started: 2026-05-22*
-*Last updated: 2026-05-22 — Roadmap drafted; Phase 6 ready to plan*
+*Last updated: 2026-05-22 — Phase 6 context gathered; BUG-01 recast to H₂ removal, H₀ cleanup added*
