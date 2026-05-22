@@ -263,15 +263,38 @@ Captured during v1 planning; deferred from v2.0 scope. Re-evaluate at v3 boundar
 | UX-05 | Phase 4 | Validated |
 | INFRA-05 | Phase 5 | Validated |
 | INFRA-06 | Phase 5 | Validated |
+| BUG-01 | Phase 6 | Pending |
+| BUG-02 | Phase 6 | Pending |
+| BUG-03 | Phase 6 | Pending |
+| BUG-04 | Phase 6 | Pending |
+| BUG-05 | Phase 6 | Pending |
+| RES-01 | Phase 7 | Pending |
+| RES-02 | Phase 7 | Pending |
+| RES-03 | Phase 7 | Pending |
+| CEXP-01 | Phase 8 | Pending |
+| CEXP-02 | Phase 8 | Pending |
+| CEXP-03 | Phase 8 | Pending |
+| CEXP-04 | Phase 8 | Pending |
+| CEXP-05 | Phase 8 | Pending |
+| DEPTH-01 | Phase 9 | Pending |
+| DEPTH-02 | Phase 9 | Pending |
+| DEPTH-03 | Phase 9 | Pending |
+| DEPTH-04 | Phase 9 | Pending |
+| DEPTH-05 | Phase 9 | Pending |
+| DEPTH-06 | Phase 9 | Pending |
+| DEPTH-07 | Phase 9 | Pending |
+| POLISH-01 | Phase 10 | Pending |
+| POLISH-02 | Phase 10 | Pending |
+| POLISH-03 | Phase 10 | Pending |
+| POLISH-04 | Phase 10 | Pending |
+| POLISH-05 | Phase 10 | Pending |
 
 **Coverage:**
 - v1.0 requirements: 63 total — all Validated (shipped 2026-04-13)
-- v2.0 requirements: 25 total (20 must-ship + 5 P2) — pending roadmap mapping
-- Unmapped: 0 (v1); 25 awaiting roadmapper for v2
-
-v2 traceability rows will be appended by the roadmapper.
+- v2.0 requirements: 25 total (20 must-ship + 5 P2) — all mapped to Phases 6–10, all Pending
+- Unmapped: 0
 
 ---
 *v1 requirements defined: 2026-04-11 — validated 2026-04-13*
 *v2 requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 — v2.0 milestone scoped*
+*Last updated: 2026-05-22 — v2.0 traceability appended; all 25 v2 requirements mapped*
