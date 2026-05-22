@@ -116,8 +116,8 @@ Phases 6, 7, 8, 9 ────────────────────�
   - [x] 06-01-PLAN.md — BUG-04: planning-file 0-byte protection (pre-commit hook + installer + .gitattributes + CI backstop + snapshot recovery + audit)
   - [x] 06-02-PLAN.md — BUG-02: H₁ persistence-diagram sqrt dot scaling + infinity top-strip + Vitest fixtures
   - [x] 06-03-PLAN.md — BUG-03: BookSlider metadata endpoint (GET /api/corpus/genres/{genre}/books) + corpus.yaml author/word_count + top_10_tfidf_words sidecar + Sidebar rewire
-  - [ ] 06-04-PLAN.md — BUG-01: H₂ + H₀ removal sweep (frontend + backend + EXPLAIN-01 copy + ROADMAP/REQUIREMENTS/PROJECT.md doc updates)
-  - [ ] 06-05-PLAN.md — BUG-05: cache_key + corpus_hash + w2v_model_sha256 + eager cache flush + SVM lineage guard + D-24 smoke test
+  - [x] 06-04-PLAN.md — BUG-01: H₂ + H₀ removal sweep (frontend + backend + EXPLAIN-01 copy + ROADMAP/REQUIREMENTS/PROJECT.md doc updates)
+  - [x] 06-05-PLAN.md — BUG-05: cache_key + corpus_hash + w2v_model_sha256 + eager cache flush + SVM lineage guard + D-24 smoke test
 
 **UI hint:** yes
 

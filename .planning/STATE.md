@@ -1,12 +1,30 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: — Shipped
+status: completed
+last_updated: "2026-05-22T17:52:02.158Z"
+last_activity: 2026-05-22
+progress:
+  total_phases: 6
+  completed_phases: 5
+  total_plans: 21
+  completed_plans: 20
+  percent: 95
+---
+
 # STATE
 
 ## Current Position
 
+Phase: 06 (v1-bug-fix-sweep) — EXECUTING
+Plan: 1 of 5
+
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
-- **Phase:** 6 — v1 Bug-Fix Sweep
-- **Plan:** Not started (awaiting `/gsd-plan-phase 6`)
-- **Status:** Context gathered (`06-CONTEXT.md`); ready for `/gsd-plan-phase 6`
-- **Last activity:** 2026-05-22 — Phase 6 discuss-phase complete. Key recast: BUG-01 changed from "ship H₂" to "remove H₂ entirely"; H₀ tab removal added as bonus cleanup. Milestone success criterion #1 + REQUIREMENTS BUG-01 + TOPO-02 wording need updating during planning.
+- **Phase:** 06
+- **Plan:** Not started
+- **Status:** Milestone complete
+- **Last activity:** 2026-05-22
 
 ## Milestone v2.0 — Phases
 
@@ -88,6 +106,7 @@ None. Phase 6 ready to plan via `/gsd-plan-phase 6`.
 **Next command:** `/gsd-plan-phase 6`
 
 **Reading order for the next session:**
+
 1. `.planning/phases/06-v1-bug-fix-sweep/06-CONTEXT.md` — locked decisions (read FIRST)
 2. `.planning/ROADMAP.md` — Phase 6 details (note: milestone success criterion #1 needs rewriting per CONTEXT)
 3. `.planning/research/SUMMARY.md` — overall v2 spine
