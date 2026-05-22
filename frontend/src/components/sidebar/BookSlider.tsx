@@ -2,14 +2,25 @@ import { useState, useEffect } from 'react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { useDebounce } from '@/hooks/useDebounce'
 
-// Minimal book metadata type for the slider label
-interface BookMeta {
-  id: string
+// Per CONTEXT.md D-13: BookSlider now takes the richer schema served by
+// GET /api/corpus/genres/{genre}/books. Only the fields the slider renders
+// are required; consumers may pass the full CorpusBookFull -- extra fields
+// are tolerated (TypeScript structural typing).
+export interface BookMeta {
+  /** Stable identifier (gutenberg_id when sourced from useCorpusBooks). */
+  id?: string
+  gutenberg_id?: string
   title: string
+  author?: string
+  word_count?: number
 }
 
 interface BookSliderProps {
   books?: BookMeta[]
+}
+
+function bookId(b: BookMeta): string {
+  return b.gutenberg_id ?? b.id ?? b.title
 }
 
 export function BookSlider({ books = [] }: BookSliderProps) {
@@ -21,7 +32,7 @@ export function BookSlider({ books = [] }: BookSliderProps) {
 
   useEffect(() => {
     if (books.length > 0 && books[debouncedIdx]) {
-      setSelectedBook(books[debouncedIdx].id)
+      setSelectedBook(bookId(books[debouncedIdx]))
     } else {
       setSelectedBook(null)
     }
@@ -34,7 +45,11 @@ export function BookSlider({ books = [] }: BookSliderProps) {
 
   if (!selectedGenre || books.length === 0) return null
 
-  const currentBook = books[localIdx]
+  // Guard against the slider index outrunning a shorter ``books`` array
+  // (can happen briefly when switching genres while the previous query is
+  // still being read).
+  const safeIdx = Math.min(localIdx, books.length - 1)
+  const currentBook = books[safeIdx]
 
   return (
     <div>
@@ -45,23 +60,51 @@ export function BookSlider({ books = [] }: BookSliderProps) {
         type="range"
         min={0}
         max={books.length - 1}
-        value={localIdx}
+        value={safeIdx}
         onChange={e => setLocalIdx(Number(e.target.value))}
         style={{ width: '100%', accentColor: '#6366F1' }}
       />
       {currentBook && (
-        <div
-          style={{
-            fontSize: 12,
-            color: '#9090A0',
-            marginTop: 4,
-            maxWidth: 200,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {currentBook.title}
+        <div style={{ marginTop: 6, maxWidth: 240 }}>
+          <div
+            style={{
+              fontSize: 12,
+              color: '#E5E5F0',
+              fontWeight: 500,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+            title={currentBook.title}
+          >
+            {currentBook.title}
+          </div>
+          {currentBook.author && (
+            <div
+              style={{
+                fontSize: 11,
+                color: '#9090A0',
+                marginTop: 2,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+              title={currentBook.author}
+            >
+              by {currentBook.author}
+            </div>
+          )}
+          {typeof currentBook.word_count === 'number' && currentBook.word_count > 0 && (
+            <div
+              style={{
+                fontSize: 11,
+                color: '#6B6B80',
+                marginTop: 2,
+              }}
+            >
+              {currentBook.word_count.toLocaleString()} words
+            </div>
+          )}
         </div>
       )}
     </div>

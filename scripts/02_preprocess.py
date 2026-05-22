@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Tokenize, normalize, filter stopwords, enforce min unique words."""
+"""Tokenize, normalize, filter stopwords, enforce min unique words.
+
+Also writes ``word_count`` (post-stopword-removal token count) back to
+``corpus/books.yaml`` for every successfully-processed book, so that the
+``GET /api/corpus/genres/{genre}/books`` endpoint (Plan 06-03 BUG-03) has
+deterministic, repeatable counts without recomputing at request time.
+"""
 
 import sys
 import re
@@ -19,6 +25,46 @@ from utils import load_params
 
 def tokenize(text):
     return re.findall(r"[a-z]+", text.lower())
+
+
+_WORD_COUNT_RE = re.compile(
+    r"(?P<head>-\s*\{[^}]*?gutenberg_id:\s*(?P<gid>\d+)[^}]*?)"
+    r"(?:,\s*word_count:\s*\d+)?"        # strip any existing word_count
+    r"(?P<tail>\s*\})"
+)
+
+
+def write_word_counts_to_yaml(yaml_path: Path, word_counts: dict[int, int]) -> int:
+    """Rewrite ``corpus/books.yaml`` inserting/updating ``word_count`` per book.
+
+    Operates on raw text (line-level) to preserve the flow-style formatting of
+    the existing file. Idempotent: re-running overwrites the prior value.
+
+    Args:
+        yaml_path: Path to ``corpus/books.yaml``.
+        word_counts: Map of ``gutenberg_id`` (int) -> ``word_count`` (int).
+
+    Returns:
+        Number of book entries updated.
+    """
+    text = yaml_path.read_text(encoding='utf-8')
+    updated = 0
+
+    def _replace(match: re.Match) -> str:
+        nonlocal updated
+        gid = int(match.group('gid'))
+        head = match.group('head').rstrip(', ').rstrip()
+        tail = match.group('tail')
+        if gid not in word_counts:
+            # No new count -- preserve the line as-is, including any prior word_count
+            return match.group(0)
+        updated += 1
+        return f"{head}, word_count: {word_counts[gid]}{tail}"
+
+    new_text = _WORD_COUNT_RE.sub(_replace, text)
+    if new_text != text:
+        yaml_path.write_text(new_text, encoding='utf-8')
+    return updated
 
 
 def main():
@@ -54,6 +100,7 @@ def main():
     total = len(raw_files)
     skipped = []
     genre_counts = defaultdict(int)
+    word_counts: dict[int, int] = {}
 
     bar = tqdm(raw_files, desc="Preprocessing", unit="book", dynamic_ncols=True)
     for raw_file in bar:
@@ -67,6 +114,11 @@ def main():
         text = raw_file.read_text(encoding='utf-8', errors='replace')
         tokens = tokenize(text)
         tokens = [t for t in tokens if t not in sw]
+
+        # Capture the post-stopword token count for the books.yaml write-back
+        # BEFORE the min_unique gate, so the BookSlider can still display "N words"
+        # for short books that are excluded from training (Plan 06-03 BUG-03).
+        word_counts[gid] = len(tokens)
 
         unique_count = len(set(tokens))
         if unique_count < min_unique:
@@ -97,6 +149,12 @@ def main():
     print(f"Per-genre: {dict(genre_counts)}")
     if skipped:
         print(f"Skipped: {skipped}")
+
+    # Write word_counts back to corpus/books.yaml so the GET /api/corpus/genres/{genre}/books
+    # endpoint can serve them without recomputing at request time (Plan 06-03 BUG-03).
+    if word_counts:
+        n_updated = write_word_counts_to_yaml(books_path, word_counts)
+        print(f"Wrote word_count for {n_updated}/{len(word_counts)} books to {books_path.name}")
 
     expected_per_genre = 10
     for genre, count in genre_counts.items():
