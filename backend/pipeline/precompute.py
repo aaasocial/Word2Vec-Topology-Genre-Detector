@@ -30,7 +30,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scripts'))
 from utils import load_params
 
 from backend.cache.store import cache_key, cache_put
-from backend.cache.lineage import corpus_hash as _corpus_hash, w2v_model_sha256 as _w2v_model_sha256
+from backend.cache.lineage import (
+    corpus_hash as _corpus_hash,
+    w2v_model_sha256 as _w2v_model_sha256,
+    write_svm_lineage,
+)
 from backend.pipeline.features import (
     diagram_to_birth_persistence,
     build_persistence_imager,
@@ -221,6 +225,20 @@ def precompute_all(window: int = None):
     svm_path = models_dir / 'svm_pipeline.joblib'
     joblib.dump(svm_pipeline, str(svm_path))
     log.info(f'Saved svm_pipeline.joblib ({X.shape[0]} samples, {len(genre_names)} classes)')
+
+    # Plan 06-05 / BUG-05 / D-25: pin SVM training-data lineage.
+    # The sidecar lets the API server refuse to load an SVM whose lineage
+    # doesn't match the currently-loaded W2V model (defense in depth on top
+    # of the cache_key fix). PITFALLS.md §1.
+    sidecar = write_svm_lineage(
+        svm_path,
+        window=window,
+        k_clusters=k,
+        alpha=alpha,
+        corpus_digest=lineage_ch,
+        w2v_digest=lineage_wh,
+    )
+    log.info(f'Saved SVM lineage sidecar: {sidecar.name}')
 
     log.info('Precomputation complete.')
 
