@@ -1,0 +1,1369 @@
+{
+  "35": {
+    "top_10_tfidf_words": [
+      "weena",
+      "morlocks",
+      "filby",
+      "psychologist",
+      "eloi",
+      "underworld",
+      "camphor",
+      "morlock",
+      "upperworld",
+      "sphinx"
+    ]
+  },
+  "36": {
+    "top_10_tfidf_words": [
+      "martians",
+      "martian",
+      "woking",
+      "ulla",
+      "weybridge",
+      "horsell",
+      "ogilvy",
+      "artilleryman",
+      "leatherhead",
+      "chertsey"
+    ]
+  },
+  "60": {
+    "top_10_tfidf_words": [
+      "chauvelin",
+      "blakeney",
+      "pimpernel",
+      "jellyband",
+      "citoyen",
+      "suzanne",
+      "marguerite",
+      "desgas",
+      "ffoulkes",
+      "tournay"
+    ]
+  },
+  "62": {
+    "top_10_tfidf_words": [
+      "dejah",
+      "thoris",
+      "helium",
+      "tarkas",
+      "barsoom",
+      "sola",
+      "martian",
+      "hajus",
+      "jeddak",
+      "zodanga"
+    ]
+  },
+  "76": {
+    "top_10_tfidf_words": [
+      "huck",
+      "gwyne",
+      "pap",
+      "doan",
+      "wuz",
+      "dey",
+      "hain",
+      "jis",
+      "sawyer",
+      "jim"
+    ]
+  },
+  "78": {
+    "top_10_tfidf_words": [
+      "tarzan",
+      "arnot",
+      "philander",
+      "clayton",
+      "kerchak",
+      "canler",
+      "kala",
+      "sabor",
+      "greystoke",
+      "terkoz"
+    ]
+  },
+  "82": {
+    "top_10_tfidf_words": [
+      "templar",
+      "cedric",
+      "gurth",
+      "wamba",
+      "rowena",
+      "athelstane",
+      "bracy",
+      "uf",
+      "malvoisin",
+      "guilbert"
+    ]
+  },
+  "83": {
+    "top_10_tfidf_words": [
+      "barbicane",
+      "nicholl",
+      "ardan",
+      "maston",
+      "columbiad",
+      "michel",
+      "selenites",
+      "blomsberry",
+      "tampa",
+      "projectile"
+    ]
+  },
+  "84": {
+    "top_10_tfidf_words": [
+      "clerval",
+      "justine",
+      "safie",
+      "felix",
+      "ingolstadt",
+      "frankenstein",
+      "kirwin",
+      "krempe",
+      "waldman",
+      "geneva"
+    ]
+  },
+  "95": {
+    "top_10_tfidf_words": [
+      "sapt",
+      "strelsau",
+      "fritz",
+      "zenda",
+      "flavia",
+      "rudolf",
+      "rupert",
+      "ruritania",
+      "tarlenheim",
+      "johann"
+    ]
+  },
+  "98": {
+    "top_10_tfidf_words": [
+      "defarge",
+      "manette",
+      "pross",
+      "darnay",
+      "lorry",
+      "lucie",
+      "cruncher",
+      "stryver",
+      "tellson",
+      "carton"
+    ]
+  },
+  "103": {
+    "top_10_tfidf_words": [
+      "fogg",
+      "passepartout",
+      "phileas",
+      "aouda",
+      "hong",
+      "yokohama",
+      "kong",
+      "carnatic",
+      "mongolia",
+      "rangoon"
+    ]
+  },
+  "105": {
+    "top_10_tfidf_words": [
+      "wentworth",
+      "elliot",
+      "uppercross",
+      "harville",
+      "benwick",
+      "musgrove",
+      "kellynch",
+      "lyme",
+      "musgroves",
+      "hayter"
+    ]
+  },
+  "120": {
+    "top_10_tfidf_words": [
+      "livesey",
+      "trelawney",
+      "hispaniola",
+      "coracle",
+      "gunn",
+      "smollett",
+      "redruth",
+      "benbow",
+      "stockade",
+      "hawkins"
+    ]
+  },
+  "121": {
+    "top_10_tfidf_words": [
+      "tilney",
+      "thorpe",
+      "morland",
+      "fullerton",
+      "northanger",
+      "eleanor",
+      "allen",
+      "woodston",
+      "tilneys",
+      "catherine"
+    ]
+  },
+  "135": {
+    "top_10_tfidf_words": [
+      "cosette",
+      "valjean",
+      "nardier",
+      "javert",
+      "gavroche",
+      "fauchelevent",
+      "marius",
+      "enjolras",
+      "gillenormand",
+      "fantine"
+    ]
+  },
+  "139": {
+    "top_10_tfidf_words": [
+      "summerlee",
+      "challenger",
+      "roxton",
+      "malone",
+      "fellah",
+      "zambo",
+      "waldron",
+      "mcardle",
+      "illingworth",
+      "gomez"
+    ]
+  },
+  "141": {
+    "top_10_tfidf_words": [
+      "crawford",
+      "norris",
+      "rushworth",
+      "yates",
+      "sotherton",
+      "fanny",
+      "mansfield",
+      "bertram",
+      "edmund",
+      "bertrams"
+    ]
+  },
+  "144": {
+    "top_10_tfidf_words": [
+      "hirst",
+      "hewet",
+      "terence",
+      "ridley",
+      "thornbury",
+      "vinrace",
+      "dalloway",
+      "perrott",
+      "evelyn",
+      "ambrose"
+    ]
+  },
+  "145": {
+    "top_10_tfidf_words": [
+      "lydgate",
+      "casaubon",
+      "bulstrode",
+      "brooke",
+      "rosamond",
+      "ladislaw",
+      "vincy",
+      "farebrother",
+      "dorothea",
+      "celia"
+    ]
+  },
+  "155": {
+    "top_10_tfidf_words": [
+      "betteredge",
+      "verinder",
+      "rosanna",
+      "bruff",
+      "ablewhite",
+      "luker",
+      "blake",
+      "moonstone",
+      "godfrey",
+      "frizinghall"
+    ]
+  },
+  "158": {
+    "top_10_tfidf_words": [
+      "knightley",
+      "elton",
+      "weston",
+      "woodhouse",
+      "hartfield",
+      "randalls",
+      "emma",
+      "fairfax",
+      "harriet",
+      "highbury"
+    ]
+  },
+  "159": {
+    "top_10_tfidf_words": [
+      "montgomery",
+      "moreau",
+      "prendick",
+      "puma",
+      "dingey",
+      "sayer",
+      "ling",
+      "staghound",
+      "helmar",
+      "kanakas"
+    ]
+  },
+  "161": {
+    "top_10_tfidf_words": [
+      "marianne",
+      "elinor",
+      "dashwood",
+      "brandon",
+      "ferrars",
+      "norland",
+      "jennings",
+      "willoughby",
+      "steele",
+      "dashwoods"
+    ]
+  },
+  "164": {
+    "top_10_tfidf_words": [
+      "conseil",
+      "nemo",
+      "nautilus",
+      "aronnax",
+      "ned",
+      "farragut",
+      "vanikoro",
+      "harpooner",
+      "harpoon",
+      "poulps"
+    ]
+  },
+  "169": {
+    "top_10_tfidf_words": [
+      "utterbol",
+      "upmeads",
+      "ursula",
+      "ralph",
+      "goldburg",
+      "redhead",
+      "swevenham",
+      "higham",
+      "burg",
+      "friths"
+    ]
+  },
+  "174": {
+    "top_10_tfidf_words": [
+      "dorian",
+      "hallward",
+      "basil",
+      "narborough",
+      "sibyl",
+      "alan",
+      "vane",
+      "adrian",
+      "campbell",
+      "singleton"
+    ]
+  },
+  "175": {
+    "top_10_tfidf_words": [
+      "christine",
+      "moncharmin",
+      "daae",
+      "chagny",
+      "giry",
+      "erik",
+      "raoul",
+      "carlotta",
+      "poligny",
+      "daroga"
+    ]
+  },
+  "204": {
+    "top_10_tfidf_words": [
+      "valentin",
+      "flambeau",
+      "quinton",
+      "saradine",
+      "brayne",
+      "ivan",
+      "angus",
+      "bohun",
+      "glengyle",
+      "olivier"
+    ]
+  },
+  "215": {
+    "top_10_tfidf_words": [
+      "spitz",
+      "ois",
+      "leks",
+      "thornton",
+      "mercedes",
+      "perrault",
+      "sled",
+      "hal",
+      "dave",
+      "huskies"
+    ]
+  },
+  "219": {
+    "top_10_tfidf_words": [
+      "kurtz",
+      "marlow",
+      "rivets",
+      "snag",
+      "hippo",
+      "steamboat",
+      "pilgrims",
+      "fresleven",
+      "towson",
+      "manager"
+    ]
+  },
+  "244": {
+    "top_10_tfidf_words": [
+      "drebber",
+      "ferrier",
+      "lestrade",
+      "stangerson",
+      "gregson",
+      "holmes",
+      "sherlock",
+      "brixton",
+      "jefferson",
+      "stamford"
+    ]
+  },
+  "284": {
+    "top_10_tfidf_words": [
+      "trenor",
+      "selden",
+      "rosedale",
+      "peniston",
+      "gerty",
+      "dorset",
+      "bart",
+      "farish",
+      "bellomont",
+      "stepney"
+    ]
+  },
+  "345": {
+    "top_10_tfidf_words": [
+      "helsing",
+      "mina",
+      "harker",
+      "godalming",
+      "seward",
+      "renfield",
+      "westenra",
+      "dracula",
+      "jonathan",
+      "whitby"
+    ]
+  },
+  "389": {
+    "top_10_tfidf_words": [
+      "villiers",
+      "clarke",
+      "meyrick",
+      "crashaw",
+      "austin",
+      "vaughan",
+      "raymond",
+      "herbert",
+      "argentine",
+      "ashley"
+    ]
+  },
+  "421": {
+    "top_10_tfidf_words": [
+      "alan",
+      "riach",
+      "hoseason",
+      "rankeillor",
+      "breck",
+      "appin",
+      "nae",
+      "ebenezer",
+      "balfour",
+      "shuan"
+    ]
+  },
+  "541": {
+    "top_10_tfidf_words": [
+      "olenska",
+      "newland",
+      "mingott",
+      "luyden",
+      "welland",
+      "manson",
+      "lefferts",
+      "letterblair",
+      "janey",
+      "sillerton"
+    ]
+  },
+  "543": {
+    "top_10_tfidf_words": [
+      "kennicott",
+      "gopher",
+      "bogart",
+      "haydock",
+      "juanita",
+      "carol",
+      "pollock",
+      "bea",
+      "sherwin",
+      "raymie"
+    ]
+  },
+  "601": {
+    "top_10_tfidf_words": [
+      "ambrosio",
+      "elvira",
+      "antonia",
+      "jacintha",
+      "domina",
+      "matilda",
+      "leonella",
+      "cisternas",
+      "lindenberg",
+      "prioress"
+    ]
+  },
+  "696": {
+    "top_10_tfidf_words": [
+      "manfred",
+      "hippolita",
+      "matilda",
+      "alfonso",
+      "frederic",
+      "theodore",
+      "jerome",
+      "isabella",
+      "bianca",
+      "otranto"
+    ]
+  },
+  "711": {
+    "top_10_tfidf_words": [
+      "umslopogaas",
+      "nyleptha",
+      "sorais",
+      "masai",
+      "vendi",
+      "agon",
+      "flossie",
+      "vendis",
+      "nasta",
+      "macumazahn"
+    ]
+  },
+  "768": {
+    "top_10_tfidf_words": [
+      "heathcliff",
+      "hareton",
+      "linton",
+      "earnshaw",
+      "cathy",
+      "hindley",
+      "nelly",
+      "wuthering",
+      "gimmerton",
+      "zillah"
+    ]
+  },
+  "792": {
+    "top_10_tfidf_words": [
+      "pleyel",
+      "carwin",
+      "wieland",
+      "mettingen",
+      "surprize",
+      "catharine",
+      "maxwell",
+      "hallet",
+      "phrenzy",
+      "baynton"
+    ]
+  },
+  "863": {
+    "top_10_tfidf_words": [
+      "inglethorp",
+      "poirot",
+      "cavendish",
+      "bauerstein",
+      "cynthia",
+      "dorcas",
+      "howard",
+      "japp",
+      "strychnine",
+      "lawrence"
+    ]
+  },
+  "910": {
+    "top_10_tfidf_words": [
+      "fang",
+      "weedon",
+      "kiche",
+      "musher",
+      "matt",
+      "sled",
+      "ptarmigan",
+      "cherokee",
+      "tepee",
+      "collie"
+    ]
+  },
+  "1012": {
+    "top_10_tfidf_words": [
+      "pi",
+      "poi",
+      "tanto",
+      "quella",
+      "altro",
+      "disse",
+      "questo",
+      "io",
+      "nel",
+      "cos"
+    ]
+  },
+  "1184": {
+    "top_10_tfidf_words": [
+      "danglars",
+      "dant",
+      "cristo",
+      "villefort",
+      "caderousse",
+      "morrel",
+      "morcerf",
+      "valentine",
+      "noirtier",
+      "maximilian"
+    ]
+  },
+  "1257": {
+    "top_10_tfidf_words": [
+      "artagnan",
+      "athos",
+      "porthos",
+      "aramis",
+      "bonacieux",
+      "milady",
+      "felton",
+      "planchet",
+      "grimaud",
+      "coquenard"
+    ]
+  },
+  "1259": {
+    "top_10_tfidf_words": [
+      "artagnan",
+      "athos",
+      "porthos",
+      "aramis",
+      "mazarin",
+      "grimaud",
+      "ramee",
+      "planchet",
+      "raoul",
+      "mordaunt"
+    ]
+  },
+  "1260": {
+    "top_10_tfidf_words": [
+      "rochester",
+      "thornfield",
+      "eyre",
+      "brocklehurst",
+      "lowood",
+      "gateshead",
+      "ingram",
+      "fairfax",
+      "bessie",
+      "millcote"
+    ]
+  },
+  "1268": {
+    "top_10_tfidf_words": [
+      "pencroft",
+      "spilett",
+      "ayrton",
+      "harding",
+      "neb",
+      "jup",
+      "bonadventure",
+      "corral",
+      "gideon",
+      "herbert"
+    ]
+  },
+  "1342": {
+    "top_10_tfidf_words": [
+      "darcy",
+      "bennet",
+      "bingley",
+      "wickham",
+      "lydia",
+      "longbourn",
+      "netherfield",
+      "meryton",
+      "pemberley",
+      "rosings"
+    ]
+  },
+  "1389": {
+    "top_10_tfidf_words": [
+      "gobseck",
+      "restaud",
+      "derville",
+      "grandlieu",
+      "vicomtesse",
+      "trailles",
+      "goriot",
+      "camille",
+      "maxime",
+      "countess"
+    ]
+  },
+  "1528": {
+    "top_10_tfidf_words": [
+      "pandarus",
+      "troilus",
+      "thersites",
+      "aeneas",
+      "cressida",
+      "patroclus",
+      "agamemnon",
+      "priam",
+      "diomedes",
+      "cressid"
+    ]
+  },
+  "1685": {
+    "top_10_tfidf_words": [
+      "rouletabille",
+      "darzac",
+      "larsan",
+      "stangerson",
+      "ric",
+      "glandier",
+      "marquet",
+      "ballmeyer",
+      "epinay",
+      "concierges"
+    ]
+  },
+  "1965": {
+    "top_10_tfidf_words": [
+      "wolverstone",
+      "rivarol",
+      "levasseur",
+      "tortuga",
+      "arabella",
+      "hagthorpe",
+      "cahusac",
+      "ogeron",
+      "barbados",
+      "cussy"
+    ]
+  },
+  "2095": {
+    "top_10_tfidf_words": [
+      "clotelle",
+      "jerome",
+      "linwood",
+      "quadroon",
+      "devenant",
+      "gertrude",
+      "isabella",
+      "tony",
+      "natchez",
+      "georgiana"
+    ]
+  },
+  "2145": {
+    "top_10_tfidf_words": [
+      "messala",
+      "simonides",
+      "hur",
+      "ilderim",
+      "malluch",
+      "arrius",
+      "tirzah",
+      "amrah",
+      "balthasar",
+      "nazarene"
+    ]
+  },
+  "2166": {
+    "top_10_tfidf_words": [
+      "twala",
+      "infadoos",
+      "ignosi",
+      "gagool",
+      "foulata",
+      "umbopa",
+      "scragga",
+      "quatermain",
+      "kukuanas",
+      "incubu"
+    ]
+  },
+  "2276": {
+    "top_10_tfidf_words": [
+      "dalcastle",
+      "wringhim",
+      "calvert",
+      "colwan",
+      "logan",
+      "laird",
+      "hae",
+      "auchtermuchty",
+      "drummond",
+      "gil"
+    ]
+  },
+  "2565": {
+    "top_10_tfidf_words": [
+      "hallblithe",
+      "erne",
+      "ravagers",
+      "carle",
+      "meseemeth",
+      "therewith",
+      "spearman",
+      "puny",
+      "hostage",
+      "aforetime"
+    ]
+  },
+  "2600": {
+    "top_10_tfidf_words": [
+      "rost",
+      "kut",
+      "zov",
+      "nya",
+      "sov",
+      "lokhov",
+      "bor",
+      "nski",
+      "tya",
+      "bolk"
+    ]
+  },
+  "2701": {
+    "top_10_tfidf_words": [
+      "stubb",
+      "queequeg",
+      "starbuck",
+      "sperm",
+      "ahab",
+      "pequod",
+      "nantucket",
+      "harpooneer",
+      "bildad",
+      "peleg"
+    ]
+  },
+  "2852": {
+    "top_10_tfidf_words": [
+      "baskerville",
+      "stapleton",
+      "barrymore",
+      "holmes",
+      "grimpen",
+      "mortimer",
+      "tracey",
+      "merripit",
+      "baskervilles",
+      "stapletons"
+    ]
+  },
+  "2885": {
+    "top_10_tfidf_words": [
+      "thiodolf",
+      "wolfings",
+      "markmen",
+      "arinbiorn",
+      "wolfing",
+      "kindreds",
+      "goths",
+      "otter",
+      "geirbald",
+      "mirkwood"
+    ]
+  },
+  "3055": {
+    "top_10_tfidf_words": [
+      "langton",
+      "walter",
+      "carle",
+      "therewith",
+      "belike",
+      "wellnigh",
+      "spake",
+      "sithence",
+      "yea",
+      "shard"
+    ]
+  },
+  "3155": {
+    "top_10_tfidf_words": [
+      "ayesha",
+      "kallikrates",
+      "billali",
+      "ustane",
+      "leo",
+      "amahagger",
+      "vincey",
+      "mahomed",
+      "sherd",
+      "amenartas"
+    ]
+  },
+  "3268": {
+    "top_10_tfidf_words": [
+      "montoni",
+      "valancourt",
+      "ludovico",
+      "annette",
+      "aubert",
+      "morano",
+      "cheron",
+      "doroth",
+      "amselle",
+      "emily"
+    ]
+  },
+  "3285": {
+    "top_10_tfidf_words": [
+      "deerslayer",
+      "hutter",
+      "chingachgook",
+      "hurons",
+      "hetty",
+      "sarpent",
+      "delaware",
+      "judith",
+      "ag",
+      "delawares"
+    ]
+  },
+  "3752": {
+    "top_10_tfidf_words": [
+      "tripolis",
+      "aspers",
+      "sonnings",
+      "ullua",
+      "viceroy",
+      "galleys",
+      "pezoes",
+      "hakluyt",
+      "signior",
+      "amounteth"
+    ]
+  },
+  "3808": {
+    "top_10_tfidf_words": [
+      "robur",
+      "aeronef",
+      "frycollin",
+      "phil",
+      "albatross",
+      "weldon",
+      "evans",
+      "suspensory",
+      "aerostat",
+      "balloonists"
+    ]
+  },
+  "4274": {
+    "top_10_tfidf_words": [
+      "molly",
+      "hamley",
+      "cynthia",
+      "cumnor",
+      "hollingford",
+      "osborne",
+      "gibson",
+      "kirkpatrick",
+      "goodenough",
+      "preston"
+    ]
+  },
+  "4276": {
+    "top_10_tfidf_words": [
+      "higgins",
+      "thornton",
+      "helstone",
+      "lennox",
+      "dixon",
+      "yo",
+      "bessy",
+      "margaret",
+      "leonards",
+      "hale"
+    ]
+  },
+  "5765": {
+    "top_10_tfidf_words": [
+      "inflected",
+      "hrs",
+      "drosera",
+      "glands",
+      "protoplasm",
+      "mg",
+      "utricularia",
+      "pedicels",
+      "secretion",
+      "aggregated"
+    ]
+  },
+  "5998": {
+    "top_10_tfidf_words": [
+      "fergus",
+      "waverley",
+      "ivor",
+      "bradwardine",
+      "bailie",
+      "everard",
+      "donald",
+      "glennaquoich",
+      "evan",
+      "veolan"
+    ]
+  },
+  "6996": {
+    "top_10_tfidf_words": [
+      "ihr",
+      "auf",
+      "ich",
+      "euch",
+      "doch",
+      "rterin",
+      "ihn",
+      "dich",
+      "capulet",
+      "sie"
+    ]
+  },
+  "7477": {
+    "top_10_tfidf_words": [
+      "chu",
+      "nuth",
+      "sheemish",
+      "pombo",
+      "hlo",
+      "sladden",
+      "thangobrind",
+      "bu",
+      "gibbelins",
+      "tonker"
+    ]
+  },
+  "8395": {
+    "top_10_tfidf_words": []
+  },
+  "8486": {
+    "top_10_tfidf_words": [
+      "parkins",
+      "dennistoun",
+      "wraxall",
+      "jensen",
+      "abney",
+      "steinfeld",
+      "alberic",
+      "crome",
+      "viborg",
+      "somerton"
+    ]
+  },
+  "10007": {
+    "top_10_tfidf_words": [
+      "carmilla",
+      "karnstein",
+      "schloss",
+      "millarca",
+      "mircalla",
+      "perrodon",
+      "lafontaine",
+      "spielsdorf",
+      "gratz",
+      "karnsteins"
+    ]
+  },
+  "10148": {
+    "top_10_tfidf_words": [
+      "nottingham",
+      "stutely",
+      "sherwood",
+      "gisbourne",
+      "prythee",
+      "robin",
+      "nottinghamshire",
+      "yeomen",
+      "tinker",
+      "partington"
+    ]
+  },
+  "10897": {
+    "top_10_tfidf_words": [
+      "fago",
+      "hank",
+      "cathcart",
+      "simpson",
+      "wendigo",
+      "punk",
+      "moose",
+      "skeered",
+      "portage",
+      "nuthin"
+    ]
+  },
+  "11323": {
+    "top_10_tfidf_words": [
+      "tyrrel",
+      "falkland",
+      "gines",
+      "grimes",
+      "jakeman",
+      "caleb",
+      "melville",
+      "hawkins",
+      "spurrel",
+      "marney"
+    ]
+  },
+  "14833": {
+    "top_10_tfidf_words": [
+      "varney",
+      "bannerworth",
+      "marchdale",
+      "vampyre",
+      "chillingworth",
+      "vampyres",
+      "pringle",
+      "bannerworths",
+      "anderbury",
+      "marmaduke"
+    ]
+  },
+  "18857": {
+    "top_10_tfidf_words": [
+      "hardwigg",
+      "saknussemm",
+      "hans",
+      "sneffels",
+      "gretchen",
+      "reykjavik",
+      "icelandic",
+      "arne",
+      "fridriksson",
+      "icelander"
+    ]
+  },
+  "19572": {
+    "top_10_tfidf_words": []
+  },
+  "20381": {
+    "top_10_tfidf_words": [
+      "allison",
+      "curzon",
+      "lessing",
+      "rudham",
+      "kitty",
+      "macdonald",
+      "dixon",
+      "webster",
+      "burney",
+      "rector"
+    ]
+  },
+  "25344": {
+    "top_10_tfidf_words": [
+      "hester",
+      "dimmesdale",
+      "prynne",
+      "chillingworth",
+      "bellingham",
+      "hibbins",
+      "pue",
+      "roger",
+      "salem",
+      "surveyor"
+    ]
+  },
+  "50133": {
+    "top_10_tfidf_words": [
+      "whateley",
+      "armitage",
+      "wilbur",
+      "dunwich",
+      "whippoorwills",
+      "whateleys",
+      "frye",
+      "corey",
+      "rud",
+      "aout"
+    ]
+  },
+  "58820": {
+    "top_10_tfidf_words": [
+      "thipps",
+      "bunter",
+      "milligan",
+      "crimplesham",
+      "sugg",
+      "wimsey",
+      "freke",
+      "cummings",
+      "reuben",
+      "levy"
+    ]
+  },
+  "64317": {
+    "top_10_tfidf_words": [
+      "gatsby",
+      "wolfshiem",
+      "michaelis",
+      "jordan",
+      "mckee",
+      "daisy",
+      "buchanan",
+      "cody",
+      "gatz",
+      "wilson"
+    ]
+  },
+  "65238": {
+    "top_10_tfidf_words": [
+      "caterham",
+      "lomax",
+      "cade",
+      "isaacstein",
+      "mcgrath",
+      "herzoslovakia",
+      "lemoine",
+      "tredwell",
+      "giuseppe",
+      "stylptitch"
+    ]
+  },
+  "67138": {
+    "top_10_tfidf_words": [
+      "brett",
+      "cohn",
+      "romero",
+      "mike",
+      "jake",
+      "montoya",
+      "fiesta",
+      "belmonte",
+      "braddocks",
+      "edna"
+    ]
+  },
+  "68283": {
+    "top_10_tfidf_words": []
+  },
+  "69087": {
+    "top_10_tfidf_words": [
+      "ackroyd",
+      "poirot",
+      "paton",
+      "fernly",
+      "sheppard",
+      "raglan",
+      "ganett",
+      "caroline",
+      "ursula",
+      "ferrars"
+    ]
+  },
+  "70008": {
+    "top_10_tfidf_words": [
+      "climpson",
+      "whittaker",
+      "wimsey",
+      "murbles",
+      "findlater",
+      "forrest",
+      "leahampton",
+      "parker",
+      "trigg",
+      "gotobed"
+    ]
+  },
+  "70652": {
+    "top_10_tfidf_words": [
+      "danforth",
+      "pabodie",
+      "gedney",
+      "shoggoths",
+      "roplane",
+      "foothills",
+      "mcmurdo",
+      "antarctic",
+      "tekeli",
+      "arkham"
+    ]
+  },
+  "71865": {
+    "top_10_tfidf_words": [
+      "clarissa",
+      "kilman",
+      "dalloway",
+      "bruton",
+      "rezia",
+      "walsh",
+      "septimus",
+      "whitbread",
+      "filmer",
+      "bourton"
+    ]
+  },
+  "73181": {
+    "top_10_tfidf_words": [
+      "innsmouth",
+      "obed",
+      "aout",
+      "zadok",
+      "arkham",
+      "heh",
+      "taown",
+      "daown",
+      "abaout",
+      "rowley"
+    ]
+  },
+  "75201": {
+    "top_10_tfidf_words": [
+      "rinaldi",
+      "piani",
+      "tenente",
+      "bonello",
+      "aymo",
+      "barkley",
+      "ferguson",
+      "montreux",
+      "passini",
+      "campen"
+    ]
+  }
+}
