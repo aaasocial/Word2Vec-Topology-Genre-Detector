@@ -23,6 +23,14 @@ if TYPE_CHECKING:
 _REPO_ROOT: Path = Path(__file__).resolve().parents[2]
 
 
+# Memoization for request-time lineage lookups: hashing a 70 MB Word2Vec model
+# costs ~250 ms on a warm SSD, which is more than we want on a hot endpoint
+# like ``GET /api/corpus/books/{id}/results``. The cache is keyed on
+# (path, mtime, size) so any operator-visible change to a file invalidates it
+# without us having to subscribe to a filesystem watcher.
+_HASH_CACHE: dict[tuple[str, float, int], str] = {}
+
+
 # ---------------------------------------------------------------------------
 # Hashing primitives
 # ---------------------------------------------------------------------------
@@ -32,12 +40,25 @@ def file_sha256(path: Path) -> str:
 
     Streaming is required because Word2Vec model files routinely cross 60 MB.
     Loading them whole would balloon RSS during request-time lineage checks.
+
+    Memoized on (path, mtime_ns, size) so hot endpoints don't pay the streaming
+    cost on every request. Any operator-visible change to the file (rebuild,
+    `touch`, content edit) invalidates the cache entry naturally.
     """
+    path = Path(path)
+    stat = path.stat()
+    cache_key = (str(path.resolve()), stat.st_mtime_ns, stat.st_size)
+    cached = _HASH_CACHE.get(cache_key)
+    if cached is not None:
+        return cached
+
     h = hashlib.sha256()
     with open(path, 'rb') as f:
         for chunk in iter(lambda: f.read(65536), b''):
             h.update(chunk)
-    return h.hexdigest()
+    digest = h.hexdigest()
+    _HASH_CACHE[cache_key] = digest
+    return digest
 
 
 # ---------------------------------------------------------------------------

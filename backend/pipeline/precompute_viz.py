@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scripts'))
 from utils import load_params
 
 from backend.cache.store import cache_key, cache_put, cache_get, cache_exists
+from backend.cache.lineage import corpus_hash as _corpus_hash, w2v_model_sha256 as _w2v_model_sha256
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 log = logging.getLogger(__name__)
@@ -132,6 +133,11 @@ def _load_tfidf_by_genre(books_data: dict, features_dir: Path, window: int
     Returns: {genre: {word: avg_tfidf_weight}}
     Also caches individual book TF-IDF maps.
     """
+    # Plan 06-05 / BUG-05: lineage feeds every cache_key() so a corpus change
+    # or W2V retrain invalidates these entries.
+    lineage_ch = _corpus_hash()
+    lineage_wh = _w2v_model_sha256(window)
+
     genre_word_weights: dict[str, dict[str, list]] = {}
 
     for genre, book_list in books_data['genres'].items():
@@ -149,7 +155,12 @@ def _load_tfidf_by_genre(books_data: dict, features_dir: Path, window: int
             weights = np.load(str(weights_path), allow_pickle=False)
             book_tfidf = {w: float(v) for w, v in zip(words, weights)}
             # Cache per-book TF-IDF
-            bk = cache_key('tfidf_book', {'gutenberg_id': gid, 'window': window})
+            bk = cache_key(
+                'tfidf_book',
+                {'gutenberg_id': gid, 'window': window},
+                corpus_hash=lineage_ch,
+                w2v_model_sha256=lineage_wh,
+            )
             if not cache_exists(bk):
                 cache_put(bk, book_tfidf)
             # Accumulate for genre aggregate
@@ -160,7 +171,12 @@ def _load_tfidf_by_genre(books_data: dict, features_dir: Path, window: int
     genre_tfidf: dict[str, dict[str, float]] = {}
     for genre, word_lists in genre_word_weights.items():
         genre_tfidf[genre] = {w: float(np.mean(vals)) for w, vals in word_lists.items()}
-        gk = cache_key('tfidf_genre', {'genre': genre, 'window': window})
+        gk = cache_key(
+            'tfidf_genre',
+            {'genre': genre, 'window': window},
+            corpus_hash=lineage_ch,
+            w2v_model_sha256=lineage_wh,
+        )
         if not cache_exists(gk):
             cache_put(gk, genre_tfidf[genre])
         log.info(f'  Cached TF-IDF for genre: {genre} ({len(genre_tfidf[genre])} words)')
@@ -195,6 +211,11 @@ def precompute_viz(window: int = None, force: bool = False) -> None:
     w2v_model = Word2Vec.load(str(model_path))
     words, vectors = _load_word_vectors(w2v_model)
 
+    # Plan 06-05 / BUG-05: compute lineage once for this run.
+    lineage_ch = _corpus_hash()
+    lineage_wh = _w2v_model_sha256(window)
+    log.info(f'  lineage: corpus_hash={lineage_ch[:12]}... w2v_model_sha256={lineage_wh[:12]}...')
+
     # Load corpus metadata
     corpus_path = project_root / 'corpus' / 'books.yaml'
     with open(corpus_path) as f:
@@ -223,7 +244,12 @@ def precompute_viz(window: int = None, force: bool = False) -> None:
         global_tfidf[word] = max_w
 
     # Pre-compute nearest neighbors (done once, shared across projections)
-    neighbors_key = cache_key('viz_neighbors', {'window': window})
+    neighbors_key = cache_key(
+        'viz_neighbors',
+        {'window': window},
+        corpus_hash=lineage_ch,
+        w2v_model_sha256=lineage_wh,
+    )
     if not force and cache_exists(neighbors_key):
         log.info('Loading cached neighbors...')
         neighbors_data = cache_get(neighbors_key)
@@ -236,7 +262,12 @@ def precompute_viz(window: int = None, force: bool = False) -> None:
 
     # Compute and cache each projection
     for method in PROJECTIONS:
-        proj_key = cache_key('scatter', {'projection': method, 'window': window})
+        proj_key = cache_key(
+            'scatter',
+            {'projection': method, 'window': window},
+            corpus_hash=lineage_ch,
+            w2v_model_sha256=lineage_wh,
+        )
         if not force and cache_exists(proj_key):
             log.info(f'  Projection {method}: already cached, skipping')
             continue
@@ -273,17 +304,32 @@ def precompute_viz(window: int = None, force: bool = False) -> None:
 
 def get_cached_scatter(projection: str, window: int) -> dict | None:
     """Retrieve pre-computed scatter data for a projection. Returns None if not cached."""
-    key = cache_key('scatter', {'projection': projection, 'window': window})
+    key = cache_key(
+        'scatter',
+        {'projection': projection, 'window': window},
+        corpus_hash=_corpus_hash(),
+        w2v_model_sha256=_w2v_model_sha256(window),
+    )
     return cache_get(key)
 
 
 def get_cached_tfidf_genre(genre: str, window: int) -> dict | None:
-    key = cache_key('tfidf_genre', {'genre': genre, 'window': window})
+    key = cache_key(
+        'tfidf_genre',
+        {'genre': genre, 'window': window},
+        corpus_hash=_corpus_hash(),
+        w2v_model_sha256=_w2v_model_sha256(window),
+    )
     return cache_get(key)
 
 
 def get_cached_tfidf_book(gutenberg_id: str, window: int) -> dict | None:
-    key = cache_key('tfidf_book', {'gutenberg_id': gutenberg_id, 'window': window})
+    key = cache_key(
+        'tfidf_book',
+        {'gutenberg_id': gutenberg_id, 'window': window},
+        corpus_hash=_corpus_hash(),
+        w2v_model_sha256=_w2v_model_sha256(window),
+    )
     return cache_get(key)
 
 
@@ -320,6 +366,10 @@ def precompute_persistence_images(window: int = None, force: bool = False) -> No
 
     grid_resolution = params.get('features', {}).get('grid_resolution', 20)
 
+    # Plan 06-05 / BUG-05: lineage for cache_key invalidation.
+    lineage_ch = _corpus_hash()
+    lineage_wh = _w2v_model_sha256(window)
+
     from backend.pipeline.features import diagram_to_birth_persistence
 
     # Plan 06-04: H1 only. H0 dropped (degenerate in weighted VR -- all births
@@ -330,7 +380,12 @@ def precompute_persistence_images(window: int = None, force: bool = False) -> No
     # Per-genre persistence images
     for genre, book_list in books_data['genres'].items():
         for dim in homology_dims:
-            ck = cache_key('persistence_image', {'genre': genre, 'dim': dim, 'window': window})
+            ck = cache_key(
+                'persistence_image',
+                {'genre': genre, 'dim': dim, 'window': window},
+                corpus_hash=lineage_ch,
+                w2v_model_sha256=lineage_wh,
+            )
             if not force and cache_exists(ck):
                 log.info(f'  Persistence image {genre} dim={dim}: already cached')
                 continue
@@ -372,7 +427,12 @@ def precompute_persistence_images(window: int = None, force: bool = False) -> No
         for book in book_list:
             gid = str(book['gutenberg_id'])
             for dim in homology_dims:
-                bk = cache_key('persistence_image_book', {'gutenberg_id': gid, 'dim': dim, 'window': window})
+                bk = cache_key(
+                    'persistence_image_book',
+                    {'gutenberg_id': gid, 'dim': dim, 'window': window},
+                    corpus_hash=lineage_ch,
+                    w2v_model_sha256=lineage_wh,
+                )
                 if not force and cache_exists(bk):
                     continue
 
@@ -399,10 +459,22 @@ def precompute_persistence_images(window: int = None, force: bool = False) -> No
 
 def get_cached_persistence_image(genre_or_book: str, dim: int, window: int, is_book: bool = False) -> dict | None:
     """Retrieve cached persistence image for a genre or book."""
+    ch = _corpus_hash()
+    wh = _w2v_model_sha256(window)
     if is_book:
-        key = cache_key('persistence_image_book', {'gutenberg_id': genre_or_book, 'dim': dim, 'window': window})
+        key = cache_key(
+            'persistence_image_book',
+            {'gutenberg_id': genre_or_book, 'dim': dim, 'window': window},
+            corpus_hash=ch,
+            w2v_model_sha256=wh,
+        )
     else:
-        key = cache_key('persistence_image', {'genre': genre_or_book, 'dim': dim, 'window': window})
+        key = cache_key(
+            'persistence_image',
+            {'genre': genre_or_book, 'dim': dim, 'window': window},
+            corpus_hash=ch,
+            w2v_model_sha256=wh,
+        )
     return cache_get(key)
 
 
@@ -428,13 +500,22 @@ def precompute_persistence_diagrams(window: int = None, force: bool = False) -> 
     with open(corpus_path) as f:
         books_data = yaml.safe_load(f)
 
+    # Plan 06-05 / BUG-05: lineage for cache_key invalidation.
+    lineage_ch = _corpus_hash()
+    lineage_wh = _w2v_model_sha256(window)
+
     # Plan 06-04: H1 only (see note in precompute_persistence_images).
     homology_dims = [1]
 
     # Per-genre diagrams (aggregate all books)
     for genre, book_list in books_data['genres'].items():
         for dim in homology_dims:
-            ck = cache_key('persistence_diagram', {'genre': genre, 'dim': dim, 'window': window})
+            ck = cache_key(
+                'persistence_diagram',
+                {'genre': genre, 'dim': dim, 'window': window},
+                corpus_hash=lineage_ch,
+                w2v_model_sha256=lineage_wh,
+            )
             if not force and cache_exists(ck):
                 log.info(f'  Persistence diagram {genre} dim={dim}: already cached')
                 continue
@@ -465,7 +546,12 @@ def precompute_persistence_diagrams(window: int = None, force: bool = False) -> 
         for book in book_list:
             gid = str(book['gutenberg_id'])
             for dim in homology_dims:
-                bk = cache_key('persistence_diagram_book', {'gutenberg_id': gid, 'dim': dim, 'window': window})
+                bk = cache_key(
+                    'persistence_diagram_book',
+                    {'gutenberg_id': gid, 'dim': dim, 'window': window},
+                    corpus_hash=lineage_ch,
+                    w2v_model_sha256=lineage_wh,
+                )
                 if not force and cache_exists(bk):
                     continue
                 diag_path = features_dir / f'diagrams_{gid}_w{window}.npy'
@@ -486,10 +572,22 @@ def precompute_persistence_diagrams(window: int = None, force: bool = False) -> 
 
 def get_cached_persistence_diagram(genre_or_book: str, dim: int, window: int, is_book: bool = False) -> dict | None:
     """Retrieve cached raw persistence diagram points for a genre or book."""
+    ch = _corpus_hash()
+    wh = _w2v_model_sha256(window)
     if is_book:
-        key = cache_key('persistence_diagram_book', {'gutenberg_id': genre_or_book, 'dim': dim, 'window': window})
+        key = cache_key(
+            'persistence_diagram_book',
+            {'gutenberg_id': genre_or_book, 'dim': dim, 'window': window},
+            corpus_hash=ch,
+            w2v_model_sha256=wh,
+        )
     else:
-        key = cache_key('persistence_diagram', {'genre': genre_or_book, 'dim': dim, 'window': window})
+        key = cache_key(
+            'persistence_diagram',
+            {'genre': genre_or_book, 'dim': dim, 'window': window},
+            corpus_hash=ch,
+            w2v_model_sha256=wh,
+        )
     return cache_get(key)
 
 
