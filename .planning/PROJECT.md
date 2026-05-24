@@ -135,4 +135,7 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-23 — Phase 6 (v1 bug-fix sweep) complete: BUG-01..BUG-05 closed; v2.0 cleared for retrain/feature phases*
+*Last updated: 2026-05-24 — v1.0 milestone archived (audit `passed`, 62/63 reqs; v1.0.1 patch closed PARAM-03..06 wiring gap; tagged `v1.0.1`). v2.0 phase 6 complete; phase 7 context gathered (commit `2ca94ca`), ready to plan.*
+
+**Shipped milestones:**
+- **v1.0** (2026-04-13, archived 2026-05-24) — see [`.planning/milestones/v1.0-ROADMAP.md`](milestones/v1.0-ROADMAP.md) and [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md). Live at https://word2vec-topology-genre-detector-production.up.railway.app.

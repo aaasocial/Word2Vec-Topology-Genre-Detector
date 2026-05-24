@@ -5,110 +5,21 @@
 
 ---
 
-## v1.0 Requirements (Validated — shipped 2026-04-13)
+## v1.0 Requirements (Shipped 2026-04-13 · Archived 2026-05-24)
 
-> All v1 requirements were delivered in phases 1–5. Marked `[x]` below. Traceability table reflects the final status. v2 requirements follow.
+All 63 v1.0 requirements (VALID-01..03, PIPE-01..05, HOM-01..08, VIZ-01..11, TOPO-01..07, COMP-01/02, CLASS-01..05, PARAM-01..06, EXPLAIN-01, UX-01..05, CORPUS-01..04, INFRA-01..06) were delivered in phases 1-5. Detailed text + per-requirement status moved to [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md). Traceability table below still indexes them.
 
+### Validation Spike (archived)
 
+- [x] **VALID-01**: CLI prototype trains Word2Vec, computes persistence images, runs permutation test confirming topology signal — see archive
+- [x] **VALID-02**: CLI prototype validates weighted Vietoris-Rips filtration produces stable persistence diagrams — see archive
+- [x] **VALID-03**: CLI prototype benchmarks Vietoris-Rips computation time vs. word count, establishes safe `max_words` cap — see archive
 
-### Validation Spike
+### Other v1.0 sections (archived)
 
-- [x] **VALID-01**: CLI prototype trains Word2Vec on a 15-book mini-corpus (3 genres × 5 books), computes persistence images for each book, and runs a permutation test confirming topology signal separates genres above chance
-- [x] **VALID-02**: CLI prototype validates that the weighted Vietoris-Rips filtration (`d_weighted(i,j) = d(i,j) / (w_i + w_j)`) produces stable persistence diagrams and meaningful separation between genre classes
-- [x] **VALID-03**: CLI prototype benchmarks Vietoris-Rips computation time vs. word count and establishes the safe `max_words` cap (target: ≤10s per book)
+Shared Pipeline (PIPE-01..05) · Classification Pipeline (HOM-01..08) · Visualization 3D Brightness Map (VIZ-01..11) · Visualization Topology Views (TOPO-01..07) · Genre Comparison (COMP-01..02) · Genre Classification (CLASS-01..05) · Parameter Controls (PARAM-01..06; PARAM-03..06 patched in v1.0.1) · Pipeline Explanation (EXPLAIN-01) · UX & Polish (UX-01..05) · Corpus & Data (CORPUS-01..04) · Infrastructure (INFRA-01..06)
 
-### Shared Pipeline
-
-- [x] **PIPE-01**: System ingests raw .txt files labeled by genre (bundled corpus + user uploads) and prepares them for analysis
-- [x] **PIPE-02**: System tokenizes text, normalizes case, removes punctuation, and filters English stopwords from all input files
-- [x] **PIPE-03**: System trains a single shared skip-gram Word2Vec model on the entire corpus (all genres combined), producing one embedding vector per unique word in a shared N-dimensional space
-- [x] **PIPE-04**: System computes TF-IDF weights per book, using corpus-level IDF (log(total books / books containing word)) computed without genre labels
-- [x] **PIPE-05**: System constructs a per-book weighted point cloud from the shared word vectors (positions) and TF-IDF scores (weights)
-
-### Classification Pipeline
-
-- [x] **HOM-01**: System computes per-book Vietoris-Rips persistent homology in the full N-dimensional embedding space using TF-IDF-weighted filtration (heavy TF-IDF words grow balls faster, modeled via modified distance matrix)
-- [x] **HOM-02**: System computes H₀ (connected components) and H₁ (loops) always; H₂ (voids) on-demand when user enables the H₂ toggle
-- [x] **HOM-03**: System converts persistence diagrams to fixed-length persistence image vectors using configurable grid resolution (M×M → M² dimensions), Gaussian kernel smoothing (σ adjustable), and (birth, death) → (birth, persistence) coordinate rotation
-- [x] **HOM-04**: System clusters all word vectors in the shared embedding space into K semantic regions using k-means (K adjustable, default 50), computed once on the full vocabulary
-- [x] **HOM-05**: System computes a per-book K-dimensional word-cluster distribution vector: the total TF-IDF weight of each book falling into each of the K clusters
-- [x] **HOM-06**: System concatenates normalized persistence image vector and normalized cluster distribution vector, weighted by user-adjustable α: (α × structure) ⊕ ((1−α) × location)
-- [x] **HOM-07**: System trains a kernel SVM (RBF) on the concatenated feature vectors, evaluates using leave-one-out cross-validation, and reports per-class accuracy
-- [x] **HOM-08**: System applies PCA dimensionality reduction to the concatenated feature vector before SVM training to prevent overfitting (450D features / ~50-100 books regime)
-
-### Visualization — 3D Brightness Map
-
-- [x] **VIZ-01**: User sees a 3D scatter plot of word embeddings rendered at interactive frame rates (60fps) with up to 50,000 visible points
-- [x] **VIZ-02**: User can switch between four projection methods: PCA, Kernel PCA, UMAP, and t-SNE — same words, different 3D arrangements
-- [x] **VIZ-03**: Each word's visual brightness and size scales proportionally to its TF-IDF weight in the currently selected genre or book
-- [x] **VIZ-04**: User can select any genre from a dropdown; the visualization illuminates that genre's distinctive vocabulary while dimming genre-neutral words
-- [x] **VIZ-05**: User can slide through individual books within the selected genre; brightness pattern shifts book-by-book, revealing subgenre structure
-- [x] **VIZ-06**: User can hover over any point to see word, TF-IDF weight, genre of origin, and top-5 nearest neighbors in embedding space
-- [x] **VIZ-07**: User can click a point to select it; selected point stays highlighted through camera movements and shows detailed panel with nearest neighbors list
-- [x] **VIZ-08**: User can orbit, pan, and zoom the scatter plot with mouse/trackpad; a reset-camera button (also R shortcut) returns to default view
-- [x] **VIZ-09**: User can toggle between 3D and 2D projection of the scatter plot
-- [x] **VIZ-10**: User can search for a specific word; matching points are highlighted in the scatter and listed in a side panel
-- [x] **VIZ-11**: Genres are consistently color-coded across all views in the application
-
-### Visualization — Topology Views
-
-- [x] **TOPO-01**: User sees a 2D heatmap of the persistence image for the currently selected genre or book, with axes labeled (scale, persistence) after the 45-degree coordinate rotation
-- [x] **TOPO-02**: User views the H₁ persistence image (H₀ and H₂ removed in v2.0 — H₀ degenerate in weighted Vietoris-Rips, H₂ deferred to v3 — see PROJECT.md Key Decisions). v1 originally shipped three tabs; the H₀/H₂ tabs were removed in Phase 6 (BUG-01).
-- [x] **TOPO-03**: User sees a separate 3D scatter plot showing the animated Vietoris-Rips filtration — same word positions from the selected projection, separate camera
-- [x] **TOPO-04**: User controls a filtration radius slider (ε) in the Vietoris-Rips plot; as ε increases, edges appear between words whose TF-IDF-weighted balls have overlapped
-- [x] **TOPO-05**: When a topological feature (H₁ loop, H₂ void) is born or dies at the current ε value, the relevant boundary edges are highlighted in a distinct color
-- [x] **TOPO-06**: Persistence image panel updates when the selected genre or book changes without user needing to trigger manual recomputation
-- [x] **TOPO-07**: Selecting a book/genre in any panel (scatter, Vietoris-Rips, persistence image) updates all synchronized panels simultaneously (brushing and linking)
-
-### Genre Comparison
-
-- [x] **COMP-01**: User can select any two genres for side-by-side comparison; both genres' brightness maps and persistence images are displayed simultaneously
-- [x] **COMP-02**: Comparison view uses a consistent color scale so brightness intensities are directly comparable between the two genres
-
-### Genre Classification
-
-- [x] **CLASS-01**: User can upload a plain .txt file via drag-and-drop or file picker; client validates file extension, size (≤5MB), and encoding before upload
-- [x] **CLASS-02**: System processes the uploaded book through the full pipeline (tokenize → TF-IDF → point cloud → persistent homology → feature vector → SVM) and returns a predicted genre with confidence score
-- [x] **CLASS-03**: After classification, the uploaded book appears in the 3D scatter visualization with its TF-IDF brightness active, positioned in the shared embedding space
-- [x] **CLASS-04**: User sees a staged progress indicator naming each pipeline step during classification ("Tokenizing text...", "Computing TF-IDF...", "Computing persistent homology (step 3/5)...", etc.)
-- [x] **CLASS-05**: System returns actionable error messages for failed uploads (wrong format, too large, too few words <500, encoding issues, language detection failure)
-
-### Parameter Controls
-
-- [x] **PARAM-01**: Instant-tier controls update without debounce: projection method (PCA/KPCA/UMAP/t-SNE), point size, opacity, color scheme, H₀/H₁/H₂ tab
-- [x] **PARAM-02**: Fast-tier controls (100ms-2s) are debounced at 200ms: TF-IDF threshold filter, brightness sensitivity, book selection slider, genre dropdown, 2D/3D toggle
-- [x] **PARAM-03**: Slow-tier parameters show a "Parameters changed — click Recompute" badge; user triggers recomputation explicitly: persistence image resolution (M×M), Gaussian σ, K (cluster count), α (feature weighting), SVM γ and C, ε_max and step size
-- [x] **PARAM-04**: Very-slow-tier parameters (Word2Vec dimension, context window) show an explicit warning ("This will retrain the Word2Vec model — est. 2-5 min") with a confirm step before triggering
-- [x] **PARAM-05**: While recomputation runs in the background, current visualization remains interactive with a dim overlay and "Updating..." badge; new results replace the view when ready
-- [x] **PARAM-06**: System recomputes only the affected downstream pipeline subtree when a parameter changes (e.g., changing projection method recomputes 3D coordinates only; changing σ recomputes persistence images only — does not retrain SVM)
-
-### Pipeline Explanation
-
-- [x] **EXPLAIN-01**: User can access an interactive step-by-step walkthrough of the mathematical pipeline, where each step shows the user's actual uploaded/selected book's data (not toy examples)
-
-### UX & Polish
-
-- [x] **UX-01**: Staged progress indicators with step names appear for all computations exceeding 1 second; computations exceeding 2 seconds include a cancel button
-- [x] **UX-02**: All error states include specific, actionable messages (not generic "error occurred")
-- [x] **UX-03**: User can export current visualization as PNG or SVG; user can export current persistence diagram data as CSV
-- [x] **UX-04**: Keyboard shortcuts available: R = reset camera, 1-4 = switch projection methods, Esc = deselect point
-- [x] **UX-05**: A persistent disclaimer is visible in the Vietoris-Rips and scatter views noting that topology is computed in the original N-dimensional space and the 3D view is a lossy projection
-
-### Corpus & Data
-
-- [x] **CORPUS-01**: App ships with a bundled labeled corpus of 50-100 public domain books sourced from Project Gutenberg, spanning 5-8 literary genres (horror, romance, detective, sci-fi, literary fiction, etc.) with genre labels assigned by the development team
-- [x] **CORPUS-02**: Bundled corpus results (Word2Vec model, TF-IDF weights, persistence diagrams, feature vectors, projections) are pre-computed at build time — not recomputed on each server start
-- [x] **CORPUS-03**: Vietoris-Rips computation enforces a configurable `max_words` cap per book (default 500, max 1000) to prevent computational explosion
-- [x] **CORPUS-04**: All books in the bundled corpus are public domain texts (e.g., Project Gutenberg) to avoid copyright issues
-
-### Infrastructure
-
-- [x] **INFRA-01**: FastAPI backend serves the API and handles WebSocket connections for real-time pipeline progress streaming
-- [x] **INFRA-02**: Background job queue (arq or Celery + Redis) handles long-running computations asynchronously without blocking the HTTP server
-- [x] **INFRA-03**: Content-addressed cache stores intermediate pipeline results keyed by hash(step_name + params + upstream_key); changing a parameter automatically invalidates only downstream steps
-- [x] **INFRA-04**: React + react-three-fiber (Three.js) frontend handles all 3D rendering and UI state; server is stateless compute
-- [x] **INFRA-05**: Application is containerized (Docker) for reproducible deployment
-- [x] **INFRA-06**: Application is publicly accessible via URL with no login required
+See [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md) for full requirement text and per-requirement archive notes. Traceability table at the bottom of this file still references all v1.0 IDs.
 
 ---
 

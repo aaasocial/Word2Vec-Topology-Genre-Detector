@@ -4,34 +4,11 @@
 
 ---
 
-## v1.0 — Shipped (2026-04-13)
+## v1.0 — Shipped (2026-04-13) · Archived
 
-**Goal delivered:** A hosted web app where a user uploads any `.txt` book and sees where it lives in semantic space — bundled corpus, 3D scatter with four projections, animated Vietoris-Rips filtration, persistence-image heatmaps (H₀ / H₁), kernel-SVM classification with confidence, and live parameter controls. Deployed publicly on Railway.
+**Phases 1-5** delivered the hosted web app: 3D scatter (PCA/KPCA/UMAP/t-SNE), animated Vietoris-Rips filtration, persistence-image heatmaps, kernel-SVM classification, live parameter controls. Deployed at https://word2vec-topology-genre-detector-production.up.railway.app. v1.0.1 patch (2026-05-24) closed the PARAM-03..06 wiring gap surfaced by retrospective audit.
 
-**Live at:** https://word2vec-topology-genre-detector-production.up.railway.app
-
-| # | Phase | Goal | Requirements (63 total) | Outcome |
-|---|---|---|---|---|
-| 1 | Pipeline Validation Spike | Prove the math end-to-end on a CLI — Word2Vec, weighted Vietoris-Rips, persistence images, SVM, permutation test | VALID-01..03, PIPE-01..05, HOM-01..08, CORPUS-01/03/04 | 6-script CLI pipeline; 27 tests green; weighted VR homology proven via permutation test |
-| 2 | API Layer and Job Queue | Wrap the CLI pipeline as FastAPI + arq with progress streaming and an upload path | INFRA-01..03, CORPUS-02, CLASS-01/02/04/05, UX-01/02 | FastAPI + arq/Redis backend; pipeline refactored into `backend/pipeline/`; content-addressed cache; 34 tests green |
-| 3 | Frontend Core and 3D Visualization | Ship the 3D scatter, brightness map, hover/search/upload UX, and instant/fast-tier parameter controls | INFRA-04, VIZ-01..11, CLASS-03, PARAM-01/02, UX-04 | React + R3F scatter (PCA/KPCA/UMAP/t-SNE); brightness/hover/search/upload flow; 4/5 success criteria verified |
-| 4 | Advanced Viz and Parameter Controls | Topology and comparison views, the VR ε-slider, slow/very-slow tier parameters, pipeline-explanation walkthrough, export | TOPO-01..07, COMP-01/02, PARAM-03..06, EXPLAIN-01, UX-03/05 | Topology/Compare tabs; VR ε-slider; persistence heatmap (H₀/H₁); settings drawer; PNG/CSV export; 13/15 UAT pass (H₂ + dot-scaling deferred to v2.0 Phase 6) |
-| 5 | Deployment and Public Access | Dockerize and ship publicly; survive Railway's proxy quirks | INFRA-05/06 | Dockerized; Railway deploy; models served via GitHub Release asset (LFS quota workaround); SSE replaces WebSocket post-deploy |
-
-### v1 outcomes worth carrying forward
-
-- **Mathematical invariants validated end-to-end:** single shared Word2Vec space, full-N-D persistent homology, label-free TF-IDF, L2-normalized α-weighted track concatenation.
-- **Pipeline shape:** `embed → homology → features → classify` with content-addressed cache; clean cancellation via `cancel_event` on every stage.
-- **Frontend shape:** Zustand for session state; React Query (`staleTime: Infinity`) for precomputed corpus data; R3F canvas with imperative material updates.
-- **Operational shape:** SSE (not WebSocket) through Railway's edge; GitHub Release asset for models (avoids LFS); arq queue for long-running compute.
-
-### v1 known carry-overs (now owned by v2.0 Phase 6)
-
-- H₂ homology not computed; H₂ tab disabled and tooltip not firing.
-- Persistence-diagram dot scaling unreadable (step-function radii; `np.inf` H₀ dot mishandled).
-- BookSlider receives `books={[]}` — per-book slide-through hidden because no corpus metadata endpoint exists.
-- ROADMAP.md and STATE.md ended v1 at 0 bytes on disk (root cause unidentified; preventable).
-- Latent: content-addressed `cache_key` does **not** include `corpus_hash` or `w2v_model_sha256` — any future retrain would silently serve stale artifacts (`PITFALLS.md §1`).
+**Archive:** [`.planning/milestones/v1.0-ROADMAP.md`](milestones/v1.0-ROADMAP.md) · [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md) · [`v1.0-MILESTONE-AUDIT.md`](v1.0-MILESTONE-AUDIT.md)
 
 ---
 
