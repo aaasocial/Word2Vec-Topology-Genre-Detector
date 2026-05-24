@@ -122,10 +122,17 @@ Phases 6, 7, 8, 9 ────────────────────�
   3. Multi-label classification decision is documented with rationale; recommendation **defer to v3** is recorded in `CORPUS_SOURCING.md`.
   4. Phase 7 outputs are sufficient for Phase 8 to execute verbatim — Phase 8 makes zero further sourcing or methodology decisions.
 
-**Plans:** TBD
+**Plans:** 5 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Comparable projects + per-source verdicts + multi-label feasibility (RES-01, RES-03; D-01, D-02, D-03, D-04, D-05, D-18)
+- [ ] 07-02-PLAN.md — Genre set recommendation (Proposal A/B/C) + LCC subject overlap analysis (RES-01; D-09, D-21)
+- [ ] 07-03-PLAN.md — Per-genre candidate shortlist (≥50 gutenberg_ids each) + author distribution audit + books.yaml schema (RES-01; D-06, D-07, D-08, D-10, D-19)
+- [ ] 07-04-PLAN.md — v1 baseline computation: deterministic eval of svm_pipeline.joblib on the 20% author-overlap hold-out (RES-02; D-11, D-12, D-13)
+- [ ] 07-05-PLAN.md — Assembly: CORPUS_SOURCING.md + VALIDATION_PROTOCOL.md with Phase 8 entry checklists (RES-01, RES-02, RES-03; D-10, D-14, D-15, D-16, D-17, D-20, D-21)
 
 **Key pitfalls owned by this phase** (`PITFALLS.md`):
-- §4 — Comparing v2 accuracy to v1 without a held-out test set — `VALIDATION_PROTOCOL.md` mandates the v1-frozen 15-book test set and the three-numbers reporting pattern (LOOCV on new, eval on v1-frozen, v1 LOOCV).
+- §4 — Comparing v2 accuracy to v1 without a held-out test set — `VALIDATION_PROTOCOL.md` mandates the v1-frozen 20% hold-out subset (~20 gutenberg_ids pinned in Phase 7) and the three-numbers reporting pattern: (1) v1 SVM on hold-out, (2) v2 SVM on hold-out, (3) v2 LOOCV on full v2 corpus (context only).
 - §5 — Author overlap leakage — `CORPUS_SOURCING.md` audits author distribution; protocol mandates GroupKFold-by-author.
 - §6 — Class imbalance from "add whatever's available" — sourcing doc pre-declares per-genre book counts as a hard constraint.
 
@@ -226,7 +233,7 @@ Phases 6, 7, 8, 9 ────────────────────�
 | 4. Advanced Viz and Parameter Controls | 3/3 | Shipped (v1.0) | 2026-04 |
 | 5. Deployment and Public Access | 2/2 | Shipped (v1.0) | 2026-04-13 |
 | 6. v1 Bug-Fix Sweep | 0/5 | Planned | — |
-| 7. Corpus Sourcing Research Spike | 0/? | Not started | — |
+| 7. Corpus Sourcing Research Spike | 0/5 | Planned | — |
 | 8. Corpus Expansion | 0/? | Not started (blocked on 6, 7) | — |
 | 9. Classification Depth | 0/? | Not started (blocked on 8) | — |
 | 10. Visual Polish | 0/? | Not started (blocked on 6–9) | — |
@@ -251,4 +258,4 @@ Phases 6, 7, 8, 9 ────────────────────�
 
 *v1.0 shipped: 2026-04-13*
 *v2.0 roadmap drafted: 2026-05-22*
-*Last updated: 2026-05-22 — v2.0 milestone phases defined; awaiting Phase 6 planning*
+*Last updated: 2026-05-25 — Phase 7 planned (5 plans: 4 Wave 1 parallel + 1 Wave 2 assembly); Phase 6 shipped 2026-05-23*
