@@ -60,7 +60,7 @@ A user uploads any book and sees where it lives in semantic space — and why th
 - [ ] ROADMAP.md and STATE.md restored as living documents
 
 **Corpus Quality**
-- [ ] Research how comparable NLP/genre-classification projects source and structure training corpora; produce recommendation document
+- [x] Research how comparable NLP/genre-classification projects source and structure training corpora; produce recommendation document (Phase 7 — `CORPUS_SOURCING.md` + `VALIDATION_PROTOCOL.md`; v1 baseline pinned at macro_f1=0.3235; corpus shape committed to 8 genres × 30 books = 240)
 - [ ] Expand or restructure the bundled corpus per research findings; demonstrate measurable accuracy improvement vs v1 baseline
 
 **Classification Depth**
@@ -111,7 +111,7 @@ Persistent homology scales poorly with point count (Vietoris-Rips complex constr
 | SSE over WebSocket for progress | Railway edge dropped WS frames; SSE is unidirectional and works through the proxy | Validated — v1.0 (post-deploy fix) |
 | Ripser over giotto-tda for homology | Simpler API, no subprocess timeout wrapper; matches Phase 1 weighted-distance math | Validated — v1.0 (Phase 2) |
 | Models shipped as GitHub Release asset | Avoids LFS quota on Railway builds; container downloads at start via RELEASE_URL | Validated — v1.0 (Phase 5) |
-| v2: corpus expansion preceded by research spike | User wants accuracy improvement grounded in how comparable projects source training data, not arbitrary additions | — Pending (v2.0 Phase 7) |
+| v2: corpus expansion preceded by research spike | User wants accuracy improvement grounded in how comparable projects source training data, not arbitrary additions | Validated — v2.0 (Phase 7: CORPUS_SOURCING.md + VALIDATION_PROTOCOL.md; Proposal A merges gothic+horror, scifi+fantasy → 8 genres × 30 books = 240; multi-label deferred to v3) |
 | v2: bug-fix phase first, then features | Clean slate before new features makes verification easier; resolves v1 carry-overs (H₂, BookSlider, persistence-diagram scaling, empty ROADMAP/STATE) | Validated — v2.0 (Phase 6) |
 | v2: H₀ and H₂ removed from UI | H₀ mathematically degenerate in weighted Vietoris-Rips (birth axis collapses to filtration time 0); H₂ deferred to v3 — sparse high-D point clouds rarely contain voids and the O(n⁴) runtime cliff (PITFALLS.md §2) is not worth the engineering for empirical-zero gain (PITFALLS.md §3) | Validated — v2.0 (Phase 6, BUG-01) |
 | Cache key includes corpus_hash + w2v_model_sha256 | Latent v1 footgun: cache key omitted model-lineage inputs, so a retrain could silently return stale precomputed artifacts. Lands before Phase 8 retrain to avoid mid-flight migration. | Validated — v2.0 (Phase 6, BUG-05) |
@@ -135,7 +135,7 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-24 — v1.0 milestone archived (audit `passed`, 62/63 reqs; v1.0.1 patch closed PARAM-03..06 wiring gap; tagged `v1.0.1`). v2.0 phase 6 complete; phase 7 context gathered (commit `2ca94ca`), ready to plan.*
+*Last updated: 2026-05-25 — v2.0 Phase 7 complete: corpus sourcing research spike delivered `CORPUS_SOURCING.md` (688 lines), `VALIDATION_PROTOCOL.md` (343 lines), `corpus_candidates.yaml` (≥50 candidates × 10 genres), `v1_baseline_results.json` (macro_f1=0.3235 pinned). Genre set committed to Proposal A: 8 genres × 30 books = 240. Multi-label classification deferred to v3.*
 
 **Shipped milestones:**
 - **v1.0** (2026-04-13, archived 2026-05-24) — see [`.planning/milestones/v1.0-ROADMAP.md`](milestones/v1.0-ROADMAP.md) and [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md). Live at https://word2vec-topology-genre-detector-production.up.railway.app.
