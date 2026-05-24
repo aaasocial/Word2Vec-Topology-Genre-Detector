@@ -1,0 +1,304 @@
+{
+  "accuracy": 0.35,
+  "confusion_matrix": [
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "confusion_matrix_labels": [
+    "romance",
+    "mystery",
+    "western",
+    "fantasy",
+    "scifi",
+    "horror",
+    "historical",
+    "literary",
+    "adventure",
+    "gothic"
+  ],
+  "holdout_gutenberg_ids": [
+    103,
+    105,
+    1184,
+    120,
+    121,
+    1257,
+    144,
+    1528,
+    169,
+    175,
+    244,
+    2565,
+    284,
+    3285,
+    50133,
+    70652,
+    78,
+    83,
+    84,
+    863
+  ],
+  "holdout_size": 20,
+  "macro_f1": 0.32352941176470584,
+  "per_genre_f1": {
+    "adventure": 0.6666666666666666,
+    "fantasy": 0.6666666666666666,
+    "gothic": 0.0,
+    "historical": 0.0,
+    "horror": 0.0,
+    "literary": 0.0,
+    "mystery": 1.0,
+    "romance": 0.6666666666666666,
+    "scifi": 0.0,
+    "western": 0.23529411764705882
+  },
+  "per_holdout_predictions": [
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "scifi",
+      "gutenberg_id": 103
+    },
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "romance",
+      "gutenberg_id": 105
+    },
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "historical",
+      "gutenberg_id": 1184
+    },
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "adventure",
+      "gutenberg_id": 120
+    },
+    {
+      "correct": true,
+      "genre_predicted": "romance",
+      "genre_true": "romance",
+      "gutenberg_id": 121
+    },
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "historical",
+      "gutenberg_id": 1257
+    },
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "literary",
+      "gutenberg_id": 144
+    },
+    {
+      "correct": true,
+      "genre_predicted": "western",
+      "genre_true": "western",
+      "gutenberg_id": 1528
+    },
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "fantasy",
+      "gutenberg_id": 169
+    },
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "gothic",
+      "gutenberg_id": 175
+    },
+    {
+      "correct": true,
+      "genre_predicted": "mystery",
+      "genre_true": "mystery",
+      "gutenberg_id": 244
+    },
+    {
+      "correct": true,
+      "genre_predicted": "fantasy",
+      "genre_true": "fantasy",
+      "gutenberg_id": 2565
+    },
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "literary",
+      "gutenberg_id": 284
+    },
+    {
+      "correct": true,
+      "genre_predicted": "western",
+      "genre_true": "western",
+      "gutenberg_id": 3285
+    },
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "horror",
+      "gutenberg_id": 50133
+    },
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "horror",
+      "gutenberg_id": 70652
+    },
+    {
+      "correct": true,
+      "genre_predicted": "adventure",
+      "genre_true": "adventure",
+      "gutenberg_id": 78
+    },
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "scifi",
+      "gutenberg_id": 83
+    },
+    {
+      "correct": false,
+      "genre_predicted": "western",
+      "genre_true": "gothic",
+      "gutenberg_id": 84
+    },
+    {
+      "correct": true,
+      "genre_predicted": "mystery",
+      "genre_true": "mystery",
+      "gutenberg_id": 863
+    }
+  ],
+  "v1_lineage": {
+    "alpha": 0.7,
+    "corpus_hash": "208db2bc132b481ed68c22920b967287cd0031e195d437867f74be652adbd57a",
+    "holdout_selection_rule": "D-12: each test book's author has >=1 other book by same author in training (author-overlap with training); stratified 2 per genre; ties broken by ascending gutenberg_id",
+    "k_clusters": 200,
+    "seed": 42,
+    "w2v_model_sha256": "2bf13ce0aa9e9a4fde86ca880f29cbcb5dc36fc77bf4f3142ad536c6aa3ec47b",
+    "window": 15
+  }
+}
