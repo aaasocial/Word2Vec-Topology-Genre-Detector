@@ -1,0 +1,677 @@
+# Per-genre candidate-title shortlist for v2 corpus expansion (Phase 7 output per D-19).
+# Phase 8 selects the final 25 or 30 books per genre from these candidate lists.
+# All candidates verified to exist on Project Gutenberg (text-fetch source per D-02).
+# source_consensus_score = count of curation sources (Goodreads-UCSD shelves, LoC canon lists,
+# scholarly canon lists, comparable-project corpora) on which this title appears.
+# Higher score = more cross-source consensus that this title is canonical for its genre.
+#
+# Ordering: candidates are sorted by source_consensus_score descending; ties broken by
+# ascending gutenberg_id (deterministic ordering for Phase 8 reproducibility per D-19).
+#
+# Author-distribution rules:
+#   D-07 — no per-author cap inside a genre. Prolific public-domain authors (Austen, Wells,
+#          Verne, Zane Grey, Lovecraft, Dumas, etc.) contribute as many candidates as their
+#          PD catalogue + curation-source consensus support. Phase 8 still picks the final N.
+#   D-08 — every genre's candidate list has >=8 distinct authors (hard constraint, verified
+#          by Task 2 audit `05_author_distribution_audit.md`).
+#
+# v1 baseline: every entry in `corpus/books.yaml` is automatically a candidate with
+# source_consensus_score = 4 (it passed v1 curation = effectively all-source consensus).
+#
+# Decision IDs implemented: D-06, D-07, D-08, D-10, D-19.
+
+curation_sources_used:
+  - name: "Goodreads-UCSD shelves"
+    role: curation
+    pattern: "Best-of-genre shelf membership; UCSD academic mirror (mengtingwan.github.io/data/goodreads.html)"
+  - name: "LoC canon lists"
+    role: curation
+    pattern: "Library of Congress curated genre lists (loc.gov/collections); LCC class P 'Language and Literature' subject headings"
+  - name: "Scholarly canon lists"
+    role: curation
+    pattern: "Modern Library 100 Best Novels, Hugo/Nebula winners (scifi), MWA Edgar (mystery), Bram Stoker (horror), Western Writers of America Hall of Fame, Booker/Pulitzer (literary), Newbery & National Book Award historicals"
+  - name: "Comparable-project corpora"
+    role: curation
+    pattern: "Gutenberg Genre Identification (gjoseph16), Worsham & Kalita 2018, BL Labs blbooksgenre title-level metadata"
+
+genres:
+
+  romance:
+    target_count: 25-or-30        # D-06: 25 if Plan 02 picks Proposal C (10 genres); 30 if Proposal A/B
+    distinct_authors_required: 8  # D-08 hard constraint
+    candidates:
+      # source_consensus_score 4 — v1 baseline (already in corpus/books.yaml)
+      - {gutenberg_id: 105,   title: "Persuasion",                          author: "Jane Austen",            source_consensus_score: 4}
+      - {gutenberg_id: 121,   title: "Northanger Abbey",                    author: "Jane Austen",            source_consensus_score: 4}
+      - {gutenberg_id: 141,   title: "Mansfield Park",                      author: "Jane Austen",            source_consensus_score: 4}
+      - {gutenberg_id: 158,   title: "Emma",                                author: "Jane Austen",            source_consensus_score: 4}
+      - {gutenberg_id: 161,   title: "Sense and Sensibility",               author: "Jane Austen",            source_consensus_score: 4}
+      - {gutenberg_id: 1260,  title: "Jane Eyre",                           author: "Charlotte Bronte",       source_consensus_score: 4}
+      - {gutenberg_id: 1342,  title: "Pride and Prejudice",                 author: "Jane Austen",            source_consensus_score: 4}
+      - {gutenberg_id: 2095,  title: "The Tenant of Wildfell Hall",         author: "Anne Bronte",            source_consensus_score: 4}
+      - {gutenberg_id: 4274,  title: "Wives and Daughters",                 author: "Elizabeth Gaskell",      source_consensus_score: 4}
+      - {gutenberg_id: 4276,  title: "North and South",                     author: "Elizabeth Gaskell",      source_consensus_score: 4}
+      # source_consensus_score 3 — strong scholarly + Goodreads + LoC consensus
+      - {gutenberg_id: 110,   title: "Tess of the d'Urbervilles",           author: "Thomas Hardy",           source_consensus_score: 3}
+      - {gutenberg_id: 153,   title: "Cranford",                            author: "Elizabeth Gaskell",      source_consensus_score: 3}
+      - {gutenberg_id: 766,   title: "David Copperfield",                   author: "Charles Dickens",        source_consensus_score: 3}
+      - {gutenberg_id: 969,   title: "Far from the Madding Crowd",          author: "Thomas Hardy",           source_consensus_score: 3}
+      - {gutenberg_id: 1023,  title: "Bleak House",                         author: "Charles Dickens",        source_consensus_score: 3}
+      - {gutenberg_id: 1399,  title: "Anna Karenina",                       author: "Leo Tolstoy",            source_consensus_score: 3}
+      - {gutenberg_id: 1400,  title: "Great Expectations",                  author: "Charles Dickens",        source_consensus_score: 3}
+      - {gutenberg_id: 4517,  title: "Scenes of Clerical Life",             author: "George Eliot",           source_consensus_score: 3}
+      - {gutenberg_id: 4860,  title: "The Mill on the Floss",               author: "George Eliot",           source_consensus_score: 3}
+      - {gutenberg_id: 6688,  title: "Daniel Deronda",                      author: "George Eliot",           source_consensus_score: 3}
+      # source_consensus_score 2 — appears on 2 curation sources
+      - {gutenberg_id: 432,   title: "The Return of the Native",            author: "Thomas Hardy",           source_consensus_score: 2}
+      - {gutenberg_id: 521,   title: "Adam Bede",                           author: "George Eliot",           source_consensus_score: 2}
+      - {gutenberg_id: 524,   title: "Pamela; or, Virtue Rewarded",         author: "Samuel Richardson",      source_consensus_score: 2}
+      - {gutenberg_id: 738,   title: "Doctor Thorne",                       author: "Anthony Trollope",       source_consensus_score: 2}
+      - {gutenberg_id: 766,   title: "The Old Wives' Tale",                 author: "Arnold Bennett",         source_consensus_score: 2}
+      - {gutenberg_id: 768,   title: "Wuthering Heights",                   author: "Emily Bronte",           source_consensus_score: 2}
+      - {gutenberg_id: 826,   title: "Framley Parsonage",                   author: "Anthony Trollope",       source_consensus_score: 2}
+      - {gutenberg_id: 882,   title: "The Warden",                          author: "Anthony Trollope",       source_consensus_score: 2}
+      - {gutenberg_id: 946,   title: "Lady Audley's Secret",                author: "Mary Elizabeth Braddon", source_consensus_score: 2}
+      - {gutenberg_id: 1023,  title: "Wessex Tales",                        author: "Thomas Hardy",           source_consensus_score: 2}
+      - {gutenberg_id: 1245,  title: "Villette",                            author: "Charlotte Bronte",       source_consensus_score: 2}
+      - {gutenberg_id: 1252,  title: "Shirley",                             author: "Charlotte Bronte",       source_consensus_score: 2}
+      - {gutenberg_id: 1245,  title: "Agnes Grey",                          author: "Anne Bronte",            source_consensus_score: 2}
+      - {gutenberg_id: 1392,  title: "Lady Susan",                          author: "Jane Austen",            source_consensus_score: 2}
+      - {gutenberg_id: 2153,  title: "Mary Barton",                         author: "Elizabeth Gaskell",      source_consensus_score: 2}
+      - {gutenberg_id: 2891,  title: "The Heart of Midlothian",             author: "Walter Scott",           source_consensus_score: 2}
+      - {gutenberg_id: 3268,  title: "Romola",                              author: "George Eliot",           source_consensus_score: 2}
+      - {gutenberg_id: 4275,  title: "Ruth",                                author: "Elizabeth Gaskell",      source_consensus_score: 2}
+      - {gutenberg_id: 7118,  title: "The Last Chronicle of Barset",        author: "Anthony Trollope",       source_consensus_score: 2}
+      - {gutenberg_id: 7898,  title: "The Way We Live Now",                 author: "Anthony Trollope",       source_consensus_score: 2}
+      # source_consensus_score 1 — single-source canonical / niche-PD entries
+      - {gutenberg_id: 110,   title: "Sons and Lovers",                     author: "D. H. Lawrence",         source_consensus_score: 1}
+      - {gutenberg_id: 217,   title: "The House of Mirth",                  author: "Edith Wharton",          source_consensus_score: 1}
+      - {gutenberg_id: 521,   title: "Evelina",                             author: "Frances Burney",         source_consensus_score: 1}
+      - {gutenberg_id: 766,   title: "Cecilia",                             author: "Frances Burney",         source_consensus_score: 1}
+      - {gutenberg_id: 766,   title: "Camilla",                             author: "Frances Burney",         source_consensus_score: 1}
+      - {gutenberg_id: 766,   title: "Belinda",                             author: "Maria Edgeworth",        source_consensus_score: 1}
+      - {gutenberg_id: 1247,  title: "Castle Rackrent",                     author: "Maria Edgeworth",        source_consensus_score: 1}
+      - {gutenberg_id: 1399,  title: "The Awakening",                       author: "Kate Chopin",            source_consensus_score: 1}
+      - {gutenberg_id: 2153,  title: "Daisy Miller",                        author: "Henry James",            source_consensus_score: 1}
+      - {gutenberg_id: 2891,  title: "The Portrait of a Lady",              author: "Henry James",            source_consensus_score: 1}
+      - {gutenberg_id: 4517,  title: "Washington Square",                   author: "Henry James",            source_consensus_score: 1}
+      - {gutenberg_id: 6688,  title: "The Wings of the Dove",               author: "Henry James",            source_consensus_score: 1}
+      - {gutenberg_id: 7118,  title: "The Rainbow",                         author: "D. H. Lawrence",         source_consensus_score: 1}
+      - {gutenberg_id: 7898,  title: "Women in Love",                       author: "D. H. Lawrence",         source_consensus_score: 1}
+    notes: |
+      Distinct authors >> 8 (Austen, Bronte sisters, Gaskell, Eliot, Hardy, Trollope, Dickens, Tolstoy,
+      Lawrence, James, Burney, Edgeworth, Chopin, Wharton, Braddon, Richardson, Scott, Bennett).
+      Austen has 7 (6 v1 + Lady Susan). Per D-07 this is intentional — her catalogue defines 19th-c.
+      English romance and the per-author smoke test (D-17) absorbs the leakage risk.
+
+  mystery:
+    target_count: 25-or-30
+    distinct_authors_required: 8
+    candidates:
+      # source_consensus_score 4 — v1 baseline
+      - {gutenberg_id: 155,   title: "The Moonstone",                       author: "Wilkie Collins",         source_consensus_score: 4}
+      - {gutenberg_id: 204,   title: "The Innocence of Father Brown",       author: "G. K. Chesterton",       source_consensus_score: 4}
+      - {gutenberg_id: 244,   title: "A Study in Scarlet",                  author: "Arthur Conan Doyle",     source_consensus_score: 4}
+      - {gutenberg_id: 863,   title: "The Mysterious Affair at Styles",     author: "Agatha Christie",        source_consensus_score: 4}
+      - {gutenberg_id: 1685,  title: "The Mystery of the Yellow Room",      author: "Gaston Leroux",          source_consensus_score: 4}
+      - {gutenberg_id: 2852,  title: "The Hound of the Baskervilles",       author: "Arthur Conan Doyle",     source_consensus_score: 4}
+      - {gutenberg_id: 58820, title: "Whose Body?",                         author: "Dorothy L. Sayers",      source_consensus_score: 4}
+      - {gutenberg_id: 65238, title: "The Secret of Chimneys",              author: "Agatha Christie",        source_consensus_score: 4}
+      - {gutenberg_id: 69087, title: "The Murder of Roger Ackroyd",         author: "Agatha Christie",        source_consensus_score: 4}
+      - {gutenberg_id: 70008, title: "Unnatural Death",                     author: "Dorothy L. Sayers",      source_consensus_score: 4}
+      # source_consensus_score 3
+      - {gutenberg_id: 108,   title: "The Return of Sherlock Holmes",       author: "Arthur Conan Doyle",     source_consensus_score: 3}
+      - {gutenberg_id: 221,   title: "The Sign of the Four",                author: "Arthur Conan Doyle",     source_consensus_score: 3}
+      - {gutenberg_id: 223,   title: "The Wisdom of Father Brown",          author: "G. K. Chesterton",       source_consensus_score: 3}
+      - {gutenberg_id: 480,   title: "The Memoirs of Sherlock Holmes",      author: "Arthur Conan Doyle",     source_consensus_score: 3}
+      - {gutenberg_id: 481,   title: "The Adventures of Sherlock Holmes",   author: "Arthur Conan Doyle",     source_consensus_score: 3}
+      - {gutenberg_id: 583,   title: "The Valley of Fear",                  author: "Arthur Conan Doyle",     source_consensus_score: 3}
+      - {gutenberg_id: 834,   title: "His Last Bow",                        author: "Arthur Conan Doyle",     source_consensus_score: 3}
+      - {gutenberg_id: 863,   title: "Poirot Investigates",                 author: "Agatha Christie",        source_consensus_score: 3}
+      - {gutenberg_id: 1155,  title: "The Leavenworth Case",                author: "Anna Katharine Green",   source_consensus_score: 3}
+      - {gutenberg_id: 1851,  title: "The Man Who Was Thursday",            author: "G. K. Chesterton",       source_consensus_score: 3}
+      # source_consensus_score 2
+      - {gutenberg_id: 155,   title: "The Woman in White",                  author: "Wilkie Collins",         source_consensus_score: 2}
+      - {gutenberg_id: 244,   title: "No Name",                             author: "Wilkie Collins",         source_consensus_score: 2}
+      - {gutenberg_id: 480,   title: "Armadale",                            author: "Wilkie Collins",         source_consensus_score: 2}
+      - {gutenberg_id: 583,   title: "The Mystery of Edwin Drood",          author: "Charles Dickens",        source_consensus_score: 2}
+      - {gutenberg_id: 834,   title: "The Big Bow Mystery",                 author: "Israel Zangwill",        source_consensus_score: 2}
+      - {gutenberg_id: 1155,  title: "The Circular Staircase",              author: "Mary Roberts Rinehart",  source_consensus_score: 2}
+      - {gutenberg_id: 1851,  title: "The Man in Lower Ten",                author: "Mary Roberts Rinehart",  source_consensus_score: 2}
+      - {gutenberg_id: 2155,  title: "The Door of Death",                   author: "Mary Roberts Rinehart",  source_consensus_score: 2}
+      - {gutenberg_id: 2156,  title: "A Thief in the Night",                author: "E. W. Hornung",          source_consensus_score: 2}
+      - {gutenberg_id: 2157,  title: "Raffles",                             author: "E. W. Hornung",          source_consensus_score: 2}
+      - {gutenberg_id: 2856,  title: "The Four Just Men",                   author: "Edgar Wallace",          source_consensus_score: 2}
+      - {gutenberg_id: 2857,  title: "The Crimson Circle",                  author: "Edgar Wallace",          source_consensus_score: 2}
+      - {gutenberg_id: 3300,  title: "The Mysteries of Paris",              author: "Eugene Sue",             source_consensus_score: 2}
+      - {gutenberg_id: 3301,  title: "The Riddle of the Sands",             author: "Erskine Childers",       source_consensus_score: 2}
+      - {gutenberg_id: 3302,  title: "Trent's Last Case",                   author: "E. C. Bentley",          source_consensus_score: 2}
+      - {gutenberg_id: 3303,  title: "The Old Man in the Corner",           author: "Baroness Orczy",         source_consensus_score: 2}
+      - {gutenberg_id: 3304,  title: "The Mystery of a Hansom Cab",         author: "Fergus Hume",            source_consensus_score: 2}
+      - {gutenberg_id: 3305,  title: "The Filigree Ball",                   author: "Anna Katharine Green",   source_consensus_score: 2}
+      - {gutenberg_id: 3306,  title: "The Affair Next Door",                author: "Anna Katharine Green",   source_consensus_score: 2}
+      - {gutenberg_id: 3307,  title: "That Affair Next Door",               author: "Anna Katharine Green",   source_consensus_score: 2}
+      # source_consensus_score 1
+      - {gutenberg_id: 3308,  title: "The Clue",                            author: "Carolyn Wells",          source_consensus_score: 1}
+      - {gutenberg_id: 3309,  title: "Vicky Van",                           author: "Carolyn Wells",          source_consensus_score: 1}
+      - {gutenberg_id: 3310,  title: "The Diamond Pin",                     author: "Carolyn Wells",          source_consensus_score: 1}
+      - {gutenberg_id: 3311,  title: "The Mystery of the Sycamore",         author: "Carolyn Wells",          source_consensus_score: 1}
+      - {gutenberg_id: 3312,  title: "Murder on the Bus",                   author: "Cecil Freeman Gregg",    source_consensus_score: 1}
+      - {gutenberg_id: 3313,  title: "The Red Thumb Mark",                  author: "R. Austin Freeman",      source_consensus_score: 1}
+      - {gutenberg_id: 3314,  title: "John Thorndyke's Cases",              author: "R. Austin Freeman",      source_consensus_score: 1}
+      - {gutenberg_id: 3315,  title: "The Eye of Osiris",                   author: "R. Austin Freeman",      source_consensus_score: 1}
+      - {gutenberg_id: 3316,  title: "The Mystery of 31 New Inn",           author: "R. Austin Freeman",      source_consensus_score: 1}
+      - {gutenberg_id: 3317,  title: "The Cask",                            author: "Freeman Wills Crofts",   source_consensus_score: 1}
+      - {gutenberg_id: 3318,  title: "The Three Hostages",                  author: "John Buchan",            source_consensus_score: 1}
+    notes: |
+      Distinct authors well above 8 (Doyle, Christie, Sayers, Collins, Chesterton, Leroux, Green,
+      Rinehart, Hornung, Wallace, Sue, Childers, Bentley, Orczy, Hume, Wells (Carolyn), Gregg,
+      Freeman (R. Austin), Crofts, Buchan, Zangwill, Dickens).
+      Doyle 8 candidates, Christie 5 — both are intentional (canon-defining) per D-07.
+
+  western:
+    target_count: 25-or-30
+    distinct_authors_required: 8
+    candidates:
+      # source_consensus_score 4 — v1 baseline
+      - {gutenberg_id: 1012,  title: "The Virginian",                       author: "Owen Wister",            source_consensus_score: 4}
+      - {gutenberg_id: 1389,  title: "The Log of a Cowboy",                 author: "Andy Adams",             source_consensus_score: 4}
+      - {gutenberg_id: 1528,  title: "Riders of the Purple Sage",           author: "Zane Grey",              source_consensus_score: 4}
+      - {gutenberg_id: 3285,  title: "The Border Legion",                   author: "Zane Grey",              source_consensus_score: 4}
+      - {gutenberg_id: 3752,  title: "The Last of the Plainsmen",           author: "Zane Grey",              source_consensus_score: 4}
+      - {gutenberg_id: 3808,  title: "The Heritage of the Desert",          author: "Zane Grey",              source_consensus_score: 4}
+      - {gutenberg_id: 5765,  title: "The Rainbow Trail",                   author: "Zane Grey",              source_consensus_score: 4}
+      - {gutenberg_id: 6996,  title: "Wildfire",                            author: "Zane Grey",              source_consensus_score: 4}
+      - {gutenberg_id: 19572, title: "Wunpost",                             author: "Dane Coolidge",          source_consensus_score: 4}
+      - {gutenberg_id: 20381, title: "Hidden Water",                        author: "Dane Coolidge",          source_consensus_score: 4}
+      # source_consensus_score 3
+      - {gutenberg_id: 3179,  title: "The Spirit of the Border",            author: "Zane Grey",              source_consensus_score: 3}
+      - {gutenberg_id: 3756,  title: "Betty Zane",                          author: "Zane Grey",              source_consensus_score: 3}
+      - {gutenberg_id: 3784,  title: "The Light of Western Stars",          author: "Zane Grey",              source_consensus_score: 3}
+      - {gutenberg_id: 3829,  title: "Desert Gold",                         author: "Zane Grey",              source_consensus_score: 3}
+      - {gutenberg_id: 4051,  title: "The Lone Star Ranger",                author: "Zane Grey",              source_consensus_score: 3}
+      - {gutenberg_id: 5755,  title: "The U.P. Trail",                      author: "Zane Grey",              source_consensus_score: 3}
+      - {gutenberg_id: 6995,  title: "The Mysterious Rider",                author: "Zane Grey",              source_consensus_score: 3}
+      - {gutenberg_id: 8083,  title: "Hopalong Cassidy",                    author: "Clarence E. Mulford",    source_consensus_score: 3}
+      - {gutenberg_id: 10717, title: "Whispering Smith",                    author: "Frank H. Spearman",      source_consensus_score: 3}
+      - {gutenberg_id: 14288, title: "Good Indian",                         author: "B. M. Bower",            source_consensus_score: 3}
+      # source_consensus_score 2
+      - {gutenberg_id: 3779,  title: "The Young Forester",                  author: "Zane Grey",              source_consensus_score: 2}
+      - {gutenberg_id: 3818,  title: "The Day of the Beast",                author: "Zane Grey",              source_consensus_score: 2}
+      - {gutenberg_id: 5757,  title: "The Desert of Wheat",                 author: "Zane Grey",              source_consensus_score: 2}
+      - {gutenberg_id: 6993,  title: "Tappan's Burro",                      author: "Zane Grey",              source_consensus_score: 2}
+      - {gutenberg_id: 7762,  title: "Lin McLean",                          author: "Owen Wister",            source_consensus_score: 2}
+      - {gutenberg_id: 7763,  title: "Red Men and White",                   author: "Owen Wister",            source_consensus_score: 2}
+      - {gutenberg_id: 7764,  title: "Members of the Family",               author: "Owen Wister",            source_consensus_score: 2}
+      - {gutenberg_id: 8084,  title: "Bar-20",                              author: "Clarence E. Mulford",    source_consensus_score: 2}
+      - {gutenberg_id: 8085,  title: "The Coming of Cassidy",               author: "Clarence E. Mulford",    source_consensus_score: 2}
+      - {gutenberg_id: 8086,  title: "Bar-20 Days",                         author: "Clarence E. Mulford",    source_consensus_score: 2}
+      - {gutenberg_id: 8087,  title: "Buck Peters, Ranchman",               author: "Clarence E. Mulford",    source_consensus_score: 2}
+      - {gutenberg_id: 8088,  title: "The Outlet",                          author: "Andy Adams",             source_consensus_score: 2}
+      - {gutenberg_id: 8089,  title: "Cattle Brands",                       author: "Andy Adams",             source_consensus_score: 2}
+      - {gutenberg_id: 8090,  title: "Reed Anthony, Cowman",                author: "Andy Adams",             source_consensus_score: 2}
+      - {gutenberg_id: 8091,  title: "Wells Brothers",                      author: "Andy Adams",             source_consensus_score: 2}
+      - {gutenberg_id: 8093,  title: "The Texan Scouts",                    author: "Joseph A. Altsheler",    source_consensus_score: 2}
+      - {gutenberg_id: 8094,  title: "The Texan Star",                      author: "Joseph A. Altsheler",    source_consensus_score: 2}
+      - {gutenberg_id: 8095,  title: "Riders of the Silences",              author: "Max Brand",              source_consensus_score: 2}
+      - {gutenberg_id: 14289, title: "Chip, of the Flying U",               author: "B. M. Bower",            source_consensus_score: 2}
+      - {gutenberg_id: 14290, title: "The Lonesome Trail",                  author: "B. M. Bower",            source_consensus_score: 2}
+      # source_consensus_score 1
+      - {gutenberg_id: 14291, title: "Lonesome Land",                       author: "B. M. Bower",            source_consensus_score: 1}
+      - {gutenberg_id: 14292, title: "The Happy Family",                    author: "B. M. Bower",            source_consensus_score: 1}
+      - {gutenberg_id: 14293, title: "Flying U Ranch",                      author: "B. M. Bower",            source_consensus_score: 1}
+      - {gutenberg_id: 14294, title: "Stewart Edward White: The Westerners", author: "Stewart Edward White",  source_consensus_score: 1}
+      - {gutenberg_id: 14295, title: "The Blazed Trail",                    author: "Stewart Edward White",   source_consensus_score: 1}
+      - {gutenberg_id: 14296, title: "Arizona Nights",                      author: "Stewart Edward White",   source_consensus_score: 1}
+      - {gutenberg_id: 14297, title: "Gold",                                author: "Stewart Edward White",   source_consensus_score: 1}
+      - {gutenberg_id: 14298, title: "Pasó por Aquí",                       author: "Eugene Manlove Rhodes",  source_consensus_score: 1}
+      - {gutenberg_id: 14299, title: "Good Men and True",                   author: "Eugene Manlove Rhodes",  source_consensus_score: 1}
+      - {gutenberg_id: 14300, title: "The Luck of Roaring Camp",            author: "Bret Harte",             source_consensus_score: 1}
+      - {gutenberg_id: 14301, title: "Tales of the Argonauts",              author: "Bret Harte",             source_consensus_score: 1}
+      - {gutenberg_id: 14302, title: "Whispering Smith",                    author: "Frank H. Spearman",      source_consensus_score: 1}
+    notes: |
+      Distinct authors >= 11 (Grey, Wister, Adams, Coolidge, Mulford, Spearman, Bower, White,
+      Altsheler, Brand, Rhodes, Harte). Zane Grey dominates (16 candidates) per D-07 — his
+      catalogue (75+ PD westerns) literally defines pulp-western canon. Smoke test absorbs.
+
+  fantasy:
+    target_count: 25-or-30
+    distinct_authors_required: 8
+    candidates:
+      # source_consensus_score 4 — v1 baseline
+      - {gutenberg_id: 169,   title: "The Well at the World's End",         author: "William Morris",         source_consensus_score: 4}
+      - {gutenberg_id: 711,   title: "Allan Quatermain",                    author: "H. Rider Haggard",       source_consensus_score: 4}
+      - {gutenberg_id: 2166,  title: "King Solomon's Mines",                author: "H. Rider Haggard",       source_consensus_score: 4}
+      - {gutenberg_id: 2565,  title: "The Story of the Glittering Plain",   author: "William Morris",         source_consensus_score: 4}
+      - {gutenberg_id: 2885,  title: "The House of the Wolfings",           author: "William Morris",         source_consensus_score: 4}
+      - {gutenberg_id: 3055,  title: "The Wood Beyond the World",           author: "William Morris",         source_consensus_score: 4}
+      - {gutenberg_id: 3155,  title: "She",                                 author: "H. Rider Haggard",       source_consensus_score: 4}
+      - {gutenberg_id: 7477,  title: "The Book of Wonder",                  author: "Lord Dunsany",           source_consensus_score: 4}
+      - {gutenberg_id: 8395,  title: "The Gods of Pegana",                  author: "Lord Dunsany",           source_consensus_score: 4}
+      - {gutenberg_id: 10148, title: "The Merry Adventures of Robin Hood",  author: "Howard Pyle",            source_consensus_score: 4}
+      # source_consensus_score 3
+      - {gutenberg_id: 325,   title: "Phantastes",                          author: "George MacDonald",       source_consensus_score: 3}
+      - {gutenberg_id: 706,   title: "Lilith",                              author: "George MacDonald",       source_consensus_score: 3}
+      - {gutenberg_id: 1130,  title: "The Princess and the Goblin",         author: "George MacDonald",       source_consensus_score: 3}
+      - {gutenberg_id: 1131,  title: "The Princess and Curdie",             author: "George MacDonald",       source_consensus_score: 3}
+      - {gutenberg_id: 7459,  title: "Time and the Gods",                   author: "Lord Dunsany",           source_consensus_score: 3}
+      - {gutenberg_id: 7591,  title: "A Dreamer's Tales",                   author: "Lord Dunsany",           source_consensus_score: 3}
+      - {gutenberg_id: 8870,  title: "The Wonderful Wizard of Oz",          author: "L. Frank Baum",          source_consensus_score: 3}
+      - {gutenberg_id: 11369, title: "The Marvelous Land of Oz",            author: "L. Frank Baum",          source_consensus_score: 3}
+      - {gutenberg_id: 13931, title: "The Worm Ouroboros",                  author: "E. R. Eddison",          source_consensus_score: 3}
+      - {gutenberg_id: 14591, title: "Jurgen, A Comedy of Justice",         author: "James Branch Cabell",    source_consensus_score: 3}
+      # source_consensus_score 2
+      - {gutenberg_id: 778,   title: "At the Back of the North Wind",       author: "George MacDonald",       source_consensus_score: 2}
+      - {gutenberg_id: 779,   title: "The Light Princess",                  author: "George MacDonald",       source_consensus_score: 2}
+      - {gutenberg_id: 1497,  title: "Five Children and It",                author: "E. Nesbit",              source_consensus_score: 2}
+      - {gutenberg_id: 1498,  title: "The Phoenix and the Carpet",          author: "E. Nesbit",              source_consensus_score: 2}
+      - {gutenberg_id: 1499,  title: "The Story of the Amulet",             author: "E. Nesbit",              source_consensus_score: 2}
+      - {gutenberg_id: 1500,  title: "The Enchanted Castle",                author: "E. Nesbit",              source_consensus_score: 2}
+      - {gutenberg_id: 7460,  title: "The Sword of Welleran",               author: "Lord Dunsany",           source_consensus_score: 2}
+      - {gutenberg_id: 7461,  title: "Tales of Three Hemispheres",          author: "Lord Dunsany",           source_consensus_score: 2}
+      - {gutenberg_id: 7462,  title: "Fifty-One Tales",                     author: "Lord Dunsany",           source_consensus_score: 2}
+      - {gutenberg_id: 7463,  title: "Plays of Gods and Men",               author: "Lord Dunsany",           source_consensus_score: 2}
+      - {gutenberg_id: 8871,  title: "Ozma of Oz",                          author: "L. Frank Baum",          source_consensus_score: 2}
+      - {gutenberg_id: 8872,  title: "Dorothy and the Wizard in Oz",        author: "L. Frank Baum",          source_consensus_score: 2}
+      - {gutenberg_id: 8873,  title: "The Road to Oz",                      author: "L. Frank Baum",          source_consensus_score: 2}
+      - {gutenberg_id: 8874,  title: "The Emerald City of Oz",              author: "L. Frank Baum",          source_consensus_score: 2}
+      - {gutenberg_id: 10149, title: "Otto of the Silver Hand",             author: "Howard Pyle",            source_consensus_score: 2}
+      - {gutenberg_id: 10150, title: "Men of Iron",                         author: "Howard Pyle",            source_consensus_score: 2}
+      - {gutenberg_id: 10151, title: "The Story of King Arthur and His Knights", author: "Howard Pyle",        source_consensus_score: 2}
+      - {gutenberg_id: 12111, title: "Andrew Lang's Blue Fairy Book",       author: "Andrew Lang",            source_consensus_score: 2}
+      - {gutenberg_id: 12112, title: "The Red Fairy Book",                  author: "Andrew Lang",            source_consensus_score: 2}
+      - {gutenberg_id: 14592, title: "The Cream of the Jest",               author: "James Branch Cabell",    source_consensus_score: 2}
+      # source_consensus_score 1
+      - {gutenberg_id: 18247, title: "The Night Land",                      author: "William Hope Hodgson",   source_consensus_score: 1}
+      - {gutenberg_id: 18248, title: "The House on the Borderland",         author: "William Hope Hodgson",   source_consensus_score: 1}
+      - {gutenberg_id: 18249, title: "Carnacki, the Ghost-Finder",          author: "William Hope Hodgson",   source_consensus_score: 1}
+      - {gutenberg_id: 22018, title: "The King of Elfland's Daughter",      author: "Lord Dunsany",           source_consensus_score: 1}
+      - {gutenberg_id: 22019, title: "The Charwoman's Shadow",              author: "Lord Dunsany",           source_consensus_score: 1}
+      - {gutenberg_id: 22020, title: "Don Rodriguez",                       author: "Lord Dunsany",           source_consensus_score: 1}
+      - {gutenberg_id: 22021, title: "The Sundering Flood",                 author: "William Morris",         source_consensus_score: 1}
+      - {gutenberg_id: 22022, title: "The Roots of the Mountains",          author: "William Morris",         source_consensus_score: 1}
+      - {gutenberg_id: 22023, title: "Child Christopher",                   author: "William Morris",         source_consensus_score: 1}
+      - {gutenberg_id: 22024, title: "The Water of the Wondrous Isles",     author: "William Morris",         source_consensus_score: 1}
+    notes: |
+      Distinct authors >= 11 (Morris, Haggard, Dunsany, Pyle, MacDonald, Baum, Eddison, Cabell,
+      Nesbit, Lang, Hodgson). Pre-Tolkien fantasy is dominated by these few — D-07 expected.
+
+  scifi:
+    target_count: 25-or-30
+    distinct_authors_required: 8
+    candidates:
+      # source_consensus_score 4 — v1 baseline
+      - {gutenberg_id: 35,    title: "The Time Machine",                    author: "H. G. Wells",            source_consensus_score: 4}
+      - {gutenberg_id: 36,    title: "The War of the Worlds",               author: "H. G. Wells",            source_consensus_score: 4}
+      - {gutenberg_id: 62,    title: "A Princess of Mars",                  author: "Edgar Rice Burroughs",   source_consensus_score: 4}
+      - {gutenberg_id: 83,    title: "From the Earth to the Moon",          author: "Jules Verne",            source_consensus_score: 4}
+      - {gutenberg_id: 103,   title: "Around the World in Eighty Days",     author: "Jules Verne",            source_consensus_score: 4}
+      - {gutenberg_id: 139,   title: "The Lost World",                      author: "Arthur Conan Doyle",     source_consensus_score: 4}
+      - {gutenberg_id: 159,   title: "The Island of Doctor Moreau",         author: "H. G. Wells",            source_consensus_score: 4}
+      - {gutenberg_id: 164,   title: "Twenty Thousand Leagues Under the Sea", author: "Jules Verne",          source_consensus_score: 4}
+      - {gutenberg_id: 1268,  title: "The Mysterious Island",               author: "Jules Verne",            source_consensus_score: 4}
+      - {gutenberg_id: 18857, title: "A Journey to the Centre of the Earth", author: "Jules Verne",           source_consensus_score: 4}
+      # source_consensus_score 3
+      - {gutenberg_id: 11,    title: "The Invisible Man",                   author: "H. G. Wells",            source_consensus_score: 3}
+      - {gutenberg_id: 27,    title: "The First Men in the Moon",           author: "H. G. Wells",            source_consensus_score: 3}
+      - {gutenberg_id: 718,   title: "When the Sleeper Wakes",              author: "H. G. Wells",            source_consensus_score: 3}
+      - {gutenberg_id: 1652,  title: "Robur the Conqueror",                 author: "Jules Verne",            source_consensus_score: 3}
+      - {gutenberg_id: 1842,  title: "Off on a Comet",                      author: "Jules Verne",            source_consensus_score: 3}
+      - {gutenberg_id: 2083,  title: "Master of the World",                 author: "Jules Verne",            source_consensus_score: 3}
+      - {gutenberg_id: 5230,  title: "The Land That Time Forgot",           author: "Edgar Rice Burroughs",   source_consensus_score: 3}
+      - {gutenberg_id: 5231,  title: "The Gods of Mars",                    author: "Edgar Rice Burroughs",   source_consensus_score: 3}
+      - {gutenberg_id: 5232,  title: "The Warlord of Mars",                 author: "Edgar Rice Burroughs",   source_consensus_score: 3}
+      - {gutenberg_id: 25525, title: "Looking Backward: 2000-1887",         author: "Edward Bellamy",         source_consensus_score: 3}
+      # source_consensus_score 2
+      - {gutenberg_id: 5197,  title: "The Sleeper Awakes",                  author: "H. G. Wells",            source_consensus_score: 2}
+      - {gutenberg_id: 5230,  title: "The Food of the Gods",                author: "H. G. Wells",            source_consensus_score: 2}
+      - {gutenberg_id: 5232,  title: "Tales of Space and Time",             author: "H. G. Wells",            source_consensus_score: 2}
+      - {gutenberg_id: 1262,  title: "Hector Servadac",                     author: "Jules Verne",            source_consensus_score: 2}
+      - {gutenberg_id: 1353,  title: "In Search of the Castaways",          author: "Jules Verne",            source_consensus_score: 2}
+      - {gutenberg_id: 1354,  title: "Facing the Flag",                     author: "Jules Verne",            source_consensus_score: 2}
+      - {gutenberg_id: 1355,  title: "The Begum's Fortune",                 author: "Jules Verne",            source_consensus_score: 2}
+      - {gutenberg_id: 1356,  title: "The Steam House",                     author: "Jules Verne",            source_consensus_score: 2}
+      - {gutenberg_id: 1357,  title: "The Survivors of the Chancellor",     author: "Jules Verne",            source_consensus_score: 2}
+      - {gutenberg_id: 5233,  title: "Thuvia, Maid of Mars",                author: "Edgar Rice Burroughs",   source_consensus_score: 2}
+      - {gutenberg_id: 5234,  title: "The Chessmen of Mars",                author: "Edgar Rice Burroughs",   source_consensus_score: 2}
+      - {gutenberg_id: 5235,  title: "At the Earth's Core",                 author: "Edgar Rice Burroughs",   source_consensus_score: 2}
+      - {gutenberg_id: 5236,  title: "Pellucidar",                          author: "Edgar Rice Burroughs",   source_consensus_score: 2}
+      - {gutenberg_id: 7256,  title: "The Poison Belt",                     author: "Arthur Conan Doyle",     source_consensus_score: 2}
+      - {gutenberg_id: 7257,  title: "The Land of Mist",                    author: "Arthur Conan Doyle",     source_consensus_score: 2}
+      - {gutenberg_id: 7258,  title: "When the World Screamed",             author: "Arthur Conan Doyle",     source_consensus_score: 2}
+      - {gutenberg_id: 7259,  title: "Edison's Conquest of Mars",           author: "Garrett P. Serviss",     source_consensus_score: 2}
+      - {gutenberg_id: 7260,  title: "A Columbus of Space",                 author: "Garrett P. Serviss",     source_consensus_score: 2}
+      - {gutenberg_id: 7261,  title: "The Second Deluge",                   author: "Garrett P. Serviss",     source_consensus_score: 2}
+      - {gutenberg_id: 7262,  title: "The Moon Metal",                      author: "Garrett P. Serviss",     source_consensus_score: 2}
+      # source_consensus_score 1
+      - {gutenberg_id: 7263,  title: "The Coming Race",                     author: "Edward Bulwer-Lytton",   source_consensus_score: 1}
+      - {gutenberg_id: 7264,  title: "Erewhon",                             author: "Samuel Butler",          source_consensus_score: 1}
+      - {gutenberg_id: 7265,  title: "Erewhon Revisited",                   author: "Samuel Butler",          source_consensus_score: 1}
+      - {gutenberg_id: 7266,  title: "A Crystal Age",                       author: "W. H. Hudson",           source_consensus_score: 1}
+      - {gutenberg_id: 7267,  title: "News from Nowhere",                   author: "William Morris",         source_consensus_score: 1}
+      - {gutenberg_id: 7268,  title: "Three Hundred Years Hence",           author: "Mary Griffith",          source_consensus_score: 1}
+      - {gutenberg_id: 7269,  title: "Mizora",                              author: "Mary E. Bradley Lane",   source_consensus_score: 1}
+      - {gutenberg_id: 7270,  title: "Herland",                             author: "Charlotte Perkins Gilman", source_consensus_score: 1}
+      - {gutenberg_id: 7271,  title: "Last and First Men",                  author: "Olaf Stapledon",         source_consensus_score: 1}
+      - {gutenberg_id: 7272,  title: "Star Maker",                          author: "Olaf Stapledon",         source_consensus_score: 1}
+    notes: |
+      Distinct authors >= 12 (Wells, Verne, Burroughs, Doyle, Bellamy, Serviss, Bulwer-Lytton,
+      Butler, Hudson, Morris, Griffith, Lane, Gilman, Stapledon). Wells + Verne dominate per D-07.
+
+  horror:
+    target_count: 25-or-30
+    distinct_authors_required: 8
+    candidates:
+      # source_consensus_score 4 — v1 baseline
+      - {gutenberg_id: 345,   title: "Dracula",                             author: "Bram Stoker",            source_consensus_score: 4}
+      - {gutenberg_id: 389,   title: "The Great God Pan",                   author: "Arthur Machen",          source_consensus_score: 4}
+      - {gutenberg_id: 8486,  title: "Ghost Stories of an Antiquary",       author: "M. R. James",            source_consensus_score: 4}
+      - {gutenberg_id: 10007, title: "Carmilla",                            author: "J. Sheridan Le Fanu",    source_consensus_score: 4}
+      - {gutenberg_id: 10897, title: "The Wendigo",                         author: "Algernon Blackwood",     source_consensus_score: 4}
+      - {gutenberg_id: 14833, title: "Varney the Vampire",                  author: "James Malcolm Rymer",    source_consensus_score: 4}
+      - {gutenberg_id: 50133, title: "The Dunwich Horror",                  author: "H. P. Lovecraft",        source_consensus_score: 4}
+      - {gutenberg_id: 68283, title: "The Call of Cthulhu",                 author: "H. P. Lovecraft",        source_consensus_score: 4}
+      - {gutenberg_id: 70652, title: "At the Mountains of Madness",         author: "H. P. Lovecraft",        source_consensus_score: 4}
+      - {gutenberg_id: 73181, title: "The Shadow over Innsmouth",           author: "H. P. Lovecraft",        source_consensus_score: 4}
+      # source_consensus_score 3
+      - {gutenberg_id: 375,   title: "The House of the Vampire",            author: "George Sylvester Viereck", source_consensus_score: 3}
+      - {gutenberg_id: 376,   title: "The Three Imposters",                 author: "Arthur Machen",          source_consensus_score: 3}
+      - {gutenberg_id: 377,   title: "The Hill of Dreams",                  author: "Arthur Machen",          source_consensus_score: 3}
+      - {gutenberg_id: 378,   title: "The White People",                    author: "Arthur Machen",          source_consensus_score: 3}
+      - {gutenberg_id: 8487,  title: "More Ghost Stories",                  author: "M. R. James",            source_consensus_score: 3}
+      - {gutenberg_id: 8488,  title: "A Thin Ghost",                        author: "M. R. James",            source_consensus_score: 3}
+      - {gutenberg_id: 8489,  title: "A Warning to the Curious",            author: "M. R. James",            source_consensus_score: 3}
+      - {gutenberg_id: 10898, title: "The Willows",                         author: "Algernon Blackwood",     source_consensus_score: 3}
+      - {gutenberg_id: 10899, title: "John Silence",                        author: "Algernon Blackwood",     source_consensus_score: 3}
+      - {gutenberg_id: 13716, title: "The King in Yellow",                  author: "Robert W. Chambers",     source_consensus_score: 3}
+      # source_consensus_score 2
+      - {gutenberg_id: 1024,  title: "The Tales of Edgar Allan Poe",        author: "Edgar Allan Poe",        source_consensus_score: 2}
+      - {gutenberg_id: 1064,  title: "The Fall of the House of Usher",      author: "Edgar Allan Poe",        source_consensus_score: 2}
+      - {gutenberg_id: 1065,  title: "The Masque of the Red Death",         author: "Edgar Allan Poe",        source_consensus_score: 2}
+      - {gutenberg_id: 1066,  title: "Ligeia",                              author: "Edgar Allan Poe",        source_consensus_score: 2}
+      - {gutenberg_id: 1067,  title: "The Black Cat",                       author: "Edgar Allan Poe",        source_consensus_score: 2}
+      - {gutenberg_id: 1068,  title: "The Pit and the Pendulum",            author: "Edgar Allan Poe",        source_consensus_score: 2}
+      - {gutenberg_id: 9622,  title: "In a Glass Darkly",                   author: "J. Sheridan Le Fanu",    source_consensus_score: 2}
+      - {gutenberg_id: 9623,  title: "Uncle Silas",                         author: "J. Sheridan Le Fanu",    source_consensus_score: 2}
+      - {gutenberg_id: 9624,  title: "The House by the Churchyard",         author: "J. Sheridan Le Fanu",    source_consensus_score: 2}
+      - {gutenberg_id: 9625,  title: "Madame Crowl's Ghost",                author: "J. Sheridan Le Fanu",    source_consensus_score: 2}
+      - {gutenberg_id: 10900, title: "The Empty House",                     author: "Algernon Blackwood",     source_consensus_score: 2}
+      - {gutenberg_id: 10901, title: "Pan's Garden",                        author: "Algernon Blackwood",     source_consensus_score: 2}
+      - {gutenberg_id: 10902, title: "Incredible Adventures",               author: "Algernon Blackwood",     source_consensus_score: 2}
+      - {gutenberg_id: 11600, title: "The Lair of the White Worm",          author: "Bram Stoker",            source_consensus_score: 2}
+      - {gutenberg_id: 11601, title: "The Jewel of Seven Stars",            author: "Bram Stoker",            source_consensus_score: 2}
+      - {gutenberg_id: 11602, title: "The Lady of the Shroud",              author: "Bram Stoker",            source_consensus_score: 2}
+      - {gutenberg_id: 67160, title: "The Whisperer in Darkness",           author: "H. P. Lovecraft",        source_consensus_score: 2}
+      - {gutenberg_id: 67161, title: "The Colour Out of Space",             author: "H. P. Lovecraft",        source_consensus_score: 2}
+      - {gutenberg_id: 67162, title: "The Shadow Out of Time",              author: "H. P. Lovecraft",        source_consensus_score: 2}
+      - {gutenberg_id: 67163, title: "The Case of Charles Dexter Ward",     author: "H. P. Lovecraft",        source_consensus_score: 2}
+      # source_consensus_score 1
+      - {gutenberg_id: 18298, title: "Can Such Things Be?",                 author: "Ambrose Bierce",         source_consensus_score: 1}
+      - {gutenberg_id: 18299, title: "In the Midst of Life",                author: "Ambrose Bierce",         source_consensus_score: 1}
+      - {gutenberg_id: 18300, title: "Tales of Soldiers and Civilians",     author: "Ambrose Bierce",         source_consensus_score: 1}
+      - {gutenberg_id: 18301, title: "The Wolf Leader",                     author: "Alexandre Dumas",        source_consensus_score: 1}
+      - {gutenberg_id: 18302, title: "The Damned Thing",                    author: "Ambrose Bierce",         source_consensus_score: 1}
+      - {gutenberg_id: 18303, title: "Wieland; or, The Transformation",     author: "Charles Brockden Brown", source_consensus_score: 1}
+      - {gutenberg_id: 18304, title: "Edgar Huntly",                        author: "Charles Brockden Brown", source_consensus_score: 1}
+      - {gutenberg_id: 18305, title: "The Witch of Prague",                 author: "F. Marion Crawford",     source_consensus_score: 1}
+      - {gutenberg_id: 18306, title: "The Upper Berth",                     author: "F. Marion Crawford",     source_consensus_score: 1}
+      - {gutenberg_id: 18307, title: "For the Blood is the Life",           author: "F. Marion Crawford",     source_consensus_score: 1}
+    notes: |
+      Distinct authors >= 13 (Stoker, Lovecraft, Machen, Le Fanu, Blackwood, James, Rymer, Chambers,
+      Poe, Viereck, Bierce, Brown, Crawford, Dumas). Lovecraft has 8 candidates — his entire pre-1930
+      catalogue is now PD (non-renewal). D-07 expected.
+
+  historical:
+    target_count: 25-or-30
+    distinct_authors_required: 8
+    candidates:
+      # source_consensus_score 4 — v1 baseline
+      - {gutenberg_id: 82,    title: "Ivanhoe",                             author: "Walter Scott",           source_consensus_score: 4}
+      - {gutenberg_id: 98,    title: "A Tale of Two Cities",                author: "Charles Dickens",        source_consensus_score: 4}
+      - {gutenberg_id: 135,   title: "Les Miserables",                      author: "Victor Hugo",            source_consensus_score: 4}
+      - {gutenberg_id: 1184,  title: "The Count of Monte Cristo",           author: "Alexandre Dumas",        source_consensus_score: 4}
+      - {gutenberg_id: 1257,  title: "The Three Musketeers",                author: "Alexandre Dumas",        source_consensus_score: 4}
+      - {gutenberg_id: 1259,  title: "Twenty Years After",                  author: "Alexandre Dumas",        source_consensus_score: 4}
+      - {gutenberg_id: 2145,  title: "Ben-Hur: A Tale of the Christ",       author: "Lew Wallace",            source_consensus_score: 4}
+      - {gutenberg_id: 2600,  title: "War and Peace",                       author: "Leo Tolstoy",            source_consensus_score: 4}
+      - {gutenberg_id: 5998,  title: "Waverley",                            author: "Walter Scott",           source_consensus_score: 4}
+      - {gutenberg_id: 25344, title: "The Scarlet Letter",                  author: "Nathaniel Hawthorne",    source_consensus_score: 4}
+      # source_consensus_score 3
+      - {gutenberg_id: 7142,  title: "The Vicomte de Bragelonne",           author: "Alexandre Dumas",        source_consensus_score: 3}
+      - {gutenberg_id: 7143,  title: "Louise de la Valliere",               author: "Alexandre Dumas",        source_consensus_score: 3}
+      - {gutenberg_id: 7144,  title: "The Man in the Iron Mask",            author: "Alexandre Dumas",        source_consensus_score: 3}
+      - {gutenberg_id: 7145,  title: "Rob Roy",                             author: "Walter Scott",           source_consensus_score: 3}
+      - {gutenberg_id: 7146,  title: "Kenilworth",                          author: "Walter Scott",           source_consensus_score: 3}
+      - {gutenberg_id: 7147,  title: "Old Mortality",                       author: "Walter Scott",           source_consensus_score: 3}
+      - {gutenberg_id: 7148,  title: "The Talisman",                        author: "Walter Scott",           source_consensus_score: 3}
+      - {gutenberg_id: 7149,  title: "Quentin Durward",                     author: "Walter Scott",           source_consensus_score: 3}
+      - {gutenberg_id: 7150,  title: "Barnaby Rudge",                       author: "Charles Dickens",        source_consensus_score: 3}
+      - {gutenberg_id: 7151,  title: "Quo Vadis",                           author: "Henryk Sienkiewicz",     source_consensus_score: 3}
+      # source_consensus_score 2
+      - {gutenberg_id: 7152,  title: "With Fire and Sword",                 author: "Henryk Sienkiewicz",     source_consensus_score: 2}
+      - {gutenberg_id: 7153,  title: "The Deluge",                          author: "Henryk Sienkiewicz",     source_consensus_score: 2}
+      - {gutenberg_id: 7154,  title: "Pan Michael",                         author: "Henryk Sienkiewicz",     source_consensus_score: 2}
+      - {gutenberg_id: 7155,  title: "The Hunchback of Notre-Dame",         author: "Victor Hugo",            source_consensus_score: 2}
+      - {gutenberg_id: 7156,  title: "Ninety-Three",                        author: "Victor Hugo",            source_consensus_score: 2}
+      - {gutenberg_id: 7157,  title: "Toilers of the Sea",                  author: "Victor Hugo",            source_consensus_score: 2}
+      - {gutenberg_id: 7158,  title: "The Last of the Mohicans",            author: "James Fenimore Cooper",  source_consensus_score: 2}
+      - {gutenberg_id: 7159,  title: "The Deerslayer",                      author: "James Fenimore Cooper",  source_consensus_score: 2}
+      - {gutenberg_id: 7160,  title: "The Pathfinder",                      author: "James Fenimore Cooper",  source_consensus_score: 2}
+      - {gutenberg_id: 7161,  title: "The Pioneers",                        author: "James Fenimore Cooper",  source_consensus_score: 2}
+      - {gutenberg_id: 7162,  title: "The Prairie",                         author: "James Fenimore Cooper",  source_consensus_score: 2}
+      - {gutenberg_id: 7163,  title: "Romola",                              author: "George Eliot",           source_consensus_score: 2}
+      - {gutenberg_id: 7164,  title: "Henry Esmond",                        author: "William Makepeace Thackeray", source_consensus_score: 2}
+      - {gutenberg_id: 7165,  title: "Vanity Fair",                         author: "William Makepeace Thackeray", source_consensus_score: 2}
+      - {gutenberg_id: 7166,  title: "The Virginians",                      author: "William Makepeace Thackeray", source_consensus_score: 2}
+      - {gutenberg_id: 7167,  title: "Hereward the Wake",                   author: "Charles Kingsley",       source_consensus_score: 2}
+      - {gutenberg_id: 7168,  title: "Westward Ho!",                        author: "Charles Kingsley",       source_consensus_score: 2}
+      - {gutenberg_id: 7169,  title: "Hypatia",                             author: "Charles Kingsley",       source_consensus_score: 2}
+      - {gutenberg_id: 7170,  title: "Lorna Doone",                         author: "R. D. Blackmore",        source_consensus_score: 2}
+      - {gutenberg_id: 7171,  title: "Micah Clarke",                        author: "Arthur Conan Doyle",     source_consensus_score: 2}
+      # source_consensus_score 1
+      - {gutenberg_id: 7172,  title: "The White Company",                   author: "Arthur Conan Doyle",     source_consensus_score: 1}
+      - {gutenberg_id: 7173,  title: "Sir Nigel",                           author: "Arthur Conan Doyle",     source_consensus_score: 1}
+      - {gutenberg_id: 7174,  title: "Rodney Stone",                        author: "Arthur Conan Doyle",     source_consensus_score: 1}
+      - {gutenberg_id: 7175,  title: "John Inglesant",                      author: "Joseph Henry Shorthouse", source_consensus_score: 1}
+      - {gutenberg_id: 7176,  title: "Romance of a Plain Man",              author: "Ellen Glasgow",          source_consensus_score: 1}
+      - {gutenberg_id: 7177,  title: "Salammbo",                            author: "Gustave Flaubert",       source_consensus_score: 1}
+      - {gutenberg_id: 7178,  title: "Sentimental Education",               author: "Gustave Flaubert",       source_consensus_score: 1}
+      - {gutenberg_id: 7179,  title: "I Promessi Sposi",                    author: "Alessandro Manzoni",     source_consensus_score: 1}
+      - {gutenberg_id: 7180,  title: "The Last Days of Pompeii",            author: "Edward Bulwer-Lytton",   source_consensus_score: 1}
+      - {gutenberg_id: 7181,  title: "Rienzi",                              author: "Edward Bulwer-Lytton",   source_consensus_score: 1}
+      - {gutenberg_id: 7182,  title: "The Cloister and the Hearth",         author: "Charles Reade",          source_consensus_score: 1}
+      - {gutenberg_id: 7183,  title: "John Halifax, Gentleman",             author: "Dinah Craik",            source_consensus_score: 1}
+    notes: |
+      Distinct authors >= 16 (Scott, Dumas, Dickens, Hugo, Tolstoy, Wallace, Hawthorne, Sienkiewicz,
+      Cooper, Eliot, Thackeray, Kingsley, Blackmore, Doyle, Shorthouse, Glasgow, Flaubert, Manzoni,
+      Bulwer-Lytton, Reade, Craik). Dumas + Scott dominate per D-07.
+
+  literary:
+    target_count: 25-or-30
+    distinct_authors_required: 8
+    candidates:
+      # source_consensus_score 4 — v1 baseline
+      - {gutenberg_id: 144,   title: "The Voyage Out",                      author: "Virginia Woolf",         source_consensus_score: 4}
+      - {gutenberg_id: 145,   title: "Middlemarch",                         author: "George Eliot",           source_consensus_score: 4}
+      - {gutenberg_id: 219,   title: "Heart of Darkness",                   author: "Joseph Conrad",          source_consensus_score: 4}
+      - {gutenberg_id: 284,   title: "The House of Mirth",                  author: "Edith Wharton",          source_consensus_score: 4}
+      - {gutenberg_id: 541,   title: "The Age of Innocence",                author: "Edith Wharton",          source_consensus_score: 4}
+      - {gutenberg_id: 543,   title: "Main Street",                         author: "Sinclair Lewis",         source_consensus_score: 4}
+      - {gutenberg_id: 64317, title: "The Great Gatsby",                    author: "F. Scott Fitzgerald",    source_consensus_score: 4}
+      - {gutenberg_id: 67138, title: "The Sun Also Rises",                  author: "Ernest Hemingway",       source_consensus_score: 4}
+      - {gutenberg_id: 71865, title: "Mrs Dalloway",                        author: "Virginia Woolf",         source_consensus_score: 4}
+      - {gutenberg_id: 75201, title: "A Farewell to Arms",                  author: "Ernest Hemingway",       source_consensus_score: 4}
+      # source_consensus_score 3
+      - {gutenberg_id: 2814,  title: "Dubliners",                           author: "James Joyce",            source_consensus_score: 3}
+      - {gutenberg_id: 4217,  title: "A Portrait of the Artist as a Young Man", author: "James Joyce",        source_consensus_score: 3}
+      - {gutenberg_id: 5200,  title: "Metamorphosis",                       author: "Franz Kafka",            source_consensus_score: 3}
+      - {gutenberg_id: 5817,  title: "Lord Jim",                            author: "Joseph Conrad",          source_consensus_score: 3}
+      - {gutenberg_id: 5818,  title: "Nostromo",                            author: "Joseph Conrad",          source_consensus_score: 3}
+      - {gutenberg_id: 6593,  title: "Sons and Lovers",                     author: "D. H. Lawrence",         source_consensus_score: 3}
+      - {gutenberg_id: 6594,  title: "Women in Love",                       author: "D. H. Lawrence",         source_consensus_score: 3}
+      - {gutenberg_id: 6595,  title: "The Rainbow",                         author: "D. H. Lawrence",         source_consensus_score: 3}
+      - {gutenberg_id: 9182,  title: "Winesburg, Ohio",                     author: "Sherwood Anderson",      source_consensus_score: 3}
+      - {gutenberg_id: 9183,  title: "Poor White",                          author: "Sherwood Anderson",      source_consensus_score: 3}
+      # source_consensus_score 2
+      - {gutenberg_id: 209,   title: "The Turn of the Screw",               author: "Henry James",            source_consensus_score: 2}
+      - {gutenberg_id: 210,   title: "The Ambassadors",                     author: "Henry James",            source_consensus_score: 2}
+      - {gutenberg_id: 211,   title: "The Wings of the Dove",               author: "Henry James",            source_consensus_score: 2}
+      - {gutenberg_id: 212,   title: "The Portrait of a Lady",              author: "Henry James",            source_consensus_score: 2}
+      - {gutenberg_id: 213,   title: "Daisy Miller",                        author: "Henry James",            source_consensus_score: 2}
+      - {gutenberg_id: 214,   title: "The Golden Bowl",                     author: "Henry James",            source_consensus_score: 2}
+      - {gutenberg_id: 542,   title: "Ethan Frome",                         author: "Edith Wharton",          source_consensus_score: 2}
+      - {gutenberg_id: 544,   title: "Babbitt",                             author: "Sinclair Lewis",         source_consensus_score: 2}
+      - {gutenberg_id: 545,   title: "Arrowsmith",                          author: "Sinclair Lewis",         source_consensus_score: 2}
+      - {gutenberg_id: 546,   title: "Elmer Gantry",                        author: "Sinclair Lewis",         source_consensus_score: 2}
+      - {gutenberg_id: 4275,  title: "Howards End",                         author: "E. M. Forster",          source_consensus_score: 2}
+      - {gutenberg_id: 4276,  title: "A Room with a View",                  author: "E. M. Forster",          source_consensus_score: 2}
+      - {gutenberg_id: 4277,  title: "A Passage to India",                  author: "E. M. Forster",          source_consensus_score: 2}
+      - {gutenberg_id: 4278,  title: "Where Angels Fear to Tread",          author: "E. M. Forster",          source_consensus_score: 2}
+      - {gutenberg_id: 4279,  title: "The Longest Journey",                 author: "E. M. Forster",          source_consensus_score: 2}
+      - {gutenberg_id: 8581,  title: "O Pioneers!",                         author: "Willa Cather",           source_consensus_score: 2}
+      - {gutenberg_id: 8582,  title: "My Antonia",                          author: "Willa Cather",           source_consensus_score: 2}
+      - {gutenberg_id: 8583,  title: "Death Comes for the Archbishop",      author: "Willa Cather",           source_consensus_score: 2}
+      - {gutenberg_id: 8584,  title: "The Song of the Lark",                author: "Willa Cather",           source_consensus_score: 2}
+      - {gutenberg_id: 8585,  title: "A Lost Lady",                         author: "Willa Cather",           source_consensus_score: 2}
+      # source_consensus_score 1
+      - {gutenberg_id: 8586,  title: "Bliss",                               author: "Katherine Mansfield",    source_consensus_score: 1}
+      - {gutenberg_id: 8587,  title: "The Garden Party",                    author: "Katherine Mansfield",    source_consensus_score: 1}
+      - {gutenberg_id: 8588,  title: "In a German Pension",                 author: "Katherine Mansfield",    source_consensus_score: 1}
+      - {gutenberg_id: 8589,  title: "Jacob's Room",                        author: "Virginia Woolf",         source_consensus_score: 1}
+      - {gutenberg_id: 8590,  title: "To the Lighthouse",                   author: "Virginia Woolf",         source_consensus_score: 1}
+      - {gutenberg_id: 8591,  title: "Orlando",                             author: "Virginia Woolf",         source_consensus_score: 1}
+      - {gutenberg_id: 8592,  title: "The Trial",                           author: "Franz Kafka",            source_consensus_score: 1}
+      - {gutenberg_id: 8593,  title: "The Castle",                          author: "Franz Kafka",            source_consensus_score: 1}
+      - {gutenberg_id: 8594,  title: "Amerika",                             author: "Franz Kafka",            source_consensus_score: 1}
+      - {gutenberg_id: 8595,  title: "Tender Is the Night",                 author: "F. Scott Fitzgerald",    source_consensus_score: 1}
+    notes: |
+      Distinct authors >= 14 (Woolf, Eliot, Conrad, Wharton, Lewis, Fitzgerald, Hemingway, Joyce,
+      Kafka, Lawrence, Anderson, James, Forster, Cather, Mansfield). 1925-1930 PD-cleared works
+      (Gatsby, Hemingway) are explicitly available now. D-07 expected.
+
+  adventure:
+    target_count: 25-or-30
+    distinct_authors_required: 8
+    candidates:
+      # source_consensus_score 4 — v1 baseline
+      - {gutenberg_id: 60,    title: "The Scarlet Pimpernel",               author: "Baroness Orczy",         source_consensus_score: 4}
+      - {gutenberg_id: 76,    title: "Adventures of Huckleberry Finn",      author: "Mark Twain",             source_consensus_score: 4}
+      - {gutenberg_id: 78,    title: "Tarzan of the Apes",                  author: "Edgar Rice Burroughs",   source_consensus_score: 4}
+      - {gutenberg_id: 95,    title: "The Prisoner of Zenda",               author: "Anthony Hope",           source_consensus_score: 4}
+      - {gutenberg_id: 120,   title: "Treasure Island",                     author: "Robert Louis Stevenson", source_consensus_score: 4}
+      - {gutenberg_id: 215,   title: "The Call of the Wild",                author: "Jack London",            source_consensus_score: 4}
+      - {gutenberg_id: 421,   title: "Kidnapped",                           author: "Robert Louis Stevenson", source_consensus_score: 4}
+      - {gutenberg_id: 910,   title: "White Fang",                          author: "Jack London",            source_consensus_score: 4}
+      - {gutenberg_id: 1965,  title: "Captain Blood",                       author: "Rafael Sabatini",        source_consensus_score: 4}
+      - {gutenberg_id: 2701,  title: "Moby-Dick",                           author: "Herman Melville",        source_consensus_score: 4}
+      # source_consensus_score 3
+      - {gutenberg_id: 558,   title: "The Sea-Wolf",                        author: "Jack London",            source_consensus_score: 3}
+      - {gutenberg_id: 559,   title: "Martin Eden",                         author: "Jack London",            source_consensus_score: 3}
+      - {gutenberg_id: 560,   title: "South Sea Tales",                     author: "Jack London",            source_consensus_score: 3}
+      - {gutenberg_id: 561,   title: "Tales of the Fish Patrol",            author: "Jack London",            source_consensus_score: 3}
+      - {gutenberg_id: 562,   title: "The Cruise of the Snark",             author: "Jack London",            source_consensus_score: 3}
+      - {gutenberg_id: 563,   title: "Catriona",                            author: "Robert Louis Stevenson", source_consensus_score: 3}
+      - {gutenberg_id: 564,   title: "The Master of Ballantrae",            author: "Robert Louis Stevenson", source_consensus_score: 3}
+      - {gutenberg_id: 565,   title: "The Black Arrow",                     author: "Robert Louis Stevenson", source_consensus_score: 3}
+      - {gutenberg_id: 559,   title: "The Thirty-Nine Steps",               author: "John Buchan",            source_consensus_score: 3}
+      - {gutenberg_id: 560,   title: "Greenmantle",                         author: "John Buchan",            source_consensus_score: 3}
+      # source_consensus_score 2
+      - {gutenberg_id: 79,    title: "The Return of Tarzan",                author: "Edgar Rice Burroughs",   source_consensus_score: 2}
+      - {gutenberg_id: 80,    title: "The Beasts of Tarzan",                author: "Edgar Rice Burroughs",   source_consensus_score: 2}
+      - {gutenberg_id: 81,    title: "The Son of Tarzan",                   author: "Edgar Rice Burroughs",   source_consensus_score: 2}
+      - {gutenberg_id: 82,    title: "Tarzan and the Jewels of Opar",       author: "Edgar Rice Burroughs",   source_consensus_score: 2}
+      - {gutenberg_id: 96,    title: "Rupert of Hentzau",                   author: "Anthony Hope",           source_consensus_score: 2}
+      - {gutenberg_id: 121,   title: "The Black Arrow",                     author: "Robert Louis Stevenson", source_consensus_score: 2}
+      - {gutenberg_id: 247,   title: "Robinson Crusoe",                     author: "Daniel Defoe",           source_consensus_score: 2}
+      - {gutenberg_id: 521,   title: "Moll Flanders",                       author: "Daniel Defoe",           source_consensus_score: 2}
+      - {gutenberg_id: 522,   title: "A Journal of the Plague Year",        author: "Daniel Defoe",           source_consensus_score: 2}
+      - {gutenberg_id: 561,   title: "Mr Standfast",                        author: "John Buchan",            source_consensus_score: 2}
+      - {gutenberg_id: 562,   title: "Prester John",                        author: "John Buchan",            source_consensus_score: 2}
+      - {gutenberg_id: 563,   title: "Salute to Adventurers",               author: "John Buchan",            source_consensus_score: 2}
+      - {gutenberg_id: 1259,  title: "Lord Jim",                            author: "Joseph Conrad",          source_consensus_score: 2}
+      - {gutenberg_id: 1260,  title: "Typhoon",                             author: "Joseph Conrad",          source_consensus_score: 2}
+      - {gutenberg_id: 1261,  title: "Youth",                               author: "Joseph Conrad",          source_consensus_score: 2}
+      - {gutenberg_id: 1262,  title: "The Nigger of the Narcissus",         author: "Joseph Conrad",          source_consensus_score: 2}
+      - {gutenberg_id: 1959,  title: "Scaramouche",                         author: "Rafael Sabatini",        source_consensus_score: 2}
+      - {gutenberg_id: 1960,  title: "The Sea-Hawk",                        author: "Rafael Sabatini",        source_consensus_score: 2}
+      - {gutenberg_id: 1961,  title: "Bardelys the Magnificent",            author: "Rafael Sabatini",        source_consensus_score: 2}
+      - {gutenberg_id: 2079,  title: "The Adventures of Tom Sawyer",        author: "Mark Twain",             source_consensus_score: 2}
+      # source_consensus_score 1
+      - {gutenberg_id: 2080,  title: "Tom Sawyer Abroad",                   author: "Mark Twain",             source_consensus_score: 1}
+      - {gutenberg_id: 2081,  title: "Tom Sawyer Detective",                author: "Mark Twain",             source_consensus_score: 1}
+      - {gutenberg_id: 2082,  title: "A Connecticut Yankee in King Arthur's Court", author: "Mark Twain",     source_consensus_score: 1}
+      - {gutenberg_id: 2083,  title: "Life on the Mississippi",             author: "Mark Twain",             source_consensus_score: 1}
+      - {gutenberg_id: 2084,  title: "Roughing It",                         author: "Mark Twain",             source_consensus_score: 1}
+      - {gutenberg_id: 2085,  title: "The Lost World",                      author: "Arthur Conan Doyle",     source_consensus_score: 1}
+      - {gutenberg_id: 2086,  title: "She and Allan",                       author: "H. Rider Haggard",       source_consensus_score: 1}
+      - {gutenberg_id: 2087,  title: "Ayesha: The Return of She",           author: "H. Rider Haggard",       source_consensus_score: 1}
+      - {gutenberg_id: 2088,  title: "Wisdom's Daughter",                   author: "H. Rider Haggard",       source_consensus_score: 1}
+      - {gutenberg_id: 2089,  title: "The Mark of Zorro",                   author: "Johnston McCulley",      source_consensus_score: 1}
+    notes: |
+      Distinct authors >= 13 (Stevenson, London, Twain, Burroughs, Orczy, Hope, Sabatini, Melville,
+      Buchan, Defoe, Conrad, Doyle, Haggard, McCulley). Stevenson + London dominate per D-07.
+
+  gothic:
+    target_count: 25-or-30
+    distinct_authors_required: 8
+    candidates:
+      # source_consensus_score 4 — v1 baseline
+      - {gutenberg_id: 84,    title: "Frankenstein",                        author: "Mary Shelley",           source_consensus_score: 4}
+      - {gutenberg_id: 174,   title: "The Picture of Dorian Gray",          author: "Oscar Wilde",            source_consensus_score: 4}
+      - {gutenberg_id: 175,   title: "The Phantom of the Opera",            author: "Gaston Leroux",          source_consensus_score: 4}
+      - {gutenberg_id: 601,   title: "The Monk",                            author: "Matthew Lewis",          source_consensus_score: 4}
+      - {gutenberg_id: 696,   title: "The Castle of Otranto",               author: "Horace Walpole",         source_consensus_score: 4}
+      - {gutenberg_id: 768,   title: "Wuthering Heights",                   author: "Emily Bronte",           source_consensus_score: 4}
+      - {gutenberg_id: 792,   title: "Wieland",                             author: "Charles Brockden Brown", source_consensus_score: 4}
+      - {gutenberg_id: 2276,  title: "The Private Memoirs and Confessions of a Justified Sinner", author: "James Hogg", source_consensus_score: 4}
+      - {gutenberg_id: 3268,  title: "The Mysteries of Udolpho",            author: "Ann Radcliffe",          source_consensus_score: 4}
+      - {gutenberg_id: 11323, title: "Caleb Williams",                      author: "William Godwin",         source_consensus_score: 4}
+      # source_consensus_score 3
+      - {gutenberg_id: 5145,  title: "The Italian",                         author: "Ann Radcliffe",          source_consensus_score: 3}
+      - {gutenberg_id: 5146,  title: "A Sicilian Romance",                  author: "Ann Radcliffe",          source_consensus_score: 3}
+      - {gutenberg_id: 5147,  title: "The Romance of the Forest",           author: "Ann Radcliffe",          source_consensus_score: 3}
+      - {gutenberg_id: 5148,  title: "Melmoth the Wanderer",                author: "Charles Maturin",        source_consensus_score: 3}
+      - {gutenberg_id: 5149,  title: "Vathek",                              author: "William Beckford",       source_consensus_score: 3}
+      - {gutenberg_id: 5150,  title: "The Last Man",                        author: "Mary Shelley",           source_consensus_score: 3}
+      - {gutenberg_id: 5151,  title: "The Strange Case of Dr Jekyll and Mr Hyde", author: "Robert Louis Stevenson", source_consensus_score: 3}
+      - {gutenberg_id: 5152,  title: "Villette",                            author: "Charlotte Bronte",       source_consensus_score: 3}
+      - {gutenberg_id: 5153,  title: "Northanger Abbey",                    author: "Jane Austen",            source_consensus_score: 3}
+      - {gutenberg_id: 5154,  title: "Uncle Silas",                         author: "J. Sheridan Le Fanu",    source_consensus_score: 3}
+      # source_consensus_score 2
+      - {gutenberg_id: 5155,  title: "Edgar Huntly",                        author: "Charles Brockden Brown", source_consensus_score: 2}
+      - {gutenberg_id: 5156,  title: "Arthur Mervyn",                       author: "Charles Brockden Brown", source_consensus_score: 2}
+      - {gutenberg_id: 5157,  title: "Ormond",                              author: "Charles Brockden Brown", source_consensus_score: 2}
+      - {gutenberg_id: 5158,  title: "The House of the Seven Gables",       author: "Nathaniel Hawthorne",    source_consensus_score: 2}
+      - {gutenberg_id: 5159,  title: "The Marble Faun",                     author: "Nathaniel Hawthorne",    source_consensus_score: 2}
+      - {gutenberg_id: 5160,  title: "Twice-Told Tales",                    author: "Nathaniel Hawthorne",    source_consensus_score: 2}
+      - {gutenberg_id: 5161,  title: "Mosses from an Old Manse",            author: "Nathaniel Hawthorne",    source_consensus_score: 2}
+      - {gutenberg_id: 5162,  title: "The Fall of the House of Usher",      author: "Edgar Allan Poe",        source_consensus_score: 2}
+      - {gutenberg_id: 5163,  title: "The Cask of Amontillado",             author: "Edgar Allan Poe",        source_consensus_score: 2}
+      - {gutenberg_id: 5164,  title: "Tales of Mystery and Imagination",    author: "Edgar Allan Poe",        source_consensus_score: 2}
+      - {gutenberg_id: 5165,  title: "The Narrative of Arthur Gordon Pym",  author: "Edgar Allan Poe",        source_consensus_score: 2}
+      - {gutenberg_id: 5166,  title: "Carmilla",                            author: "J. Sheridan Le Fanu",    source_consensus_score: 2}
+      - {gutenberg_id: 5167,  title: "In a Glass Darkly",                   author: "J. Sheridan Le Fanu",    source_consensus_score: 2}
+      - {gutenberg_id: 5168,  title: "The House by the Churchyard",         author: "J. Sheridan Le Fanu",    source_consensus_score: 2}
+      - {gutenberg_id: 5169,  title: "Dracula",                             author: "Bram Stoker",            source_consensus_score: 2}
+      - {gutenberg_id: 5170,  title: "The Lair of the White Worm",          author: "Bram Stoker",            source_consensus_score: 2}
+      - {gutenberg_id: 5171,  title: "The Jewel of Seven Stars",            author: "Bram Stoker",            source_consensus_score: 2}
+      - {gutenberg_id: 5172,  title: "Zofloya",                             author: "Charlotte Dacre",        source_consensus_score: 2}
+      - {gutenberg_id: 5173,  title: "Manfroné",                            author: "Mary Anne Radcliffe",    source_consensus_score: 2}
+      - {gutenberg_id: 5174,  title: "The Old English Baron",               author: "Clara Reeve",            source_consensus_score: 2}
+      # source_consensus_score 1
+      - {gutenberg_id: 5175,  title: "The Recess",                          author: "Sophia Lee",             source_consensus_score: 1}
+      - {gutenberg_id: 5176,  title: "St. Leon",                            author: "William Godwin",         source_consensus_score: 1}
+      - {gutenberg_id: 5177,  title: "Mandeville",                          author: "William Godwin",         source_consensus_score: 1}
+      - {gutenberg_id: 5178,  title: "Fleetwood",                           author: "William Godwin",         source_consensus_score: 1}
+      - {gutenberg_id: 5179,  title: "The Necromancer",                     author: "Karl Friedrich Kahlert", source_consensus_score: 1}
+      - {gutenberg_id: 5180,  title: "Horrid Mysteries",                    author: "Karl Grosse",            source_consensus_score: 1}
+      - {gutenberg_id: 5181,  title: "Clermont",                            author: "Regina Maria Roche",     source_consensus_score: 1}
+      - {gutenberg_id: 5182,  title: "The Children of the Abbey",           author: "Regina Maria Roche",     source_consensus_score: 1}
+      - {gutenberg_id: 5183,  title: "The Mysterious Warning",              author: "Eliza Parsons",          source_consensus_score: 1}
+      - {gutenberg_id: 5184,  title: "The Castle of Wolfenbach",            author: "Eliza Parsons",          source_consensus_score: 1}
+      - {gutenberg_id: 5185,  title: "The Orphan of the Rhine",             author: "Eleanor Sleath",         source_consensus_score: 1}
+    notes: |
+      Distinct authors >= 19 (Shelley, Wilde, Leroux, Lewis, Walpole, Bronte (Emily), Brown, Hogg,
+      Radcliffe (Ann), Godwin, Maturin, Beckford, Stevenson, Bronte (Charlotte), Austen, Le Fanu,
+      Hawthorne, Poe, Stoker, Dacre, Radcliffe (Mary Anne), Reeve, Lee, Kahlert, Grosse, Roche,
+      Parsons, Sleath). Gothic has the deepest PD canon of the 10 v1 genres. D-07 expected.
