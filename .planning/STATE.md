@@ -1,30 +1,30 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: — Shipped
-status: completed
-last_updated: "2026-05-24T16:16:48.800Z"
-last_activity: 2026-05-24
+milestone: v2.0
+milestone_name: Accuracy, Depth, and Polish
+status: in_progress
+last_updated: "2026-05-25T00:00:00.000Z"
+last_activity: 2026-05-25
 progress:
-  total_phases: 7
-  completed_phases: 6
-  total_plans: 26
-  completed_plans: 25
-  percent: 96
+  total_phases: 5
+  completed_phases: 2
+  total_plans: 10
+  completed_plans: 10
+  percent: 40
 ---
 
 # STATE
 
 ## Current Position
 
-Phase: 07 (corpus-sourcing-research-spike) — EXECUTING
-Plan: 1 of 5
+Phase: 08 (corpus-expansion) — Context gathered, ready to plan
+Plan: 0 of TBD
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
-- **Phase:** 07
+- **Phase:** 08
 - **Plan:** Not started
-- **Status:** Milestone complete
-- **Last activity:** 2026-05-24
+- **Status:** In progress (Phase 6, 7 complete; Phase 8 context gathered 2026-05-25)
+- **Last activity:** 2026-05-25
 
 ### Quick Tasks Completed
 
@@ -37,8 +37,8 @@ Plan: 1 of 5
 | # | Phase | Status |
 |---|---|---|
 | 6 | v1 Bug-Fix Sweep | Complete (2026-05-23; commits 5a37a28, e57ea67) |
-| 7 | Corpus Sourcing Research Spike | Context gathered (2026-05-24); ready to plan |
-| 8 | Corpus Expansion | Pending (blocked on Phase 6 BUG-05 + Phase 7) |
+| 7 | Corpus Sourcing Research Spike | Complete (2026-05-25; CORPUS_SOURCING.md + VALIDATION_PROTOCOL.md + corpus_candidates.yaml + v1_baseline_results.json delivered) |
+| 8 | Corpus Expansion | Context gathered (2026-05-25); ready to plan (4 waves: build → retrain → validate → release; 15 decisions captured in 08-CONTEXT.md) |
 | 9 | Classification Depth | Pending (blocked on Phase 8) |
 | 10 | Visual Polish | Pending (blocked on Phases 6–9) |
 
@@ -105,30 +105,35 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 
 ## Open Blockers
 
-None. Phase 7 context gathered; ready to plan via `/gsd-plan-phase 7`.
+None. Phase 8 context gathered; ready to plan via `/gsd-plan-phase 8`.
 
-Documentation drift to clean up (separate `/gsd-docs-update` pass — surfaced during Phase 7 discuss):
+Phase 8 plans the **4-wave structure** (build → retrain → validate → release) per 08-CONTEXT.md D-22. Wave 1 includes `scripts/build_corpus.py` (D-24 upgraded CEXP-05 from P2 to P1) and the byte-identical re-run of `scripts/phase7_v1_baseline.py` as the entry gate.
 
-- REQUIREMENTS.md CORPUS-01 still says "3 genres × 5 books"; PROJECT.md "Validated" list mirrors this. v1 actually shipped with 10 genres × 10 books per commit db7b1f8 (2026-04-13).
+Documentation drift to clean up (folded into Wave 4 per D-34, no longer a separate `/gsd-docs-update` pass):
+
+- REQUIREMENTS.md CORPUS-01 still says "3 genres × 5 books"; PROJECT.md "Validated" list mirrors this. v1 actually shipped with 10 genres × 10 books per commit db7b1f8 (2026-04-13); v2 ships with 8 genres × 30 books = 240 books per Proposal A.
 - ROADMAP.md "v1 outcomes" implicitly references the same stale framing.
+- CEXP-01..05 traceability rows flip from Pending → Validated per-wave (D-36), not as a terminal sweep.
 
 ## Session Continuity
 
-**Next command:** `/gsd-plan-phase 7`
+**Next command:** `/gsd-plan-phase 8`
 
 **Reading order for the next session:**
 
-1. `.planning/phases/07-corpus-sourcing-research-spike/07-CONTEXT.md` — locked decisions (read FIRST)
-2. `.planning/phases/07-corpus-sourcing-research-spike/07-DISCUSSION-LOG.md` — alternatives considered for each decision
-3. `.planning/ROADMAP.md` §"Phase 7" — success criteria + dependencies
-4. `.planning/REQUIREMENTS.md` RES-01..03 — Phase 7 requirements verbatim
-5. `.planning/research/SUMMARY.md` §"Phase 7" + §"Gaps to Address" — v2 spine; pre-states what this phase must close
-6. `.planning/research/PITFALLS.md` §4, §5, §6, §11 — every guard in VALIDATION_PROTOCOL.md must trace to one of these
-7. `corpus/books.yaml` — current 100-book manifest; Phase 7 picks the 20% hold-out from this universe
-8. `results/validation_report.txt` — v1 baseline reference (54.6% overall, p=0.001); Phase 7 computes a NEW number for the hold-out subset
-9. `scripts/06_validate.py` — current LOOCV + permutation skeleton; VALIDATION_PROTOCOL.md specifies the diff Phase 8 must apply
+1. `.planning/phases/08-corpus-expansion/08-CONTEXT.md` — Phase 8 locked decisions (read FIRST)
+2. `.planning/phases/08-corpus-expansion/08-DISCUSSION-LOG.md` — alternatives considered for each Phase 8 decision
+3. `.planning/phases/07-corpus-sourcing-research-spike/07-CONTEXT.md` — Phase 7 decisions D-01..D-21 (inherited; not re-litigated)
+4. `.planning/research/v2/CORPUS_SOURCING.md` §5 selection rule + §8 entry checklist — `build_corpus.py` implements verbatim
+5. `.planning/research/v2/VALIDATION_PROTOCOL.md` §6 GroupKFold + §8 smoke test + §10 entry checklist — `scripts/06_validate.py` modifications + Wave-3 protocol
+6. `.planning/research/v2/corpus_candidates.yaml` — `build_corpus.py` reads verbatim
+7. `.planning/research/v2/v1_baseline_results.json` — Wave-1 byte-identical gate verifies against this
+8. `.planning/ROADMAP.md` §"Phase 8: Corpus Expansion" — success criteria + dependency on Phase 6 + Phase 7
+9. `.planning/REQUIREMENTS.md` CEXP-01..05 — Phase 8 requirements verbatim
+10. `.planning/research/PITFALLS.md` §1 (cache key + lineage), §4 (held-out), §5 (author leakage), §6 (class imbalance), §11 (LOOCV cost) — every Phase 8 guard traces here
+11. `corpus/books.yaml` + `config/params.yaml` — atomic-swap target + frozen hyperparameters
 
 ---
 *v1.0 shipped: 2026-04-13*
 *v2.0 milestone started: 2026-05-22*
-*Last updated: 2026-05-22 — Phase 6 context gathered; BUG-01 recast to H₂ removal, H₀ cleanup added*
+*Last updated: 2026-05-25 — Phase 7 complete; Phase 8 context gathered (4 waves, 15 decisions); STATE.md milestone frontmatter corrected from v1.0 → v2.0*
