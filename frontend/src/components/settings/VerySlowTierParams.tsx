@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { AlertTriangle } from 'lucide-react'
-import { useVisualizationStore } from '@/stores/visualizationStore'
+import { useRecompute } from '@/hooks/useRecompute'
 
 interface VerySlowParam {
   key: string
@@ -17,7 +17,7 @@ const VERY_SLOW_PARAMS: VerySlowParam[] = [
 ]
 
 export function VerySlowTierParams() {
-  const setIsRetraining = useVisualizationStore((s) => s.setIsRetraining)
+  const { triggerRetrain } = useRecompute()
 
   const [values, setValues] = useState<Record<string, number>>(() => {
     const init: Record<string, number> = {}
@@ -38,11 +38,10 @@ export function VerySlowTierParams() {
   }, [values])
 
   const handleConfirmRetrain = useCallback(() => {
-    setIsRetraining(true)
+    void triggerRetrain({ vector_size: values.vector_size, window: values.window })
     setConfirmDialog(null)
     setPendingValue(null)
-    // In production: trigger retrain via useRecompute
-  }, [setIsRetraining])
+  }, [triggerRetrain, values])
 
   const handleCancelRetrain = useCallback(() => {
     // Revert value
