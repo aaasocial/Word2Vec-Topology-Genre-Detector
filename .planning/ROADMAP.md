@@ -125,10 +125,10 @@ Phases 6, 7, 8, 9 ────────────────────�
 **Plans:** 5 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Comparable projects + per-source verdicts + multi-label feasibility (RES-01, RES-03; D-01, D-02, D-03, D-04, D-05, D-18)
-- [ ] 07-02-PLAN.md — Genre set recommendation (Proposal A/B/C) + LCC subject overlap analysis (RES-01; D-09, D-21)
-- [ ] 07-03-PLAN.md — Per-genre candidate shortlist (≥50 gutenberg_ids each) + author distribution audit + books.yaml schema (RES-01; D-06, D-07, D-08, D-10, D-19)
-- [ ] 07-04-PLAN.md — v1 baseline computation: deterministic eval of svm_pipeline.joblib on the 20% author-overlap hold-out (RES-02; D-11, D-12, D-13)
+- [x] 07-01-PLAN.md — Comparable projects + per-source verdicts + multi-label feasibility (RES-01, RES-03; D-01, D-02, D-03, D-04, D-05, D-18)
+- [x] 07-02-PLAN.md — Genre set recommendation (Proposal A/B/C) + LCC subject overlap analysis (RES-01; D-09, D-21)
+- [x] 07-03-PLAN.md — Per-genre candidate shortlist (≥50 gutenberg_ids each) + author distribution audit + books.yaml schema (RES-01; D-06, D-07, D-08, D-10, D-19)
+- [x] 07-04-PLAN.md — v1 baseline computation: deterministic eval of svm_pipeline.joblib on the 20% author-overlap hold-out (RES-02; D-11, D-12, D-13)
 - [ ] 07-05-PLAN.md — Assembly: CORPUS_SOURCING.md + VALIDATION_PROTOCOL.md with Phase 8 entry checklists (RES-01, RES-02, RES-03; D-10, D-14, D-15, D-16, D-17, D-20, D-21)
 
 **Key pitfalls owned by this phase** (`PITFALLS.md`):
