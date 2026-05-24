@@ -24,7 +24,13 @@ Plan: 1 of 5
 - **Phase:** 06
 - **Plan:** Not started
 - **Status:** Milestone complete
-- **Last activity:** 2026-05-22
+- **Last activity:** 2026-05-24 — Completed quick task 260524-w2l: v1.0.1 patch wiring useRecompute into SlowTierParams + VerySlowTierParams (closes v1.0-MILESTONE-AUDIT PARAM-03..06 gap)
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260524-w2l | v1.0.1 patch: wire useRecompute into SlowTierParams + VerySlowTierParams | 2026-05-24 | b2d5ee7 | [260524-w2l-v1-0-1-patch-wire-userecompute-into-slow](./quick/260524-w2l-v1-0-1-patch-wire-userecompute-into-slow/) |
 
 ## Milestone v2.0 — Phases
 
