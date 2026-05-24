@@ -1,30 +1,29 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: — Shipped
-status: completed
-last_updated: "2026-05-22T17:52:02.158Z"
-last_activity: 2026-05-22
+milestone: v2.0
+milestone_name: — Accuracy, Depth, and Polish
+status: in_progress
+last_updated: "2026-05-24T13:30:00.000Z"
+last_activity: 2026-05-24
 progress:
-  total_phases: 6
-  completed_phases: 5
-  total_plans: 21
-  completed_plans: 20
-  percent: 95
+  total_phases: 10
+  completed_phases: 6
+  total_plans: 26
+  completed_plans: 25
+  percent: 60
 ---
 
 # STATE
 
 ## Current Position
 
-Phase: 06 (v1-bug-fix-sweep) — EXECUTING
-Plan: 1 of 5
+Phase: 07 (corpus-sourcing-research-spike) — CONTEXT GATHERED, READY TO PLAN
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
-- **Phase:** 06
-- **Plan:** Not started
-- **Status:** Milestone complete
-- **Last activity:** 2026-05-24 — Completed quick task 260524-w2l: v1.0.1 patch wiring useRecompute into SlowTierParams + VerySlowTierParams (closes v1.0-MILESTONE-AUDIT PARAM-03..06 gap)
+- **Phase:** 07
+- **Plan:** Not started — `/gsd-plan-phase 7` next
+- **Status:** Phase 6 complete; Phase 7 context gathered via interactive `/gsd-discuss-phase 7`
+- **Last activity:** 2026-05-24 — Phase 7 context captured in `.planning/phases/07-corpus-sourcing-research-spike/07-CONTEXT.md` (commit 2ca94ca)
 
 ### Quick Tasks Completed
 
@@ -36,8 +35,8 @@ Plan: 1 of 5
 
 | # | Phase | Status |
 |---|---|---|
-| 6 | v1 Bug-Fix Sweep | Ready to plan |
-| 7 | Corpus Sourcing Research Spike | Pending (parallel-eligible with 6) |
+| 6 | v1 Bug-Fix Sweep | Complete (2026-05-23; commits 5a37a28, e57ea67) |
+| 7 | Corpus Sourcing Research Spike | Context gathered (2026-05-24); ready to plan |
 | 8 | Corpus Expansion | Pending (blocked on Phase 6 BUG-05 + Phase 7) |
 | 9 | Classification Depth | Pending (blocked on Phase 8) |
 | 10 | Visual Polish | Pending (blocked on Phases 6–9) |
@@ -105,20 +104,27 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 
 ## Open Blockers
 
-None. Phase 6 ready to plan via `/gsd-plan-phase 6`.
+None. Phase 7 context gathered; ready to plan via `/gsd-plan-phase 7`.
+
+Documentation drift to clean up (separate `/gsd-docs-update` pass — surfaced during Phase 7 discuss):
+- REQUIREMENTS.md CORPUS-01 still says "3 genres × 5 books"; PROJECT.md "Validated" list mirrors this. v1 actually shipped with 10 genres × 10 books per commit db7b1f8 (2026-04-13).
+- ROADMAP.md "v1 outcomes" implicitly references the same stale framing.
 
 ## Session Continuity
 
-**Next command:** `/gsd-plan-phase 6`
+**Next command:** `/gsd-plan-phase 7`
 
 **Reading order for the next session:**
 
-1. `.planning/phases/06-v1-bug-fix-sweep/06-CONTEXT.md` — locked decisions (read FIRST)
-2. `.planning/ROADMAP.md` — Phase 6 details (note: milestone success criterion #1 needs rewriting per CONTEXT)
-3. `.planning/research/SUMMARY.md` — overall v2 spine
-4. `.planning/research/ARCHITECTURE.md` §6 + §10 — Phase 6 file-level touchpoints
-5. `.planning/research/PITFALLS.md` §10, §12, §15, §1 — pitfalls still owned by Phase 6 (§2/§3 moot after H₂ removal)
-6. `.planning/REQUIREMENTS.md` BUG-01..05 + TOPO-02 — Phase 6 requirements (BUG-01 + TOPO-02 wording needs rewriting per CONTEXT)
+1. `.planning/phases/07-corpus-sourcing-research-spike/07-CONTEXT.md` — locked decisions (read FIRST)
+2. `.planning/phases/07-corpus-sourcing-research-spike/07-DISCUSSION-LOG.md` — alternatives considered for each decision
+3. `.planning/ROADMAP.md` §"Phase 7" — success criteria + dependencies
+4. `.planning/REQUIREMENTS.md` RES-01..03 — Phase 7 requirements verbatim
+5. `.planning/research/SUMMARY.md` §"Phase 7" + §"Gaps to Address" — v2 spine; pre-states what this phase must close
+6. `.planning/research/PITFALLS.md` §4, §5, §6, §11 — every guard in VALIDATION_PROTOCOL.md must trace to one of these
+7. `corpus/books.yaml` — current 100-book manifest; Phase 7 picks the 20% hold-out from this universe
+8. `results/validation_report.txt` — v1 baseline reference (54.6% overall, p=0.001); Phase 7 computes a NEW number for the hold-out subset
+9. `scripts/06_validate.py` — current LOOCV + permutation skeleton; VALIDATION_PROTOCOL.md specifies the diff Phase 8 must apply
 
 ---
 *v1.0 shipped: 2026-04-13*
