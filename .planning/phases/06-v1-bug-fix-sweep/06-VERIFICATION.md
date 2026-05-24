@@ -1,8 +1,10 @@
 ---
 phase: 06-v1-bug-fix-sweep
 verified: 2026-05-22T21:15:00Z
-status: human_needed
+human_verified: 2026-05-24T22:18:00Z
+status: passed
 score: 5/5 must-haves verified
+human_uat: 3 pass / 1 skipped (no infinity-persistence features in current corpus; rendering verified by 06-02 Vitest fixtures)
 overrides_applied: 0
 human_verification:
   - test: "Visit the running app at /topology; confirm only the 'H1' tab is visible and no disabled H2 tab or H0 tab appears in the persistence-image panel"

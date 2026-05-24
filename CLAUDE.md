@@ -156,7 +156,7 @@ git lfs pull
 ```
 This downloads `data/models/` (~300MB). The slow pipeline steps (corpus download, preprocessing, Word2Vec training, homology) are already done.
 
-**3. Regenerate derived caches** (fast, ~20 min total)
+**3. Regenerate derived caches** (~20 min total)
 ```bash
 # Step 5: rebuild per-book feature vectors from existing models
 python scripts/05_build_features.py --window 15
@@ -164,11 +164,17 @@ python scripts/05_build_features.py --window 15
 # Step 6: validate SVM accuracy (optional sanity check)
 python scripts/06_validate.py --window 15
 
-# Precompute all visualization caches (projections, VR, persistence diagrams)
-python -c "
-from backend.pipeline.precompute import precompute_all
-precompute_all(window=15, force=True)
-"
+# Flush any pre-v2 cache entries (BUG-05 cache_key migration — entries written
+# before Phase 6 use the old key scheme and are unreachable by the new lookup):
+python scripts/flush_v1_cache.py --yes
+
+# Run the three precompute stages in order. precompute_all() takes only `window`;
+# the legacy `force=True` kwarg was removed in Phase 6 (the new lineage-aware
+# cache_key makes force-overwrite unnecessary — a corpus or model change rotates
+# the keys automatically).
+python -m backend.pipeline.precompute --window 15      # features + SVM (~10 min)
+python -m backend.pipeline.precompute_viz --window 15  # PCA/KPCA/UMAP/t-SNE scatter + persistence (~10 min)
+python -m backend.pipeline.precompute_vr               # VR edges per projection (~30 s)
 ```
 
 **4. Start the app**
