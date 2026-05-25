@@ -1,0 +1,438 @@
+C:\Users\Eason\scoop\apps\python\current\Lib\site-packages\requests\__init__.py:109: RequestsDependencyWarning: urllib3 (2.1.0) or chardet (7.4.1)/charset_normalizer (3.3.2) doesn't match a supported version!
+  warnings.warn(
+Auditing 240 entries...
+  ...30/240
+  ...60/240
+  ...90/240
+  ...120/240
+  ...150/240
+  ...180/240
+  ...210/240
+  ...240/240
+
+--- 141 mismatches ---
+gid   2701 (adventure     ):
+  Expected: "Moby-Dick" by Herman Melville
+  Actual:   "Moby Dick; Or, The Whale" by Herman Melville
+gid    558 (adventure     ):
+  Expected: "The Sea-Wolf" by Jack London
+  Actual:   "The Thirty-Nine Steps" by John Buchan
+gid    559 (adventure     ):
+  Expected: "Martin Eden" by Jack London
+  Actual:   "Greenmantle" by John Buchan
+gid    560 (adventure     ):
+  Expected: "South Sea Tales" by Jack London
+  Actual:   "Mr. Standfast" by John Buchan
+gid    561 (adventure     ):
+  Expected: "Tales of the Fish Patrol" by Jack London
+  Actual:   "The Further Adventures of Robinson Crusoe" by Daniel Defoe
+gid    562 (adventure     ):
+  Expected: "The Cruise of the Snark" by Jack London
+  Actual:   "The Go Ahead Boys and the Racing Motor-Boat" by Ross Kay
+gid    563 (adventure     ):
+  Expected: "Catriona" by Robert Louis Stevenson
+  Actual:   "The Planet Mars and Its Inhabitants, a Psychic Revelation" by J. L. Kennon
+gid    564 (adventure     ):
+  Expected: "The Master of Ballantrae" by Robert Louis Stevenson
+  Actual:   "The Mystery of Edwin Drood" by Charles Dickens
+gid    565 (adventure     ):
+  Expected: "The Black Arrow" by Robert Louis Stevenson
+  Actual:   "The Zincali: An Account of the Gypsies of Spain" by George Borrow
+gid     79 (adventure     ):
+  Expected: "The Return of Tarzan" by Edgar Rice Burroughs
+  Actual:   "Terminal Compromise" by Winn Schwartau
+gid     80 (adventure     ):
+  Expected: "The Beasts of Tarzan" by Edgar Rice Burroughs
+  Actual:   "The Online World" by Odd De Presno
+gid     81 (adventure     ):
+  Expected: "The Son of Tarzan" by Edgar Rice Burroughs
+  Actual:   "The Return of Tarzan" by Edgar Rice Burroughs
+gid     82 (adventure     ):
+  Expected: "Tarzan and the Jewels of Opar" by Edgar Rice Burroughs
+  Actual:   "Ivanhoe: A Romance" by Walter Scott
+gid     96 (adventure     ):
+  Expected: "Rupert of Hentzau" by Anthony Hope
+  Actual:   "The Monster Men" by Edgar Rice Burroughs
+gid    121 (adventure     ):
+  Expected: "The Black Arrow" by Robert Louis Stevenson
+  Actual:   "Northanger Abbey" by Jane Austen
+gid    247 (adventure     ):
+  Expected: "Robinson Crusoe" by Daniel Defoe
+  Actual:   "Webster's Unabridged Dictionary (1st 100 Pages)" by Noah Webster
+gid    521 (adventure     ):
+  Expected: "Moll Flanders" by Daniel Defoe
+  Actual:   "The Life and Adventures of Robinson Crusoe" by Daniel Defoe
+gid    522 (adventure     ):
+  Expected: "A Journal of the Plague Year" by Daniel Defoe
+  Actual:   "The Chinese Boy and Girl" by Isaac Taylor Headland
+gid   1259 (adventure     ):
+  Expected: "Lord Jim" by Joseph Conrad
+  Actual:   "Twenty years after" by Alexandre Dumas
+gid   1260 (adventure     ):
+  Expected: "Typhoon" by Joseph Conrad
+  Actual:   "Jane Eyre: An Autobiography" by Charlotte Brontë
+gid   1261 (adventure     ):
+  Expected: "Youth" by Joseph Conrad
+  Actual:   "Betty Zane" by Zane Grey
+gid  14833 (gothic_horror ):
+  Expected: "Varney the Vampire" by James Malcolm Rymer
+  Actual:   "Varney the vampyre; or, the feast of blood" by Thomas Peckett Prest
+gid    376 (gothic_horror ):
+  Expected: "The Three Imposters" by Arthur Machen
+  Actual:   "A Journal of the Plague Year" by Daniel Defoe
+gid    377 (gothic_horror ):
+  Expected: "The Hill of Dreams" by Arthur Machen
+  Actual:   "Kansas Women in Literature" by Nettie Garmer Barker
+gid    378 (gothic_horror ):
+  Expected: "The White People" by Arthur Machen
+  Actual:   "The White Knight: Tirant Lo Blanc" by Joanot Martorell
+gid   5145 (gothic_horror ):
+  Expected: "The Italian" by Ann Radcliffe
+  Actual:   "The Heart of the Hills" by Jr. John Fox
+gid   5146 (gothic_horror ):
+  Expected: "A Sicilian Romance" by Ann Radcliffe
+  Actual:   "The Fighting Governor : A Chronicle of Frontenac" by Charles W. Colby
+gid   5147 (gothic_horror ):
+  Expected: "The Romance of the Forest" by Ann Radcliffe
+  Actual:   "Le Jardin d'Épicure" by Anatole France
+gid   5148 (gothic_horror ):
+  Expected: "Melmoth the Wanderer" by Charles Maturin
+  Actual:   "Rodney Stone" by Arthur Conan Doyle
+gid   5149 (gothic_horror ):
+  Expected: "Vathek" by William Beckford
+  Actual:   "Gold of the Gods" by Arthur B. Reeve
+gid   5150 (gothic_horror ):
+  Expected: "The Last Man" by Mary Shelley
+  Actual:   "The Ear in the Wall" by Arthur B. Reeve
+gid   5151 (gothic_horror ):
+  Expected: "The Strange Case of Dr Jekyll and Mr Hyde" by Robert Louis Stevenson
+  Actual:   "The Exploits of Elaine" by Arthur B. Reeve
+gid    135 (historical    ):
+  Expected: "Les Miserables" by Victor Hugo
+  Actual:   "Les Misérables" by Victor Hugo
+gid   7151 (historical    ):
+  Expected: "Quo Vadis" by Henryk Sienkiewicz
+  Actual:   "Clelia: Il governo dei preti - Romanzo storico politico" by Giuseppe Garibaldi
+gid   7142 (historical    ):
+  Expected: "The Vicomte de Bragelonne" by Alexandre Dumas
+  Actual:   "The History of the Peloponnesian War" by Thucydides
+gid   7143 (historical    ):
+  Expected: "Louise de la Valliere" by Alexandre Dumas
+  Actual:   "The Strange Cabin on Catamount Island" by Lawrence J. Leslie
+gid   7144 (historical    ):
+  Expected: "The Man in the Iron Mask" by Alexandre Dumas
+  Actual:   "While the Billy Boils" by Henry Lawson
+gid   7145 (historical    ):
+  Expected: "Rob Roy" by Walter Scott
+  Actual:   "The Book of the Dead" by Sir E. A. Wallis Budge
+gid   7146 (historical    ):
+  Expected: "Kenilworth" by Walter Scott
+  Actual:   "Cecilia; Or, Memoirs of an Heiress — Volume 2" by Fanny Burney
+gid   7147 (historical    ):
+  Expected: "Old Mortality" by Walter Scott
+  Actual:   "The French in the Heart of America" by John H. Finley
+gid   7148 (historical    ):
+  Expected: "The Talisman" by Walter Scott
+  Actual:   "Lectures on Dramatic Art and Literature" by August Wilhelm von Schlegel
+gid   7149 (historical    ):
+  Expected: "Quentin Durward" by Walter Scott
+  Actual:   "The Poetical Works of Henry Kirk White : With a Memoir by Sir Harris Nicolas" by Henry Kirke White
+gid   7150 (historical    ):
+  Expected: "Barnaby Rudge" by Charles Dickens
+  Actual:   "Science & Education: Essays" by Thomas Henry Huxley
+gid   7152 (historical    ):
+  Expected: "With Fire and Sword" by Henryk Sienkiewicz
+  Actual:   "Cecilia; Or, Memoirs of an Heiress — Volume 3" by Fanny Burney
+gid   7153 (historical    ):
+  Expected: "The Deluge" by Henryk Sienkiewicz
+  Actual:   "Elder Conklin and Other Stories" by Frank Harris
+gid   7154 (historical    ):
+  Expected: "Pan Michael" by Henryk Sienkiewicz
+  Actual:   "The Prince and the Pauper, Part 1." by Mark Twain
+gid   7155 (historical    ):
+  Expected: "The Hunchback of Notre-Dame" by Victor Hugo
+  Actual:   "The Prince and the Pauper, Part 2." by Mark Twain
+gid   7156 (historical    ):
+  Expected: "Ninety-Three" by Victor Hugo
+  Actual:   "The Prince and the Pauper, Part 3." by Mark Twain
+gid   7157 (historical    ):
+  Expected: "Toilers of the Sea" by Victor Hugo
+  Actual:   "The Prince and the Pauper, Part 4." by Mark Twain
+gid   7158 (historical    ):
+  Expected: "The Last of the Mohicans" by James Fenimore Cooper
+  Actual:   "The Prince and the Pauper, Part 5." by Mark Twain
+gid   7159 (historical    ):
+  Expected: "The Deerslayer" by James Fenimore Cooper
+  Actual:   "The Prince and the Pauper, Part 6." by Mark Twain
+gid   7160 (historical    ):
+  Expected: "The Pathfinder" by James Fenimore Cooper
+  Actual:   "The Prince and the Pauper, Part 7." by Mark Twain
+gid   7161 (historical    ):
+  Expected: "The Pioneers" by James Fenimore Cooper
+  Actual:   "The Prince and the Pauper, Part 8." by Mark Twain
+gid  71865 (literary      ):
+  Expected: "Mrs Dalloway" by Virginia Woolf
+  Actual:   "Mrs. Dalloway" by Virginia Woolf
+gid   5817 (literary      ):
+  Expected: "Lord Jim" by Joseph Conrad
+  Actual:   "The Clockmaker — or, the Sayings and Doings of Samuel Slick, of Slickville" by Thomas Chandler Haliburton
+gid   5818 (literary      ):
+  Expected: "Nostromo" by Joseph Conrad
+  Actual:   "The Gilded Age, Part 1." by Mark Twain
+gid   6593 (literary      ):
+  Expected: "Sons and Lovers" by D. H. Lawrence
+  Actual:   "History of Tom Jones, a Foundling" by Henry Fielding
+gid   6594 (literary      ):
+  Expected: "Women in Love" by D. H. Lawrence
+  Actual:   "Schwatka's Search: Sledging in the Arctic in Quest of the Franklin Records" by William H. Gilder
+gid   6595 (literary      ):
+  Expected: "The Rainbow" by D. H. Lawrence
+  Actual:   "Advice to a Mother on the Management of Her Children" by Pye Henry Chavasse
+gid   9182 (literary      ):
+  Expected: "Winesburg, Ohio" by Sherwood Anderson
+  Actual:   "Villette" by Charlotte Brontë
+gid   9183 (literary      ):
+  Expected: "Poor White" by Sherwood Anderson
+  Actual:   "Wilfrid Cumbermede" by George MacDonald
+gid    210 (literary      ):
+  Expected: "The Ambassadors" by Henry James
+  Actual:   "An International Episode" by Henry James
+gid    211 (literary      ):
+  Expected: "The Wings of the Dove" by Henry James
+  Actual:   "The Aspern Papers" by Henry James
+gid    212 (literary      ):
+  Expected: "The Portrait of a Lady" by Henry James
+  Actual:   "A List of Factorial Math Constants" by Unknown
+gid    213 (literary      ):
+  Expected: "Daisy Miller" by Henry James
+  Actual:   "The Man from Snowy River" by A. B. Paterson
+gid    214 (literary      ):
+  Expected: "The Golden Bowl" by Henry James
+  Actual:   "In the Days When the World Was Wide, and Other Verses" by Henry Lawson
+gid    542 (literary      ):
+  Expected: "Ethan Frome" by Edith Wharton
+  Actual:   "The Life of Me: An Autobiography" by Clarence Edgar Johnson
+gid    544 (literary      ):
+  Expected: "Babbitt" by Sinclair Lewis
+  Actual:   "Anne's House of Dreams" by L. M. Montgomery
+gid    545 (literary      ):
+  Expected: "Arrowsmith" by Sinclair Lewis
+  Actual:   "At the Earth's Core" by Edgar Rice Burroughs
+gid    546 (literary      ):
+  Expected: "Elmer Gantry" by Sinclair Lewis
+  Actual:   "Under the Andes" by Rex Stout
+gid   1155 (mystery       ):
+  Expected: "The Leavenworth Case" by Anna Katharine Green
+  Actual:   "The Secret Adversary" by Agatha Christie
+gid    583 (mystery       ):
+  Expected: "The Mystery of Edwin Drood" by Charles Dickens
+  Actual:   "The Woman in White" by Wilkie Collins
+gid    221 (mystery       ):
+  Expected: "The Sign of the Four" by Arthur Conan Doyle
+  Actual:   "The Return of Sherlock Holmes" by Arthur Conan Doyle
+gid    480 (mystery       ):
+  Expected: "The Memoirs of Sherlock Holmes" by Arthur Conan Doyle
+  Actual:   ""Undo": A Novel" by Joe Hutsko
+gid    481 (mystery       ):
+  Expected: "The Adventures of Sherlock Holmes" by Arthur Conan Doyle
+  Actual:   "In the Bishop's Carriage" by Miriam Michelson
+gid    834 (mystery       ):
+  Expected: "His Last Bow" by Arthur Conan Doyle
+  Actual:   "The Memoirs of Sherlock Holmes" by Arthur Conan Doyle
+gid   1851 (mystery       ):
+  Expected: "The Man Who Was Thursday" by G. K. Chesterton
+  Actual:   "The Woman in the Alcove" by Anna Katharine Green
+gid   2155 (mystery       ):
+  Expected: "The Door of Death" by Mary Roberts Rinehart
+  Actual:   "Phyllis of Philistia" by Frank Frankfort Moore
+gid   2156 (mystery       ):
+  Expected: "A Thief in the Night" by E. W. Hornung
+  Actual:   "China and the Manchus" by Herbert Allen Giles
+gid   2157 (mystery       ):
+  Expected: "Raffles" by E. W. Hornung
+  Actual:   "Female Suffrage: A Letter to the Christian Women of America" by Susan Fenimore Cooper
+gid   2856 (mystery       ):
+  Expected: "The Four Just Men" by Edgar Wallace
+  Actual:   "Moon of Israel: A Tale of the Exodus" by H. Rider Haggard
+gid   2857 (mystery       ):
+  Expected: "The Crimson Circle" by Edgar Wallace
+  Actual:   "A Yellow God: An Idol of Africa" by H. Rider Haggard
+gid   3300 (mystery       ):
+  Expected: "The Mysteries of Paris" by Eugene Sue
+  Actual:   "An Inquiry into the Nature and Causes of the Wealth of Nations" by Adam Smith
+gid   3301 (mystery       ):
+  Expected: "The Riddle of the Sands" by Erskine Childers
+  Actual:   "The Naturewoman" by Upton Sinclair
+gid   3303 (mystery       ):
+  Expected: "The Old Man in the Corner" by Baroness Orczy
+  Actual:   "Prince Hagen" by Upton Sinclair
+gid   3304 (mystery       ):
+  Expected: "The Mystery of a Hansom Cab" by Fergus Hume
+  Actual:   "The Machine" by Upton Sinclair
+gid   3305 (mystery       ):
+  Expected: "The Filigree Ball" by Anna Katharine Green
+  Actual:   "Ballads of Peace in War" by Michael Earls
+gid   3306 (mystery       ):
+  Expected: "The Affair Next Door" by Anna Katharine Green
+  Actual:   "At Suvla Bay" by John Hargrave
+gid   2095 (romance       ):
+  Expected: "The Tenant of Wildfell Hall" by Anne Bronte
+  Actual:   "Clotelle: A Tale of the Southern States" by William Wells Brown
+gid   4517 (romance       ):
+  Expected: "Scenes of Clerical Life" by George Eliot
+  Actual:   "Ethan Frome" by Edith Wharton
+gid    153 (romance       ):
+  Expected: "Cranford" by Elizabeth Gaskell
+  Actual:   "Jude the Obscure" by Thomas Hardy
+gid    969 (romance       ):
+  Expected: "Far from the Madding Crowd" by Thomas Hardy
+  Actual:   "The Tenant of Wildfell Hall" by Anne Brontë
+gid   4860 (romance       ):
+  Expected: "The Mill on the Floss" by George Eliot
+  Actual:   "History of the United Netherlands, 1586-89 — Complete" by John Lothrop Motley
+gid   6688 (romance       ):
+  Expected: "Daniel Deronda" by George Eliot
+  Actual:   "The Mill on the Floss" by George Eliot
+gid    432 (romance       ):
+  Expected: "The Return of the Native" by Thomas Hardy
+  Actual:   "The Ambassadors" by Henry James
+gid    524 (romance       ):
+  Expected: "Pamela; or, Virtue Rewarded" by Samuel Richardson
+  Actual:   "Ann Veronica: A Modern Love Story" by H. G. Wells
+gid    738 (romance       ):
+  Expected: "Doctor Thorne" by Anthony Trollope
+  Actual:   "The Puzzle of Dickens's Last Plot" by Andrew Lang
+gid    826 (romance       ):
+  Expected: "Framley Parsonage" by Anthony Trollope
+  Actual:   "Latin Vulgate, Esther: Liber Esther" by Anonymous
+gid    882 (romance       ):
+  Expected: "The Warden" by Anthony Trollope
+  Actual:   "Sketches by Boz, Illustrative of Every-Day Life and Every-Day People" by Charles Dickens
+gid    946 (romance       ):
+  Expected: "Lady Audley's Secret" by Mary Elizabeth Braddon
+  Actual:   "Lady Susan" by Jane Austen
+gid   1245 (romance       ):
+  Expected: "Villette" by Charlotte Bronte
+  Actual:   "Night and Day" by Virginia Woolf
+gid   1252 (romance       ):
+  Expected: "Shirley" by Charlotte Bronte
+  Actual:   "Le Morte d'Arthur: Volume 2" by Sir Thomas Malory
+gid     11 (speculative   ):
+  Expected: "The Invisible Man" by H. G. Wells
+  Actual:   "Alice's Adventures in Wonderland" by Lewis Carroll
+gid     27 (speculative   ):
+  Expected: "The First Men in the Moon" by H. G. Wells
+  Actual:   "Far from the Madding Crowd" by Thomas Hardy
+gid    706 (speculative   ):
+  Expected: "Lilith" by George MacDonald
+  Actual:   "The Amateur Cracksman" by E. W. Hornung
+gid    718 (speculative   ):
+  Expected: "When the Sleeper Wakes" by H. G. Wells
+  Actual:   "Tono-Bungay" by H. G. Wells
+gid   1130 (speculative   ):
+  Expected: "The Princess and the Goblin" by George MacDonald
+  Actual:   "Antony and Cleopatra" by William Shakespeare
+gid   1131 (speculative   ):
+  Expected: "The Princess and Curdie" by George MacDonald
+  Actual:   "Coriolanus" by William Shakespeare
+gid   1652 (speculative   ):
+  Expected: "Robur the Conqueror" by Jules Verne
+  Actual:   "The Survivors of the Chancellor: Diary of J.R. Kazallon, Passenger" by Jules Verne
+gid   1842 (speculative   ):
+  Expected: "Off on a Comet" by Jules Verne
+  Actual:   "Michael Strogoff; Or, The Courier of the Czar" by Jules Verne
+gid   2083 (speculative   ):
+  Expected: "Master of the World" by Jules Verne
+  Actual:   "In Search of the Castaways; Or, The Children of Captain Grant" by Jules Verne
+gid   1012 (western       ):
+  Expected: "The Virginian" by Owen Wister
+  Actual:   "La Divina Commedia di Dante" by Dante Alighieri
+gid   1389 (western       ):
+  Expected: "The Log of a Cowboy" by Andy Adams
+  Actual:   "Gobseck" by Honoré de Balzac
+gid   1528 (western       ):
+  Expected: "Riders of the Purple Sage" by Zane Grey
+  Actual:   "Troilus and Cressida" by William Shakespeare
+gid   8083 (western       ):
+  Expected: "Hopalong Cassidy" by Clarence E. Mulford
+  Actual:   "The Allis Family; or, Scenes of Western Life" by Velda Allis Eddy
+gid  10717 (western       ):
+  Expected: "Whispering Smith" by Frank H. Spearman
+  Actual:   "The Extant Odes of Pindar" by Pindar
+gid  14288 (western       ):
+  Expected: "Good Indian" by B. M. Bower
+  Actual:   "Mademoiselle de Maupin" by Théophile Gautier
+gid   8093 (western       ):
+  Expected: "The Texan Scouts" by Joseph A. Altsheler
+  Actual:   "The Canadian Elocutionist" by Anna K. Howard
+gid   3285 (western       ):
+  Expected: "The Border Legion" by Zane Grey
+  Actual:   "The Deerslayer" by James Fenimore Cooper
+gid   3752 (western       ):
+  Expected: "The Last of the Plainsmen" by Zane Grey
+  Actual:   "Voyager's Tales" by Richard Hakluyt
+gid   3808 (western       ):
+  Expected: "The Heritage of the Desert" by Zane Grey
+  Actual:   "Robur the Conqueror" by Jules Verne
+gid   5765 (western       ):
+  Expected: "The Rainbow Trail" by Zane Grey
+  Actual:   "Insectivorous Plants" by Charles Darwin
+gid   6996 (western       ):
+  Expected: "Wildfire" by Zane Grey
+  Actual:   "Romeo und Julia" by William Shakespeare
+gid  20381 (western       ):
+  Expected: "Hidden Water" by Dane Coolidge
+  Actual:   "The Village by the River" by H. Louisa Bedford
+gid   3179 (western       ):
+  Expected: "The Spirit of the Border" by Zane Grey
+  Actual:   "The American Claimant" by Mark Twain
+gid   3756 (western       ):
+  Expected: "Betty Zane" by Zane Grey
+  Actual:   "Indiscretions of Archie" by P. G. Wodehouse
+gid   3784 (western       ):
+  Expected: "The Light of Western Stars" by Zane Grey
+  Actual:   "The Sheridan Road Mystery" by Paul Thorne
+gid   3829 (western       ):
+  Expected: "Desert Gold" by Zane Grey
+  Actual:   "Love Among the Chickens" by P. G. Wodehouse
+gid   4051 (western       ):
+  Expected: "The Lone Star Ranger" by Zane Grey
+  Actual:   "Lady Bridget in the Never-Never Land: a story of Australian life" by Mrs. Campbell Praed
+gid   5755 (western       ):
+  Expected: "The U.P. Trail" by Zane Grey
+  Actual:   "The Fool Errant" by Maurice Hewlett
+gid   6995 (western       ):
+  Expected: "The Mysterious Rider" by Zane Grey
+  Actual:   "Ghosts I Have Met and Some Others" by John Kendrick Bangs
+gid   3779 (western       ):
+  Expected: "The Young Forester" by Zane Grey
+  Actual:   "The world war" by Logan Marshall
+gid   3818 (western       ):
+  Expected: "The Day of the Beast" by Zane Grey
+  Actual:   "By Reef and Palm" by Louis Becke
+gid   5757 (western       ):
+  Expected: "The Desert of Wheat" by Zane Grey
+  Actual:   "The Maid of Maiden Lane" by Amelia E. Barr
+gid   6993 (western       ):
+  Expected: "Tappan's Burro" by Zane Grey
+  Actual:   "The Lord of the Sea" by M. P. Shiel
+gid   7762 (western       ):
+  Expected: "Lin McLean" by Owen Wister
+  Actual:   "Wanderers" by Knut Hamsun
+gid   7763 (western       ):
+  Expected: "Red Men and White" by Owen Wister
+  Actual:   "The Law-Breakers and Other Stories" by Robert Grant
+gid   7764 (western       ):
+  Expected: "Members of the Family" by Owen Wister
+  Actual:   "Little Bear at Work and at Play" by Frances Margaret Fox
+gid   8084 (western       ):
+  Expected: "Bar-20" by Clarence E. Mulford
+  Actual:   "Hunting with the Bow & Arrow" by Saxton T. Pope
+gid   8085 (western       ):
+  Expected: "The Coming of Cassidy" by Clarence E. Mulford
+  Actual:   "Die Göttliche Komödie" by Dante Alighieri
+gid   8086 (western       ):
+  Expected: "Bar-20 Days" by Clarence E. Mulford
+  Actual:   "Down and Out in the Magic Kingdom" by Cory Doctorow
+
+--- 0 fetch errors ---
