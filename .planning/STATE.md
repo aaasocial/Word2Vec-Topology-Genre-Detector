@@ -1,30 +1,63 @@
 ---
 gsd_state_version: 1.0
 milestone: v2.0
-milestone_name: Accuracy, Depth, and Polish
-status: in_progress
-last_updated: "2026-05-25T00:00:00.000Z"
+milestone_name: — Accuracy, Depth, and Polish
+status: paused
+last_updated: "2026-05-25T08:30:00.000Z"
 last_activity: 2026-05-25
 progress:
-  total_phases: 5
-  completed_phases: 2
-  total_plans: 10
-  completed_plans: 10
-  percent: 40
+  total_phases: 8
+  completed_phases: 6
+  total_plans: 30
+  completed_plans: 27
+  percent: 90
 ---
 
 # STATE
 
 ## Current Position
 
-Phase: 08 (corpus-expansion) — Context gathered, ready to plan
-Plan: 0 of TBD
+Phase: 08 (corpus-expansion) — **PAUSED after Wave 1.5** (corpus integrity defect)
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
 - **Phase:** 08
-- **Plan:** Not started
-- **Status:** In progress (Phase 6, 7 complete; Phase 8 context gathered 2026-05-25)
+- **Plan:** Wave 1 + Wave 2 + Wave 1.5 patch executed; Wave 3 + Wave 4 deferred
+- **Status:** Paused — corpus integrity blocker discovered
 - **Last activity:** 2026-05-25
+
+### Phase 8 Pause Note (2026-05-25)
+
+Phase 8 was paused after Wave 1.5 because a full gid integrity audit (run during Wave-1.5 patch — see [wave-1-5-full-gid-audit.log](phases/08-corpus-expansion/wave-1-5-full-gid-audit.log)) found **141 of 240 books (58.75%) have wrong `gid` bindings** in `corpus/books.yaml`. Wave 1.5 fixed the 6 documented duplicate-gid defects; 135 single-mapping mismatches remain.
+
+What ran:
+
+- Wave 1 (08-01): v2 240-book corpus built, byte-identical v1 baseline gate held. (commits d620e89 + ancestors)
+- Wave 2 (08-02): full pipeline retrained on v2 corpus; SVM artifacts produced. (commit 8b9be64)
+- Wave 1.5 (08-02.1): 6 duplicate-gid defects patched; pipeline re-retrained; lineage rotated. Full audit log produced. (commit 9b3c95a)
+
+What did NOT run:
+
+- Wave 3 (08-03): validation report — would measure noise, not v2 quality
+- Wave 4 (08-04): GitHub Release publish — cannot ship known-broken corpus
+
+Wave 2 + Wave 1.5 produced real trained artifacts (`data/models/svm_pipeline.joblib` + sidecar + W2V/k-means/persistence imager) on the patched-but-still-largely-wrong corpus. These are NOT v2.0-release-grade.
+
+Mismatch breakdown by genre (out of 30 per genre): western 30, historical 21, adventure 21, mystery 18, literary 17, romance 14, gothic_horror 11, speculative 9.
+
+Root cause: `.planning/research/v2/corpus_candidates.yaml` had wrong `gutenberg_id` values for many entries. `build_corpus.py` trusted them verbatim because the v1 source-of-truth pattern was author-and-title-driven, not gid-validated.
+
+### Recommended next step
+
+Create a sub-phase `08.1 corpus-integrity` (via `/gsd-insert-phase` or `/gsd-discuss-phase` then plan) that:
+
+1. Rebuilds `corpus_candidates.yaml` by querying Gutenberg's authoritative metadata index for each `(title, author)` to get the correct gid
+2. Regenerates `corpus/books.yaml` via deterministic `build_corpus.py`
+3. Re-runs Wave 2 retrain pipeline
+4. Re-runs the strict gid audit as an entry gate
+
+After 08.1 closes with a clean corpus, resume Phase 8 by re-running `/gsd-execute-phase 8 --wave 3` and then `--wave 4`.
+
+
 
 ### Quick Tasks Completed
 
@@ -105,7 +138,13 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 
 ## Open Blockers
 
-None. Phase 8 context gathered; ready to plan via `/gsd-plan-phase 8`.
+**B-08-01 (2026-05-25) — Phase 8 paused on corpus integrity blocker.**
+
+141/240 books in `corpus/books.yaml` have wrong gid bindings (audit log: `phases/08-corpus-expansion/wave-1-5-full-gid-audit.log`). Wave 3 validation + Wave 4 release blocked until a corpus-integrity sub-phase rebuilds candidates.yaml against Gutenberg's authoritative metadata.
+
+Recommended next: `/gsd-discuss-phase 08.1` (or `/gsd-insert-phase 08.1`) then plan + execute, then resume Phase 8 with `/gsd-execute-phase 8 --wave 3`.
+
+---
 
 Phase 8 plans the **4-wave structure** (build → retrain → validate → release) per 08-CONTEXT.md D-22. Wave 1 includes `scripts/build_corpus.py` (D-24 upgraded CEXP-05 from P2 to P1) and the byte-identical re-run of `scripts/phase7_v1_baseline.py` as the entry gate.
 
