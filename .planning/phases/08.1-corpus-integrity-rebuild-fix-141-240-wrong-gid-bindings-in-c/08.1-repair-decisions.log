@@ -1,27 +1,27 @@
 === Corpus Repair Decisions ===
 SERIOUS rows processed:        145
-GUTENDEX_LOOKUP gid-changed:   110
+GUTENDEX_LOOKUP gid-changed:   100
 BENIGN_CONFIRMED (audit-strict): 3
-NEEDS_SUBSTITUTION:            32
-candidates.yaml lines edited:  110
+NEEDS_SUBSTITUTION:            42
+candidates.yaml lines edited:  100
 
 --- Repairs (sorted by genre, old_gid) ---
-GUTENDEX_LOOKUP    old_gid=    79 -> new_gid=  8752 (adventure)
+GUTENDEX_LOOKUP    old_gid=    79 -> new_gid=    90 (adventure)
   title:     "The Return of Tarzan" by Edgar Rice Burroughs
-  gutendex:  "The Return of Tarzan"
-  rationale: author-cache match: title='The Return of Tarzan' download_count=624
+  gutendex:  "The Son of Tarzan"
+  rationale: author-cache match: title='The Son of Tarzan' download_count=1198
 GUTENDEX_LOOKUP    old_gid=    80 -> new_gid=    85 (adventure)
   title:     "The Beasts of Tarzan" by Edgar Rice Burroughs
   gutendex:  "The Beasts of Tarzan"
   rationale: author-cache match: title='The Beasts of Tarzan' download_count=1137
-GUTENDEX_LOOKUP    old_gid=   247 -> new_gid= 21524 (adventure)
+GUTENDEX_LOOKUP    old_gid=   247 -> new_gid= 70841 (adventure)
   title:     "Robinson Crusoe" by Daniel Defoe
   gutendex:  "Robinson Crusoe"
-  rationale: author-cache match: title='Robinson Crusoe' download_count=2747
-GUTENDEX_LOOKUP    old_gid=   522 -> new_gid=  9683 (adventure)
+  rationale: author-cache match: title='Robinson Crusoe' download_count=1510
+GUTENDEX_LOOKUP    old_gid=   522 -> new_gid= 12259 (adventure)
   title:     "A Journal of the Plague Year" by Daniel Defoe
-  gutendex:  "A Journal of the Plague Year"
-  rationale: author-cache match: title='A Journal of the Plague Year' download_count=512
+  gutendex:  "Memoirs of a Cavalier: A Military Journal of the Wars in Germany, and the Wars in England.; From the Year 1632 to the Year 1648."
+  rationale: author-cache match: title='Memoirs of a Cavalier: A Military Journal of the Wars in Germany, and the Wars in England.; From the Year 1632 to the Year 1648.' download_count=520
 GUTENDEX_LOOKUP    old_gid=   558 -> new_gid=  1074 (adventure)
   title:     "The Sea-Wolf" by Jack London
   gutendex:  "The Sea-Wolf"
@@ -54,14 +54,6 @@ BENIGN_CONFIRMED   old_gid=   848 -> new_gid=   848 (adventure)
   title:     "The Black Arrow" by Robert Louis Stevenson
   gutendex:  "The Black Arrow: A Tale of the Two Roses"
   rationale: audit-strict, gutendex agrees (download_count=717)
-GUTENDEX_LOOKUP    old_gid=  1261 -> new_gid=  9361 (adventure)
-  title:     "Youth" by Joseph Conrad
-  gutendex:  "Youth"
-  rationale: author-cache match: title='Youth' download_count=217
-GUTENDEX_LOOKUP    old_gid=    84 -> new_gid=  6542 (gothic_horror)
-  title:     "Frankenstein" by Mary Shelley
-  gutendex:  "Frankenstein"
-  rationale: author-cache match: title='Frankenstein' download_count=960
 GUTENDEX_LOOKUP    old_gid=   377 -> new_gid= 13969 (gothic_horror)
   title:     "The Hill of Dreams" by Arthur Machen
   gutendex:  "The Hill of Dreams"
@@ -86,10 +78,10 @@ GUTENDEX_LOOKUP    old_gid=  5150 -> new_gid= 18247 (gothic_horror)
   title:     "The Last Man" by Mary Shelley
   gutendex:  "The Last Man"
   rationale: author-cache match: title='The Last Man' download_count=3002
-GUTENDEX_LOOKUP    old_gid=  5151 -> new_gid= 26247 (gothic_horror)
+GUTENDEX_LOOKUP    old_gid=  5151 -> new_gid=    43 (gothic_horror)
   title:     "The Strange Case of Dr Jekyll and Mr Hyde" by Robert Louis Stevenson
-  gutendex:  "The Strange Case of Dr Jekyll & Mr Hyde"
-  rationale: author-cache match: title='The Strange Case of Dr Jekyll & Mr Hyde' download_count=944
+  gutendex:  "The strange case of Dr. Jekyll and Mr. Hyde"
+  rationale: author-cache match: title='The strange case of Dr. Jekyll and Mr. Hyde' download_count=69841
 BENIGN_CONFIRMED   old_gid= 14833 -> new_gid= 14833 (gothic_horror)
   title:     "Varney the Vampire" by James Malcolm Rymer
   gutendex:  "Varney the vampyre; or, the feast of blood"
@@ -126,18 +118,14 @@ GUTENDEX_LOOKUP    old_gid=  7149 -> new_gid=  7853 (historical)
   title:     "Quentin Durward" by Walter Scott
   gutendex:  "Quentin Durward"
   rationale: author-cache match: title='Quentin Durward' download_count=1150
-GUTENDEX_LOOKUP    old_gid=  7150 -> new_gid=  9732 (historical)
+GUTENDEX_LOOKUP    old_gid=  7150 -> new_gid=   917 (historical)
   title:     "Barnaby Rudge" by Charles Dickens
-  gutendex:  "Barnaby Rudge"
-  rationale: author-cache match: title='Barnaby Rudge' download_count=5284
+  gutendex:  "Barnaby Rudge: A Tale of the Riots of 'Eighty"
+  rationale: author-cache match: title='Barnaby Rudge: A Tale of the Riots of 'Eighty' download_count=4630
 GUTENDEX_LOOKUP    old_gid=  7152 -> new_gid= 37027 (historical)
   title:     "With Fire and Sword" by Henryk Sienkiewicz
   gutendex:  "With Fire and Sword: An Historical Novel of Poland and Russia"
   rationale: author-cache match: title='With Fire and Sword: An Historical Novel of Poland and Russia' download_count=1366
-GUTENDEX_LOOKUP    old_gid=  7155 -> new_gid=  6539 (historical)
-  title:     "The Hunchback of Notre-Dame" by Victor Hugo
-  gutendex:  "The Hunchback of Notre Dame"
-  rationale: author-cache match: title='The Hunchback of Notre Dame' download_count=1386
 GUTENDEX_LOOKUP    old_gid=  7156 -> new_gid= 49372 (historical)
   title:     "Ninety-Three" by Victor Hugo
   gutendex:  "Ninety-Three"
@@ -158,10 +146,6 @@ GUTENDEX_LOOKUP    old_gid=   213 -> new_gid=   208 (literary)
   title:     "Daisy Miller" by Henry James
   gutendex:  "Daisy Miller: A Study"
   rationale: author-cache match: title='Daisy Miller: A Study' download_count=3683
-GUTENDEX_LOOKUP    old_gid=   542 -> new_gid=  9288 (literary)
-  title:     "Ethan Frome" by Edith Wharton
-  gutendex:  "Ethan Frome"
-  rationale: author-cache match: title='Ethan Frome' download_count=413
 GUTENDEX_LOOKUP    old_gid=   544 -> new_gid=  1156 (literary)
   title:     "Babbitt" by Sinclair Lewis
   gutendex:  "Babbitt"
@@ -174,14 +158,6 @@ GUTENDEX_LOOKUP    old_gid=   546 -> new_gid= 72609 (literary)
   title:     "Elmer Gantry" by Sinclair Lewis
   gutendex:  "Elmer Gantry"
   rationale: author-cache match: title='Elmer Gantry' download_count=1109
-GUTENDEX_LOOKUP    old_gid=  5817 -> new_gid= 21435 (literary)
-  title:     "Lord Jim" by Joseph Conrad
-  gutendex:  "Lord Jim"
-  rationale: author-cache match: title='Lord Jim' download_count=5768
-GUTENDEX_LOOKUP    old_gid=  5818 -> new_gid=  9345 (literary)
-  title:     "Nostromo" by Joseph Conrad
-  gutendex:  "Nostromo"
-  rationale: author-cache match: title='Nostromo' download_count=1719
 GUTENDEX_LOOKUP    old_gid=  6593 -> new_gid=   217 (literary)
   title:     "Sons and Lovers" by D. H. Lawrence
   gutendex:  "Sons and Lovers"
@@ -194,30 +170,22 @@ GUTENDEX_LOOKUP    old_gid=  6595 -> new_gid= 28948 (literary)
   title:     "The Rainbow" by D. H. Lawrence
   gutendex:  "The Rainbow"
   rationale: author-cache match: title='The Rainbow' download_count=1831
-GUTENDEX_LOOKUP    old_gid=  9182 -> new_gid= 22949 (literary)
+GUTENDEX_LOOKUP    old_gid=  9182 -> new_gid=   416 (literary)
   title:     "Winesburg, Ohio" by Sherwood Anderson
-  gutendex:  "Winesburg, Ohio"
-  rationale: author-cache match: title='Winesburg, Ohio' download_count=5583
+  gutendex:  "Winesburg, Ohio: A Group of Tales of Ohio Small Town Life"
+  rationale: author-cache match: title='Winesburg, Ohio: A Group of Tales of Ohio Small Town Life' download_count=2631
 GUTENDEX_LOOKUP    old_gid=   221 -> new_gid=  2097 (mystery)
   title:     "The Sign of the Four" by Arthur Conan Doyle
   gutendex:  "The Sign of the Four"
   rationale: author-cache match: title='The Sign of the Four' download_count=16655
-GUTENDEX_LOOKUP    old_gid=   480 -> new_gid=  9555 (mystery)
+GUTENDEX_LOOKUP    old_gid=   480 -> new_gid=  1661 (mystery)
   title:     "The Memoirs of Sherlock Holmes" by Arthur Conan Doyle
-  gutendex:  "The Memoirs of Sherlock Holmes"
-  rationale: author-cache match: title='The Memoirs of Sherlock Holmes' download_count=1192
-GUTENDEX_LOOKUP    old_gid=   481 -> new_gid=  1661 (mystery)
-  title:     "The Adventures of Sherlock Holmes" by Arthur Conan Doyle
   gutendex:  "The Adventures of Sherlock Holmes"
   rationale: author-cache match: title='The Adventures of Sherlock Holmes' download_count=43408
-GUTENDEX_LOOKUP    old_gid=   583 -> new_gid=  9705 (mystery)
-  title:     "The Mystery of Edwin Drood" by Charles Dickens
-  gutendex:  "The Mystery of Edwin Drood"
-  rationale: author-cache match: title='The Mystery of Edwin Drood' download_count=930
-GUTENDEX_LOOKUP    old_gid=   834 -> new_gid=  9554 (mystery)
-  title:     "His Last Bow" by Arthur Conan Doyle
-  gutendex:  "His last bow"
-  rationale: author-cache match: title='His last bow' download_count=949
+GUTENDEX_LOOKUP    old_gid=   481 -> new_gid= 28733 (mystery)
+  title:     "The Adventures of Sherlock Holmes" by Arthur Conan Doyle
+  gutendex:  "The Adventures of Sherlock Holmes"
+  rationale: author-cache match: title='The Adventures of Sherlock Holmes' download_count=2178
 GUTENDEX_LOOKUP    old_gid=  1155 -> new_gid=  4047 (mystery)
   title:     "The Leavenworth Case" by Anna Katharine Green
   gutendex:  "The Leavenworth Case"
@@ -274,14 +242,14 @@ GUTENDEX_LOOKUP    old_gid=   153 -> new_gid=   394 (romance)
   title:     "Cranford" by Elizabeth Gaskell
   gutendex:  "Cranford"
   rationale: author-cache match: title='Cranford' download_count=40412
-GUTENDEX_LOOKUP    old_gid=   432 -> new_gid= 26264 (romance)
+GUTENDEX_LOOKUP    old_gid=   432 -> new_gid=   122 (romance)
   title:     "The Return of the Native" by Thomas Hardy
   gutendex:  "The Return of the Native"
-  rationale: author-cache match: title='The Return of the Native' download_count=9983
-GUTENDEX_LOOKUP    old_gid=   521 -> new_gid=  9672 (romance)
+  rationale: author-cache match: title='The Return of the Native' download_count=2879
+GUTENDEX_LOOKUP    old_gid=   521 -> new_gid=   507 (romance)
   title:     "Adam Bede" by George Eliot
   gutendex:  "Adam Bede"
-  rationale: author-cache match: title='Adam Bede' download_count=5475
+  rationale: author-cache match: title='Adam Bede' download_count=2432
 GUTENDEX_LOOKUP    old_gid=   524 -> new_gid=  6124 (romance)
   title:     "Pamela; or, Virtue Rewarded" by Samuel Richardson
   gutendex:  "Pamela, or Virtue Rewarded"
@@ -294,10 +262,10 @@ GUTENDEX_LOOKUP    old_gid=   826 -> new_gid=  2860 (romance)
   title:     "Framley Parsonage" by Anthony Trollope
   gutendex:  "Framley Parsonage"
   rationale: author-cache match: title='Framley Parsonage' download_count=990
-GUTENDEX_LOOKUP    old_gid=   882 -> new_gid= 26287 (romance)
+GUTENDEX_LOOKUP    old_gid=   882 -> new_gid=   619 (romance)
   title:     "The Warden" by Anthony Trollope
   gutendex:  "The Warden"
-  rationale: author-cache match: title='The Warden' download_count=3024
+  rationale: author-cache match: title='The Warden' download_count=967
 GUTENDEX_LOOKUP    old_gid=   946 -> new_gid=  8954 (romance)
   title:     "Lady Audley's Secret" by Mary Elizabeth Braddon
   gutendex:  "Lady Audley's Secret"
@@ -310,14 +278,10 @@ GUTENDEX_LOOKUP    old_gid=  4517 -> new_gid= 17780 (romance)
   title:     "Scenes of Clerical Life" by George Eliot
   gutendex:  "Scenes of Clerical Life"
   rationale: author-cache match: title='Scenes of Clerical Life' download_count=1111
-GUTENDEX_LOOKUP    old_gid=  4860 -> new_gid=  9675 (romance)
-  title:     "The Mill on the Floss" by George Eliot
-  gutendex:  "The Mill on the Floss"
-  rationale: author-cache match: title='The Mill on the Floss' download_count=1247
-GUTENDEX_LOOKUP    old_gid=  6688 -> new_gid=  9671 (romance)
+GUTENDEX_LOOKUP    old_gid=  6688 -> new_gid=  7469 (romance)
   title:     "Daniel Deronda" by George Eliot
   gutendex:  "Daniel Deronda"
-  rationale: author-cache match: title='Daniel Deronda' download_count=4685
+  rationale: author-cache match: title='Daniel Deronda' download_count=2008
 GUTENDEX_LOOKUP    old_gid=    11 -> new_gid=  5230 (speculative)
   title:     "The Invisible Man" by H. G. Wells
   gutendex:  "The Invisible Man: A Grotesque Romance"
@@ -338,14 +302,10 @@ GUTENDEX_LOOKUP    old_gid=  1131 -> new_gid=   709 (speculative)
   title:     "The Princess and Curdie" by George MacDonald
   gutendex:  "The Princess and Curdie"
   rationale: author-cache match: title='The Princess and Curdie' download_count=727
-GUTENDEX_LOOKUP    old_gid=  1652 -> new_gid=  8980 (speculative)
-  title:     "Robur the Conqueror" by Jules Verne
-  gutendex:  "Robur the Conqueror"
-  rationale: author-cache match: title='Robur the Conqueror' download_count=449
-GUTENDEX_LOOKUP    old_gid=  1842 -> new_gid=  8984 (speculative)
+GUTENDEX_LOOKUP    old_gid=  1842 -> new_gid=  1353 (speculative)
   title:     "Off on a Comet" by Jules Verne
-  gutendex:  "Off on a Comet"
-  rationale: author-cache match: title='Off on a Comet' download_count=757
+  gutendex:  "Off on a Comet! a Journey through Planetary Space"
+  rationale: author-cache match: title='Off on a Comet! a Journey through Planetary Space' download_count=6978
 GUTENDEX_LOOKUP    old_gid=  2083 -> new_gid=  3809 (speculative)
   title:     "Master of the World" by Jules Verne
   gutendex:  "The Master of the World"
@@ -466,8 +426,14 @@ NEEDS_SUBSTITUTION  gid=    96  (adventure)
 NEEDS_SUBSTITUTION  gid=   561  (adventure)
   title:  "Tales of the Fish Patrol" by Jack London
   reason: no author-cache match + html-probe disagrees
+NEEDS_SUBSTITUTION  gid=  1261  (adventure)
+  title:  "Youth" by Joseph Conrad
+  reason: no author-cache match + html-probe disagrees
 NEEDS_SUBSTITUTION  gid=  2701  (adventure)
   title:  "Moby-Dick" by Herman Melville
+  reason: no author-cache match + html-probe disagrees
+NEEDS_SUBSTITUTION  gid=    84  (gothic_horror)
+  title:  "Frankenstein" by Mary Shelley
   reason: no author-cache match + html-probe disagrees
 NEEDS_SUBSTITUTION  gid=   376  (gothic_horror)
   title:  "The Three Imposters" by Arthur Machen
@@ -505,6 +471,9 @@ NEEDS_SUBSTITUTION  gid=  7153  (historical)
 NEEDS_SUBSTITUTION  gid=  7154  (historical)
   title:  "Pan Michael" by Henryk Sienkiewicz
   reason: no author-cache match + html-probe disagrees
+NEEDS_SUBSTITUTION  gid=  7155  (historical)
+  title:  "The Hunchback of Notre-Dame" by Victor Hugo
+  reason: no author-cache match + html-probe disagrees
 NEEDS_SUBSTITUTION  gid=  7159  (historical)
   title:  "The Deerslayer" by James Fenimore Cooper
   reason: no author-cache match + html-probe disagrees
@@ -523,8 +492,23 @@ NEEDS_SUBSTITUTION  gid=   211  (literary)
 NEEDS_SUBSTITUTION  gid=   214  (literary)
   title:  "The Golden Bowl" by Henry James
   reason: no author-cache match + html-probe disagrees
+NEEDS_SUBSTITUTION  gid=   542  (literary)
+  title:  "Ethan Frome" by Edith Wharton
+  reason: no author-cache match + html-probe disagrees
+NEEDS_SUBSTITUTION  gid=  5817  (literary)
+  title:  "Lord Jim" by Joseph Conrad
+  reason: no author-cache match + html-probe disagrees
+NEEDS_SUBSTITUTION  gid=  5818  (literary)
+  title:  "Nostromo" by Joseph Conrad
+  reason: no author-cache match + html-probe disagrees
 NEEDS_SUBSTITUTION  gid=  9183  (literary)
   title:  "Poor White" by Sherwood Anderson
+  reason: no author-cache match + html-probe disagrees
+NEEDS_SUBSTITUTION  gid=   583  (mystery)
+  title:  "The Mystery of Edwin Drood" by Charles Dickens
+  reason: no author-cache match + html-probe disagrees
+NEEDS_SUBSTITUTION  gid=   834  (mystery)
+  title:  "His Last Bow" by Arthur Conan Doyle
   reason: no author-cache match + html-probe disagrees
 NEEDS_SUBSTITUTION  gid=  2155  (mystery)
   title:  "The Door of Death" by Mary Roberts Rinehart
@@ -541,11 +525,17 @@ NEEDS_SUBSTITUTION  gid=  1260  (romance)
 NEEDS_SUBSTITUTION  gid=  2095  (romance)
   title:  "The Tenant of Wildfell Hall" by Anne Bronte
   reason: no author-cache match + html-probe disagrees
+NEEDS_SUBSTITUTION  gid=  4860  (romance)
+  title:  "The Mill on the Floss" by George Eliot
+  reason: no author-cache match + html-probe disagrees
 NEEDS_SUBSTITUTION  gid=   325  (speculative)
   title:  "Phantastes" by George MacDonald
   reason: no author-cache match + html-probe disagrees
 NEEDS_SUBSTITUTION  gid=   706  (speculative)
   title:  "Lilith" by George MacDonald
+  reason: no author-cache match + html-probe disagrees
+NEEDS_SUBSTITUTION  gid=  1652  (speculative)
+  title:  "Robur the Conqueror" by Jules Verne
   reason: no author-cache match + html-probe disagrees
 NEEDS_SUBSTITUTION  gid=  1012  (western)
   title:  "The Virginian" by Owen Wister
@@ -567,18 +557,15 @@ NEEDS_SUBSTITUTION  gid=  4051  (western)
   - genre=romance title='Scenes of Clerical Life'
     before:       - {gutenberg_id: 4517,  title: "Scenes of Clerical Life",             author: "George Eliot",           source_consensus_score: 3}
     after:        - {gutenberg_id: 17780,  title: "Scenes of Clerical Life",             author: "George Eliot",           source_consensus_score: 3}
-  - genre=romance title='The Mill on the Floss'
-    before:       - {gutenberg_id: 4860,  title: "The Mill on the Floss",               author: "George Eliot",           source_consensus_score: 3}
-    after:        - {gutenberg_id: 9675,  title: "The Mill on the Floss",               author: "George Eliot",           source_consensus_score: 3}
   - genre=romance title='Daniel Deronda'
     before:       - {gutenberg_id: 6688,  title: "Daniel Deronda",                      author: "George Eliot",           source_consensus_score: 3}
-    after:        - {gutenberg_id: 9671,  title: "Daniel Deronda",                      author: "George Eliot",           source_consensus_score: 3}
+    after:        - {gutenberg_id: 7469,  title: "Daniel Deronda",                      author: "George Eliot",           source_consensus_score: 3}
   - genre=romance title='The Return of the Native'
     before:       - {gutenberg_id: 432,   title: "The Return of the Native",            author: "Thomas Hardy",           source_consensus_score: 2}
-    after:        - {gutenberg_id: 26264,   title: "The Return of the Native",            author: "Thomas Hardy",           source_consensus_score: 2}
+    after:        - {gutenberg_id: 122,   title: "The Return of the Native",            author: "Thomas Hardy",           source_consensus_score: 2}
   - genre=romance title='Adam Bede'
     before:       - {gutenberg_id: 521,   title: "Adam Bede",                           author: "George Eliot",           source_consensus_score: 2}
-    after:        - {gutenberg_id: 9672,   title: "Adam Bede",                           author: "George Eliot",           source_consensus_score: 2}
+    after:        - {gutenberg_id: 507,   title: "Adam Bede",                           author: "George Eliot",           source_consensus_score: 2}
   - genre=romance title='Pamela; or, Virtue Rewarded'
     before:       - {gutenberg_id: 524,   title: "Pamela; or, Virtue Rewarded",         author: "Samuel Richardson",      source_consensus_score: 2}
     after:        - {gutenberg_id: 6124,   title: "Pamela; or, Virtue Rewarded",         author: "Samuel Richardson",      source_consensus_score: 2}
@@ -590,7 +577,7 @@ NEEDS_SUBSTITUTION  gid=  4051  (western)
     after:        - {gutenberg_id: 2860,   title: "Framley Parsonage",                   author: "Anthony Trollope",       source_consensus_score: 2}
   - genre=romance title='The Warden'
     before:       - {gutenberg_id: 882,   title: "The Warden",                          author: "Anthony Trollope",       source_consensus_score: 2}
-    after:        - {gutenberg_id: 26287,   title: "The Warden",                          author: "Anthony Trollope",       source_consensus_score: 2}
+    after:        - {gutenberg_id: 619,   title: "The Warden",                          author: "Anthony Trollope",       source_consensus_score: 2}
   - genre=romance title="Lady Audley's Secret"
     before:       - {gutenberg_id: 946,   title: "Lady Audley's Secret",                author: "Mary Elizabeth Braddon", source_consensus_score: 2}
     after:        - {gutenberg_id: 8954,   title: "Lady Audley's Secret",                author: "Mary Elizabeth Braddon", source_consensus_score: 2}
@@ -599,22 +586,16 @@ NEEDS_SUBSTITUTION  gid=  4051  (western)
     after:        - {gutenberg_id: 2097,   title: "The Sign of the Four",                author: "Arthur Conan Doyle",     source_consensus_score: 3}
   - genre=mystery title='The Memoirs of Sherlock Holmes'
     before:       - {gutenberg_id: 480,   title: "The Memoirs of Sherlock Holmes",      author: "Arthur Conan Doyle",     source_consensus_score: 3}
-    after:        - {gutenberg_id: 9555,   title: "The Memoirs of Sherlock Holmes",      author: "Arthur Conan Doyle",     source_consensus_score: 3}
+    after:        - {gutenberg_id: 1661,   title: "The Memoirs of Sherlock Holmes",      author: "Arthur Conan Doyle",     source_consensus_score: 3}
   - genre=mystery title='The Adventures of Sherlock Holmes'
     before:       - {gutenberg_id: 481,   title: "The Adventures of Sherlock Holmes",   author: "Arthur Conan Doyle",     source_consensus_score: 3}
-    after:        - {gutenberg_id: 1661,   title: "The Adventures of Sherlock Holmes",   author: "Arthur Conan Doyle",     source_consensus_score: 3}
-  - genre=mystery title='His Last Bow'
-    before:       - {gutenberg_id: 834,   title: "His Last Bow",                        author: "Arthur Conan Doyle",     source_consensus_score: 3}
-    after:        - {gutenberg_id: 9554,   title: "His Last Bow",                        author: "Arthur Conan Doyle",     source_consensus_score: 3}
+    after:        - {gutenberg_id: 28733,   title: "The Adventures of Sherlock Holmes",   author: "Arthur Conan Doyle",     source_consensus_score: 3}
   - genre=mystery title='The Leavenworth Case'
     before:       - {gutenberg_id: 1155,  title: "The Leavenworth Case",                author: "Anna Katharine Green",   source_consensus_score: 3}
     after:        - {gutenberg_id: 4047,  title: "The Leavenworth Case",                author: "Anna Katharine Green",   source_consensus_score: 3}
   - genre=mystery title='The Man Who Was Thursday'
     before:       - {gutenberg_id: 1851,  title: "The Man Who Was Thursday",            author: "G. K. Chesterton",       source_consensus_score: 3}
     after:        - {gutenberg_id: 1695,  title: "The Man Who Was Thursday",            author: "G. K. Chesterton",       source_consensus_score: 3}
-  - genre=mystery title='The Mystery of Edwin Drood'
-    before:       - {gutenberg_id: 583,   title: "The Mystery of Edwin Drood",          author: "Charles Dickens",        source_consensus_score: 2}
-    after:        - {gutenberg_id: 9705,   title: "The Mystery of Edwin Drood",          author: "Charles Dickens",        source_consensus_score: 2}
   - genre=mystery title='A Thief in the Night'
     before:       - {gutenberg_id: 2156,  title: "A Thief in the Night",                author: "E. W. Hornung",          source_consensus_score: 2}
     after:        - {gutenberg_id: 2098,  title: "A Thief in the Night",                author: "E. W. Hornung",          source_consensus_score: 2}
@@ -741,12 +722,9 @@ NEEDS_SUBSTITUTION  gid=  4051  (western)
   - genre=speculative title='When the Sleeper Wakes'
     before:       - {gutenberg_id: 718,   title: "When the Sleeper Wakes",              author: "H. G. Wells",            source_consensus_score: 3}
     after:        - {gutenberg_id: 775,   title: "When the Sleeper Wakes",              author: "H. G. Wells",            source_consensus_score: 3}
-  - genre=speculative title='Robur the Conqueror'
-    before:       - {gutenberg_id: 1652,  title: "Robur the Conqueror",                 author: "Jules Verne",            source_consensus_score: 3}
-    after:        - {gutenberg_id: 8980,  title: "Robur the Conqueror",                 author: "Jules Verne",            source_consensus_score: 3}
   - genre=speculative title='Off on a Comet'
     before:       - {gutenberg_id: 1842,  title: "Off on a Comet",                      author: "Jules Verne",            source_consensus_score: 3}
-    after:        - {gutenberg_id: 8984,  title: "Off on a Comet",                      author: "Jules Verne",            source_consensus_score: 3}
+    after:        - {gutenberg_id: 1353,  title: "Off on a Comet",                      author: "Jules Verne",            source_consensus_score: 3}
   - genre=speculative title='Master of the World'
     before:       - {gutenberg_id: 2083,  title: "Master of the World",                 author: "Jules Verne",            source_consensus_score: 3}
     after:        - {gutenberg_id: 3809,  title: "Master of the World",                 author: "Jules Verne",            source_consensus_score: 3}
@@ -779,13 +757,10 @@ NEEDS_SUBSTITUTION  gid=  4051  (western)
     after:        - {gutenberg_id: 7853,  title: "Quentin Durward",                     author: "Walter Scott",           source_consensus_score: 3}
   - genre=historical title='Barnaby Rudge'
     before:       - {gutenberg_id: 7150,  title: "Barnaby Rudge",                       author: "Charles Dickens",        source_consensus_score: 3}
-    after:        - {gutenberg_id: 9732,  title: "Barnaby Rudge",                       author: "Charles Dickens",        source_consensus_score: 3}
+    after:        - {gutenberg_id: 917 ,  title: "Barnaby Rudge",                       author: "Charles Dickens",        source_consensus_score: 3}
   - genre=historical title='With Fire and Sword'
     before:       - {gutenberg_id: 7152,  title: "With Fire and Sword",                 author: "Henryk Sienkiewicz",     source_consensus_score: 2}
     after:        - {gutenberg_id: 37027,  title: "With Fire and Sword",                 author: "Henryk Sienkiewicz",     source_consensus_score: 2}
-  - genre=historical title='The Hunchback of Notre-Dame'
-    before:       - {gutenberg_id: 7155,  title: "The Hunchback of Notre-Dame",         author: "Victor Hugo",            source_consensus_score: 2}
-    after:        - {gutenberg_id: 6539,  title: "The Hunchback of Notre-Dame",         author: "Victor Hugo",            source_consensus_score: 2}
   - genre=historical title='Ninety-Three'
     before:       - {gutenberg_id: 7156,  title: "Ninety-Three",                        author: "Victor Hugo",            source_consensus_score: 2}
     after:        - {gutenberg_id: 49372,  title: "Ninety-Three",                        author: "Victor Hugo",            source_consensus_score: 2}
@@ -795,12 +770,6 @@ NEEDS_SUBSTITUTION  gid=  4051  (western)
   - genre=historical title='The Last of the Mohicans'
     before:       - {gutenberg_id: 7158,  title: "The Last of the Mohicans",            author: "James Fenimore Cooper",  source_consensus_score: 2}
     after:        - {gutenberg_id: 940 ,  title: "The Last of the Mohicans",            author: "James Fenimore Cooper",  source_consensus_score: 2}
-  - genre=literary title='Lord Jim'
-    before:       - {gutenberg_id: 5817,  title: "Lord Jim",                            author: "Joseph Conrad",          source_consensus_score: 3}
-    after:        - {gutenberg_id: 21435,  title: "Lord Jim",                            author: "Joseph Conrad",          source_consensus_score: 3}
-  - genre=literary title='Nostromo'
-    before:       - {gutenberg_id: 5818,  title: "Nostromo",                            author: "Joseph Conrad",          source_consensus_score: 3}
-    after:        - {gutenberg_id: 9345,  title: "Nostromo",                            author: "Joseph Conrad",          source_consensus_score: 3}
   - genre=literary title='Sons and Lovers'
     before:       - {gutenberg_id: 6593,  title: "Sons and Lovers",                     author: "D. H. Lawrence",         source_consensus_score: 3}
     after:        - {gutenberg_id: 217 ,  title: "Sons and Lovers",                     author: "D. H. Lawrence",         source_consensus_score: 3}
@@ -812,16 +781,13 @@ NEEDS_SUBSTITUTION  gid=  4051  (western)
     after:        - {gutenberg_id: 28948,  title: "The Rainbow",                         author: "D. H. Lawrence",         source_consensus_score: 3}
   - genre=literary title='Winesburg, Ohio'
     before:       - {gutenberg_id: 9182,  title: "Winesburg, Ohio",                     author: "Sherwood Anderson",      source_consensus_score: 3}
-    after:        - {gutenberg_id: 22949,  title: "Winesburg, Ohio",                     author: "Sherwood Anderson",      source_consensus_score: 3}
+    after:        - {gutenberg_id: 416 ,  title: "Winesburg, Ohio",                     author: "Sherwood Anderson",      source_consensus_score: 3}
   - genre=literary title='The Portrait of a Lady'
     before:       - {gutenberg_id: 212,   title: "The Portrait of a Lady",              author: "Henry James",            source_consensus_score: 2}
     after:        - {gutenberg_id: 2833,   title: "The Portrait of a Lady",              author: "Henry James",            source_consensus_score: 2}
   - genre=literary title='Daisy Miller'
     before:       - {gutenberg_id: 213,   title: "Daisy Miller",                        author: "Henry James",            source_consensus_score: 2}
     after:        - {gutenberg_id: 208,   title: "Daisy Miller",                        author: "Henry James",            source_consensus_score: 2}
-  - genre=literary title='Ethan Frome'
-    before:       - {gutenberg_id: 542,   title: "Ethan Frome",                         author: "Edith Wharton",          source_consensus_score: 2}
-    after:        - {gutenberg_id: 9288,   title: "Ethan Frome",                         author: "Edith Wharton",          source_consensus_score: 2}
   - genre=literary title='Babbitt'
     before:       - {gutenberg_id: 544,   title: "Babbitt",                             author: "Sinclair Lewis",         source_consensus_score: 2}
     after:        - {gutenberg_id: 1156,   title: "Babbitt",                             author: "Sinclair Lewis",         source_consensus_score: 2}
@@ -854,22 +820,16 @@ NEEDS_SUBSTITUTION  gid=  4051  (western)
     after:        - {gutenberg_id: 32954,   title: "The Black Arrow",                     author: "Robert Louis Stevenson", source_consensus_score: 3}
   - genre=adventure title='The Return of Tarzan'
     before:       - {gutenberg_id: 79,    title: "The Return of Tarzan",                author: "Edgar Rice Burroughs",   source_consensus_score: 2}
-    after:        - {gutenberg_id: 8752,    title: "The Return of Tarzan",                author: "Edgar Rice Burroughs",   source_consensus_score: 2}
+    after:        - {gutenberg_id: 90,    title: "The Return of Tarzan",                author: "Edgar Rice Burroughs",   source_consensus_score: 2}
   - genre=adventure title='The Beasts of Tarzan'
     before:       - {gutenberg_id: 80,    title: "The Beasts of Tarzan",                author: "Edgar Rice Burroughs",   source_consensus_score: 2}
     after:        - {gutenberg_id: 85,    title: "The Beasts of Tarzan",                author: "Edgar Rice Burroughs",   source_consensus_score: 2}
   - genre=adventure title='Robinson Crusoe'
     before:       - {gutenberg_id: 247,   title: "Robinson Crusoe",                     author: "Daniel Defoe",           source_consensus_score: 2}
-    after:        - {gutenberg_id: 21524,   title: "Robinson Crusoe",                     author: "Daniel Defoe",           source_consensus_score: 2}
+    after:        - {gutenberg_id: 70841,   title: "Robinson Crusoe",                     author: "Daniel Defoe",           source_consensus_score: 2}
   - genre=adventure title='A Journal of the Plague Year'
     before:       - {gutenberg_id: 522,   title: "A Journal of the Plague Year",        author: "Daniel Defoe",           source_consensus_score: 2}
-    after:        - {gutenberg_id: 9683,   title: "A Journal of the Plague Year",        author: "Daniel Defoe",           source_consensus_score: 2}
-  - genre=adventure title='Youth'
-    before:       - {gutenberg_id: 1261,  title: "Youth",                               author: "Joseph Conrad",          source_consensus_score: 2}
-    after:        - {gutenberg_id: 9361,  title: "Youth",                               author: "Joseph Conrad",          source_consensus_score: 2}
-  - genre=gothic_horror title='Frankenstein'
-    before:       - {gutenberg_id: 84,    title: "Frankenstein",                        author: "Mary Shelley",           source_consensus_score: 4}
-    after:        - {gutenberg_id: 6542,    title: "Frankenstein",                        author: "Mary Shelley",           source_consensus_score: 4}
+    after:        - {gutenberg_id: 12259,   title: "A Journal of the Plague Year",        author: "Daniel Defoe",           source_consensus_score: 2}
   - genre=gothic_horror title='A Sicilian Romance'
     before:       - {gutenberg_id: 5146,  title: "A Sicilian Romance",                  author: "Ann Radcliffe",          source_consensus_score: 3}
     after:        - {gutenberg_id: 7371,  title: "A Sicilian Romance",                  author: "Ann Radcliffe",          source_consensus_score: 3}
@@ -887,4 +847,4 @@ NEEDS_SUBSTITUTION  gid=  4051  (western)
     after:        - {gutenberg_id: 18247,  title: "The Last Man",                        author: "Mary Shelley",           source_consensus_score: 3}
   - genre=gothic_horror title='The Strange Case of Dr Jekyll and Mr Hyde'
     before:       - {gutenberg_id: 5151,  title: "The Strange Case of Dr Jekyll and Mr Hyde", author: "Robert Louis Stevenson", source_consensus_score: 3}
-    after:        - {gutenberg_id: 26247,  title: "The Strange Case of Dr Jekyll and Mr Hyde", author: "Robert Louis Stevenson", source_consensus_score: 3}
+    after:        - {gutenberg_id: 43  ,  title: "The Strange Case of Dr Jekyll and Mr Hyde", author: "Robert Louis Stevenson", source_consensus_score: 3}
