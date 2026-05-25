@@ -155,7 +155,13 @@ Plans:
   4. `GroupKFold(groups=author)` cross-validation runs and reports a per-author held-out gap ≤15pp vs. the LOOCV number; both numbers are surfaced in the validation report.
   5. *(P2)* `scripts/build_corpus.py` reproducibly regenerates the corpus from source manifests; running it on the recorded inputs produces a byte-identical `books.yaml` and `data/raw/` tree.
 
-**Plans:** TBD
+**Plans:** 4 plans
+
+Plans:
+- [x] 08-01-PLAN.md — Wave 1: Build v2 corpus via scripts/build_corpus.py with byte-identical v1 reproducibility gate (CEXP-01, CEXP-05)
+- [x] 08-02-PLAN.md — Wave 2: Pipeline retrain on v2 corpus end-to-end + post-retrain cache invalidation verification (CEXP-02)
+- [ ] 08-03-PLAN.md — Wave 3: Validation — modify 06_validate.py, evaluate v2 vs v1, write v2_validation_report.md (CEXP-03, CEXP-04)
+- [ ] 08-04-PLAN.md — Wave 4: Publish v2.0-data GitHub Release + targeted doc alignment (PROJECT/REQUIREMENTS/ROADMAP)
 
 **Key pitfalls owned by this phase** (`PITFALLS.md`):
 - §1 — W2V retrain rotates the embedding space — already mitigated by Phase 6's BUG-05; Phase 8 verifies the smoke test still passes after retrain.
@@ -163,6 +169,16 @@ Plans:
 - §11 — LOOCV cost explosion — cache per-book homology keyed by `(book_id, corpus_manifest_hash)`; switch to repeated stratified K-fold if N ≥ 25.
 
 ---
+
+### Phase 08.1: Corpus integrity rebuild — fix 141/240 wrong gid bindings in corpus_candidates.yaml against Gutenberg authoritative metadata, regenerate books.yaml, re-run Wave 2 precompute pipeline, enforce gid-integrity entry-gate before Wave 3 resumes (INSERTED)
+
+**Goal:** [Urgent work - to be planned]
+**Requirements**: TBD
+**Depends on:** Phase 8
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 08.1 to break down)
 
 ### Phase 9: Classification Depth
 
@@ -234,7 +250,7 @@ Plans:
 | 5. Deployment and Public Access | 2/2 | Shipped (v1.0) | 2026-04-13 |
 | 6. v1 Bug-Fix Sweep | 0/5 | Planned | — |
 | 7. Corpus Sourcing Research Spike | 0/5 | Planned | — |
-| 8. Corpus Expansion | 0/? | Not started (blocked on 6, 7) | — |
+| 8. Corpus Expansion | 0/4 | Planned (4 plans, 4 waves) | — |
 | 9. Classification Depth | 0/? | Not started (blocked on 8) | — |
 | 10. Visual Polish | 0/? | Not started (blocked on 6–9) | — |
 
