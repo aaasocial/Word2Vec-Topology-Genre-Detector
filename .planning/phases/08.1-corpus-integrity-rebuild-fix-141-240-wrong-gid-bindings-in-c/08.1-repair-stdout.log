@@ -1,0 +1,271 @@
+C:\Users\Eason\scoop\apps\python\current\Lib\site-packages\requests\__init__.py:109: RequestsDependencyWarning: urllib3 (2.1.0) or chardet (7.4.1)/charset_normalizer (3.3.2) doesn't match a supported version!
+  warnings.warn(
+2026-05-25 23:16:21,289 INFO repair_corpus loaded 145 SERIOUS rows from C:\Users\Eason\.claude\worktrees\agent-a6abdc6632d1a4aea\Desktop\CC\Word2Vec Genre Analyser\.planning\phases\08.1-corpus-integrity-rebuild-fix-141-240-wrong-gid-bindings-in-c\08.1-gid-audit-pre.log.jsonl
+2026-05-25 23:16:21,289 INFO repair_corpus distinct lastnames to fetch: 54
+2026-05-25 23:16:21,290 INFO repair_corpus fetching authors with 4 parallel workers
+2026-05-25 23:17:17,716 INFO repair_corpus   author 'defoe': 66 hits across 3 page(s)
+2026-05-25 23:17:17,717 INFO repair_corpus   [1/54] author 'defoe' -> 66 hits
+2026-05-25 23:17:50,873 INFO repair_corpus   author 'burroughs': 114 hits across 4 page(s)
+2026-05-25 23:17:50,874 INFO repair_corpus   [2/54] author 'burroughs' -> 114 hits
+2026-05-25 23:18:24,418 INFO repair_corpus   author 'london': 160 hits across 5 page(s)
+2026-05-25 23:18:24,420 INFO repair_corpus   [3/54] author 'london' -> 160 hits
+2026-05-25 23:18:24,795 INFO repair_corpus   author 'hope': 160 hits across 5 page(s)
+2026-05-25 23:18:24,796 INFO repair_corpus   [4/54] author 'hope' -> 160 hits
+2026-05-25 23:18:55,138 INFO repair_corpus   author 'conrad': 96 hits across 3 page(s)
+2026-05-25 23:18:55,139 INFO repair_corpus   [5/54] author 'conrad' -> 96 hits
+2026-05-25 23:19:24,301 INFO repair_corpus   author 'machen': 16 hits across 1 page(s)
+2026-05-25 23:19:24,302 INFO repair_corpus   [6/54] author 'machen' -> 16 hits
+2026-05-25 23:19:33,395 INFO repair_corpus   author 'shelley': 63 hits across 2 page(s)
+2026-05-25 23:19:33,396 INFO repair_corpus   [7/54] author 'shelley' -> 63 hits
+2026-05-25 23:19:34,476 INFO repair_corpus   author 'stevenson': 160 hits across 5 page(s)
+2026-05-25 23:19:34,478 INFO repair_corpus   [8/54] author 'stevenson' -> 160 hits
+2026-05-25 23:19:42,779 INFO repair_corpus   author 'bronte': 4 hits across 1 page(s)
+2026-05-25 23:19:42,780 INFO repair_corpus   [9/54] author 'bronte' -> 4 hits
+2026-05-25 23:20:11,692 INFO repair_corpus   author 'radcliffe': 15 hits across 1 page(s)
+2026-05-25 23:20:11,694 INFO repair_corpus   [10/54] author 'radcliffe' -> 15 hits
+2026-05-25 23:20:13,593 INFO repair_corpus   author 'melville': 94 hits across 3 page(s)
+2026-05-25 23:20:13,594 INFO repair_corpus   [11/54] author 'melville' -> 94 hits
+2026-05-25 23:20:33,575 INFO repair_corpus   author 'beckford': 6 hits across 1 page(s)
+2026-05-25 23:20:33,577 INFO repair_corpus   [12/54] author 'beckford' -> 6 hits
+2026-05-25 23:20:42,001 INFO repair_corpus   author 'maturin': 26 hits across 1 page(s)
+2026-05-25 23:20:42,002 INFO repair_corpus   [13/54] author 'maturin' -> 26 hits
+2026-05-25 23:20:55,045 INFO repair_corpus   author 'rymer': 4 hits across 1 page(s)
+2026-05-25 23:20:55,047 INFO repair_corpus   [14/54] author 'rymer' -> 4 hits
+2026-05-25 23:21:05,160 INFO repair_corpus   author 'godwin': 24 hits across 1 page(s)
+2026-05-25 23:21:05,162 INFO repair_corpus   [15/54] author 'godwin' -> 24 hits
+2026-05-25 23:22:36,594 INFO repair_corpus   author 'lewis': 160 hits across 5 page(s)
+2026-05-25 23:22:36,596 INFO repair_corpus   [16/54] author 'lewis' -> 160 hits
+2026-05-25 23:22:40,599 INFO repair_corpus   author 'brown': 160 hits across 5 page(s)
+2026-05-25 23:22:40,600 INFO repair_corpus   [17/54] author 'brown' -> 160 hits
+2026-05-25 23:22:45,669 INFO repair_corpus   author 'dumas': 68 hits across 3 page(s)
+2026-05-25 23:22:45,671 INFO repair_corpus   [18/54] author 'dumas' -> 68 hits
+2026-05-25 23:23:24,569 INFO repair_corpus   author 'sienkiewicz': 20 hits across 1 page(s)
+2026-05-25 23:23:24,571 INFO repair_corpus   [19/54] author 'sienkiewicz' -> 20 hits
+2026-05-25 23:24:23,802 INFO repair_corpus   author 'hugo': 54 hits across 2 page(s)
+2026-05-25 23:24:23,804 INFO repair_corpus   [20/54] author 'hugo' -> 54 hits
+2026-05-25 23:24:28,681 INFO repair_corpus   author 'scott': 160 hits across 5 page(s)
+2026-05-25 23:24:28,683 INFO repair_corpus   [21/54] author 'scott' -> 160 hits
+2026-05-25 23:26:20,511 INFO repair_corpus   author 'cooper': 128 hits across 4 page(s)
+2026-05-25 23:26:20,513 INFO repair_corpus   [22/54] author 'cooper' -> 128 hits
+2026-05-25 23:26:22,881 INFO repair_corpus   author 'dickens': 160 hits across 5 page(s)
+2026-05-25 23:26:22,882 INFO repair_corpus   [23/54] author 'dickens' -> 160 hits
+2026-05-25 23:26:58,120 INFO repair_corpus   author 'wharton': 108 hits across 4 page(s)
+2026-05-25 23:26:58,122 INFO repair_corpus   [24/54] author 'wharton' -> 108 hits
+2026-05-25 23:27:33,369 INFO repair_corpus   author 'james': 160 hits across 5 page(s)
+2026-05-25 23:27:33,371 INFO repair_corpus   [25/54] author 'james' -> 160 hits
+2026-05-25 23:29:05,954 INFO repair_corpus   author 'lawrence': 139 hits across 5 page(s)
+2026-05-25 23:29:05,955 INFO repair_corpus   [26/54] author 'lawrence' -> 139 hits
+2026-05-25 23:29:24,981 INFO repair_corpus   author 'anderson': 160 hits across 5 page(s)
+2026-05-25 23:29:24,982 INFO repair_corpus   [27/54] author 'anderson' -> 160 hits
+2026-05-25 23:29:37,515 INFO repair_corpus   author 'doyle': 135 hits across 5 page(s)
+2026-05-25 23:29:37,516 INFO repair_corpus   [28/54] author 'doyle' -> 135 hits
+2026-05-25 23:30:13,952 INFO repair_corpus   author 'hornung': 31 hits across 1 page(s)
+2026-05-25 23:30:13,953 INFO repair_corpus   [29/54] author 'hornung' -> 31 hits
+2026-05-25 23:30:15,249 INFO repair_corpus   author 'rinehart': 33 hits across 2 page(s)
+2026-05-25 23:30:15,251 INFO repair_corpus   [30/54] author 'rinehart' -> 33 hits
+2026-05-25 23:30:29,359 INFO repair_corpus   author 'green': 160 hits across 5 page(s)
+2026-05-25 23:30:29,360 INFO repair_corpus   [31/54] author 'green' -> 160 hits
+2026-05-25 23:30:49,824 INFO repair_corpus   author 'chesterton': 74 hits across 3 page(s)
+2026-05-25 23:30:49,826 INFO repair_corpus   [32/54] author 'chesterton' -> 74 hits
+2026-05-25 23:30:56,584 INFO repair_corpus   author 'childers': 5 hits across 1 page(s)
+2026-05-25 23:30:56,586 INFO repair_corpus   [33/54] author 'childers' -> 5 hits
+2026-05-25 23:31:55,204 INFO repair_corpus   author 'orczy': 33 hits across 2 page(s)
+2026-05-25 23:31:55,206 INFO repair_corpus   [34/54] author 'orczy' -> 33 hits
+2026-05-25 23:32:31,512 WARNING repair_corpus gutendex error ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) (attempt 1) — sleep 4.0s
+2026-05-25 23:32:39,325 WARNING repair_corpus gutendex error ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) (attempt 1) — sleep 4.0s
+2026-05-25 23:34:08,841 INFO repair_corpus   author 'hume': 114 hits across 4 page(s)
+2026-05-25 23:34:08,842 INFO repair_corpus   [35/54] author 'hume' -> 114 hits
+2026-05-25 23:34:19,187 INFO repair_corpus   author 'wallace': 160 hits across 5 page(s)
+2026-05-25 23:34:19,187 INFO repair_corpus   [36/54] author 'wallace' -> 160 hits
+2026-05-25 23:34:32,353 INFO repair_corpus   author 'sue': 160 hits across 5 page(s)
+2026-05-25 23:34:32,354 INFO repair_corpus   [37/54] author 'sue' -> 160 hits
+2026-05-25 23:35:19,231 INFO repair_corpus   author 'hardy': 99 hits across 4 page(s)
+2026-05-25 23:35:19,233 INFO repair_corpus   [38/54] author 'hardy' -> 99 hits
+2026-05-25 23:35:25,610 INFO repair_corpus   author 'gaskell': 34 hits across 2 page(s)
+2026-05-25 23:35:25,612 INFO repair_corpus   [39/54] author 'gaskell' -> 34 hits
+2026-05-25 23:35:58,834 INFO repair_corpus   author 'eliot': 63 hits across 2 page(s)
+2026-05-25 23:35:58,836 INFO repair_corpus   [40/54] author 'eliot' -> 63 hits
+2026-05-25 23:36:29,448 INFO repair_corpus   author 'richardson': 79 hits across 3 page(s)
+2026-05-25 23:36:29,449 INFO repair_corpus   [41/54] author 'richardson' -> 79 hits
+2026-05-25 23:36:51,882 INFO repair_corpus   author 'braddon': 66 hits across 3 page(s)
+2026-05-25 23:36:51,883 INFO repair_corpus   [42/54] author 'braddon' -> 66 hits
+2026-05-25 23:37:16,687 INFO repair_corpus   author 'trollope': 108 hits across 4 page(s)
+2026-05-25 23:37:16,688 INFO repair_corpus   [43/54] author 'trollope' -> 108 hits
+2026-05-25 23:37:38,692 INFO repair_corpus   author 'wister': 20 hits across 1 page(s)
+2026-05-25 23:37:38,693 INFO repair_corpus   [44/54] author 'wister' -> 20 hits
+2026-05-25 23:38:27,907 INFO repair_corpus   author 'macdonald': 109 hits across 4 page(s)
+2026-05-25 23:38:27,908 INFO repair_corpus   [45/54] author 'macdonald' -> 109 hits
+2026-05-25 23:38:38,528 INFO repair_corpus   author 'wells': 160 hits across 5 page(s)
+2026-05-25 23:38:38,529 INFO repair_corpus   [46/54] author 'wells' -> 160 hits
+2026-05-25 23:38:55,718 INFO repair_corpus   author 'verne': 105 hits across 4 page(s)
+2026-05-25 23:38:55,720 INFO repair_corpus   [47/54] author 'verne' -> 105 hits
+2026-05-25 23:38:58,158 INFO repair_corpus   author 'mulford': 13 hits across 1 page(s)
+2026-05-25 23:38:58,160 INFO repair_corpus   [48/54] author 'mulford' -> 13 hits
+2026-05-25 23:39:26,306 INFO repair_corpus   author 'spearman': 8 hits across 1 page(s)
+2026-05-25 23:39:26,307 INFO repair_corpus   [49/54] author 'spearman' -> 8 hits
+2026-05-25 23:39:52,982 INFO repair_corpus   author 'altsheler': 35 hits across 2 page(s)
+2026-05-25 23:39:52,984 INFO repair_corpus   [50/54] author 'altsheler' -> 35 hits
+2026-05-25 23:40:34,023 INFO repair_corpus   author 'bower': 60 hits across 2 page(s)
+2026-05-25 23:40:34,024 INFO repair_corpus   [51/54] author 'bower' -> 60 hits
+2026-05-25 23:40:48,218 INFO repair_corpus   author 'adams': 160 hits across 5 page(s)
+2026-05-25 23:40:48,220 INFO repair_corpus   [52/54] author 'adams' -> 160 hits
+2026-05-25 23:40:49,474 INFO repair_corpus   author 'grey': 102 hits across 4 page(s)
+2026-05-25 23:40:49,476 INFO repair_corpus   [53/54] author 'grey' -> 102 hits
+2026-05-25 23:40:54,583 INFO repair_corpus   author 'coolidge': 35 hits across 2 page(s)
+2026-05-25 23:40:54,585 INFO repair_corpus   [54/54] author 'coolidge' -> 35 hits
+2026-05-25 23:40:54,586 INFO repair_corpus seeded exclusion set with 240 gids currently in books.yaml
+2026-05-25 23:40:54,588 INFO repair_corpus   [1/145] REPAIR 79 -> 8752  ('The Return of Tarzan')
+2026-05-25 23:40:54,589 INFO repair_corpus   [2/145] REPAIR 80 -> 85  ('The Beasts of Tarzan')
+2026-05-25 23:40:55,503 WARNING repair_corpus   [3/145] NEEDS_SUBSTITUTION gid=96 title='Rupert of Hentzau'
+2026-05-25 23:40:55,504 INFO repair_corpus   [4/145] REPAIR 247 -> 21524  ('Robinson Crusoe')
+2026-05-25 23:40:55,505 INFO repair_corpus   [5/145] REPAIR 522 -> 9683  ('A Journal of the Plague Year')
+2026-05-25 23:40:55,506 INFO repair_corpus   [6/145] REPAIR 558 -> 1074  ('The Sea-Wolf')
+2026-05-25 23:40:55,507 INFO repair_corpus   [7/145] REPAIR 559 -> 1056  ('Martin Eden')
+2026-05-25 23:40:55,508 INFO repair_corpus   [8/145] REPAIR 560 -> 1208  ('South Sea Tales')
+2026-05-25 23:40:55,753 WARNING repair_corpus   [9/145] NEEDS_SUBSTITUTION gid=561 title='Tales of the Fish Patrol'
+2026-05-25 23:40:55,755 INFO repair_corpus   [10/145] REPAIR 562 -> 2512  ('The cruise of the Snark')
+2026-05-25 23:40:55,756 INFO repair_corpus   [11/145] REPAIR 563 -> 589  ('Catriona')
+2026-05-25 23:40:55,758 INFO repair_corpus   [12/145] REPAIR 564 -> 864  ('The Master of Ballantrae: A Winter's Tale')
+2026-05-25 23:40:55,760 INFO repair_corpus   [13/145] REPAIR 565 -> 32954  ('The Black Arrow: A Tale of the Two Roses')
+2026-05-25 23:40:55,761 INFO repair_corpus   [14/145] BENIGN_CONFIRMED gid=848 (audit-strict)
+2026-05-25 23:40:55,762 INFO repair_corpus   [15/145] REPAIR 1261 -> 9361  ('Youth')
+2026-05-25 23:40:55,993 WARNING repair_corpus   [16/145] NEEDS_SUBSTITUTION gid=2701 title='Moby-Dick'
+2026-05-25 23:40:55,994 INFO repair_corpus   [17/145] REPAIR 84 -> 6542  ('Frankenstein')
+2026-05-25 23:40:56,227 WARNING repair_corpus   [18/145] NEEDS_SUBSTITUTION gid=376 title='The Three Imposters'
+2026-05-25 23:40:56,228 INFO repair_corpus   [19/145] REPAIR 377 -> 13969  ('The Hill of Dreams')
+2026-05-25 23:40:56,468 WARNING repair_corpus   [20/145] NEEDS_SUBSTITUTION gid=378 title='The White People'
+2026-05-25 23:40:56,699 WARNING repair_corpus   [21/145] NEEDS_SUBSTITUTION gid=601 title='The Monk'
+2026-05-25 23:40:56,929 WARNING repair_corpus   [22/145] NEEDS_SUBSTITUTION gid=768 title='Wuthering Heights'
+2026-05-25 23:40:57,177 WARNING repair_corpus   [23/145] NEEDS_SUBSTITUTION gid=792 title='Wieland'
+2026-05-25 23:40:57,414 WARNING repair_corpus   [24/145] NEEDS_SUBSTITUTION gid=5145 title='The Italian'
+2026-05-25 23:40:57,414 INFO repair_corpus   [25/145] REPAIR 5146 -> 7371  ('A Sicilian Romance')
+2026-05-25 23:40:57,414 INFO repair_corpus   [26/145] REPAIR 5147 -> 64701  ('The Romance of the Forest, interspersed with some pieces of poetry.')
+2026-05-25 23:40:57,414 INFO repair_corpus   [27/145] REPAIR 5148 -> 53685  ('Melmoth the Wanderer, Vol. 1')
+2026-05-25 23:40:57,415 INFO repair_corpus   [28/145] REPAIR 5149 -> 2060  ('The History of Caliph Vathek')
+2026-05-25 23:40:57,415 INFO repair_corpus   [29/145] REPAIR 5150 -> 18247  ('The Last Man')
+2026-05-25 23:40:57,417 INFO repair_corpus   [30/145] REPAIR 5151 -> 26247  ('The Strange Case of Dr Jekyll & Mr Hyde')
+2026-05-25 23:40:57,654 WARNING repair_corpus   [31/145] NEEDS_SUBSTITUTION gid=11323 title='Caleb Williams'
+2026-05-25 23:40:57,654 INFO repair_corpus   [32/145] BENIGN_CONFIRMED gid=14833 (audit-strict)
+2026-05-25 23:40:57,884 WARNING repair_corpus   [33/145] NEEDS_SUBSTITUTION gid=82 title='Ivanhoe'
+2026-05-25 23:40:58,118 WARNING repair_corpus   [34/145] NEEDS_SUBSTITUTION gid=5998 title='Waverley'
+2026-05-25 23:40:58,119 INFO repair_corpus   [35/145] REPAIR 7142 -> 2609  ('The Vicomte de Bragelonne')
+2026-05-25 23:40:58,120 INFO repair_corpus   [36/145] REPAIR 7143 -> 2710  ('Louise de la Vallière')
+2026-05-25 23:40:58,121 INFO repair_corpus   [37/145] REPAIR 7144 -> 2759  ('The Man in the Iron Mask')
+2026-05-25 23:40:58,122 INFO repair_corpus   [38/145] REPAIR 7145 -> 7025  ('Rob Roy — Complete')
+2026-05-25 23:40:58,124 INFO repair_corpus   [39/145] REPAIR 7146 -> 1606  ('Kenilworth')
+2026-05-25 23:40:58,125 INFO repair_corpus   [40/145] REPAIR 7147 -> 6941  ('Old Mortality, Complete')
+2026-05-25 23:40:58,126 INFO repair_corpus   [41/145] REPAIR 7148 -> 1377  ('The Talisman')
+2026-05-25 23:40:58,128 INFO repair_corpus   [42/145] REPAIR 7149 -> 7853  ('Quentin Durward')
+2026-05-25 23:40:58,129 INFO repair_corpus   [43/145] REPAIR 7150 -> 9732  ('Barnaby Rudge')
+2026-05-25 23:40:58,378 WARNING repair_corpus   [44/145] NEEDS_SUBSTITUTION gid=7151 title='Quo Vadis'
+2026-05-25 23:40:58,378 INFO repair_corpus   [45/145] REPAIR 7152 -> 37027  ('With Fire and Sword: An Historical Novel of Poland and Russia')
+2026-05-25 23:40:58,612 WARNING repair_corpus   [46/145] NEEDS_SUBSTITUTION gid=7153 title='The Deluge'
+2026-05-25 23:40:58,855 WARNING repair_corpus   [47/145] NEEDS_SUBSTITUTION gid=7154 title='Pan Michael'
+2026-05-25 23:40:58,856 INFO repair_corpus   [48/145] REPAIR 7155 -> 6539  ('The Hunchback of Notre Dame')
+2026-05-25 23:40:58,856 INFO repair_corpus   [49/145] REPAIR 7156 -> 49372  ('Ninety-Three')
+2026-05-25 23:40:58,857 INFO repair_corpus   [50/145] REPAIR 7157 -> 32338  ('Toilers of the sea')
+2026-05-25 23:40:58,858 INFO repair_corpus   [51/145] REPAIR 7158 -> 940  ('The Last of the Mohicans; A narrative of 1757')
+2026-05-25 23:40:59,086 WARNING repair_corpus   [52/145] NEEDS_SUBSTITUTION gid=7159 title='The Deerslayer'
+2026-05-25 23:40:59,338 WARNING repair_corpus   [53/145] NEEDS_SUBSTITUTION gid=7160 title='The Pathfinder'
+2026-05-25 23:40:59,569 WARNING repair_corpus   [54/145] NEEDS_SUBSTITUTION gid=7161 title='The Pioneers'
+2026-05-25 23:40:59,802 WARNING repair_corpus   [55/145] NEEDS_SUBSTITUTION gid=210 title='The Ambassadors'
+2026-05-25 23:41:00,032 WARNING repair_corpus   [56/145] NEEDS_SUBSTITUTION gid=211 title='The Wings of the Dove'
+2026-05-25 23:41:00,034 INFO repair_corpus   [57/145] REPAIR 212 -> 2833  ('The Portrait of a Lady — Volume 1')
+2026-05-25 23:41:00,035 INFO repair_corpus   [58/145] REPAIR 213 -> 208  ('Daisy Miller: A Study')
+2026-05-25 23:41:00,264 WARNING repair_corpus   [59/145] NEEDS_SUBSTITUTION gid=214 title='The Golden Bowl'
+2026-05-25 23:41:00,265 INFO repair_corpus   [60/145] REPAIR 542 -> 9288  ('Ethan Frome')
+2026-05-25 23:41:00,267 INFO repair_corpus   [61/145] REPAIR 544 -> 1156  ('Babbitt')
+2026-05-25 23:41:00,268 INFO repair_corpus   [62/145] REPAIR 545 -> 70875  ('Arrowsmith')
+2026-05-25 23:41:00,269 INFO repair_corpus   [63/145] REPAIR 546 -> 72609  ('Elmer Gantry')
+2026-05-25 23:41:00,270 INFO repair_corpus   [64/145] REPAIR 5817 -> 21435  ('Lord Jim')
+2026-05-25 23:41:00,271 INFO repair_corpus   [65/145] REPAIR 5818 -> 9345  ('Nostromo')
+2026-05-25 23:41:00,272 INFO repair_corpus   [66/145] REPAIR 6593 -> 217  ('Sons and Lovers')
+2026-05-25 23:41:00,274 INFO repair_corpus   [67/145] REPAIR 6594 -> 4240  ('Women in Love')
+2026-05-25 23:41:00,275 INFO repair_corpus   [68/145] REPAIR 6595 -> 28948  ('The Rainbow')
+2026-05-25 23:41:00,277 INFO repair_corpus   [69/145] REPAIR 9182 -> 22949  ('Winesburg, Ohio')
+2026-05-25 23:41:00,530 WARNING repair_corpus   [70/145] NEEDS_SUBSTITUTION gid=9183 title='Poor White'
+2026-05-25 23:41:00,532 INFO repair_corpus   [71/145] REPAIR 221 -> 2097  ('The Sign of the Four')
+2026-05-25 23:41:00,533 INFO repair_corpus   [72/145] REPAIR 480 -> 9555  ('The Memoirs of Sherlock Holmes')
+2026-05-25 23:41:00,535 INFO repair_corpus   [73/145] REPAIR 481 -> 1661  ('The Adventures of Sherlock Holmes')
+2026-05-25 23:41:00,537 INFO repair_corpus   [74/145] REPAIR 583 -> 9705  ('The Mystery of Edwin Drood')
+2026-05-25 23:41:00,538 INFO repair_corpus   [75/145] REPAIR 834 -> 9554  ('His last bow')
+2026-05-25 23:41:00,539 INFO repair_corpus   [76/145] REPAIR 1155 -> 4047  ('The Leavenworth Case')
+2026-05-25 23:41:00,540 INFO repair_corpus   [77/145] REPAIR 1851 -> 1695  ('The Man Who Was Thursday: A Nightmare')
+2026-05-25 23:41:00,768 WARNING repair_corpus   [78/145] NEEDS_SUBSTITUTION gid=2155 title='The Door of Death'
+2026-05-25 23:41:00,769 INFO repair_corpus   [79/145] REPAIR 2156 -> 2098  ('A Thief in the Night: A Book of Raffles' Adventures')
+2026-05-25 23:41:00,769 INFO repair_corpus   [80/145] REPAIR 2157 -> 9806  ('Mr. Justice Raffles')
+2026-05-25 23:41:00,771 INFO repair_corpus   [81/145] REPAIR 2856 -> 69790  ('The Three Just Men')
+2026-05-25 23:41:00,772 INFO repair_corpus   [82/145] REPAIR 2857 -> 76257  ('The crimson circle')
+2026-05-25 23:41:00,774 INFO repair_corpus   [83/145] REPAIR 3300 -> 6602  ('Mysteries of Paris — Volume 02')
+2026-05-25 23:41:00,774 INFO repair_corpus   [84/145] REPAIR 3301 -> 2360  ('The Riddle of the Sands')
+2026-05-25 23:41:00,774 INFO repair_corpus   [85/145] REPAIR 3303 -> 10556  ('The Old Man in the Corner')
+2026-05-25 23:41:00,776 INFO repair_corpus   [86/145] REPAIR 3304 -> 4223  ('The Mystery of a Hansom Cab')
+2026-05-25 23:41:00,777 INFO repair_corpus   [87/145] REPAIR 3305 -> 2371  ('The Filigree Ball: Being a full and true account of the solution of the mystery concerning the Jeffrey-Moore affair')
+2026-05-25 23:41:00,778 INFO repair_corpus   [88/145] REPAIR 3306 -> 21617  ('That Affair Next Door')
+2026-05-25 23:41:00,779 INFO repair_corpus   [89/145] BENIGN_CONFIRMED gid=110 (audit-strict)
+2026-05-25 23:41:00,780 INFO repair_corpus   [90/145] REPAIR 153 -> 394  ('Cranford')
+2026-05-25 23:41:00,781 INFO repair_corpus   [91/145] REPAIR 432 -> 26264  ('The Return of the Native')
+2026-05-25 23:41:00,782 INFO repair_corpus   [92/145] REPAIR 521 -> 9672  ('Adam Bede')
+2026-05-25 23:41:00,783 INFO repair_corpus   [93/145] REPAIR 524 -> 6124  ('Pamela, or Virtue Rewarded')
+2026-05-25 23:41:00,784 INFO repair_corpus   [94/145] REPAIR 738 -> 3166  ('Doctor Thorne')
+2026-05-25 23:41:00,785 INFO repair_corpus   [95/145] REPAIR 826 -> 2860  ('Framley Parsonage')
+2026-05-25 23:41:00,786 INFO repair_corpus   [96/145] REPAIR 882 -> 26287  ('The Warden')
+2026-05-25 23:41:00,787 INFO repair_corpus   [97/145] REPAIR 946 -> 8954  ('Lady Audley's Secret')
+2026-05-25 23:41:00,788 INFO repair_corpus   [98/145] REPAIR 969 -> 107  ('Far from the Madding Crowd')
+2026-05-25 23:41:01,022 WARNING repair_corpus   [99/145] NEEDS_SUBSTITUTION gid=1245 title='Villette'
+2026-05-25 23:41:01,265 WARNING repair_corpus   [100/145] NEEDS_SUBSTITUTION gid=1252 title='Shirley'
+2026-05-25 23:41:01,566 WARNING repair_corpus   [101/145] NEEDS_SUBSTITUTION gid=1260 title='Jane Eyre'
+2026-05-25 23:41:01,798 WARNING repair_corpus   [102/145] NEEDS_SUBSTITUTION gid=2095 title='The Tenant of Wildfell Hall'
+2026-05-25 23:41:01,799 INFO repair_corpus   [103/145] REPAIR 4517 -> 17780  ('Scenes of Clerical Life')
+2026-05-25 23:41:01,800 INFO repair_corpus   [104/145] REPAIR 4860 -> 9675  ('The Mill on the Floss')
+2026-05-25 23:41:01,800 INFO repair_corpus   [105/145] REPAIR 6688 -> 9671  ('Daniel Deronda')
+2026-05-25 23:41:01,802 INFO repair_corpus   [106/145] REPAIR 11 -> 5230  ('The Invisible Man: A Grotesque Romance')
+2026-05-25 23:41:01,803 INFO repair_corpus   [107/145] REPAIR 27 -> 1013  ('The First Men in the Moon')
+2026-05-25 23:41:02,036 WARNING repair_corpus   [108/145] NEEDS_SUBSTITUTION gid=325 title='Phantastes'
+2026-05-25 23:41:02,283 WARNING repair_corpus   [109/145] NEEDS_SUBSTITUTION gid=706 title='Lilith'
+2026-05-25 23:41:02,285 INFO repair_corpus   [110/145] REPAIR 718 -> 775  ('When the Sleeper Wakes')
+2026-05-25 23:41:02,286 INFO repair_corpus   [111/145] REPAIR 1130 -> 28941  ('The Princess and the Goblin')
+2026-05-25 23:41:02,287 INFO repair_corpus   [112/145] REPAIR 1131 -> 709  ('The Princess and Curdie')
+2026-05-25 23:41:02,288 INFO repair_corpus   [113/145] REPAIR 1652 -> 8980  ('Robur the Conqueror')
+2026-05-25 23:41:02,289 INFO repair_corpus   [114/145] REPAIR 1842 -> 8984  ('Off on a Comet')
+2026-05-25 23:41:02,290 INFO repair_corpus   [115/145] REPAIR 2083 -> 3809  ('The Master of the World')
+2026-05-25 23:41:02,919 WARNING repair_corpus   [116/145] NEEDS_SUBSTITUTION gid=1012 title='The Virginian'
+2026-05-25 23:41:02,921 INFO repair_corpus   [117/145] REPAIR 1389 -> 12797  ('The Log of a Cowboy: A Narrative of the Old Trail Days')
+2026-05-25 23:41:02,922 INFO repair_corpus   [118/145] REPAIR 1528 -> 1300  ('Riders of the Purple Sage')
+2026-05-25 23:41:02,923 INFO repair_corpus   [119/145] REPAIR 3179 -> 1027  ('The Lone Star Ranger: A Romance of the Border')
+2026-05-25 23:41:02,924 INFO repair_corpus   [120/145] REPAIR 3285 -> 4552  ('The Border Legion')
+2026-05-25 23:41:02,925 INFO repair_corpus   [121/145] REPAIR 3752 -> 2057  ('The Last of the Plainsmen')
+2026-05-25 23:41:03,154 WARNING repair_corpus   [122/145] NEEDS_SUBSTITUTION gid=3756 title='Betty Zane'
+2026-05-25 23:41:03,155 INFO repair_corpus   [123/145] REPAIR 3779 -> 1882  ('The Young Forester')
+2026-05-25 23:41:03,156 INFO repair_corpus   [124/145] REPAIR 3784 -> 1095  ('The Light of the Western Stars')
+2026-05-25 23:41:03,157 INFO repair_corpus   [125/145] REPAIR 3808 -> 1262  ('The Heritage of the Desert: A Novel')
+2026-05-25 23:41:03,158 INFO repair_corpus   [126/145] REPAIR 3818 -> 15673  ('The Day of the Beast')
+2026-05-25 23:41:03,158 INFO repair_corpus   [127/145] REPAIR 3829 -> 502  ('Desert Gold')
+2026-05-25 23:41:03,387 WARNING repair_corpus   [128/145] NEEDS_SUBSTITUTION gid=4051 title='The Lone Star Ranger'
+2026-05-25 23:41:03,388 INFO repair_corpus   [129/145] REPAIR 5755 -> 4684  ('The U. P. Trail')
+2026-05-25 23:41:03,389 INFO repair_corpus   [130/145] REPAIR 5757 -> 10201  ('The Desert of Wheat')
+2026-05-25 23:41:03,390 INFO repair_corpus   [131/145] REPAIR 5765 -> 5067  ('The Rainbow Trail')
+2026-05-25 23:41:03,391 INFO repair_corpus   [132/145] REPAIR 6993 -> 59548  ('Tappan's Burro, and Other Stories')
+2026-05-25 23:41:03,391 INFO repair_corpus   [133/145] REPAIR 6995 -> 13937  ('The Mysterious Rider')
+2026-05-25 23:41:03,392 INFO repair_corpus   [134/145] REPAIR 6996 -> 2066  ('Wildfire')
+2026-05-25 23:41:03,392 INFO repair_corpus   [135/145] REPAIR 7762 -> 1385  ('Lin McLean')
+2026-05-25 23:41:03,393 INFO repair_corpus   [136/145] REPAIR 7763 -> 28675  ('Red Men and White')
+2026-05-25 23:41:03,393 INFO repair_corpus   [137/145] REPAIR 7764 -> 56717  ('Members of the Family')
+2026-05-25 23:41:03,393 INFO repair_corpus   [138/145] REPAIR 8083 -> 56626  ('Johnny Nelson: How a one-time pupil of Hopalong Cassidy of the famous Bar-20 ranch in the Pecos Valley performed an act of knight-errantry and what came of it')
+2026-05-25 23:41:03,393 INFO repair_corpus   [139/145] REPAIR 8084 -> 42800  ('Buck Peters, ranchman : $b being the story of what happened when Buck Peters, Hopalong Cassidy, and their Bar-20 associates went to Montana')
+2026-05-25 23:41:03,394 INFO repair_corpus   [140/145] REPAIR 8085 -> 42441  ('The Coming of Cassidy—And the Others')
+2026-05-25 23:41:03,394 INFO repair_corpus   [141/145] REPAIR 8086 -> 4922  ('Bar-20 Days')
+2026-05-25 23:41:03,394 INFO repair_corpus   [142/145] REPAIR 8093 -> 1078  ('The Scouts of the Valley')
+2026-05-25 23:41:03,394 INFO repair_corpus   [143/145] REPAIR 10717 -> 29572  ('Whispering Smith')
+2026-05-25 23:41:03,395 INFO repair_corpus   [144/145] REPAIR 14288 -> 938  ('Good Indian')
+2026-05-25 23:41:03,395 INFO repair_corpus   [145/145] REPAIR 20381 -> 29642  ('Hidden Water')
+2026-05-25 23:41:03,406 INFO repair_corpus applied 110 line edits to C:\Users\Eason\.claude\worktrees\agent-a6abdc6632d1a4aea\Desktop\CC\Word2Vec Genre Analyser\.planning\research\v2\corpus_candidates.yaml
+2026-05-25 23:41:03,407 INFO repair_corpus repair decisions written to C:\Users\Eason\.claude\worktrees\agent-a6abdc6632d1a4aea\Desktop\CC\Word2Vec Genre Analyser\.planning\phases\08.1-corpus-integrity-rebuild-fix-141-240-wrong-gid-bindings-in-c\08.1-repair-decisions.log
+
+=== repair_corpus.py summary ===
+  serious_input: 145
+  repairs_total: 113
+  gid_changes: 110
+  benign_confirmed: 3
+  needs_substitution: 32
+  lines_edited: 110
