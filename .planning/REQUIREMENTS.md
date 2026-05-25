@@ -44,7 +44,7 @@ See [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md) for ful
 ### Corpus Expansion (Phase 8)
 
 - [x] **CEXP-01**: `corpus/books.yaml` extended with `author` and `word_count` fields per book; new books added per Phase 7's `CORPUS_SOURCING.md` recommendation.
-- [ ] **CEXP-02**: System retrains Word2Vec and SVM end-to-end on the expanded corpus; new model assets pushed to a versioned GitHub Release (`v2.0-data`).
+- [x] **CEXP-02**: System retrains Word2Vec and SVM end-to-end on the expanded corpus; new model assets pushed to a versioned GitHub Release (`v2.0-data`).
 - [ ] **CEXP-03**: System evaluates the v2 model on the v1-frozen test set defined in `VALIDATION_PROTOCOL.md` and reports macro-F1, per-genre F1, and permutation p-value; v2 macro-F1 must exceed v1 baseline.
 - [ ] **CEXP-04**: System validates the expanded corpus with `GroupKFold(groups=author)` cross-validation; per-author held-out test confirms ≤15pp gap vs. LOOCV (`PITFALLS.md §5`).
 - [x] **CEXP-05** *(P2)*: Reproducible `scripts/build_corpus.py` regenerates the corpus from source manifests for audit and reuse.
@@ -183,7 +183,7 @@ Captured during v1 planning; deferred from v2.0 scope. Re-evaluate at v3 boundar
 | RES-02 | Phase 7 | Pending |
 | RES-03 | Phase 7 | Pending |
 | CEXP-01 | Phase 8 | Validated |
-| CEXP-02 | Phase 8 | Pending |
+| CEXP-02 | Phase 8 | Validated |
 | CEXP-03 | Phase 8 | Pending |
 | CEXP-04 | Phase 8 | Pending |
 | CEXP-05 | Phase 8 | Validated |

@@ -34,3 +34,6 @@ frontend/.vite/
 
 # BUG-04 — local recovery snapshots; never tracked.
 .planning/.snapshots/
+
+# Phase 8 Wave 2 local execution snapshots (pre-retrain lineage + run logs)
+.planning/phases/*/.wave*-snapshots/
