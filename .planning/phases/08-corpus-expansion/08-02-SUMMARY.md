@@ -311,3 +311,72 @@ All claimed deliverables present on disk and tracked in `git status`:
 | `119ac7c` | feat(08-02): retrain pipeline on v2 corpus — new W2V/SVM/lineage (CEXP-02) |
 
 All 14 staged files included in the single Wave-2 commit per plan §Task 2.5 (combine option, "Wave-2 commit granularity is acceptable as 1 commit since the artifacts are co-dependent"). `--no-verify` used per parallel-executor directive to avoid hook contention with sibling agents; orchestrator will validate hooks once after all agents complete.
+
+## Wave-1.5 Patch (2026-05-25, post-Wave-2)
+
+**This wave's "CRITICAL Deferred Issue" was resolved.** The user (orchestrator)
+chose Option 2 from the three remediation paths listed above: "Patch books.yaml
+in-place to remove the 6 incorrect entries (replace with correct candidates),
+re-fetch raw files, re-run Wave 2 pipeline."
+
+### What changed
+
+The 6 duplicate-gid defects in `corpus/books.yaml` are eliminated:
+
+| Defect (Wave-2 state) | Resolution (Wave-1.5 state) |
+|---|---|
+| adventure gid 82 = "Tarzan and the Jewels of Opar" (dup with historical gid 82 = Ivanhoe) | adventure swapped to gid 92 (Tarzan and the Jewels of Opar by Burroughs) |
+| adventure gid 121 = "The Black Arrow" (dup with romance gid 121 = Northanger Abbey) | adventure swapped to gid 848 (Black Arrow by Stevenson) |
+| adventure gid 521 = "Moll Flanders" (dup with romance gid 521 = Adam Bede) | adventure swapped to gid 370 (Moll Flanders by Defoe) |
+| adventure gid 1259 = "Lord Jim" (dup with historical gid 1259 = Twenty Years After) | adventure swapped to gid 5658 (Lord Jim by Conrad) |
+| adventure gid 1260 = "Typhoon" (dup with romance gid 1260 = Jane Eyre) | adventure swapped to gid 1142 (Typhoon by Conrad) |
+| gothic_horror gid 768 AND romance gid 768 both = "Wuthering Heights" | gothic_horror kept gid 768; romance got gid 2153 (Mary Barton by Gaskell) — Wuthering Heights canonically gothic_horror per Bloom canon |
+
+Result: 240 UNIQUE gids across 8 genres (verified by `len(set(ids)) == 240`).
+
+### Lineage rotated again
+
+| Field | Wave-2 (this summary's main story) | Wave-1.5 (post-patch) |
+|---|---|---|
+| `corpus_hash`        | `76605812ea9d91f95eac3b4084154afac1e7dcd891bdb6a4fc82536d59079f7b` | `f6cf71fa1c038472c420e5acd06bce4b33796d268878680dfc9b9ffccde5fe06` |
+| `w2v_model_sha256`   | `4b36b68ca2074b40fb14aee8ee1e345b76111d085d5522a8c3c515f797b8c9e6` | `8bfa627e517b6d5fec2ea7d998c0356e20739b5a7dadc91f5137027e1b6c85a9` |
+
+Both hashes rotated, proving the BUG-05 cache_key invariant correctly invalidates
+all Wave-2 cache entries. Hyperparameters remain frozen (window=15, k=200,
+alpha=0.7).
+
+### Pipeline impact
+
+The retrained SVM is fit on **215 UNIQUE books × 600 features → 8 classes**.
+Wave-2's "215 books = 209 unique + 6 duplicate-double-cache" pattern is gone;
+each book contributes exactly one feature vector with one genre label. The 2.8%
+silent label noise that Wave-2 documented is eliminated.
+
+Per-genre book count (post-min_unique_words=3000 filter):
+- adventure 30, gothic_horror 28, historical 21, literary 28
+- mystery 25, romance 27, speculative 28, western 28
+- Total: 215 unique with valid features.
+
+### Scope-boundary disclosure
+
+During the Wave-1.5 patch, a broader audit of all 240 gids in `corpus/books.yaml`
+revealed **135 additional title/author/gid mismatches** beyond the 6 documented
+duplicate-gid defects. These single-mapping mismatches don't cause label
+duplication (each wrong gid still maps 1:1 to a unique Gutenberg text) and were
+already trained on in Wave-2 as-is. Per the Wave-1.5 task's narrow scope (fix
+the 6 documented defects), these are deferred to a future corpus-integrity wave.
+The full audit log is preserved at `.planning/phases/08-corpus-expansion/wave-1-5-full-gid-audit.log`.
+
+Wave 3 results may indicate whether a broader corpus-integrity wave is warranted
+before v2.0 ships.
+
+### Patch artifacts
+
+See `.planning/phases/08-corpus-expansion/08-02.1-PATCH-SUMMARY.md` for the full
+audit trail.
+
+**Wave-1.5 commits:**
+- `c97f246` fix(08-1.5): correct 5 wrong gids + remove Wuthering Heights dual-listing in candidates.yaml
+- `44d60a0` fix(08-1.5): patch 6 duplicate-gid defects in books.yaml (240 unique gids)
+- `749b766` docs(08-1.5): record migration audit patch trail + full gid integrity audit
+- `57f7afb` feat(08-1.5): retrain pipeline on patched v2 corpus — new W2V/SVM/lineage

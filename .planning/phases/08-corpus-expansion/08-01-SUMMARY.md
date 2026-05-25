@@ -186,3 +186,39 @@ All six Wave-1 deliverable files exist on disk and all three commit hashes are r
 - FOUND commit: 1c1341f
 - FOUND commit: f0b42f8
 - FOUND commit: 21ac015
+
+## Wave-1.5 Patch (2026-05-25, post-Wave-2)
+
+**Wave 2's CRITICAL Deferred Issue traced root cause back to Wave 1.** The
+`.planning/research/v2/corpus_candidates.yaml` (this plan's Phase 7 input) had
+**5 incorrect Gutenberg IDs** in the adventure section + a **dual-listing of
+Wuthering Heights** under both gothic_horror and romance. These propagated through
+`build_corpus.py` into `corpus/books.yaml`, where they manifested as 6
+duplicate-gid rows during Wave-2 SVM training.
+
+The 5 wrong gids and corrections (verified by direct Gutenberg cache/epub URL probes):
+
+| Wrong gid in adventure | Title (intended) | Actual book at that gid | Correct gid |
+|---|---|---|---|
+| 82 | "Tarzan and the Jewels of Opar" by Burroughs | Ivanhoe by Walter Scott (already in historical) | 92 |
+| 121 | "The Black Arrow" by Stevenson | Northanger Abbey by Austen (already in romance) | 848 |
+| 521 | "Moll Flanders" by Defoe | Adam Bede by George Eliot (already in romance) | 370 |
+| 1259 | "Lord Jim" by Conrad | Twenty Years After by Dumas (already in historical) | 5658 |
+| 1260 | "Typhoon" by Conrad | Jane Eyre by Charlotte Bronte (already in romance) | 1142 |
+
+Wuthering Heights (gid 768) was kept in gothic_horror only (Bloom canon —
+isolation, moors, supernatural undertones, Heathcliff as gothic hero-villain).
+Romance was rebalanced to 30 books by adding gid 2153 Mary Barton (Gaskell),
+verified via Gutenberg cache/epub probe.
+
+**Patch artifacts:** see `.planning/phases/08-corpus-expansion/08-02.1-PATCH-SUMMARY.md` and the appended "## Wave-1.5 Patch" section in `.planning/research/v2/v1_to_v2_migration.md`.
+
+**Lineage rotation:** corpus_hash `76605812... → f6cf71fa...`; w2v_model_sha256 `4b36b68c... → 8bfa627e...`. BUG-05 cache_key invariant correctly invalidated all Wave-2 cache entries.
+
+**Scope-boundary disclosure:** a full audit during the patch found **135
+additional title/author/gid mismatches** in `corpus/books.yaml` beyond the 6
+patched defects. These do NOT cause duplicate-gid issues and were already trained
+on in Wave-2; they are deferred to a future corpus-integrity wave. The audit log
+is preserved at `.planning/phases/08-corpus-expansion/wave-1-5-full-gid-audit.log`.
+
+**Wave-1.5 commits:** `c97f246` (candidates.yaml fix), `44d60a0` (books.yaml fix), `749b766` (migration audit), `57f7afb` (retrain).
