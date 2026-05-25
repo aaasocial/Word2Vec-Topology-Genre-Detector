@@ -1,14 +1,14 @@
 {
   "alpha": 0.7,
-  "corpus_hash": "76605812ea9d91f95eac3b4084154afac1e7dcd891bdb6a4fc82536d59079f7b",
+  "corpus_hash": "f6cf71fa1c038472c420e5acd06bce4b33796d268878680dfc9b9ffccde5fe06",
   "created_by": "Plan 06-05 (BUG-05)",
-  "created_utc": "2026-05-25T06:33:38Z",
+  "created_utc": "2026-05-25T08:38:15Z",
   "feature_normalization": {
     "location": "l2",
     "structure": "l2"
   },
   "k_clusters": 200,
   "svm_file": "svm_pipeline.joblib",
-  "w2v_model_sha256": "4b36b68ca2074b40fb14aee8ee1e345b76111d085d5522a8c3c515f797b8c9e6",
+  "w2v_model_sha256": "8bfa627e517b6d5fec2ea7d998c0356e20739b5a7dadc91f5137027e1b6c85a9",
   "window": 15
 }

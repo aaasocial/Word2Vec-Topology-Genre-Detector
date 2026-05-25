@@ -13,7 +13,7 @@
       "weatherbury",
       "henery",
       "casterbridge",
-      "smallbury"
+      "maryann"
     ]
   },
   "35": {
@@ -25,8 +25,8 @@
       "eloi",
       "morlock",
       "underworld",
-      "camphor",
       "upperworld",
+      "camphor",
       "sphinx"
     ]
   },
@@ -34,8 +34,8 @@
     "top_10_tfidf_words": [
       "martians",
       "martian",
-      "weybridge",
       "ulla",
+      "weybridge",
       "horsell",
       "woking",
       "maybury",
@@ -94,9 +94,9 @@
       "canler",
       "clayton",
       "kerchak",
+      "esmeralda",
       "sabor",
       "greystoke",
-      "terkoz",
       "kala"
     ]
   },
@@ -133,10 +133,10 @@
       "tarzan",
       "rokoff",
       "thuran",
-      "waziri",
       "coude",
       "gernois",
       "arnot",
+      "waziri",
       "paulvitch",
       "tennington",
       "manyuema"
@@ -165,8 +165,8 @@
       "columbiad",
       "michel",
       "selenites",
-      "blomsberry",
       "projectile",
+      "blomsberry",
       "tycho"
     ]
   },
@@ -175,13 +175,27 @@
       "clerval",
       "safie",
       "justine",
-      "frankenstein",
       "kirwin",
       "ingolstadt",
+      "frankenstein",
       "krempe",
       "waldman",
       "felix",
       "lacey"
+    ]
+  },
+  "92": {
+    "top_10_tfidf_words": [
+      "werper",
+      "tarzan",
+      "zek",
+      "achmet",
+      "mugambi",
+      "beyd",
+      "opar",
+      "waziri",
+      "chulk",
+      "taglat"
     ]
   },
   "95": {
@@ -205,11 +219,11 @@
       "saffir",
       "prahu",
       "muda",
-      "campong",
       "bududreen",
       "ninaka",
       "dyaks",
-      "barunda"
+      "barunda",
+      "campong"
     ]
   },
   "98": {
@@ -234,10 +248,10 @@
       "aouda",
       "yokohama",
       "tankadere",
-      "rangoon",
       "carnatic",
-      "parsee",
-      "mongolia"
+      "mongolia",
+      "rangoon",
+      "allahabad"
     ]
   },
   "105": {
@@ -246,8 +260,8 @@
       "uppercross",
       "harville",
       "musgrove",
-      "elliot",
       "kellynch",
+      "elliot",
       "benwick",
       "musgroves",
       "lyme",
@@ -276,8 +290,8 @@
       "izz",
       "dairyman",
       "marian",
-      "retty",
       "clare",
+      "retty",
       "trantridge",
       "marlott"
     ]
@@ -285,8 +299,8 @@
   "120": {
     "top_10_tfidf_words": [
       "livesey",
-      "coracle",
       "gunn",
+      "coracle",
       "redruth",
       "trelawney",
       "hispaniola",
@@ -346,10 +360,10 @@
       "sotherton",
       "bertram",
       "bertrams",
-      "yates",
       "mansfield",
-      "edmund",
-      "fanny"
+      "yates",
+      "fanny",
+      "edmund"
     ]
   },
   "144": {
@@ -362,8 +376,8 @@
       "perrott",
       "terence",
       "ridley",
-      "venning",
-      "chailey"
+      "chailey",
+      "venning"
     ]
   },
   "145": {
@@ -374,8 +388,8 @@
       "ladislaw",
       "vincy",
       "farebrother",
-      "rosamond",
       "dorothea",
+      "rosamond",
       "lowick",
       "featherstone"
     ]
@@ -404,8 +418,8 @@
       "luker",
       "frizinghall",
       "moonstone",
-      "spearman",
-      "seegrave"
+      "seegrave",
+      "murthwaite"
     ]
   },
   "158": {
@@ -431,8 +445,8 @@
       "sayer",
       "dingey",
       "ling",
-      "staghound",
       "helmar",
+      "staghound",
       "canebrake"
     ]
   },
@@ -440,13 +454,13 @@
     "top_10_tfidf_words": [
       "elinor",
       "marianne",
-      "dashwood",
       "brandon",
+      "dashwood",
       "ferrars",
       "norland",
       "dashwoods",
-      "delaford",
       "steeles",
+      "delaford",
       "willoughby"
     ]
   },
@@ -461,7 +475,7 @@
       "poulps",
       "manometer",
       "narwhal",
-      "harpoon"
+      "ned"
     ]
   },
   "169": {
@@ -514,8 +528,8 @@
       "quinton",
       "brayne",
       "bohun",
-      "glengyle",
       "olivier",
+      "glengyle",
       "smythe",
       "wilfred"
     ]
@@ -527,11 +541,11 @@
       "jessel",
       "bly",
       "flora",
-      "nonetheless",
       "schoolroom",
+      "nonetheless",
       "headshake",
       "douglas",
-      "certitude"
+      "harley"
     ]
   },
   "210": {
@@ -573,8 +587,8 @@
       "swagman",
       "saltbush",
       "conroy",
-      "droving",
       "carew",
+      "droving",
       "walgett",
       "devines"
     ]
@@ -601,22 +615,22 @@
       "perrault",
       "huskies",
       "sled",
-      "billee",
       "ois",
-      "heem",
-      "yeehats"
+      "billee",
+      "yeehats",
+      "heem"
     ]
   },
   "219": {
     "top_10_tfidf_words": [
       "kurtz",
       "marlow",
-      "towson",
       "fresleven",
+      "towson",
       "rivets",
       "steamboat",
-      "hippo",
       "snag",
+      "hippo",
       "pilgrims",
       "helmsman"
     ]
@@ -667,8 +681,8 @@
     "top_10_tfidf_words": [
       "obs",
       "adv",
-      "pref",
       "cf",
+      "pref",
       "vb",
       "shak",
       "syn",
@@ -681,9 +695,9 @@
     "top_10_tfidf_words": [
       "trenor",
       "rosedale",
-      "selden",
       "gerty",
       "peniston",
+      "selden",
       "osburgh",
       "gryce",
       "farish",
@@ -695,14 +709,14 @@
     "top_10_tfidf_words": [
       "cosmo",
       "phantastes",
-      "aglovaile",
       "anodos",
+      "aglovaile",
       "faerie",
       "fairies",
       "eine",
       "glowworms",
-      "wie",
-      "steinwald"
+      "imbodiment",
+      "imbodied"
     ]
   },
   "345": {
@@ -719,6 +733,20 @@
       "varna"
     ]
   },
+  "370": {
+    "top_10_tfidf_words": [
+      "mercer",
+      "whore",
+      "brickhill",
+      "newgate",
+      "dunstable",
+      "mayoress",
+      "betty",
+      "midwife",
+      "colchester",
+      "governess"
+    ]
+  },
   "376": {
     "top_10_tfidf_words": [
       "whitechappel",
@@ -728,8 +756,8 @@
       "distemper",
       "shoreditch",
       "bishopsgate",
-      "stepney",
       "clarkenwell",
+      "stepney",
       "distempers"
     ]
   },
@@ -773,8 +801,8 @@
       "breck",
       "appin",
       "shuan",
-      "shaws",
       "ardshiel",
+      "shaws",
       "cluny"
     ]
   },
@@ -809,15 +837,15 @@
   "481": {
     "top_10_tfidf_words": [
       "obermuller",
-      "nance",
       "moriway",
+      "nance",
       "tausig",
       "dorgan",
       "kingdon",
       "monahan",
       "mag",
       "latimer",
-      "ramsay"
+      "wagenen"
     ]
   },
   "521": {
@@ -826,8 +854,8 @@
       "brazils",
       "moidores",
       "sallee",
-      "procuration",
       "periagua",
+      "procuration",
       "mans",
       "pampeluna",
       "viz",
@@ -839,13 +867,13 @@
       "hsin",
       "peking",
       "wang",
-      "rhymes",
       "chi",
+      "rhymes",
       "buddhist",
       "dolls",
-      "wei",
       "trident",
-      "chih"
+      "wei",
+      "yuan"
     ]
   },
   "524": {
@@ -957,7 +985,7 @@
       "royer",
       "marmie",
       "alloa",
-      "jopley"
+      "twisdon"
     ]
   },
   "559": {
@@ -996,8 +1024,8 @@
       "seignior",
       "jeffry",
       "nankin",
-      "brazils",
       "muscovy",
+      "brazils",
       "spaniards",
       "pekin"
     ]
@@ -1054,7 +1082,7 @@
       "git",
       "nos",
       "baro",
-      "logro",
+      "busno",
       "moriscos"
     ]
   },
@@ -1111,7 +1139,7 @@
       "ewbank",
       "addenbrooke",
       "crowley",
-      "milchester"
+      "mackenzie"
     ]
   },
   "711": {
@@ -1163,8 +1191,8 @@
     "top_10_tfidf_words": [
       "heathcliff",
       "hareton",
-      "earnshaw",
       "linton",
+      "earnshaw",
       "cathy",
       "hindley",
       "nelly",
@@ -1197,11 +1225,25 @@
       "cushing",
       "pycroft",
       "holmes",
-      "blessington",
       "musgrave",
+      "blessington",
       "brunton",
       "mycroft",
       "melas"
+    ]
+  },
+  "848": {
+    "top_10_tfidf_words": [
+      "matcham",
+      "shelton",
+      "shoreby",
+      "foxham",
+      "holywood",
+      "tunstall",
+      "risingham",
+      "arblaster",
+      "joanna",
+      "appleyard"
     ]
   },
   "863": {
@@ -1213,16 +1255,16 @@
       "cavendish",
       "dorcas",
       "strychnine",
-      "tadminster",
       "japp",
+      "tadminster",
       "raikes"
     ]
   },
   "882": {
     "top_10_tfidf_words": [
-      "tibbs",
       "tottle",
       "tuggs",
+      "tibbs",
       "cymon",
       "tulrumble",
       "mudfog",
@@ -1269,8 +1311,8 @@
       "ogne",
       "elli",
       "quella",
-      "sanza",
       "fuor",
+      "sanza",
       "quando",
       "questo",
       "vidi",
@@ -1298,8 +1340,8 @@
       "eno",
       "enob",
       "vpon",
-      "caes",
       "charmian",
+      "caes",
       "giue",
       "enobarbus",
       "loue"
@@ -1317,6 +1359,20 @@
       "heare",
       "auffidius",
       "cominius"
+    ]
+  },
+  "1142": {
+    "top_10_tfidf_words": [
+      "jukes",
+      "macwhirr",
+      "stokehold",
+      "coolies",
+      "nan",
+      "wheelhouse",
+      "alleyway",
+      "falk",
+      "sigg",
+      "boatswain"
     ]
   },
   "1155": {
@@ -1370,8 +1426,8 @@
       "launcelot",
       "tristram",
       "percivale",
-      "guenever",
       "isoud",
+      "guenever",
       "lamorak"
     ]
   },
@@ -1400,7 +1456,7 @@
       "mazarin",
       "planchet",
       "mordaunt",
-      "broussel"
+      "comminges"
     ]
   },
   "1260": {
@@ -1427,8 +1483,8 @@
       "cornplanter",
       "mccolloch",
       "clarke",
-      "betty",
-      "boggs"
+      "boggs",
+      "betty"
     ]
   },
   "1268": {
@@ -1452,8 +1508,8 @@
       "wickham",
       "longbourn",
       "netherfield",
-      "bennet",
       "meryton",
+      "bennet",
       "pemberley",
       "rosings",
       "bourgh"
@@ -1469,8 +1525,8 @@
       "trailles",
       "goriot",
       "maxime",
-      "birotteau",
-      "gigonnet"
+      "gigonnet",
+      "birotteau"
     ]
   },
   "1399": {
@@ -1505,8 +1561,8 @@
     "top_10_tfidf_words": [
       "pandarus",
       "patroclus",
-      "troilus",
       "thersites",
+      "troilus",
       "cressida",
       "cressid",
       "diomedes",
@@ -1616,15 +1672,29 @@
   "2145": {
     "top_10_tfidf_words": [
       "messala",
-      "ilderim",
       "hur",
+      "ilderim",
       "malluch",
       "arrius",
       "tirzah",
       "amrah",
       "balthasar",
       "simonides",
-      "nazarene"
+      "sheik"
+    ]
+  },
+  "2153": {
+    "top_10_tfidf_words": [
+      "jem",
+      "legh",
+      "carson",
+      "bridgenorth",
+      "simmonds",
+      "barton",
+      "sturgis",
+      "getten",
+      "leadbitter",
+      "carsons"
     ]
   },
   "2155": {
@@ -1669,7 +1739,7 @@
       "scragga",
       "quatermain",
       "kukuanas",
-      "macumazahn"
+      "incubu"
     ]
   },
   "2276": {
@@ -1697,7 +1767,7 @@
       "anigh",
       "carles",
       "mayst",
-      "therewith"
+      "hostage"
     ]
   },
   "2600": {
@@ -1803,13 +1873,13 @@
       "langton",
       "carle",
       "walter",
-      "belike",
-      "wellnigh",
       "therewith",
-      "yea",
+      "belike",
       "reddings",
-      "spake",
-      "sithence"
+      "yea",
+      "sithence",
+      "valiancy",
+      "anigh"
     ]
   },
   "3155": {
@@ -1859,8 +1929,8 @@
       "deerslayer",
       "hutter",
       "chingachgook",
-      "hetty",
       "sarpent",
+      "hetty",
       "rivenoak",
       "judith",
       "hurons",
@@ -1902,8 +1972,8 @@
       "sirt",
       "kapanja",
       "lala",
-      "baba",
       "snipers",
+      "baba",
       "xth",
       "khaki"
     ]
@@ -1915,9 +1985,9 @@
       "sonnings",
       "ullua",
       "pezoes",
-      "amounteth",
       "vuticaro",
       "signior",
+      "norado",
       "patrone",
       "janisaries"
     ]
@@ -1959,8 +2029,8 @@
       "morgan",
       "ames",
       "murphy",
-      "marsh",
       "newman",
+      "marsh",
       "cole"
     ]
   },
@@ -1983,22 +2053,22 @@
       "brantley",
       "challis",
       "pallou",
-      "taplin",
       "enderby",
+      "taplin",
       "nalia",
       "vahitahi",
+      "taku",
       "farani",
-      "jennabon",
-      "taku"
+      "jennabon"
     ]
   },
   "3829": {
     "top_10_tfidf_words": [
       "ukridge",
       "garny",
-      "beale",
       "millie",
       "derrick",
+      "beale",
       "phyllis",
       "garnet",
       "harrod",
@@ -2029,8 +2099,8 @@
       "arnall",
       "clongowes",
       "dolan",
-      "athy",
       "maccann",
+      "athy",
       "prefect"
     ]
   },
@@ -2055,9 +2125,9 @@
       "lennox",
       "higgins",
       "bessy",
-      "yo",
       "leonards",
       "dixon",
+      "yo",
       "edith",
       "margaret"
     ]
@@ -2125,10 +2195,10 @@
       "polyphile",
       "elles",
       "moins",
-      "dans",
       "leurs",
-      "avec",
+      "dans",
       "leur",
+      "nous",
       "quelque"
     ]
   },
@@ -2151,8 +2221,8 @@
       "lockwood",
       "whitney",
       "inez",
-      "norton",
       "senorita",
+      "norton",
       "moche",
       "kennedy",
       "alfonso",
@@ -2183,13 +2253,27 @@
       "savetsky",
       "limpy",
       "josephine",
-      "jennings",
       "reinstrom",
+      "jennings",
       "jameson"
     ]
   },
   "5200": {
     "top_10_tfidf_words": []
+  },
+  "5658": {
+    "top_10_tfidf_words": [
+      "itam",
+      "patusan",
+      "doramin",
+      "tamb",
+      "waris",
+      "bugis",
+      "dain",
+      "patna",
+      "stein",
+      "brierly"
+    ]
   },
   "5755": {
     "top_10_tfidf_words": [
@@ -2237,14 +2321,14 @@
     "top_10_tfidf_words": [
       "clockmaker",
       "eend",
-      "tother",
       "warnt",
       "aint",
+      "tother",
       "slick",
       "pugwash",
       "actilly",
       "jist",
-      "everlastin"
+      "nt"
     ]
   },
   "5818": {
@@ -2257,8 +2341,8 @@
       "dey",
       "hawkinses",
       "chil",
-      "tennessee",
-      "laura"
+      "laura",
+      "tennessee"
     ]
   },
   "5998": {
@@ -2271,8 +2355,8 @@
       "glennaquoich",
       "veolan",
       "everard",
-      "vohr",
-      "macwheeble"
+      "macwheeble",
+      "vohr"
     ]
   },
   "6593": {
@@ -2291,8 +2375,8 @@
   },
   "6594": {
     "top_10_tfidf_words": [
-      "schwatka",
       "toolooah",
+      "schwatka",
       "igloo",
       "inuits",
       "inuit",
@@ -2309,8 +2393,8 @@
       "ipecacuanha",
       "aperients",
       "farinaceous",
-      "costiveness",
       "dentition",
+      "costiveness",
       "locock",
       "hooping",
       "flatulence",
@@ -2340,8 +2424,8 @@
       "loveday",
       "colmoor",
       "rebekah",
-      "beckett",
       "quilter",
+      "beckett",
       "westring"
     ]
   },
@@ -2365,8 +2449,8 @@
       "ihr",
       "euch",
       "benvolio",
-      "ich",
       "dich",
+      "ich",
       "auf",
       "capulet",
       "ihn",
@@ -2380,11 +2464,11 @@
       "syracusans",
       "peloponnesians",
       "athenians",
-      "nicias",
       "tissaphernes",
+      "nicias",
       "lacedaemon",
-      "brasidas",
-      "boeotians"
+      "boeotians",
+      "brasidas"
     ]
   },
   "7143": {
@@ -2395,17 +2479,17 @@
       "bandy",
       "shafter",
       "coombs",
-      "owen",
       "toby",
-      "chums",
-      "amiel"
+      "owen",
+      "amiel",
+      "beggs"
     ]
   },
   "7144": {
     "top_10_tfidf_words": [
       "steelman",
-      "brummy",
       "arvie",
+      "brummy",
       "malachi",
       "aspinall",
       "isley",
@@ -2449,8 +2533,8 @@
   "7148": {
     "top_10_tfidf_words": [
       "calderon",
-      "shakspeare",
       "electra",
+      "shakspeare",
       "clytemnestra",
       "euripides",
       "aeschylus",
@@ -2467,8 +2551,8 @@
       "bateman",
       "sonnet",
       "derry",
-      "dermody",
       "gondoline",
+      "dermody",
       "wrapp",
       "embower",
       "dong"
@@ -2484,8 +2568,8 @@
       "descartes",
       "biological",
       "pathology",
-      "handicraftsmen",
-      "bichat"
+      "bichat",
+      "handicraftsmen"
     ]
   },
   "7151": {
@@ -2587,13 +2671,13 @@
       "harrington",
       "edna",
       "gorham",
-      "ramsay",
       "whyte",
+      "ramsay",
       "rebecca",
       "willis",
       "barker",
       "galahad",
-      "spaulding"
+      "cherrington"
     ]
   },
   "7764": {
@@ -2613,7 +2697,7 @@
       "nocking",
       "obsidian",
       "grizzly",
-      "archery"
+      "coyote"
     ]
   },
   "8085": {
@@ -2700,7 +2784,7 @@
       "lilith",
       "charley",
       "osborne",
-      "athanasia"
+      "clara"
     ]
   },
   "10007": {
@@ -2720,8 +2804,8 @@
   "10148": {
     "top_10_tfidf_words": [
       "stutely",
-      "nottingham",
       "sherwood",
+      "nottingham",
       "gisbourne",
       "nottinghamshire",
       "partington",
@@ -2738,8 +2822,8 @@
       "herakles",
       "kronos",
       "pindar",
-      "hieron",
       "kyrene",
+      "hieron",
       "aiakos",
       "nemea",
       "pytho"
@@ -2779,12 +2863,12 @@
       "quelque",
       "moins",
       "tais",
-      "tait",
       "avait",
-      "avec",
+      "rosette",
       "taient",
+      "odore",
       "aurais",
-      "odore"
+      "ils"
     ]
   },
   "14833": {
@@ -2803,8 +2887,8 @@
   },
   "18857": {
     "top_10_tfidf_words": [
-      "saknussemm",
       "hardwigg",
+      "saknussemm",
       "sneffels",
       "hans",
       "reykjavik",
@@ -2854,7 +2938,7 @@
       "frye",
       "corey",
       "aout",
-      "sothoth"
+      "yog"
     ]
   },
   "58820": {
@@ -2879,8 +2963,8 @@
       "mckee",
       "gatz",
       "buchanan",
-      "cody",
       "daisy",
+      "cody",
       "biloxi",
       "jordan"
     ]
@@ -2924,8 +3008,8 @@
       "fernly",
       "raglan",
       "ganett",
-      "sheppard",
       "ferrars",
+      "sheppard",
       "ursula",
       "cranchester"
     ]
@@ -2949,11 +3033,11 @@
       "danforth",
       "pabodie",
       "gedney",
-      "shoggoths",
       "roplane",
+      "shoggoths",
       "mcmurdo",
-      "antarctic",
       "arkham",
+      "antarctic",
       "tekeli",
       "mctighe"
     ]
@@ -2980,8 +3064,8 @@
       "arkham",
       "zadok",
       "taown",
-      "daown",
       "abaout",
+      "daown",
       "rowley",
       "heh"
     ]
