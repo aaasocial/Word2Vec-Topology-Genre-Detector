@@ -685,4 +685,5 @@ for genre, g in data['genres'].items():
 - **Draft fragments retained:** `.planning/research/v2/_drafts/` (audit trail; not consumed by Phase 8 directly)
 - **Sibling artifacts:** `corpus_candidates.yaml` (Plan 03), `VALIDATION_PROTOCOL.md` (this plan), `v1_baseline_results.json` (Plan 04)
 - **User checkpoint:** per D-21, user reviews §4 "Genre set recommendation" inline during normal doc review; no mid-phase checkpoint
+- **Migration audit:** `.planning/research/v2/v1_to_v2_migration.md` (Phase 8 Wave 1)
 - **Last updated:** 2026-05-25
