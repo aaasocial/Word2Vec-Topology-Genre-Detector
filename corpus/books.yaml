@@ -168,14 +168,14 @@ genres:
       provider: gutenberg
       fetched_at: '2026-05-25'
       text_sha256: c79538a5280b2e4c29ff42be45c74a205309ab83143c40ddc4f42b54c9214883
-  - gutenberg_id: 82
+  - gutenberg_id: 92
     title: Tarzan and the Jewels of Opar
     author: Edgar Rice Burroughs
-    word_count: 191641
+    word_count: 66026
     source:
       provider: gutenberg
       fetched_at: '2026-05-25'
-      text_sha256: f81f8506d68bb2f7131838df3936364c83669c89e6f871be083eedda89f15def
+      text_sha256: 9a505e09ae78ccba63f0519de639f70d0f2991ad7bdf86b1bddb37eb17cc1ae7
   - gutenberg_id: 96
     title: Rupert of Hentzau
     author: Anthony Hope
@@ -184,14 +184,14 @@ genres:
       provider: gutenberg
       fetched_at: '2026-05-25'
       text_sha256: bf1bbf8b98d6e044ecd8bc358d331308ae47b83297527e083f4cdd61237138e9
-  - gutenberg_id: 121
+  - gutenberg_id: 848
     title: The Black Arrow
     author: Robert Louis Stevenson
-    word_count: 77223
+    word_count: 79535
     source:
       provider: gutenberg
       fetched_at: '2026-05-25'
-      text_sha256: c7ac26a768a1b91133eecac81d0f5168d362d6f95e7ddc1bb277b2128c4bb866
+      text_sha256: 88b1bc404baeeea914c6f0896e0611200c7bfe1308323bdcca273470bbdb192f
   - gutenberg_id: 247
     title: Robinson Crusoe
     author: Daniel Defoe
@@ -200,14 +200,14 @@ genres:
       provider: gutenberg
       fetched_at: '2026-05-25'
       text_sha256: 105176c52687c211592798d0d501e87f866490e4ef00530b57219a6555412f75
-  - gutenberg_id: 521
+  - gutenberg_id: 370
     title: Moll Flanders
     author: Daniel Defoe
-    word_count: 120920
+    word_count: 138319
     source:
       provider: gutenberg
       fetched_at: '2026-05-25'
-      text_sha256: 6b4f4b5a21792650831a8b9033a8f14de56d3fbf7cbee61e4f6454a52aafb808
+      text_sha256: faa0f31e031b66bd3f18a4392043a6b900ce44c0988d764fbd071fdbe3c1613c
   - gutenberg_id: 522
     title: A Journal of the Plague Year
     author: Daniel Defoe
@@ -216,22 +216,22 @@ genres:
       provider: gutenberg
       fetched_at: '2026-05-25'
       text_sha256: 0d83b8a7d6ecbc1f7cd84994abeea5bd7324625a120b50f4cf6689ffb022aa85
-  - gutenberg_id: 1259
+  - gutenberg_id: 5658
     title: Lord Jim
     author: Joseph Conrad
-    word_count: 242057
+    word_count: 130005
     source:
       provider: gutenberg
       fetched_at: '2026-05-25'
-      text_sha256: 0b2ad5a10c7d7e7e3f00321f574b723be7a2c0e94e90c977fbfef01b12c723fd
-  - gutenberg_id: 1260
+      text_sha256: 9104d02adc727a9873c124d3aa3679ade45ebab28ff34f0273975bbe40007fa4
+  - gutenberg_id: 1142
     title: Typhoon
     author: Joseph Conrad
-    word_count: 185390
+    word_count: 31251
     source:
       provider: gutenberg
       fetched_at: '2026-05-25'
-      text_sha256: 9e4e09ca04832f5397f50394adda370ccda123997a7af1c0b60287d2a82395ef
+      text_sha256: ba2baf53b85cdf7285752b42b9e945a0a969aaa26fb8baabb9d92d6d4da5fe37
   - gutenberg_id: 1261
     title: Youth
     author: Joseph Conrad
@@ -1397,14 +1397,14 @@ genres:
       provider: gutenberg
       fetched_at: '2026-05-25'
       text_sha256: 8b66bd542fea207e7d212fdb3d37fe95c6be727924dbfa5487576912655715f2
-  - gutenberg_id: 768
-    title: Wuthering Heights
-    author: Emily Bronte
-    word_count: 115945
+  - gutenberg_id: 2153
+    title: Mary Barton
+    author: Elizabeth Gaskell
+    word_count: 161779
     source:
       provider: gutenberg
       fetched_at: '2026-05-25'
-      text_sha256: f4cf269bd8d84b7ccaf3b6c7600ef28f764718ff34903350c3fd974679d0c02b
+      text_sha256: 2934f7bd595c4e8901f6e3fe46fbdf415578aa3dc3d70f7c640edc4e94714754
   - gutenberg_id: 826
     title: Framley Parsonage
     author: Anthony Trollope
