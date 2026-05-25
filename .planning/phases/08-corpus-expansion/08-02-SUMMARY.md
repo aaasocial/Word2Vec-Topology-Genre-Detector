@@ -304,4 +304,10 @@ All claimed deliverables present on disk and tracked in `git status`:
 - FOUND: .planning/REQUIREMENTS.md (CEXP-02 `[x]` + Traceability `Validated`)
 - FOUND: .planning/phases/08-corpus-expansion/08-02-SUMMARY.md (this file)
 
-Commit hashes recorded after Task 2.5 commit completes.
+## Commit Hashes
+
+| Commit | Subject |
+|--------|---------|
+| `119ac7c` | feat(08-02): retrain pipeline on v2 corpus — new W2V/SVM/lineage (CEXP-02) |
+
+All 14 staged files included in the single Wave-2 commit per plan §Task 2.5 (combine option, "Wave-2 commit granularity is acceptable as 1 commit since the artifacts are co-dependent"). `--no-verify` used per parallel-executor directive to avoid hook contention with sibling agents; orchestrator will validate hooks once after all agents complete.
