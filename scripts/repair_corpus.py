@@ -151,12 +151,29 @@ def gutenberg_html_probe_title_author(gid: int,
 # ---------------------------------------------------------------------------
 
 def is_audiobook_record(book: dict) -> bool:
+    """Reject records that have NO downloadable text in build_corpus.py's
+    URL cascade.
+
+    Some Gutenberg records ARE audiobooks (only mp3) but gutendex returns a
+    sentinel `<gid>-readme.txt` under `text/plain`. build_corpus.py's
+    `_gutenberg_urls()` cascade (pg<gid>.txt, <gid>-0.txt, <gid>.txt) returns
+    404 for those, tripping the D-30 fetch-failure halt.
+
+    Heuristic: a record is treated as 'audiobook-only' (unusable) when EVERY
+    `text/plain` URL ends in `-readme.txt`. If there is at least one non-readme
+    text/plain URL — including `/ebooks/<gid>.txt.utf-8` or `/files/<gid>/<gid>-0.txt` —
+    the record passes (the cascade will find it via `pg{gid}.txt` cache).
+    """
     formats = book.get("formats", {}) or {}
     if not formats:
         return False
-    audio = [k for k in formats if "audio" in k.lower() or "sound" in k.lower()]
-    text = [k for k in formats if "text/plain" in k.lower() or "application/epub" in k.lower()]
-    return bool(audio) and not text
+    text_urls = [str(v) for k, v in formats.items() if "text/plain" in k.lower()]
+    if not text_urls:
+        # No text/plain at all -> definitely not fetchable as text
+        return True
+    # If ALL text_urls are readme sentinels -> audiobook-only
+    non_readme = [u for u in text_urls if not u.endswith("-readme.txt")]
+    return not non_readme
 
 
 def find_best_match_in_cache(title: str, author: str,
