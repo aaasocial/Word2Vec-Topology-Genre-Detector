@@ -527,7 +527,7 @@ genres:
       - {gutenberg_id: 70875,   title: "Arrowsmith",                          author: "Sinclair Lewis",         source_consensus_score: 2}
       - {gutenberg_id: 72609,   title: "Elmer Gantry",                        author: "Sinclair Lewis",         source_consensus_score: 2}
       - {gutenberg_id: 4275,  title: "Howards End",                         author: "E. M. Forster",          source_consensus_score: 2}
-      - {gutenberg_id: 4276,  title: "A Room with a View",                  author: "E. M. Forster",          source_consensus_score: 2}
+      - {gutenberg_id: 2641,  title: "A Room with a View",                  author: "E. M. Forster",          source_consensus_score: 2}  # 08.1-01 fix: was 4276 (which is Gaskell North-and-South in romance)
       - {gutenberg_id: 4277,  title: "A Passage to India",                  author: "E. M. Forster",          source_consensus_score: 2}
       - {gutenberg_id: 4278,  title: "Where Angels Fear to Tread",          author: "E. M. Forster",          source_consensus_score: 2}
       - {gutenberg_id: 4279,  title: "The Longest Journey",                 author: "E. M. Forster",          source_consensus_score: 2}

@@ -1,0 +1,28 @@
+C:\Users\Eason\scoop\apps\python\current\Lib\site-packages\requests\__init__.py:109: RequestsDependencyWarning: urllib3 (2.1.0) or chardet (7.4.1)/charset_normalizer (3.3.2) doesn't match a supported version!
+  warnings.warn(
+2026-05-26 00:50:59,684 INFO audit_corpus_gids loaded 240 rows from C:\Users\Eason\.claude\worktrees\agent-a6abdc6632d1a4aea\Desktop\CC\Word2Vec Genre Analyser\corpus\books.yaml (240 unique gids)
+2026-05-26 00:50:59,685 INFO audit_corpus_gids   fetching gutendex batch 1/8 (32 ids)
+2026-05-26 00:51:31,266 INFO audit_corpus_gids   fetching gutendex batch 2/8 (32 ids)
+2026-05-26 00:51:54,862 INFO audit_corpus_gids   fetching gutendex batch 3/8 (32 ids)
+2026-05-26 00:52:14,546 INFO audit_corpus_gids   fetching gutendex batch 4/8 (32 ids)
+2026-05-26 00:52:44,549 WARNING audit_corpus_gids gutendex error HTTPSConnectionPool(host='gutendex.com', port=443): Read timed out. (read timeout=30) (attempt 1) — sleeping 1.0s
+2026-05-26 00:53:16,316 WARNING audit_corpus_gids gutendex error HTTPSConnectionPool(host='gutendex.com', port=443): Read timed out. (read timeout=30) (attempt 2) — sleeping 2.0s
+2026-05-26 00:53:48,237 INFO audit_corpus_gids   fetching gutendex batch 5/8 (32 ids)
+2026-05-26 00:54:09,242 INFO audit_corpus_gids   fetching gutendex batch 6/8 (32 ids)
+2026-05-26 00:54:33,738 INFO audit_corpus_gids   fetching gutendex batch 7/8 (32 ids)
+2026-05-26 00:55:02,065 INFO audit_corpus_gids   fetching gutendex batch 8/8 (16 ids)
+2026-05-26 00:55:32,068 WARNING audit_corpus_gids gutendex error HTTPSConnectionPool(host='gutendex.com', port=443): Read timed out. (read timeout=30) (attempt 1) — sleeping 1.0s
+2026-05-26 00:56:03,840 WARNING audit_corpus_gids gutendex error HTTPSConnectionPool(host='gutendex.com', port=443): Read timed out. (read timeout=30) (attempt 2) — sleeping 2.0s
+2026-05-26 00:56:36,592 WARNING audit_corpus_gids gutendex error HTTPSConnectionPool(host='gutendex.com', port=443): Read timed out. (read timeout=30) (attempt 3) — sleeping 4.0s
+2026-05-26 00:57:02,357 INFO audit_corpus_gids gutendex resolved 240 / 240 gids
+2026-05-26 00:57:02,361 INFO audit_corpus_gids report written to C:\Users\Eason\.claude\worktrees\agent-a6abdc6632d1a4aea\Desktop\CC\Word2Vec Genre Analyser\.planning\phases\08.1-corpus-integrity-rebuild-fix-141-240-wrong-gid-bindings-in-c\08.1-gid-audit-post.log
+2026-05-26 00:57:02,363 INFO audit_corpus_gids jsonl rows written to C:\Users\Eason\.claude\worktrees\agent-a6abdc6632d1a4aea\Desktop\CC\Word2Vec Genre Analyser\.planning\phases\08.1-corpus-integrity-rebuild-fix-141-240-wrong-gid-bindings-in-c\08.1-gid-audit-post.log.jsonl
+
+=== Audit summary ===
+books.yaml:        C:\Users\Eason\.claude\worktrees\agent-a6abdc6632d1a4aea\Desktop\CC\Word2Vec Genre Analyser\corpus\books.yaml
+total rows:        240
+BENIGN:            154
+SERIOUS:           86
+MISSING_GUTENDEX:  0
+report:            C:\Users\Eason\.claude\worktrees\agent-a6abdc6632d1a4aea\Desktop\CC\Word2Vec Genre Analyser\.planning\phases\08.1-corpus-integrity-rebuild-fix-141-240-wrong-gid-bindings-in-c\08.1-gid-audit-post.log
+jsonl:             C:\Users\Eason\.claude\worktrees\agent-a6abdc6632d1a4aea\Desktop\CC\Word2Vec Genre Analyser\.planning\phases\08.1-corpus-integrity-rebuild-fix-141-240-wrong-gid-bindings-in-c\08.1-gid-audit-post.log.jsonl

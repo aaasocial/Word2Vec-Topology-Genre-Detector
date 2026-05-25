@@ -1,0 +1,16 @@
+C:\Users\Eason\scoop\apps\python\current\Lib\site-packages\requests\__init__.py:109: RequestsDependencyWarning: urllib3 (2.1.0) or chardet (7.4.1)/charset_normalizer (3.3.2) doesn't match a supported version!
+  warnings.warn(
+2026-05-26 00:40:05,518 WARNING build_corpus [28733] all URLs failed: status=404 bytes=6395
+
+=== build_corpus.py summary ===
+dry_run:               False
+total selected:        240
+total fetch failures:  4
+  adventure      selected=30 fetch_failures=0 attempts=30
+  gothic_horror  selected=30 fetch_failures=1 attempts=31
+  historical     selected=30 fetch_failures=0 attempts=30
+  literary       selected=30 fetch_failures=0 attempts=30
+  mystery        selected=30 fetch_failures=2 attempts=32
+  romance        selected=30 fetch_failures=0 attempts=30
+  speculative    selected=30 fetch_failures=0 attempts=30
+  western        selected=30 fetch_failures=1 attempts=31

@@ -6,7 +6,7 @@ genres:
     word_count: 85718
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: abea56ffcfcd788f33319b73c563fb0e7c4aa8a50e58fbdd340a1c376afe9175
   - gutenberg_id: 76
     title: Adventures of Huckleberry Finn
@@ -14,7 +14,7 @@ genres:
     word_count: 111085
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: a239042f5fc1fe278a5e239ae7d57d3145a0ba1b2faa3e7efddbdab907248c63
   - gutenberg_id: 78
     title: Tarzan of the Apes
@@ -22,7 +22,7 @@ genres:
     word_count: 85785
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: ad195aa44a5beff237803e50fb51bcb8b198d9328ade7e37776ba9a4aade4d82
   - gutenberg_id: 95
     title: The Prisoner of Zenda
@@ -30,7 +30,7 @@ genres:
     word_count: 53716
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 2c1bbdc0911db58f8c5afd1d64e49c220069d07dd867d0fdb4a7b000e1b40a8a
   - gutenberg_id: 120
     title: Treasure Island
@@ -38,7 +38,7 @@ genres:
     word_count: 68637
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 31abe2340390e6bbf5affa42817574d45bc2de2a7d1409f9d188e6ceda91a88a
   - gutenberg_id: 215
     title: The Call of the Wild
@@ -46,7 +46,7 @@ genres:
     word_count: 31824
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: a0c47348c08930f35f9c11e2a751052ff691c998ea8b7a6aa5ce22ac838277c7
   - gutenberg_id: 1965
     title: Captain Blood
@@ -54,7 +54,7 @@ genres:
     word_count: 113155
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: a19ca8d79b921cb35e9739ba5bce2825fd89ab4fb544a82c3963c2c6e8f097a3
   - gutenberg_id: 2701
     title: Moby-Dick
@@ -62,7 +62,7 @@ genres:
     word_count: 212796
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 8f2183c0a04f7d2f7dc4c7e6b437a2e6e8150b7e06578600a4a66aa8e621c64c
   - gutenberg_id: 421
     title: Kidnapped
@@ -70,7 +70,7 @@ genres:
     word_count: 81903
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 7c562144c727dc1b86173875e4f18afc12d8c2fe8eeaadf55ecb14cfbbe73dde
   - gutenberg_id: 910
     title: White Fang
@@ -78,31 +78,23 @@ genres:
     word_count: 72179
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: ebc2aaf67fbbea47b3c075d6dd7958d9f0a22949033074b466107e52ebbcb80d
-  - gutenberg_id: 558
-    title: The Sea-Wolf
-    author: Jack London
-    word_count: 40977
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 6c9d100d2415ebe4dd959da46fc0c074e599576a58acca9c4d76a93aeb072e6f
   - gutenberg_id: 559
-    title: Martin Eden
-    author: Jack London
+    title: The Thirty-Nine Steps
+    author: John Buchan
     word_count: 98709
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 330330bb2ed6da8696818e4407d88aa47ed8cb83e0c23f8426481191fac74384
   - gutenberg_id: 560
-    title: South Sea Tales
-    author: Jack London
+    title: Greenmantle
+    author: John Buchan
     word_count: 128241
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: ad70ec8a001d61b52d1459c51e35e6dfde9e6f7d132598e72b01f16f0f1778ed
   - gutenberg_id: 561
     title: Tales of the Fish Patrol
@@ -110,71 +102,95 @@ genres:
     word_count: 100191
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 50d3e4c0b33a7281d0ec4550038a45a134f4eadb5b3dd0fceaab167016fe7078
-  - gutenberg_id: 562
-    title: The Cruise of the Snark
-    author: Jack London
-    word_count: 48021
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 1bd46346ce09671b13b2423275e11f04f4e2305e09768e89d2546c8d1fbc660b
-  - gutenberg_id: 563
+  - gutenberg_id: 589
     title: Catriona
     author: Robert Louis Stevenson
-    word_count: 22101
+    word_count: 101063
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 78ed62cade37b453285a31beca546e509e5c162c61e780fcd403b216239cfe05
-  - gutenberg_id: 564
+      fetched_at: '2026-05-26'
+      text_sha256: d9bd2afe18d5b25ab895f7534cacc984a411b01bda1c96f04161fc0686ba1807
+  - gutenberg_id: 864
     title: The Master of Ballantrae
     author: Robert Louis Stevenson
-    word_count: 95753
+    word_count: 87078
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 3ea4312063b4bd7ecdf5aaf90f60acd1f64180b865264f3669271997e2e61f67
-  - gutenberg_id: 565
+      fetched_at: '2026-05-26'
+      text_sha256: 83d57e5e12e67678f8bd6b096cbb50508c5e9b44dd41177a770d70527d2518b6
+  - gutenberg_id: 1056
+    title: Martin Eden
+    author: Jack London
+    word_count: 138836
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 2b8a44323961d4f3148a21ec8e1e136d627270ee56ecfb615e0a048d995c0dc4
+  - gutenberg_id: 1074
+    title: The Sea-Wolf
+    author: Jack London
+    word_count: 105655
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 2f3ce139d1e3c743b43ee1df453d1eb94e258c0397070f08cbd562843eca5a31
+  - gutenberg_id: 1208
+    title: South Sea Tales
+    author: Jack London
+    word_count: 50980
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 9fb196f497fb432797cab6b52222cabadd7b5eb2017896da260bb60c7d699bbb
+  - gutenberg_id: 2512
+    title: The Cruise of the Snark
+    author: Jack London
+    word_count: 79495
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 646d254eb6d1b9305ed784ada4241fb3c32ded956b8380d2efb3bb5897ec410f
+  - gutenberg_id: 32954
     title: The Black Arrow
     author: Robert Louis Stevenson
-    word_count: 98968
+    word_count: 80166
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: ce6970ee45979e5bc03160f4277d701fecffb89e460d50678ccdb7a96dab46ec
-  - gutenberg_id: 79
-    title: The Return of Tarzan
-    author: Edgar Rice Burroughs
-    word_count: 216477
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 8a3a9dd3823c4c07c246b667912d7f7a183e10ba62dd5bfcdec7cdadf916444d
-  - gutenberg_id: 80
-    title: The Beasts of Tarzan
-    author: Edgar Rice Burroughs
-    word_count: 89852
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 13a838378e52e1f00d6ff82349983c8262ba74d8c6e64e563c4cce372dae07d7
+      fetched_at: '2026-05-26'
+      text_sha256: d3e1ebab8a9a3d64eec59bc884b016f1f9fa9d7cd91f1245c0f34279922099d9
   - gutenberg_id: 81
     title: The Son of Tarzan
     author: Edgar Rice Burroughs
     word_count: 89217
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: c79538a5280b2e4c29ff42be45c74a205309ab83143c40ddc4f42b54c9214883
+  - gutenberg_id: 85
+    title: The Beasts of Tarzan
+    author: Edgar Rice Burroughs
+    word_count: 63537
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 9e2c3dab03029a3504ea3d329e2f460de05780e045eaa7a7411fce5714803c1b
+  - gutenberg_id: 90
+    title: The Return of Tarzan
+    author: Edgar Rice Burroughs
+    word_count: 94523
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 24a9ec5ae3851c26939f81a919993b42140d9c96db9c612df156341cf4621642
   - gutenberg_id: 92
     title: Tarzan and the Jewels of Opar
     author: Edgar Rice Burroughs
     word_count: 66026
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 9a505e09ae78ccba63f0519de639f70d0f2991ad7bdf86b1bddb37eb17cc1ae7
   - gutenberg_id: 96
     title: Rupert of Hentzau
@@ -182,64 +198,48 @@ genres:
     word_count: 57654
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: bf1bbf8b98d6e044ecd8bc358d331308ae47b83297527e083f4cdd61237138e9
-  - gutenberg_id: 848
-    title: The Black Arrow
-    author: Robert Louis Stevenson
-    word_count: 79535
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 88b1bc404baeeea914c6f0896e0611200c7bfe1308323bdcca273470bbdb192f
-  - gutenberg_id: 247
-    title: Robinson Crusoe
-    author: Daniel Defoe
-    word_count: 248497
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 105176c52687c211592798d0d501e87f866490e4ef00530b57219a6555412f75
   - gutenberg_id: 370
     title: Moll Flanders
     author: Daniel Defoe
     word_count: 138319
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: faa0f31e031b66bd3f18a4392043a6b900ce44c0988d764fbd071fdbe3c1613c
-  - gutenberg_id: 522
-    title: A Journal of the Plague Year
-    author: Daniel Defoe
-    word_count: 29910
+  - gutenberg_id: 562
+    title: Prester John
+    author: John Buchan
+    word_count: 48021
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 0d83b8a7d6ecbc1f7cd84994abeea5bd7324625a120b50f4cf6689ffb022aa85
-  - gutenberg_id: 5658
-    title: Lord Jim
-    author: Joseph Conrad
-    word_count: 130005
+      fetched_at: '2026-05-26'
+      text_sha256: 1bd46346ce09671b13b2423275e11f04f4e2305e09768e89d2546c8d1fbc660b
+  - gutenberg_id: 563
+    title: Salute to Adventurers
+    author: John Buchan
+    word_count: 22101
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 9104d02adc727a9873c124d3aa3679ade45ebab28ff34f0273975bbe40007fa4
+      fetched_at: '2026-05-26'
+      text_sha256: 78ed62cade37b453285a31beca546e509e5c162c61e780fcd403b216239cfe05
+  - gutenberg_id: 848
+    title: The Black Arrow
+    author: Robert Louis Stevenson
+    word_count: 79535
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 88b1bc404baeeea914c6f0896e0611200c7bfe1308323bdcca273470bbdb192f
   - gutenberg_id: 1142
     title: Typhoon
     author: Joseph Conrad
     word_count: 31251
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: ba2baf53b85cdf7285752b42b9e945a0a969aaa26fb8baabb9d92d6d4da5fe37
-  - gutenberg_id: 1261
-    title: Youth
-    author: Joseph Conrad
-    word_count: 101097
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 514c0fa3c27c6009bab40feae20203bd328fb7af69bc28f5c50261ddfadd1b17
   gothic_horror:
   - gutenberg_id: 84
     title: Frankenstein
@@ -247,7 +247,7 @@ genres:
     word_count: 75042
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 41a9801ac531d4abdf3d14d411b02f8bde2cb68a9c43f9277db0f53286dfafb9
   - gutenberg_id: 174
     title: The Picture of Dorian Gray
@@ -255,7 +255,7 @@ genres:
     word_count: 78979
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 3d5b53ab26958d39717032d968d9a4f5953a109a9d5011b48c4c909c1f17546a
   - gutenberg_id: 175
     title: The Phantom of the Opera
@@ -263,7 +263,7 @@ genres:
     word_count: 85563
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 19876e24160d1617c586cfca332ec0f874058324518e8d02695287006053bd47
   - gutenberg_id: 345
     title: Dracula
@@ -271,7 +271,7 @@ genres:
     word_count: 161321
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: d14ffcb64fcf4b0049ea8f0377cd76b96ae527629736944e3b10df8a7f427422
   - gutenberg_id: 389
     title: The Great God Pan
@@ -279,7 +279,7 @@ genres:
     word_count: 21715
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 8b4b93366a038d44aa02d57fecfced71a55f2ac46d261780b6cb60dbf50dd08e
   - gutenberg_id: 601
     title: The Monk
@@ -287,7 +287,7 @@ genres:
     word_count: 137140
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: f84f056b9c8a697b5432469f313bed4e675eb24fd63d2232bb961e445961cf8f
   - gutenberg_id: 696
     title: The Castle of Otranto
@@ -295,7 +295,7 @@ genres:
     word_count: 36595
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: b4501b88da30c1fc519dc33f009c273040577ff34056e8f9bb432c30ef822220
   - gutenberg_id: 768
     title: Wuthering Heights
@@ -303,7 +303,7 @@ genres:
     word_count: 115945
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: f4cf269bd8d84b7ccaf3b6c7600ef28f764718ff34903350c3fd974679d0c02b
   - gutenberg_id: 792
     title: Wieland
@@ -311,7 +311,7 @@ genres:
     word_count: 82682
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: b2d64c450fe3afd950f52bcd72f6981e978e0b8679b9f575e74d7db310320c98
   - gutenberg_id: 2276
     title: The Private Memoirs and Confessions of a Justified Sinner
@@ -319,7 +319,7 @@ genres:
     word_count: 83955
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: d4a2d5ba0e46cda223c9cd42512deeb644c5766c6d4239ff0537888157d99798
   - gutenberg_id: 3268
     title: The Mysteries of Udolpho
@@ -327,7 +327,7 @@ genres:
     word_count: 290378
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: a61f6042ffa2f1ee67eda5f2a2a2d1f87570363d53ea35c8021f41a3a3ff27dd
   - gutenberg_id: 8486
     title: Ghost Stories of an Antiquary
@@ -335,7 +335,7 @@ genres:
     word_count: 45404
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 2d6ff29c9fcc4d8a3b8308fbf0561afae1949d74f196e12fde3b68098428d1a9
   - gutenberg_id: 10007
     title: Carmilla
@@ -343,7 +343,7 @@ genres:
     word_count: 28103
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 51f97707e23e1d484601eed13d5c3e0c32d9c1f3f44d460a92ef2d9e0a522253
   - gutenberg_id: 10897
     title: The Wendigo
@@ -351,7 +351,7 @@ genres:
     word_count: 18423
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 3899572d14ad39c8bf7dd1cac5b41628bc76f6a1e08739c8b201ac4729127838
   - gutenberg_id: 11323
     title: Caleb Williams
@@ -359,7 +359,7 @@ genres:
     word_count: 145917
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: c97891beca870eb54535318c62fbb8b00c58a211204e835f61adcebfa6d74425
   - gutenberg_id: 14833
     title: Varney the Vampire
@@ -367,7 +367,7 @@ genres:
     word_count: 329143
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 8e68c592a799f4a01390cff06f173927cb4e78b0e519a8f5e22db2420268354f
   - gutenberg_id: 50133
     title: The Dunwich Horror
@@ -375,7 +375,7 @@ genres:
     word_count: 17379
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: ac38c81bfa55caed6b6759d3fc233ab134c3c297a5531dbcc262bec5ed606842
   - gutenberg_id: 68283
     title: The Call of Cthulhu
@@ -383,7 +383,7 @@ genres:
     word_count: 11968
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 19175b508b7e02878a6b42d9398d95ce29b88c66d399cc18bae16a34c44a1ce9
   - gutenberg_id: 70652
     title: At the Mountains of Madness
@@ -391,7 +391,7 @@ genres:
     word_count: 39944
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 1375a56b5b969e179fdcc9a43e4a41c027ccafebf3b50496f2e3499711f3dbfb
   - gutenberg_id: 73181
     title: The Shadow over Innsmouth
@@ -399,88 +399,88 @@ genres:
     word_count: 16962
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 09f695cb3f45e3b6de47313d029a884a66d29720fee8fa65121a552a1e4129eb
+  - gutenberg_id: 43
+    title: The Strange Case of Dr Jekyll and Mr Hyde
+    author: Robert Louis Stevenson
+    word_count: 25631
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 2d6f05c64c0345417372a8e0546765221aff6ef95e6fd09d92df3a620f35ed98
   - gutenberg_id: 376
     title: The Three Imposters
     author: Arthur Machen
     word_count: 94894
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: ed5771b64bc3cc633a8827476ca51877c9a88c7aac99d645c1b4a9fd140f2aea
-  - gutenberg_id: 377
-    title: The Hill of Dreams
-    author: Arthur Machen
-    word_count: 6900
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 22869f113552bca33a11e98bf103b16222b68516dbe46ca52a03c15319982dfa
   - gutenberg_id: 378
     title: The White People
     author: Arthur Machen
     word_count: 161477
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: bedb6872662e6ec0241ad38eb084240bb606657f7c7cd649c8d58852a68a644c
+  - gutenberg_id: 2060
+    title: Vathek
+    author: William Beckford
+    word_count: 37045
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 265243e418d7249cdae0befeab7a01d4d007b280e3b5d4e8498c4d735c5e7a7d
   - gutenberg_id: 5145
     title: The Italian
     author: Ann Radcliffe
     word_count: 90759
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: a75e446307ac0156624836a5d56517482c9c52aefb01235f25315de59feb8a39
-  - gutenberg_id: 5146
+  - gutenberg_id: 5152
+    title: Villette
+    author: Charlotte Bronte
+    word_count: 120540
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 2d76b70384ffc8ee54ea82cf825133828992b3246e860f48dcb064c1bf7cd53d
+  - gutenberg_id: 5153
+    title: Northanger Abbey
+    author: Jane Austen
+    word_count: 85013
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 8055a69e08619202892f96f66dc003682b33e3fe98a7b50a5e14bf6df3600449
+  - gutenberg_id: 5154
+    title: Uncle Silas
+    author: J. Sheridan Le Fanu
+    word_count: 125673
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: d46d413fef1125c4083d5e5404e99d8d21c337c8bce55b38b4be30a5a1d994cd
+  - gutenberg_id: 7371
     title: A Sicilian Romance
     author: Ann Radcliffe
-    word_count: 32136
+    word_count: 67560
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: dd4639620bb75f2919745fc4f3c833a0e6f9cbadae2b7433c5656e061462adb1
-  - gutenberg_id: 5147
-    title: The Romance of the Forest
-    author: Ann Radcliffe
-    word_count: 32693
+      fetched_at: '2026-05-26'
+      text_sha256: 656580b2aebda85fbe0b3c4694c07f67988a2e4613886f20bb92c6a48d4adcdb
+  - gutenberg_id: 8487
+    title: More Ghost Stories
+    author: M. R. James
+    word_count: 69889
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: ad421d611b733b6214b2bf0ba07bdd62871ff32409658ce6fce5ca302708184f
-  - gutenberg_id: 5148
-    title: Melmoth the Wanderer
-    author: Charles Maturin
-    word_count: 91116
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 20581d435ba8c854389acd48c664753da0803b3be917e76e577f6875f6e04084
-  - gutenberg_id: 5149
-    title: Vathek
-    author: William Beckford
-    word_count: 67533
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 0c6605189291c52a78943ef1315c15c0844e160b228f76dfda307e5e1e18a56a
-  - gutenberg_id: 5150
-    title: The Last Man
-    author: Mary Shelley
-    word_count: 79978
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: af94ebf9b1529911b32d1d6759e33d71a0299a0001b73944746de5df1dfe1d43
-  - gutenberg_id: 5151
-    title: The Strange Case of Dr Jekyll and Mr Hyde
-    author: Robert Louis Stevenson
-    word_count: 74518
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 544015f63afd0cd9e04471307d7d0a923592023aa6efd58f59fc8cf15d5216a8
+      fetched_at: '2026-05-26'
+      text_sha256: 04473e2611beed65bc2cdb02e215f7fdbbe824fc5f97f9cbb2360c611bcf66f6
   historical:
   - gutenberg_id: 82
     title: Ivanhoe
@@ -488,7 +488,7 @@ genres:
     word_count: 191641
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: f81f8506d68bb2f7131838df3936364c83669c89e6f871be083eedda89f15def
   - gutenberg_id: 98
     title: A Tale of Two Cities
@@ -496,7 +496,7 @@ genres:
     word_count: 135886
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: ceb53b4094844178de24ec8e4e32791c96bdad15a2aba8cc96b531f6ea08d88c
   - gutenberg_id: 135
     title: Les Miserables
@@ -504,7 +504,7 @@ genres:
     word_count: 565612
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: d1d1214ac9061623d5a19893e1d42231db89a4284f892c5ed076d36cea6a3533
   - gutenberg_id: 1184
     title: The Count of Monte Cristo
@@ -512,7 +512,7 @@ genres:
     word_count: 460971
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: b0905974d50e5b82fc9c729b01fa3c6b2190d055d985b5b4ba38a6e84573a04d
   - gutenberg_id: 2145
     title: 'Ben-Hur: A Tale of the Christ'
@@ -520,7 +520,7 @@ genres:
     word_count: 197854
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: a09396fb86edb8226f8de91898a6de3b8f3305c5c8d2b0008b55da5eb9e603cc
   - gutenberg_id: 2600
     title: War and Peace
@@ -528,7 +528,7 @@ genres:
     word_count: 563286
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 6817d44e41ceaf491aca0fa850df049f801ab835b7679af75093154792590033
   - gutenberg_id: 25344
     title: The Scarlet Letter
@@ -536,7 +536,7 @@ genres:
     word_count: 83826
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 37ce5ef0e46b2848dce1f743d4f8770db5244653d39c42c9aeded985afed6c63
   - gutenberg_id: 7151
     title: Quo Vadis
@@ -544,7 +544,7 @@ genres:
     word_count: 74597
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: e9953366be984a83956bc3c465c2e8e09b9467952687a324c558f685668b9413
   - gutenberg_id: 1257
     title: The Three Musketeers
@@ -552,7 +552,7 @@ genres:
     word_count: 229429
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 1d1be463f150ed68c85d87212328df60b2ee1936a62293529720115b2ef51fb6
   - gutenberg_id: 1259
     title: Twenty Years After
@@ -560,7 +560,7 @@ genres:
     word_count: 242057
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 0b2ad5a10c7d7e7e3f00321f574b723be7a2c0e94e90c977fbfef01b12c723fd
   - gutenberg_id: 5998
     title: Waverley
@@ -568,95 +568,95 @@ genres:
     word_count: 210050
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 2e8ede774be2a564474d8ee4c3f2dc79238bbd969b7bc410494d6a7845fdfaec
-  - gutenberg_id: 7142
-    title: The Vicomte de Bragelonne
-    author: Alexandre Dumas
-    word_count: 204653
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: e3c73f03e9f1cb97d6a3892466cd16a5aa35d50a58b011a9c8c5d119f5f75390
-  - gutenberg_id: 7143
-    title: Louise de la Valliere
-    author: Alexandre Dumas
-    word_count: 37329
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 8e50c6fe95d3ee556452ace6dfd18821e93ec1ceb97a5ac127459cbb187735cf
-  - gutenberg_id: 7144
-    title: The Man in the Iron Mask
-    author: Alexandre Dumas
-    word_count: 83257
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: b80041bbe528eb161cdde478f8807d14aa3775856ecbfe2bcda0c0b54dc289d1
-  - gutenberg_id: 7145
-    title: Rob Roy
-    author: Walter Scott
-    word_count: 12680
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 27c0a04291f4372ddd9ac1ec83258223b4d4184ad33abb39933710fdb1983fea
-  - gutenberg_id: 7146
-    title: Kenilworth
-    author: Walter Scott
-    word_count: 109579
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 8a65b83a9d350f09cf1208d76123c8f40fa8d2b3ea22d216868b2a72d7c85c1e
-  - gutenberg_id: 7147
-    title: Old Mortality
-    author: Walter Scott
-    word_count: 119803
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 3913dee69f387b6e5144360325e7011a1a2ead538c9a4cc4444f9a2dd436a868
-  - gutenberg_id: 7148
-    title: The Talisman
-    author: Walter Scott
-    word_count: 211252
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 7549a7e0b249324c3621bf14da10a4eee38e435cb2d9908bde3707b226c98015
-  - gutenberg_id: 7149
-    title: Quentin Durward
-    author: Walter Scott
-    word_count: 57777
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 3cdbf1f705a9d1581e23d71b45d9f3b1c9dd73f49559987fa4fd9f4f0ce4fb62
-  - gutenberg_id: 7150
+  - gutenberg_id: 917
     title: Barnaby Rudge
     author: Charles Dickens
-    word_count: 108809
+    word_count: 253274
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 7ba913385068d64d68821ae3de9ca496b0b8731cb4f47220c4e346756a889abe
-  - gutenberg_id: 7152
-    title: With Fire and Sword
-    author: Henryk Sienkiewicz
-    word_count: 112681
+      fetched_at: '2026-05-26'
+      text_sha256: 98e49e310c08dfc50083f7e9030e524ca8ee799337fcde3d497582f5b96180b5
+  - gutenberg_id: 1377
+    title: The Talisman
+    author: Walter Scott
+    word_count: 128702
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: bc4f8a98d1a32c90b306de95615c26aacff68e08bf63194f8ba938f5f501db15
+      fetched_at: '2026-05-26'
+      text_sha256: e803338b31c8871adf2378d38b31c77fd5a7a23a82d38cf99e0236ab1969c236
+  - gutenberg_id: 1606
+    title: Kenilworth
+    author: Walter Scott
+    word_count: 186652
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 046715c7f8c39e07af4a04d91ed15586d0f3be5df9f5557ae3642595097e6c32
+  - gutenberg_id: 2609
+    title: The Vicomte de Bragelonne
+    author: Alexandre Dumas
+    word_count: 189261
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 6da16834c613cf2740e57a2b647bbf6acd1543a340d17046d8bba2870d97934a
+  - gutenberg_id: 2710
+    title: Louise de la Valliere
+    author: Alexandre Dumas
+    word_count: 167768
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 763b18f6898e2458b631c9af0192c057a64a161b86091034bd2040df4c7e0317
+  - gutenberg_id: 2759
+    title: The Man in the Iron Mask
+    author: Alexandre Dumas
+    word_count: 173572
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 81aac248bc3edd996371af2e64161a6a9dd37d6f8d9c8681de4b087d2e5be468
+  - gutenberg_id: 6941
+    title: Old Mortality
+    author: Walter Scott
+    word_count: 179818
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: b1b7e0e42e626f9f110cfa845e8264f017aaede21dda11321a61a9b9b1e5b72a
+  - gutenberg_id: 7025
+    title: Rob Roy
+    author: Walter Scott
+    word_count: 192285
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: e743fdec6b1054d3a475b1c19c1d0a400a769eb204ddc1ccb3c2ad8f3ded232c
+  - gutenberg_id: 7853
+    title: Quentin Durward
+    author: Walter Scott
+    word_count: 183843
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 7ba444f46dacb0b6cdb22e96de6a8ba90ef1a0e086370a138771e56c4f1f7364
+  - gutenberg_id: 940
+    title: The Last of the Mohicans
+    author: James Fenimore Cooper
+    word_count: 148434
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 8926f8cb9e22c36192bfad04bbde122d3d03edc3bd8d7abb58edd3e924c8a6b0
   - gutenberg_id: 7153
     title: The Deluge
     author: Henryk Sienkiewicz
     word_count: 61542
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 5031159862331015b3a3ce117e1342e9cbe66d0f3bffa05d8ee60d747a08b16f
   - gutenberg_id: 7154
     title: Pan Michael
@@ -664,7 +664,7 @@ genres:
     word_count: 5937
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 5b6bd43f7fda051804bb199028d29d76fbffaa22c0ce7d45ad74ed1c7ed31403
   - gutenberg_id: 7155
     title: The Hunchback of Notre-Dame
@@ -672,39 +672,15 @@ genres:
     word_count: 6147
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: a3fb823df14f3eb8616d1c39597a34857359a13c67f81c87f2622af5070bb16c
-  - gutenberg_id: 7156
-    title: Ninety-Three
-    author: Victor Hugo
-    word_count: 6258
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 541bcc1840aa02df96b9f153155f180c122f00b67ebd60ab6140a29cb8d9f721
-  - gutenberg_id: 7157
-    title: Toilers of the Sea
-    author: Victor Hugo
-    word_count: 9088
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 6c346015efc87cfb8ebff6f014a4a8f1b49c8c93ac5e50b5f436c1cb6eeec452
-  - gutenberg_id: 7158
-    title: The Last of the Mohicans
-    author: James Fenimore Cooper
-    word_count: 7989
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 2fd478c167a68b0e195642a6d01eb2f85491454f3c740e4d47713484b74ce5e6
   - gutenberg_id: 7159
     title: The Deerslayer
     author: James Fenimore Cooper
     word_count: 8445
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: c0dd771e2ed7e08f23dbe6d13019f645a6dfada36bc59a427ab8c0ee6d99b3db
   - gutenberg_id: 7160
     title: The Pathfinder
@@ -712,7 +688,7 @@ genres:
     word_count: 7724
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 3b302b7e58fabf075d605fb2218fd40704237da315d1906f74202f988a4656b9
   - gutenberg_id: 7161
     title: The Pioneers
@@ -720,8 +696,32 @@ genres:
     word_count: 8238
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: bb33dfe4f484f802ac2fd544ef20a17160f9c7f1805850afedc07c51fce56ccc
+  - gutenberg_id: 7162
+    title: The Prairie
+    author: James Fenimore Cooper
+    word_count: 9799
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 28c01bc0c05763f0ff374d7f02de9fe55b9b01c46f755a0f579610570d75aa78
+  - gutenberg_id: 7163
+    title: Romola
+    author: George Eliot
+    word_count: 186152
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 976e335a67fac4ee3af0d86640cdb18bc2882fcf84804976eca1163d301103c9
+  - gutenberg_id: 7164
+    title: Henry Esmond
+    author: William Makepeace Thackeray
+    word_count: 14517
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 449a2db696e7719fbe04d7b47cc969b878c5082189e266e8652d7727b8d875b9
   literary:
   - gutenberg_id: 144
     title: The Voyage Out
@@ -729,7 +729,7 @@ genres:
     word_count: 136348
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: ae458d5ee0b879fb353ef92173d26ffec8c4342b73358c9374bca69f685db385
   - gutenberg_id: 145
     title: Middlemarch
@@ -737,7 +737,7 @@ genres:
     word_count: 316381
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 194ac3f3a259f04450ce73e8ea12acee1071064542a556f52869168ddfd8e424
   - gutenberg_id: 219
     title: Heart of Darkness
@@ -745,7 +745,7 @@ genres:
     word_count: 37917
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 708483576e991eaa6eacfc72600c1e6d7607250c97101434d213bcd66eda0e13
   - gutenberg_id: 284
     title: The House of Mirth
@@ -753,7 +753,7 @@ genres:
     word_count: 129318
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 2c633cc48421c6c7ddacfadda844e446be16c1ab9b25a37e17a86c20b19114f9
   - gutenberg_id: 543
     title: Main Street
@@ -761,7 +761,7 @@ genres:
     word_count: 166451
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 43739a4ba9ef4bd8871614ba6d43d31dd4cd5f39deb14523b8701518b6287380
   - gutenberg_id: 64317
     title: The Great Gatsby
@@ -769,7 +769,7 @@ genres:
     word_count: 48208
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 2af37f2363f51f2f0c33962e86e5e20eb4bed8cc01f77bf0f546c89b5ee5c919
   - gutenberg_id: 67138
     title: The Sun Also Rises
@@ -777,23 +777,23 @@ genres:
     word_count: 67898
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 00021ed6b6467cc24b3340b6197f9d68a50505a2ce337f7e6ce39c4cb2a9e572
-  - gutenberg_id: 2814
-    title: Dubliners
-    author: James Joyce
-    word_count: 67559
+  - gutenberg_id: 217
+    title: Sons and Lovers
+    author: D. H. Lawrence
+    word_count: 160195
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 158d30902644ec75fea81902406bf23eeaf8cab2dfad60be063b134c4582dcbb
+      fetched_at: '2026-05-26'
+      text_sha256: ac992e58ccc8c5dc1086858624d870e68fb92ad3b28e4ab46bfaf0fe6a96613a
   - gutenberg_id: 541
     title: The Age of Innocence
     author: Edith Wharton
     word_count: 101383
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: de936172fa52d22ca4552d6688068c0133bf164e9853164eebe0335f4d721e24
   - gutenberg_id: 71865
     title: Mrs Dalloway
@@ -801,7 +801,7 @@ genres:
     word_count: 63594
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 8eefd5acbcefc68e374d8ef888facf47ddd57948136f7a4c61d43e1cbfdf9230
   - gutenberg_id: 75201
     title: A Farewell to Arms
@@ -809,23 +809,47 @@ genres:
     word_count: 88662
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 61f5f3b1672bc9573daf3023b2d7b22ca5f98c945a777ea2f50e8c083cf405d9
+  - gutenberg_id: 416
+    title: Winesburg, Ohio
+    author: Sherwood Anderson
+    word_count: 74120
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 4947697cad52fbf7566cb22bd88f7c288c2aa3dd7a7a78eb3264aa3ebbdbe63b
+  - gutenberg_id: 2814
+    title: Dubliners
+    author: James Joyce
+    word_count: 67559
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 158d30902644ec75fea81902406bf23eeaf8cab2dfad60be063b134c4582dcbb
   - gutenberg_id: 4217
     title: A Portrait of the Artist as a Young Man
     author: James Joyce
     word_count: 84828
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 692527243439bca3253732bb67e288cbffd754c29a1c3e850b6c3481958e9434
+  - gutenberg_id: 4240
+    title: Women in Love
+    author: D. H. Lawrence
+    word_count: 180353
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: cce6db0b326891299d44c29247e8c782c46dea5704a59f0cfdc4de13ef40a389
   - gutenberg_id: 5200
     title: Metamorphosis
     author: Franz Kafka
     word_count: 21943
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 16c5433dae935afe6847151ab4ba3a01854d2a7f57854f1f69578771e9a7de9e
   - gutenberg_id: 5817
     title: Lord Jim
@@ -833,7 +857,7 @@ genres:
     word_count: 72456
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 55bd86d479967db483def9444f27b9cc268632bd6c744bbd15d5708f2c9fedf5
   - gutenberg_id: 5818
     title: Nostromo
@@ -841,55 +865,39 @@ genres:
     word_count: 23748
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 7f3814b473620262450732d7b59c26ddbc3a3558a0c2c0bd0bdb60cfa163fd1d
-  - gutenberg_id: 6593
-    title: Sons and Lovers
-    author: D. H. Lawrence
-    word_count: 350588
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 7a80a2f8e6f26705061914e9d6ef36e9cce0d6b70b9b802c0294fe67115bf4fb
-  - gutenberg_id: 6594
-    title: Women in Love
-    author: D. H. Lawrence
-    word_count: 76838
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 4939d23775955155d4cdef4536aeada1e854dc20d56053f05d8b9808296ccba2
-  - gutenberg_id: 6595
-    title: The Rainbow
-    author: D. H. Lawrence
-    word_count: 115199
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 26e7cba7006ade7ae423612ae747225bcd63768a42d83f9d8e9693c1c797daff
-  - gutenberg_id: 9182
-    title: Winesburg, Ohio
-    author: Sherwood Anderson
-    word_count: 192551
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 9c3f209d5f0146125f7b4f1dcca256918051568db39ac3326a91ba4ac4742c9b
   - gutenberg_id: 9183
     title: Poor White
     author: Sherwood Anderson
     word_count: 167789
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: df21170a64a70055a4b6b4d9f90f2aed29fee63010d9650c3207347c38647076
+  - gutenberg_id: 28948
+    title: The Rainbow
+    author: D. H. Lawrence
+    word_count: 185891
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: cd4839c5936872a213f3bd0105001b4cc016557d87b0f9a5c38a5887e314bda5
+  - gutenberg_id: 208
+    title: Daisy Miller
+    author: Henry James
+    word_count: 21318
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 1c3a3acda40c4589ceacf0676a7fdb9caeb0b0ac5b85216d594ecf0bb7535c80
   - gutenberg_id: 209
     title: The Turn of the Screw
     author: Henry James
     word_count: 42277
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 4ed4aa84ac1a47982ac803770437ecfe509af3226be181fdece6148f410ff745
   - gutenberg_id: 210
     title: The Ambassadors
@@ -897,7 +905,7 @@ genres:
     word_count: 26919
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 27d08f2c3225928d5a3cde200e3c015a865a88849d6c8717b007d5467e18eea0
   - gutenberg_id: 211
     title: The Wings of the Dove
@@ -905,31 +913,15 @@ genres:
     word_count: 38815
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 53813bc7bc8dd359175b1598e3dea50ee3c88f1f12bf34b9f2ec287f96a7c335
-  - gutenberg_id: 212
-    title: The Portrait of a Lady
-    author: Henry James
-    word_count: 41369
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 823d4b8727884901babb67c4be2660856d861ff1fdc94f1d8366d71d83b3027a
-  - gutenberg_id: 213
-    title: Daisy Miller
-    author: Henry James
-    word_count: 24194
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: a8bcab959e1b364d0b71ee8a07f96fee96d675337c8a01fa8a2fdfee467ee89d
   - gutenberg_id: 214
     title: The Golden Bowl
     author: Henry James
     word_count: 28728
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 72d9b57619816d9f63564bb398e3d6aecbeb58541c7757633a584a364f22feb1
   - gutenberg_id: 542
     title: Ethan Frome
@@ -937,32 +929,40 @@ genres:
     word_count: 96807
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: dab58da58b3ac8db580b58ae989e973f5ff2daa03556187c2e0e6338214b60c6
-  - gutenberg_id: 544
+  - gutenberg_id: 1156
     title: Babbitt
     author: Sinclair Lewis
-    word_count: 79381
+    word_count: 122700
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: c483d392b2f8b4209ccdc084b2e40e3a02ae56e5f27a10f4e295601fc0e3c2f4
-  - gutenberg_id: 545
-    title: Arrowsmith
-    author: Sinclair Lewis
-    word_count: 49500
+      fetched_at: '2026-05-26'
+      text_sha256: 6e07612c520fdf45b913c6ae04ccd86f3fc24b41859e6b3d7956436cbe338fdc
+  - gutenberg_id: 2833
+    title: The Portrait of a Lady
+    author: Henry James
+    word_count: 116829
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: be62a8fdcfa40fb5134a82044d7f349fdfe40912254b5851cb57290ea4e52b50
-  - gutenberg_id: 546
-    title: Elmer Gantry
-    author: Sinclair Lewis
-    word_count: 90487
+      fetched_at: '2026-05-26'
+      text_sha256: 5b46fb704db4de34bb5b478cfa4e3716b7526b045bcd761f79791fc8ac8b5c2f
+  - gutenberg_id: 4275
+    title: Howards End
+    author: E. M. Forster
+    word_count: 160775
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 636d32ac0dc7e25cee1f68af20e59c1df74abcb4a0eae36210e88a7112ef6442
+      fetched_at: '2026-05-26'
+      text_sha256: 0c82e21a943780edb2f5b9478f9494a29241d9c23e6458b0f643cfcd8f3ba144
+  - gutenberg_id: 2641
+    title: A Room with a View
+    author: E. M. Forster
+    word_count: 66599
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: fa57cffb06ccc97cf87c20d156144e72b5217dcd5d0e56739570e97f8cc06e26
   mystery:
   - gutenberg_id: 155
     title: The Moonstone
@@ -970,7 +970,7 @@ genres:
     word_count: 194909
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 1d8d44c07acb4f1fcaa8ba5018e50c99741ebfda0cb65970b80f7ec3b4050039
   - gutenberg_id: 204
     title: The Innocence of Father Brown
@@ -978,7 +978,7 @@ genres:
     word_count: 78917
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 56472bfe96f22cf83abf2bd29462218d613e0077f1c18a110b92564491c7476a
   - gutenberg_id: 244
     title: A Study in Scarlet
@@ -986,7 +986,7 @@ genres:
     word_count: 43427
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 293bb1bb0f943c04d0d5c29b3347ce78d8be9f8f4521014c6b1edba9dd54bc8e
   - gutenberg_id: 863
     title: The Mysterious Affair at Styles
@@ -994,7 +994,7 @@ genres:
     word_count: 56535
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 4161c76144675114875f0347ade7251c9cacbc633cd83734fed186013440d41c
   - gutenberg_id: 1685
     title: The Mystery of the Yellow Room
@@ -1002,7 +1002,7 @@ genres:
     word_count: 74094
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: c1d47bdf7e24adf91001bc4367bf72f53386b13c3c03a56d2d1ac834a1da125b
   - gutenberg_id: 58820
     title: Whose Body?
@@ -1010,23 +1010,23 @@ genres:
     word_count: 58889
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: a578358f4fa0fc516fb0479cb37fe97af4c8feff5fe7fa513fef2cb11e1a4168
-  - gutenberg_id: 1155
+  - gutenberg_id: 4047
     title: The Leavenworth Case
     author: Anna Katharine Green
-    word_count: 75307
+    word_count: 111297
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: ca935b510488219b37129d7c79b2e09a3d9e2037bb4ad22223d84eeb01be584d
+      fetched_at: '2026-05-26'
+      text_sha256: 9ecaba757d226ceecd7f7b00fd8245214e6772241c759225d5c6e46de3977acd
   - gutenberg_id: 583
     title: The Mystery of Edwin Drood
     author: Charles Dickens
     word_count: 244765
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: f4781ba7955d9ee3a89e62144ea8c41c6517d2cf7b15ef3adec671fa57e4ecec
   - gutenberg_id: 2852
     title: The Hound of the Baskervilles
@@ -1034,7 +1034,7 @@ genres:
     word_count: 59258
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 0eff31514f7e86e080ae544f3250350c051a4b2f63af5fad1410dfb0ec746c54
   - gutenberg_id: 65238
     title: The Secret of Chimneys
@@ -1042,7 +1042,7 @@ genres:
     word_count: 74617
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 64c28a854ba9bb55b81e7dcbbf2438287d37e3df9933c24e0a2972e87a096ad6
   - gutenberg_id: 69087
     title: The Murder of Roger Ackroyd
@@ -1050,7 +1050,7 @@ genres:
     word_count: 70727
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 4702ea4bf4a7efed7ccdc009de0e54d33a784235dec394f093c5c4fd47e119da
   - gutenberg_id: 70008
     title: Unnatural Death
@@ -1058,7 +1058,7 @@ genres:
     word_count: 82946
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 70f1fd1ad414cf440a0bfcc471547292f10f1f0d7edd312a2bcf0799359b70f5
   - gutenberg_id: 108
     title: The Return of Sherlock Holmes
@@ -1066,144 +1066,144 @@ genres:
     word_count: 112116
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: ba7755b4ba9376f389fc5a9110d5163f9ba3e3069e9d88f52b84ee8a5373b483
-  - gutenberg_id: 221
-    title: The Sign of the Four
-    author: Arthur Conan Doyle
-    word_count: 112420
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: b87913750b137bdeb18d1cb815b24ca9c7eb4596f53b949be6c6af976bb0721c
   - gutenberg_id: 223
     title: The Wisdom of Father Brown
     author: G. K. Chesterton
     word_count: 71652
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: e792bab824295036204280dbed663c8c5d1f92a4de2a683c29eddf0c3e80e180
-  - gutenberg_id: 480
-    title: The Memoirs of Sherlock Holmes
-    author: Arthur Conan Doyle
-    word_count: 101523
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 78f7580c5e2d7eba616f4a02ddb92676bf60be4a7d011b39df392e2826612ab6
-  - gutenberg_id: 481
-    title: The Adventures of Sherlock Holmes
-    author: Arthur Conan Doyle
-    word_count: 53815
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 836818a4a7811d2fa232486c3620e4b1ffb596854a1314e81aaecbd1ccb2f20f
   - gutenberg_id: 834
     title: His Last Bow
     author: Arthur Conan Doyle
     word_count: 95486
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 45d7af0f0a363548e886771507b95e7deaa5ced8e2d7e5eea9add81656eb5c17
-  - gutenberg_id: 1851
+  - gutenberg_id: 1661
+    title: The Memoirs of Sherlock Holmes
+    author: Arthur Conan Doyle
+    word_count: 104506
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: f96746c2651e0eabaaf276c060013448b7ddf318d72c70cdd2adb92ce70e7a6f
+  - gutenberg_id: 1695
     title: The Man Who Was Thursday
     author: G. K. Chesterton
+    word_count: 58186
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 68cdbd44f30492637836c2c8905166cc4724aa711ab8e8c85d8a350e51736551
+  - gutenberg_id: 2097
+    title: The Sign of the Four
+    author: Arthur Conan Doyle
+    word_count: 43095
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 79d73effe93e6d9381d5f69cb9e561710b84f03c9fa6857f2a1ecb46ac9ea787
+  - gutenberg_id: 480
+    title: Armadale
+    author: Wilkie Collins
+    word_count: 101523
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 78f7580c5e2d7eba616f4a02ddb92676bf60be4a7d011b39df392e2826612ab6
+  - gutenberg_id: 1155
+    title: The Circular Staircase
+    author: Mary Roberts Rinehart
+    word_count: 75307
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: ca935b510488219b37129d7c79b2e09a3d9e2037bb4ad22223d84eeb01be584d
+  - gutenberg_id: 1851
+    title: The Man in Lower Ten
+    author: Mary Roberts Rinehart
     word_count: 66773
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 4ea93fab73b7380f2477602fbe9c9821b0ca42df39f89e6252b35ab95cbf388d
+  - gutenberg_id: 2098
+    title: A Thief in the Night
+    author: E. W. Hornung
+    word_count: 63641
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 908c13fd9657c360654ac98686f3425b441fc1fae178cbc517ef58dfa5147af0
   - gutenberg_id: 2155
     title: The Door of Death
     author: Mary Roberts Rinehart
     word_count: 86957
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 0205a7980d48f4f90627c0e0dc1e5f2a5e5021123fab79be5dcaec4ed1851f91
-  - gutenberg_id: 2156
-    title: A Thief in the Night
-    author: E. W. Hornung
-    word_count: 32319
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 7547d26974333efd64f4cf1bf2ce80599af8c4e03c35cda5c92b67616ae99d02
-  - gutenberg_id: 2157
-    title: Raffles
-    author: E. W. Hornung
-    word_count: 15194
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: adfe675d73aef648c35e823fb087066326dbc81b6a40ef6704e65cc5e187ddc2
-  - gutenberg_id: 2856
-    title: The Four Just Men
-    author: Edgar Wallace
-    word_count: 88145
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 85d38442d510e8c30515daa4eb577c7a785a9060ea78d2172798f55305acec86
-  - gutenberg_id: 2857
-    title: The Crimson Circle
-    author: Edgar Wallace
-    word_count: 92437
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: b6f0d809c640b70150fb54b05664a5f76ffeae6ae269f77bfed692de5384b921
-  - gutenberg_id: 3300
-    title: The Mysteries of Paris
-    author: Eugene Sue
-    word_count: 381076
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 46d2162bbab928395856f97891eb336c26c9ffe1c578be48304733b797b24f6d
-  - gutenberg_id: 3301
+  - gutenberg_id: 2360
     title: The Riddle of the Sands
     author: Erskine Childers
-    word_count: 17120
+    word_count: 108493
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 21c929b8f322f999f0e37b3e8f558373ecc7208926e5292daef68b8080fe9ce2
-  - gutenberg_id: 3303
-    title: The Old Man in the Corner
-    author: Baroness Orczy
-    word_count: 17618
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: f47d68839b20efce2b675f5e63e9fe79c155702c8f3256b4e3d3ee18122e1db9
-  - gutenberg_id: 3304
-    title: The Mystery of a Hansom Cab
-    author: Fergus Hume
-    word_count: 17093
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: a7f5f3fca0de90c49268daca920b04dce93fa098f029259b869b4ff10e6fa2dd
-  - gutenberg_id: 3305
+      fetched_at: '2026-05-26'
+      text_sha256: 807e313780d08a92385297a01a8b89277001d1bf7dfbd6697cb67c967371f078
+  - gutenberg_id: 2371
     title: The Filigree Ball
     author: Anna Katharine Green
-    word_count: 6796
+    word_count: 89933
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: edd7f2320a0d2701f6783e54b8c1e919bf64bcb1499c5a254d15af9fd9296e00
-  - gutenberg_id: 3306
-    title: The Affair Next Door
+      fetched_at: '2026-05-26'
+      text_sha256: 8e6e9f3ee03ebff97e25b2587972eaaf160321c8c95715cd776808083e231c0e
+  - gutenberg_id: 3307
+    title: That Affair Next Door
     author: Anna Katharine Green
-    word_count: 27498
+    word_count: 207423
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 2888cb1620f8a0e02aef988a192aaf3eebcbfbcd98fdcb84e9ea5b12ce5c5d02
+      fetched_at: '2026-05-26'
+      text_sha256: 9ed4bb4cc8575f0e1d879c888184299ae1d08f33df7a90608db1b819ed446569
+  - gutenberg_id: 4223
+    title: The Mystery of a Hansom Cab
+    author: Fergus Hume
+    word_count: 87901
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 103fa0e893b780824386230eee8c42d0d42485a3c11356833837a701183b0f2a
+  - gutenberg_id: 6602
+    title: The Mysteries of Paris
+    author: Eugene Sue
+    word_count: 175534
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 460da5f8482ddcfba72e7cc7a984a961160c2ad596948ba78ab9311bea4e33fe
+  - gutenberg_id: 9806
+    title: Raffles
+    author: E. W. Hornung
+    word_count: 65540
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: a975ff070c6b0f7ab67bac8da9fa534b3f1dce81e51d238fc3399390b4163604
+  - gutenberg_id: 10556
+    title: The Old Man in the Corner
+    author: Baroness Orczy
+    word_count: 69970
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: da277328779b84143709b7c4d0d544abebd8890856abc436b0f9db50119648af
   romance:
   - gutenberg_id: 105
     title: Persuasion
@@ -1211,7 +1211,7 @@ genres:
     word_count: 83335
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 2b977ec8f0d4c275cf6bbb471f32c115070f2240c6eecc3b4b1246f2e68fc108
   - gutenberg_id: 1260
     title: Jane Eyre
@@ -1219,7 +1219,7 @@ genres:
     word_count: 185390
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 9e4e09ca04832f5397f50394adda370ccda123997a7af1c0b60287d2a82395ef
   - gutenberg_id: 2095
     title: The Tenant of Wildfell Hall
@@ -1227,7 +1227,7 @@ genres:
     word_count: 41641
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 7855789dc876e6f8f295c719626cc032939d409c352a5a09948001875b5014ee
   - gutenberg_id: 4274
     title: Wives and Daughters
@@ -1235,23 +1235,23 @@ genres:
     word_count: 270271
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 637195dd451168bc5c40066c6955eda06d09464ce88db64c49f3980ad87ef069
-  - gutenberg_id: 110
-    title: Tess of the d'Urbervilles
+  - gutenberg_id: 107
+    title: Far from the Madding Crowd
     author: Thomas Hardy
-    word_count: 150042
+    word_count: 137118
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 046faae55cedbdf3664bdbc2024dfc0e8e58849d179fc740a05cc0f4b7452d13
+      fetched_at: '2026-05-26'
+      text_sha256: 8f0304e0a1b2622940db14fa8870284288567c0e86e399e5e2cf7e7bd16b2f9d
   - gutenberg_id: 766
     title: David Copperfield
     author: Charles Dickens
     word_count: 354826
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 79e5c525e45db0f8ac63f255177a9fd335d13dd47d69de0a83779b8b17d3a0c0
   - gutenberg_id: 1399
     title: Anna Karenina
@@ -1259,23 +1259,23 @@ genres:
     word_count: 349763
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: ed3bf9748a5cc09a133bb06223cbf4ebc602b19bc808d11ad737790b43a74ebf
-  - gutenberg_id: 4517
-    title: Scenes of Clerical Life
+  - gutenberg_id: 4860
+    title: The Mill on the Floss
     author: George Eliot
-    word_count: 34717
+    word_count: 172561
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 885d4be1116b01721a6ffcf76243cffdc50e3fa330d752cd5d39be7621f5f1d6
+      fetched_at: '2026-05-26'
+      text_sha256: 6afdeb59fd54c8cfa25968382405f17d6026517c2e5019723a6628f389775a13
   - gutenberg_id: 121
     title: Northanger Abbey
     author: Jane Austen
     word_count: 77223
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: c7ac26a768a1b91133eecac81d0f5168d362d6f95e7ddc1bb277b2128c4bb866
   - gutenberg_id: 141
     title: Mansfield Park
@@ -1283,7 +1283,7 @@ genres:
     word_count: 159713
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 9d34dde8b1981dda1a217b55c2c80ed669b033cf4bf9cbec82d130e792e8259f
   - gutenberg_id: 158
     title: Emma
@@ -1291,7 +1291,7 @@ genres:
     word_count: 157558
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 99403abd2014f9589cd8ec155b4569e9a2950ff3ee4435b02f0881b274f4813c
   - gutenberg_id: 161
     title: Sense and Sensibility
@@ -1299,7 +1299,7 @@ genres:
     word_count: 118860
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 8753e28bd6002436e1e85ce68f6eaf6be8c313891c6314b5aa215ac254f300f9
   - gutenberg_id: 1342
     title: Pride and Prejudice
@@ -1307,7 +1307,7 @@ genres:
     word_count: 127359
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 3fd84c0819323d3b7e8713c7e6e26f4f3ee2e545dcfbdb4416426a623e295396
   - gutenberg_id: 4276
     title: North and South
@@ -1315,31 +1315,31 @@ genres:
     word_count: 180830
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: f4a4819e98fc840f7bc7d37655f2884e60c8161e05d35c460382f42095a1fbdf
-  - gutenberg_id: 153
+  - gutenberg_id: 110
+    title: Tess of the d'Urbervilles
+    author: Thomas Hardy
+    word_count: 150042
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 046faae55cedbdf3664bdbc2024dfc0e8e58849d179fc740a05cc0f4b7452d13
+  - gutenberg_id: 394
     title: Cranford
     author: Elizabeth Gaskell
-    word_count: 144508
+    word_count: 70985
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 10618d0688ca4435149bf9c454192ce314a553aa9570659e80cd7d41aa0e060a
-  - gutenberg_id: 969
-    title: Far from the Madding Crowd
-    author: Thomas Hardy
-    word_count: 168710
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 7ab4d57c0fb138a752ceff302108648f6dcdb9dd411d885c323b0000e3f5fc62
+      fetched_at: '2026-05-26'
+      text_sha256: 59671b0ac37e3affd4e07dfe5957bcb96f6d0dd0875907ba2b730c1adcdee8a7
   - gutenberg_id: 1023
     title: Bleak House
     author: Charles Dickens
     word_count: 353463
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 0e15ee0807b4ce139b4eab9aaab2a792d2f2e8d905ce673c128558c95504e5e9
   - gutenberg_id: 1400
     title: Great Expectations
@@ -1347,95 +1347,55 @@ genres:
     word_count: 184478
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: cd4f55c4aebb64b8407c67e7e4200432cda28e0ab2f720d105f973c6467ac355
-  - gutenberg_id: 4860
-    title: The Mill on the Floss
-    author: George Eliot
-    word_count: 172561
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 6afdeb59fd54c8cfa25968382405f17d6026517c2e5019723a6628f389775a13
-  - gutenberg_id: 6688
+  - gutenberg_id: 7469
     title: Daniel Deronda
     author: George Eliot
-    word_count: 206494
+    word_count: 308875
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 556df1d1e7b8c8f7ae6ef9a1c6bcf5eb5141f49b7d2df3ce54ec58a9b52a07c3
-  - gutenberg_id: 432
+      fetched_at: '2026-05-26'
+      text_sha256: 1ba7443d29d5ed9e142c52238d123ec92dc891ff556d00b267f97a9f838289dc
+  - gutenberg_id: 17780
+    title: Scenes of Clerical Life
+    author: George Eliot
+    word_count: 144488
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 4b976d04ecce278c6ee7cdff24a9bf280ad12a7b946c7f76d0c58abb3cecd57e
+  - gutenberg_id: 122
     title: The Return of the Native
     author: Thomas Hardy
-    word_count: 162054
+    word_count: 142015
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 3b83347b9bf7f1a8afa0b6bc65bd2e1cea0379c5c97d2e3d1ec83fd20bd7fc0b
-  - gutenberg_id: 521
+      fetched_at: '2026-05-26'
+      text_sha256: 5a4c5d7003031d1b5fdb9b72a0eb6a61d9454e7776e0436ca13a930179edb7dc
+  - gutenberg_id: 507
     title: Adam Bede
     author: George Eliot
-    word_count: 120920
+    word_count: 214078
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 6b4f4b5a21792650831a8b9033a8f14de56d3fbf7cbee61e4f6454a52aafb808
-  - gutenberg_id: 524
-    title: Pamela; or, Virtue Rewarded
-    author: Samuel Richardson
-    word_count: 96134
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: ade0cf80e5085fb2612d36da6609c1e9183a45cc7a4f713a337d39c83b971d2a
-  - gutenberg_id: 738
-    title: Doctor Thorne
-    author: Anthony Trollope
-    word_count: 14879
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 8b66bd542fea207e7d212fdb3d37fe95c6be727924dbfa5487576912655715f2
-  - gutenberg_id: 2153
-    title: Mary Barton
-    author: Elizabeth Gaskell
-    word_count: 161779
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 2934f7bd595c4e8901f6e3fe46fbdf415578aa3dc3d70f7c640edc4e94714754
-  - gutenberg_id: 826
-    title: Framley Parsonage
-    author: Anthony Trollope
-    word_count: 7382
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: bd56c2a99cc980a8401862360dd7c3534a9d468029d1c53841022d0de3824bb2
-  - gutenberg_id: 882
+      fetched_at: '2026-05-26'
+      text_sha256: 02ea355e56cad682ca649aeead705afb5b7bdeae5f399cd869dac797b4a1dbe7
+  - gutenberg_id: 619
     title: The Warden
     author: Anthony Trollope
-    word_count: 248239
+    word_count: 71797
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 6da30982386b064f724da9b23af8a134fd094e4e8308f73000875599d987e46b
-  - gutenberg_id: 946
-    title: Lady Audley's Secret
-    author: Mary Elizabeth Braddon
-    word_count: 23092
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 305b1ebb31ce0d0e6ac9fdbba9c0ceebd374d80fa1b35354645036455c690d0a
+      fetched_at: '2026-05-26'
+      text_sha256: d441939afe82290da2b0776a8417ff56d3ba931e17e8f69242640392f5facd9d
   - gutenberg_id: 1245
     title: Villette
     author: Charlotte Bronte
     word_count: 166274
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: cf23f90a9c1e57c6f27f8ca9b71ebba72e9e3d4d66c40123dedfc09686518f80
   - gutenberg_id: 1252
     title: Shirley
@@ -1443,8 +1403,48 @@ genres:
     word_count: 193300
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 80c8836d72ad180a4ce2f1996ee02b572a103583e6678bed1fad25863a25f518
+  - gutenberg_id: 1392
+    title: Lady Susan
+    author: Jane Austen
+    word_count: 10030
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: c31d9f94a11dfcc544513fb2b4b7c8fe0add5fbaaead37b8e1f93fdca05e15a8
+  - gutenberg_id: 2153
+    title: Mary Barton
+    author: Elizabeth Gaskell
+    word_count: 161779
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 2934f7bd595c4e8901f6e3fe46fbdf415578aa3dc3d70f7c640edc4e94714754
+  - gutenberg_id: 2860
+    title: Framley Parsonage
+    author: Anthony Trollope
+    word_count: 208109
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: f40646327fce09cf1a9f1ace40fdf5da05af4ba791186a13ac37e48975977381
+  - gutenberg_id: 2891
+    title: The Heart of Midlothian
+    author: Walter Scott
+    word_count: 108674
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 165fe43a5ce7e4867e414c9a5fcc2911991ee72d4e504bc055598f68e410f23d
+  - gutenberg_id: 3166
+    title: Doctor Thorne
+    author: Anthony Trollope
+    word_count: 217024
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 4c394e2b4d0605de8d2f5ce11f74072fb003e514a7f0739509ffb449656373c5
   speculative:
   - gutenberg_id: 35
     title: The Time Machine
@@ -1452,7 +1452,7 @@ genres:
     word_count: 32453
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 3f1dbd0231aa2591bd59acfe3a67fbf430b762d4e8e3c5bb68c9a862acebaa21
   - gutenberg_id: 62
     title: A Princess of Mars
@@ -1460,7 +1460,7 @@ genres:
     word_count: 67436
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 9b7e406a2644a22532c1c0ffe12ee55b432ba8d48aba2ea72fb8000dbdfa2d93
   - gutenberg_id: 83
     title: From the Earth to the Moon
@@ -1468,7 +1468,7 @@ genres:
     word_count: 91500
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: f976519a9b5b2e10f868f4d54659ecd4e33b993bba000fd477fe5e7c9f73514e
   - gutenberg_id: 139
     title: The Lost World
@@ -1476,7 +1476,7 @@ genres:
     word_count: 75759
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: e95a81aaa2512e683db921a9be0890c43f6cff5a28b386097173ea44470f9dd1
   - gutenberg_id: 169
     title: The Well at the World's End
@@ -1484,7 +1484,7 @@ genres:
     word_count: 225427
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: e0e92c429ab65b9293574691214964ff58b00d7ef81726bc6282dae2d3862998
   - gutenberg_id: 711
     title: Allan Quatermain
@@ -1492,7 +1492,7 @@ genres:
     word_count: 106268
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 3dc46fc46f506e2497251aa5383ef50bb40db8b132a2bada57d1262d9aea8189
   - gutenberg_id: 7477
     title: The Book of Wonder
@@ -1500,7 +1500,7 @@ genres:
     word_count: 22854
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 0e930039396e2567f83d1f024edb65bd8f66d096c93a7b608f1c08895c944370
   - gutenberg_id: 10148
     title: The Merry Adventures of Robin Hood
@@ -1508,7 +1508,7 @@ genres:
     word_count: 111122
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: b1b5e33e07c09ab59fce6bdb418599aa0ac357a507800fb2e29c8d7ed9a36ef0
   - gutenberg_id: 36
     title: The War of the Worlds
@@ -1516,7 +1516,7 @@ genres:
     word_count: 60075
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 1995e9ffcead3b1f9d4b9ac9217dace6151e8384af4af9d79c120704516c80eb
   - gutenberg_id: 103
     title: Around the World in Eighty Days
@@ -1524,7 +1524,7 @@ genres:
     word_count: 63334
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 42d5b7691e16c5e7eea1c76c16a0fba93e8bd107ee90025a2cda2c3369da3554
   - gutenberg_id: 159
     title: The Island of Doctor Moreau
@@ -1532,7 +1532,7 @@ genres:
     word_count: 43545
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 4d77bb1d01aa5b481f66dbc7136b9f71388382574950f13f84cf2ff651178167
   - gutenberg_id: 164
     title: Twenty Thousand Leagues Under the Sea
@@ -1540,7 +1540,7 @@ genres:
     word_count: 104672
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: ba7dd5e8e856a6048c683f49797a20b9bdd669a0f7d6b8595e1775d7cd431d44
   - gutenberg_id: 1268
     title: The Mysterious Island
@@ -1548,7 +1548,7 @@ genres:
     word_count: 193335
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 4d04961060f16b099c4dff8a00d3379c52f24dc7ee0ba318f1f5bc3e18606726
   - gutenberg_id: 2166
     title: King Solomon's Mines
@@ -1556,7 +1556,7 @@ genres:
     word_count: 82213
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 82741b1dd0e13a9ac6d75cdca492cc2d1d45560c0ade314701ae81689e3f1e53
   - gutenberg_id: 2565
     title: The Story of the Glittering Plain
@@ -1564,7 +1564,7 @@ genres:
     word_count: 46983
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 06bee1c1e7c5445cbf3f29d33647cc82b9a9d66b27e0b6355d1ff075275b7c62
   - gutenberg_id: 2885
     title: The House of the Wolfings
@@ -1572,7 +1572,7 @@ genres:
     word_count: 84971
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: e4fbcc24f44eca6b80c7567e0ea474c3b7ee3cd4822dd71e56f65e045e44b779
   - gutenberg_id: 3055
     title: The Wood Beyond the World
@@ -1580,7 +1580,7 @@ genres:
     word_count: 49976
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 9fb69df5012be0e83081daa2768f77f7719610d6880f127701af022c04f2f059
   - gutenberg_id: 3155
     title: She
@@ -1588,7 +1588,7 @@ genres:
     word_count: 112272
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 01d488b33b063f7e5fc6fb0969cde09beeaa81eea9e5fd75cf4f19ddd2b86a99
   - gutenberg_id: 8395
     title: The Gods of Pegana
@@ -1596,7 +1596,7 @@ genres:
     word_count: 15724
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 4fa107fdb54e7c1d78f0df6bf622375bd788ad84922c4a6c7633d91363d8a876
   - gutenberg_id: 18857
     title: A Journey to the Centre of the Earth
@@ -1604,31 +1604,15 @@ genres:
     word_count: 85815
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 61e1a1f181a0f36493c43bdf8971d5c77962036e46a99bd4ef13f1bd61651697
-  - gutenberg_id: 11
-    title: The Invisible Man
-    author: H. G. Wells
-    word_count: 26525
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 40de6832df8fa5d31171de991503f066d9aa7184843730cc726577419b41127f
-  - gutenberg_id: 27
-    title: The First Men in the Moon
-    author: H. G. Wells
-    word_count: 137190
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 3a873fb12f8638235d6e71ae248288d097b70c7a2b8b64544fc85313d7a753a7
   - gutenberg_id: 325
     title: Phantastes
     author: George MacDonald
     word_count: 69122
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: e3602477f3780ec4aff1b8ec4a40a3713911e46e18c982d044c471894712d46e
   - gutenberg_id: 706
     title: Lilith
@@ -1636,56 +1620,72 @@ genres:
     word_count: 51976
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 73012f6a69822d4c65b20b18a2661285357eb5a06c822ca010c2e0863d3538c2
-  - gutenberg_id: 718
-    title: When the Sleeper Wakes
-    author: H. G. Wells
-    word_count: 133677
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: a4ab21948655e12e73aacbd76a1c82d38b7acb15c9e298495d093ae09e8b40f2
-  - gutenberg_id: 1130
-    title: The Princess and the Goblin
-    author: George MacDonald
-    word_count: 26384
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 1bd83f2f937ecb42102dd80360103bde9672fdd93b8e5a89800477d71b6109e4
-  - gutenberg_id: 1131
+  - gutenberg_id: 709
     title: The Princess and Curdie
     author: George MacDonald
-    word_count: 29287
+    word_count: 56009
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 27e74811312849ca9cea3104d94ed264b97a553fb35b7f24e53146f997142aad
+      fetched_at: '2026-05-26'
+      text_sha256: 1e130e256d0ec741efb6d38cfd50072dd7a39913226e873a506511ec11372602
+  - gutenberg_id: 775
+    title: When the Sleeper Wakes
+    author: H. G. Wells
+    word_count: 81821
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: fbabe8a56e878e9d78ca87efd5974cbbee70b2209697c5d91e7de8e54b50e5fa
+  - gutenberg_id: 1013
+    title: The First Men in the Moon
+    author: H. G. Wells
+    word_count: 68390
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 8ab92b7809858ebe91b7ab227aee4bb5d00dd1fad10d1c207086410a3267d746
+  - gutenberg_id: 1353
+    title: Off on a Comet
+    author: Jules Verne
+    word_count: 101086
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 054746b6ab12b1c9eb66be624c98ee23c2629e90d75c88f15e3dd063031593fe
   - gutenberg_id: 1652
     title: Robur the Conqueror
     author: Jules Verne
     word_count: 52738
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 1ab9505409d4d9a327e950637b2b3beee77ac2478c490986bf0001988ae3d1b9
-  - gutenberg_id: 1842
-    title: Off on a Comet
-    author: Jules Verne
-    word_count: 93611
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 233146c3fce71295e1f840c28cf14125b9cc75c8e48977ef2095758e035ea4fe
-  - gutenberg_id: 2083
+  - gutenberg_id: 3809
     title: Master of the World
     author: Jules Verne
-    word_count: 155812
+    word_count: 42950
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 89caf469a263e068698a8b0b3d20a5e85bb05a1464ac179691156b7d84351951
+      fetched_at: '2026-05-26'
+      text_sha256: 41fc6d61136686460aa9185484098aab89208680be6e563b28fdf27e0603baa5
+  - gutenberg_id: 5230
+    title: The Invisible Man
+    author: H. G. Wells
+    word_count: 48500
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 88c4b4324b08456fb194aae243bedd7769c6d4e9b17f635ffe63f8a56d6adb74
+  - gutenberg_id: 5231
+    title: The Gods of Mars
+    author: Edgar Rice Burroughs
+    word_count: 350611
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 37979878b49025bc5ca757870e406fad83984df58cbd8a99fe1bab0e1f9870b7
   western:
   - gutenberg_id: 1012
     title: The Virginian
@@ -1693,237 +1693,237 @@ genres:
     word_count: 97815
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: da512e9439ca15e16fb2aa32e2cda5222ddc0046edab7af55167ff076d911f8e
-  - gutenberg_id: 1389
-    title: The Log of a Cowboy
-    author: Andy Adams
-    word_count: 22785
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: e670a1ecef3d7206f7fb5b383aa42f18c38b7afb2759b448fa26adc2983eb695
-  - gutenberg_id: 1528
-    title: Riders of the Purple Sage
-    author: Zane Grey
-    word_count: 27646
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 9180533e8821b63a590ebab943012b12e9b4c3995e8380bc381d3cff6ae5b675
-  - gutenberg_id: 8083
-    title: Hopalong Cassidy
-    author: Clarence E. Mulford
-    word_count: 6654
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: b15337f3cea11091aee29d14c7fe862e4011730eafc8b279e160a81871be018a
-  - gutenberg_id: 10717
-    title: Whispering Smith
-    author: Frank H. Spearman
-    word_count: 52169
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 98261e829e5b282e48abf671860b08361852d198a9c23cab344dabc4a64299a7
-  - gutenberg_id: 14288
-    title: Good Indian
-    author: B. M. Bower
-    word_count: 132170
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 2f17126546e7a27c7885dacfa2c7a3f0b93b879a3502fc66519e6470fdfd1049
-  - gutenberg_id: 8093
-    title: The Texan Scouts
-    author: Joseph A. Altsheler
-    word_count: 105009
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 81be2ae2d08dd39f4a72d3c2a095e5012a5f207258aafd3ffe269e9bbd593098
-  - gutenberg_id: 3285
-    title: The Border Legion
-    author: Zane Grey
-    word_count: 212084
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: d2245972c143722039c583f57bcd2fa51d87b2e8110537e16813e3a0cc3c57a0
-  - gutenberg_id: 3752
-    title: The Last of the Plainsmen
-    author: Zane Grey
-    word_count: 42397
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: ac4113590145f5ebfc63b1adf3ed193f6038009db19b90d8079cf82283454063
-  - gutenberg_id: 3808
+  - gutenberg_id: 1262
     title: The Heritage of the Desert
     author: Zane Grey
-    word_count: 52050
+    word_count: 80219
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 8ed39fc703b6c060e792ba7631a9879a45059b40ccd4d9bf32b38a7eaa1ac0cf
-  - gutenberg_id: 5765
-    title: The Rainbow Trail
+      fetched_at: '2026-05-26'
+      text_sha256: 08c17dd41c4de7edb6f88b042f52215a5bc1112e7943d7fb79c235c7215818bb
+  - gutenberg_id: 12797
+    title: The Log of a Cowboy
+    author: Andy Adams
+    word_count: 99142
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: bc23fbd2edaba4dbbab0fe2ef18d03fa0c95cc34bbf7fb67f1fdc23e8d543dbe
+  - gutenberg_id: 938
+    title: Good Indian
+    author: B. M. Bower
+    word_count: 79549
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 78fc47a7ee612a8492f3512ebbb70b9ae2440ce6af54a2562a3ca5c4d3297338
+  - gutenberg_id: 29572
+    title: Whispering Smith
+    author: Frank H. Spearman
+    word_count: 94438
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: ace962e4a41f2116fd567a4b7c412ec8baa83bf8b5ec764d57a4517b26f55e56
+  - gutenberg_id: 56626
+    title: Hopalong Cassidy
+    author: Clarence E. Mulford
+    word_count: 93343
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 6e72e0c8143846be5f62ce109c4c490747fa6f89f1a4318cead87d6f85b28238
+  - gutenberg_id: 1078
+    title: The Texan Scouts
+    author: Joseph A. Altsheler
+    word_count: 108108
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 989093b6dd43bb2db280e9f0e75efeff169dd44e9744cfe4fc6ce54e8dfeb037
+  - gutenberg_id: 1300
+    title: Riders of the Purple Sage
     author: Zane Grey
-    word_count: 159881
+    word_count: 104050
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 6a4ef2639625d77bce03060a8fb0ebf9a8eb7721d22efab280a507627ef019e1
-  - gutenberg_id: 6996
+      fetched_at: '2026-05-26'
+      text_sha256: ef49bd55f3dc8cc7422acb970f877eaa31562e6347c1490c361c5c5445c959e2
+  - gutenberg_id: 2057
+    title: The Last of the Plainsmen
+    author: Zane Grey
+    word_count: 70520
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 16f1559a17850402f4515321af68051a34859eaf968363e585da0203646b828b
+  - gutenberg_id: 2066
     title: Wildfire
     author: Zane Grey
-    word_count: 20911
+    word_count: 100465
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 8a70f84907d67d119616970371f0ecb3c4587c5751e091b77836ca46de8a5bab
-  - gutenberg_id: 20381
+      fetched_at: '2026-05-26'
+      text_sha256: 8e3f06a5b433260787469c6603c03146eca64e0e38a9e7045717f2001628180d
+  - gutenberg_id: 4552
+    title: The Border Legion
+    author: Zane Grey
+    word_count: 94004
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: a86ac84053992f587f226248255f2a58bb728590a5326a136b1a42888a6302a4
+  - gutenberg_id: 5067
+    title: The Rainbow Trail
+    author: Zane Grey
+    word_count: 96850
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 0868f73adb73a3418420da4323fe63a0accd20a2df9c29d76ad79333e2457136
+  - gutenberg_id: 29642
     title: Hidden Water
     author: Dane Coolidge
-    word_count: 50789
+    word_count: 106292
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 4e44ec7094cd8ff28aaa55b1c4e03bd143a79c7df4db89fb4b4df1e937071aa7
-  - gutenberg_id: 3179
+      fetched_at: '2026-05-26'
+      text_sha256: 994d6cdffe459cf0d7149b8de2ce5acdc7dbcf028b05a25db9e50f2847fcd164
+  - gutenberg_id: 502
+    title: Desert Gold
+    author: Zane Grey
+    word_count: 103928
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 355016ce9fda1e7a8dd877c144f3dad0c5897a5bbf58220449de1177be88718f
+  - gutenberg_id: 1027
     title: The Spirit of the Border
     author: Zane Grey
-    word_count: 64077
+    word_count: 94698
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 76cad5105cd02017794c382c6ac906657246071df91ae8c92d6ce727e411c4b7
+      fetched_at: '2026-05-26'
+      text_sha256: c0543642f453a8ca49abab18f2197fbb0292193794eaea6e4667be256a3d2cf0
+  - gutenberg_id: 1095
+    title: The Light of Western Stars
+    author: Zane Grey
+    word_count: 123422
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: a69a9d647f3951d24039352b34039fb218380e88947f7213deece4c472aede4a
   - gutenberg_id: 3756
     title: Betty Zane
     author: Zane Grey
     word_count: 73114
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: 25cfe0a71c5f17179939750b198256e45ab1993e78981332d440bcacb0b46ebb
-  - gutenberg_id: 3784
-    title: The Light of Western Stars
-    author: Zane Grey
-    word_count: 53654
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: a1e4e7c970e28e4d5e1bbd782b00f9c60401c8d418263942aa60a81db56519c2
-  - gutenberg_id: 3829
-    title: Desert Gold
-    author: Zane Grey
-    word_count: 50522
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 415b5751542e3dc413bc69f63c6e584278029ee4d71afa01c5da4cca31b6a2fb
   - gutenberg_id: 4051
     title: The Lone Star Ranger
     author: Zane Grey
     word_count: 107297
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
+      fetched_at: '2026-05-26'
       text_sha256: f696a978bc36a5ce3c39953337680ca2937a67bbe7434234afcea0518c5e68ac
-  - gutenberg_id: 5755
+  - gutenberg_id: 4684
     title: The U.P. Trail
     author: Zane Grey
-    word_count: 112177
+    word_count: 123782
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: cbf28a12bf571dab0cea55834c250f202db2c004e1c5e9db62c32364d8817a2f
-  - gutenberg_id: 6995
+      fetched_at: '2026-05-26'
+      text_sha256: 168e09ec25badba977b25063e498602630f25b61d49772c04fed658e7bed7f65
+  - gutenberg_id: 13937
     title: The Mysterious Rider
     author: Zane Grey
-    word_count: 35583
+    word_count: 94733
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 7cf97531e648e6382075d9fc9fbd75a3ffc231cfe8acaec583911d3eded1b7aa
-  - gutenberg_id: 3779
-    title: The Young Forester
-    author: Zane Grey
-    word_count: 100397
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: d7c6d8736afcd9fd80428a0671497eaf9f76a29fdd7b3b5897e0dd676247a871
-  - gutenberg_id: 3818
-    title: The Day of the Beast
-    author: Zane Grey
-    word_count: 37894
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 6ab6218b2e587652700c74c2693ab451aea146b56741b67c67df7bf147e88946
-  - gutenberg_id: 5757
-    title: The Desert of Wheat
-    author: Zane Grey
-    word_count: 80488
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: a71f76891110e7aa46525cf2baebb15f5fcd53ae0b8ac7a94fc6ff0c7df550dc
-  - gutenberg_id: 6993
-    title: Tappan's Burro
-    author: Zane Grey
-    word_count: 84106
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: e47b0fc3f6a241f81dab05253305ddfc6a2cb4741d71093a7983c74f9c19604b
-  - gutenberg_id: 7762
+      fetched_at: '2026-05-26'
+      text_sha256: d976b9e329e70a1cdd4690a7304e700ec59888411c55417b8d2d4fc4e94ae3d0
+  - gutenberg_id: 1385
     title: Lin McLean
     author: Owen Wister
-    word_count: 96376
+    word_count: 70949
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: ea36840a1c689013b48a363ede4c01178c5d7d379c573a23a09110e3f992c29b
-  - gutenberg_id: 7763
-    title: Red Men and White
-    author: Owen Wister
-    word_count: 41395
+      fetched_at: '2026-05-26'
+      text_sha256: 0775c2f00d1821edd065077a4b82d288e5ee16cf9ab6bf1a93a6ba77a663e07d
+  - gutenberg_id: 1882
+    title: The Young Forester
+    author: Zane Grey
+    word_count: 49978
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 11e890488925932fd62c7f7b3c242fc48619b0d654b4142df2508df172c683a1
-  - gutenberg_id: 7764
-    title: Members of the Family
-    author: Owen Wister
-    word_count: 8934
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 42c8313315cd83d1977391f5364af2523914820b2c8d131025f8388850ef4d0b
-  - gutenberg_id: 8084
-    title: Bar-20
-    author: Clarence E. Mulford
-    word_count: 73183
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: 7d30f4b2a97e60a934dd900ba02751dc9283d7403aced8ebaa2e2dda5b9356cf
-  - gutenberg_id: 8085
-    title: The Coming of Cassidy
-    author: Clarence E. Mulford
-    word_count: 102845
-    source:
-      provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: c611f17bb4fab2c14b0130ee7278f7b3827cf878d3ea66408e6cd461d29ba0ba
-  - gutenberg_id: 8086
+      fetched_at: '2026-05-26'
+      text_sha256: a9f6b83a983120b3df9ef692386e0f72b585aea15c92a2b641ee1062d7ca9cd1
+  - gutenberg_id: 4922
     title: Bar-20 Days
     author: Clarence E. Mulford
-    word_count: 50893
+    word_count: 69092
     source:
       provider: gutenberg
-      fetched_at: '2026-05-25'
-      text_sha256: c5ab0c66c1ad817ebee9c55333d08b326d872b347e030b4d92671c1ed21d8459
+      fetched_at: '2026-05-26'
+      text_sha256: 3cb7d7b57dc6ea5c9eb9a97384a6399873d7cd2ff3d19ae626a4363aa1e57155
+  - gutenberg_id: 8087
+    title: Buck Peters, Ranchman
+    author: Clarence E. Mulford
+    word_count: 101887
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 808e155f74ccc2f0458dcd3b5eaa16a72f372b161084b4ce29c9c5f27fa93467
+  - gutenberg_id: 8088
+    title: The Outlet
+    author: Andy Adams
+    word_count: 61173
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: b13f6f3906c0abcbac0fc887e1a6686ff272df6980a12751f8d155b28ef3f7b1
+  - gutenberg_id: 8089
+    title: Cattle Brands
+    author: Andy Adams
+    word_count: 65442
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 792abd9bcda42f249f11ad911023b5eb4a94b0566d2e75ef5538a557b8f9335a
+  - gutenberg_id: 8090
+    title: Reed Anthony, Cowman
+    author: Andy Adams
+    word_count: 115525
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 065f9337bb06bc4c572604cc4ba064d6c784761fb571d6cff29d093e5a3a9668
+  - gutenberg_id: 8091
+    title: Wells Brothers
+    author: Andy Adams
+    word_count: 75367
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: dd20beffe70b2c8032053fcf7efeec02c200d535cc0007e4ffc41c4fbcecfdd5
+  - gutenberg_id: 8094
+    title: The Texan Star
+    author: Joseph A. Altsheler
+    word_count: 12334
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 04f14d66260aa730e5dfdf2509f61b6db753648bba956f8aa96e94a5cb236fb8
+  - gutenberg_id: 8095
+    title: Riders of the Silences
+    author: Max Brand
+    word_count: 102625
+    source:
+      provider: gutenberg
+      fetched_at: '2026-05-26'
+      text_sha256: 5fa60e3c749cf92436f1bd00bc7466683e1fab9ea1d20c25e83d4d1f0d944900
