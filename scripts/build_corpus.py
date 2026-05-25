@@ -60,7 +60,16 @@ V2_GENRES = [
     "western",
 ]
 
-WORD_COUNT_MIN = 20_000  # Per Claude's-discretion call recorded in 08-CONTEXT.md
+# Word-count threshold: deviation from the plan's tentative 20,000 default.
+# The v1 baseline (canon-verified by Phase 7) includes canonical short fiction
+# well under 20k words — e.g., Lovecraft's "The Call of Cthulhu" (6,397 words)
+# and M.R. James's ghost stories (~10k words). The plan recorded this number
+# "tentatively" under Claude's-discretion notes, and 6 of 10 horror entries in
+# the v1 baseline would be excluded at 20k. Lowering to 5,000 accommodates
+# canon short fiction while still filtering excerpt-stub artifacts (the only v1
+# entries below this floor are gutenberg_id 19572 / "Wunpost" at 408 words,
+# which is itself an anomaly in v1).
+WORD_COUNT_MIN = 5_000  # Rule 1 deviation: see comment above (was 20_000 per plan)
 TARGET_BOOKS_PER_GENRE = 30  # Per D-06 + §4 Proposal A
 AUTHOR_DIVERSITY_FLOOR = 8  # Per D-08
 DEFAULT_DOWNLOAD_SLEEP = 2.0
@@ -235,10 +244,15 @@ def download_and_hash(
 
 
 def write_raw_file(gutenberg_id: int, canonical_text: str, raw_dir: Path = RAW_DIR) -> Path:
-    """Persist to data/raw/{gutenberg_id}.txt with utf-8 encoding."""
+    """Persist to data/raw/{gutenberg_id}.txt as UTF-8 *without* OS-specific
+    newline translation. Writing in binary mode preserves the canonical
+    post-strip byte sequence so that the on-disk file's sha256 matches the
+    text_sha256 recorded in corpus/books.yaml on every platform (Rule 1
+    deviation: Python's .write_text on Windows otherwise rewrites LF -> CRLF
+    and corrupts the integrity invariant)."""
     raw_dir.mkdir(parents=True, exist_ok=True)
     path = raw_dir / f"{gutenberg_id}.txt"
-    path.write_text(canonical_text, encoding="utf-8")
+    path.write_bytes(canonical_text.encode("utf-8"))
     return path
 
 
