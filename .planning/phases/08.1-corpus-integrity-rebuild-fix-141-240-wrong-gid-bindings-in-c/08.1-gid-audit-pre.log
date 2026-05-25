@@ -1,0 +1,972 @@
+=== Corpus gid Integrity Audit ===
+Total rows: 240
+  BENIGN:           95
+  SERIOUS:          145
+  MISSING_GUTENDEX: 0
+Threshold: title_score >= 85 AND author_lastname matches
+
+--- SERIOUS (145) ---
+SERIOUS           gid     79 (adventure     )  [score=25, lastname_match=False]
+  Expected: "The Return of Tarzan" by Edgar Rice Burroughs
+  Actual:   "Terminal Compromise" by Schwartau, Winn
+  Reason:   title_score=25<85; author lastname mismatch
+SERIOUS           gid     80 (adventure     )  [score=38, lastname_match=False]
+  Expected: "The Beasts of Tarzan" by Edgar Rice Burroughs
+  Actual:   "The Online World" by De Presno, Odd
+  Reason:   title_score=38<85; author lastname mismatch
+SERIOUS           gid     96 (adventure     )  [score=37, lastname_match=False]
+  Expected: "Rupert of Hentzau" by Anthony Hope
+  Actual:   "The Monster Men" by Burroughs, Edgar Rice
+  Reason:   title_score=37<85; author lastname mismatch
+SERIOUS           gid    247 (adventure     )  [score=22, lastname_match=False]
+  Expected: "Robinson Crusoe" by Daniel Defoe
+  Actual:   "Webster's Unabridged Dictionary (1st 100 Pages)" by Webster, Noah
+  Reason:   title_score=22<85; author lastname mismatch
+SERIOUS           gid    522 (adventure     )  [score=30, lastname_match=False]
+  Expected: "A Journal of the Plague Year" by Daniel Defoe
+  Actual:   "The Chinese Boy and Girl" by Headland, Isaac Taylor
+  Reason:   title_score=30<85; author lastname mismatch
+SERIOUS           gid    558 (adventure     )  [score=42, lastname_match=False]
+  Expected: "The Sea-Wolf" by Jack London
+  Actual:   "The Thirty-Nine Steps" by Buchan, John
+  Reason:   title_score=42<85; author lastname mismatch
+SERIOUS           gid    559 (adventure     )  [score=36, lastname_match=False]
+  Expected: "Martin Eden" by Jack London
+  Actual:   "Greenmantle" by Buchan, John
+  Reason:   title_score=36<85; author lastname mismatch
+SERIOUS           gid    560 (adventure     )  [score=35, lastname_match=False]
+  Expected: "South Sea Tales" by Jack London
+  Actual:   "Mr. Standfast" by Buchan, John
+  Reason:   title_score=35<85; author lastname mismatch
+SERIOUS           gid    561 (adventure     )  [score=40, lastname_match=False]
+  Expected: "Tales of the Fish Patrol" by Jack London
+  Actual:   "The Further Adventures of Robinson Crusoe" by Defoe, Daniel
+  Reason:   title_score=40<85; author lastname mismatch
+SERIOUS           gid    562 (adventure     )  [score=46, lastname_match=False]
+  Expected: "The Cruise of the Snark" by Jack London
+  Actual:   "The Go Ahead Boys and the Racing Motor-Boat" by Kay, Ross
+  Reason:   title_score=46<85; author lastname mismatch
+SERIOUS           gid    563 (adventure     )  [score=21, lastname_match=False]
+  Expected: "Catriona" by Robert Louis Stevenson
+  Actual:   "The Planet Mars and Its Inhabitants, a Psychic Revelation" by Kennon, J. L.
+  Reason:   title_score=21<85; author lastname mismatch
+SERIOUS           gid    564 (adventure     )  [score=56, lastname_match=False]
+  Expected: "The Master of Ballantrae" by Robert Louis Stevenson
+  Actual:   "The Mystery of Edwin Drood" by Dickens, Charles
+  Reason:   title_score=56<85; author lastname mismatch
+SERIOUS           gid    565 (adventure     )  [score=33, lastname_match=False]
+  Expected: "The Black Arrow" by Robert Louis Stevenson
+  Actual:   "The Zincali: An Account of the Gypsies of Spain" by Borrow, George
+  Reason:   title_score=33<85; author lastname mismatch
+SERIOUS           gid    848 (adventure     )  [score=75, lastname_match=True]
+  Expected: "The Black Arrow" by Robert Louis Stevenson
+  Actual:   "The Black Arrow: A Tale of the Two Roses" by Stevenson, Robert Louis
+  Reason:   title_score=75<85
+SERIOUS           gid   1261 (adventure     )  [score=13, lastname_match=False]
+  Expected: "Youth" by Joseph Conrad
+  Actual:   "Betty Zane" by Grey, Zane
+  Reason:   title_score=13<85; author lastname mismatch
+SERIOUS           gid   2701 (adventure     )  [score=24, lastname_match=True]
+  Expected: "Moby-Dick" by Herman Melville
+  Actual:   "Moby Dick; Or, The Whale" by Melville, Herman
+  Reason:   title_score=24<85
+SERIOUS           gid     84 (gothic_horror )  [score=47, lastname_match=True]
+  Expected: "Frankenstein" by Mary Shelley
+  Actual:   "Frankenstein; or, the modern prometheus" by Shelley, Mary Wollstonecraft
+  Reason:   title_score=47<85
+SERIOUS           gid    376 (gothic_horror )  [score=12, lastname_match=False]
+  Expected: "The Three Imposters" by Arthur Machen
+  Actual:   "A Journal of the Plague Year: Being Observations or Memorials of the Most Remarkable Occurrences, as Well Public as Private, Which Happened in London During the Last Great Visitation in 1665. Written by a Citizen Who Continued All the While in London" by Defoe, Daniel
+  Reason:   title_score=12<85; author lastname mismatch
+SERIOUS           gid    377 (gothic_horror )  [score=31, lastname_match=False]
+  Expected: "The Hill of Dreams" by Arthur Machen
+  Actual:   "Kansas Women in Literature" by Barker, Nettie Garmer
+  Reason:   title_score=31<85; author lastname mismatch
+SERIOUS           gid    378 (gothic_horror )  [score=72, lastname_match=False]
+  Expected: "The White People" by Arthur Machen
+  Actual:   "The White Knight: Tirant Lo Blanc" by Martorell, Joanot; Galba, Martí Joan de
+  Reason:   title_score=72<85; author lastname mismatch
+SERIOUS           gid    601 (gothic_horror )  [score=59, lastname_match=True]
+  Expected: "The Monk" by Matthew Lewis
+  Actual:   "The Monk: A Romance" by Lewis, M. G. (Matthew Gregory)
+  Reason:   title_score=59<85
+SERIOUS           gid    768 (gothic_horror )  [score=100, lastname_match=False]
+  Expected: "Wuthering Heights" by Emily Bronte
+  Actual:   "Wuthering Heights" by Brontë, Emily
+  Reason:   author lastname mismatch
+SERIOUS           gid    792 (gothic_horror )  [score=25, lastname_match=True]
+  Expected: "Wieland" by Charles Brockden Brown
+  Actual:   "Wieland; Or, The Transformation: An American Tale" by Brown, Charles Brockden
+  Reason:   title_score=25<85
+SERIOUS           gid   5145 (gothic_horror )  [score=42, lastname_match=False]
+  Expected: "The Italian" by Ann Radcliffe
+  Actual:   "The Heart of the Hills" by Fox, John, Jr.
+  Reason:   title_score=42<85; author lastname mismatch
+SERIOUS           gid   5146 (gothic_horror )  [score=33, lastname_match=False]
+  Expected: "A Sicilian Romance" by Ann Radcliffe
+  Actual:   "The Fighting Governor : A Chronicle of Frontenac" by Colby, Charles W. (Charles William)
+  Reason:   title_score=33<85; author lastname mismatch
+SERIOUS           gid   5147 (gothic_horror )  [score=27, lastname_match=False]
+  Expected: "The Romance of the Forest" by Ann Radcliffe
+  Actual:   "Le Jardin d'Épicure" by France, Anatole
+  Reason:   title_score=27<85; author lastname mismatch
+SERIOUS           gid   5148 (gothic_horror )  [score=37, lastname_match=False]
+  Expected: "Melmoth the Wanderer" by Charles Maturin
+  Actual:   "Rodney Stone" by Doyle, Arthur Conan
+  Reason:   title_score=37<85; author lastname mismatch
+SERIOUS           gid   5149 (gothic_horror )  [score=27, lastname_match=False]
+  Expected: "Vathek" by William Beckford
+  Actual:   "Gold of the Gods" by Reeve, Arthur B. (Arthur Benjamin)
+  Reason:   title_score=27<85; author lastname mismatch
+SERIOUS           gid   5150 (gothic_horror )  [score=51, lastname_match=False]
+  Expected: "The Last Man" by Mary Shelley
+  Actual:   "The Ear in the Wall" by Reeve, Arthur B. (Arthur Benjamin)
+  Reason:   title_score=51<85; author lastname mismatch
+SERIOUS           gid   5151 (gothic_horror )  [score=42, lastname_match=False]
+  Expected: "The Strange Case of Dr Jekyll and Mr Hyde" by Robert Louis Stevenson
+  Actual:   "The Exploits of Elaine" by Reeve, Arthur B. (Arthur Benjamin)
+  Reason:   title_score=42<85; author lastname mismatch
+SERIOUS           gid  11323 (gothic_horror )  [score=53, lastname_match=True]
+  Expected: "Caleb Williams" by William Godwin
+  Actual:   "Caleb Williams; Or, Things as They Are" by Godwin, William
+  Reason:   title_score=53<85
+SERIOUS           gid  14833 (gothic_horror )  [score=71, lastname_match=True]
+  Expected: "Varney the Vampire" by James Malcolm Rymer
+  Actual:   "Varney the vampyre; or, the feast of blood" by Prest, Thomas Peckett; Rymer, James Malcolm
+  Reason:   title_score=71<85
+SERIOUS           gid     82 (historical    )  [score=56, lastname_match=True]
+  Expected: "Ivanhoe" by Walter Scott
+  Actual:   "Ivanhoe: A Romance" by Scott, Walter
+  Reason:   title_score=56<85
+SERIOUS           gid   5998 (historical    )  [score=36, lastname_match=True]
+  Expected: "Waverley" by Walter Scott
+  Actual:   "Waverley; or, 'Tis sixty years since" by Scott, Walter
+  Reason:   title_score=36<85
+SERIOUS           gid   7142 (historical    )  [score=49, lastname_match=False]
+  Expected: "The Vicomte de Bragelonne" by Alexandre Dumas
+  Actual:   "The History of the Peloponnesian War" by Thucydides
+  Reason:   title_score=49<85; author lastname mismatch
+SERIOUS           gid   7143 (historical    )  [score=31, lastname_match=False]
+  Expected: "Louise de la Valliere" by Alexandre Dumas
+  Actual:   "The Strange Cabin on Catamount Island" by Leslie, Lawrence J.
+  Reason:   title_score=31<85; author lastname mismatch
+SERIOUS           gid   7144 (historical    )  [score=40, lastname_match=False]
+  Expected: "The Man in the Iron Mask" by Alexandre Dumas
+  Actual:   "While the Billy Boils" by Lawson, Henry
+  Reason:   title_score=40<85; author lastname mismatch
+SERIOUS           gid   7145 (historical    )  [score=22, lastname_match=False]
+  Expected: "Rob Roy" by Walter Scott
+  Actual:   "The Book of the Dead" by Budge, E. A. Wallis (Ernest Alfred Wallis), Sir
+  Reason:   title_score=22<85; author lastname mismatch
+SERIOUS           gid   7146 (historical    )  [score=18, lastname_match=False]
+  Expected: "Kenilworth" by Walter Scott
+  Actual:   "Cecilia; Or, Memoirs of an Heiress — Volume 2" by Burney, Fanny
+  Reason:   title_score=18<85; author lastname mismatch
+SERIOUS           gid   7147 (historical    )  [score=17, lastname_match=False]
+  Expected: "Old Mortality" by Walter Scott
+  Actual:   "The French in the Heart of America" by Finley, John H. (John Huston)
+  Reason:   title_score=17<85; author lastname mismatch
+SERIOUS           gid   7148 (historical    )  [score=23, lastname_match=False]
+  Expected: "The Talisman" by Walter Scott
+  Actual:   "Lectures on Dramatic Art and Literature" by Schlegel, August Wilhelm von
+  Reason:   title_score=23<85; author lastname mismatch
+SERIOUS           gid   7149 (historical    )  [score=15, lastname_match=False]
+  Expected: "Quentin Durward" by Walter Scott
+  Actual:   "The Poetical Works of Henry Kirk White : With a Memoir by Sir Harris Nicolas" by White, Henry Kirke
+  Reason:   title_score=15<85; author lastname mismatch
+SERIOUS           gid   7150 (historical    )  [score=30, lastname_match=False]
+  Expected: "Barnaby Rudge" by Charles Dickens
+  Actual:   "Science & Education: Essays" by Huxley, Thomas Henry
+  Reason:   title_score=30<85; author lastname mismatch
+SERIOUS           gid   7151 (historical    )  [score=15, lastname_match=False]
+  Expected: "Quo Vadis" by Henryk Sienkiewicz
+  Actual:   "Clelia: Il governo dei preti - Romanzo storico politico" by Garibaldi, Giuseppe
+  Reason:   title_score=15<85; author lastname mismatch
+SERIOUS           gid   7152 (historical    )  [score=31, lastname_match=False]
+  Expected: "With Fire and Sword" by Henryk Sienkiewicz
+  Actual:   "Cecilia; Or, Memoirs of an Heiress — Volume 3" by Burney, Fanny
+  Reason:   title_score=31<85; author lastname mismatch
+SERIOUS           gid   7153 (historical    )  [score=24, lastname_match=False]
+  Expected: "The Deluge" by Henryk Sienkiewicz
+  Actual:   "Elder Conklin and Other Stories" by Harris, Frank
+  Reason:   title_score=24<85; author lastname mismatch
+SERIOUS           gid   7154 (historical    )  [score=31, lastname_match=False]
+  Expected: "Pan Michael" by Henryk Sienkiewicz
+  Actual:   "The Prince and the Pauper, Part 1." by Twain, Mark
+  Reason:   title_score=31<85; author lastname mismatch
+SERIOUS           gid   7155 (historical    )  [score=36, lastname_match=False]
+  Expected: "The Hunchback of Notre-Dame" by Victor Hugo
+  Actual:   "The Prince and the Pauper, Part 2." by Twain, Mark
+  Reason:   title_score=36<85; author lastname mismatch
+SERIOUS           gid   7156 (historical    )  [score=30, lastname_match=False]
+  Expected: "Ninety-Three" by Victor Hugo
+  Actual:   "The Prince and the Pauper, Part 3." by Twain, Mark
+  Reason:   title_score=30<85; author lastname mismatch
+SERIOUS           gid   7157 (historical    )  [score=34, lastname_match=False]
+  Expected: "Toilers of the Sea" by Victor Hugo
+  Actual:   "The Prince and the Pauper, Part 4." by Twain, Mark
+  Reason:   title_score=34<85; author lastname mismatch
+SERIOUS           gid   7158 (historical    )  [score=51, lastname_match=False]
+  Expected: "The Last of the Mohicans" by James Fenimore Cooper
+  Actual:   "The Prince and the Pauper, Part 5." by Twain, Mark
+  Reason:   title_score=51<85; author lastname mismatch
+SERIOUS           gid   7159 (historical    )  [score=35, lastname_match=False]
+  Expected: "The Deerslayer" by James Fenimore Cooper
+  Actual:   "The Prince and the Pauper, Part 6." by Twain, Mark
+  Reason:   title_score=35<85; author lastname mismatch
+SERIOUS           gid   7160 (historical    )  [score=45, lastname_match=False]
+  Expected: "The Pathfinder" by James Fenimore Cooper
+  Actual:   "The Prince and the Pauper, Part 7." by Twain, Mark
+  Reason:   title_score=45<85; author lastname mismatch
+SERIOUS           gid   7161 (historical    )  [score=40, lastname_match=False]
+  Expected: "The Pioneers" by James Fenimore Cooper
+  Actual:   "The Prince and the Pauper, Part 8." by Twain, Mark
+  Reason:   title_score=40<85; author lastname mismatch
+SERIOUS           gid    210 (literary      )  [score=25, lastname_match=True]
+  Expected: "The Ambassadors" by Henry James
+  Actual:   "An International Episode" by James, Henry
+  Reason:   title_score=25<85
+SERIOUS           gid    211 (literary      )  [score=42, lastname_match=True]
+  Expected: "The Wings of the Dove" by Henry James
+  Actual:   "The Aspern Papers" by James, Henry
+  Reason:   title_score=42<85
+SERIOUS           gid    212 (literary      )  [score=42, lastname_match=False]
+  Expected: "The Portrait of a Lady" by Henry James
+  Actual:   "A List of Factorial Math Constants" by Unknown
+  Reason:   title_score=42<85; author lastname mismatch
+SERIOUS           gid    213 (literary      )  [score=33, lastname_match=False]
+  Expected: "Daisy Miller" by Henry James
+  Actual:   "The Man from Snowy River" by Paterson, A. B. (Andrew Barton)
+  Reason:   title_score=33<85; author lastname mismatch
+SERIOUS           gid    214 (literary      )  [score=25, lastname_match=False]
+  Expected: "The Golden Bowl" by Henry James
+  Actual:   "In the Days When the World Was Wide, and Other Verses" by Lawson, Henry
+  Reason:   title_score=25<85; author lastname mismatch
+SERIOUS           gid    542 (literary      )  [score=18, lastname_match=False]
+  Expected: "Ethan Frome" by Edith Wharton
+  Actual:   "The Life of Me: An Autobiography" by Johnson, Clarence Edgar
+  Reason:   title_score=18<85; author lastname mismatch
+SERIOUS           gid    544 (literary      )  [score=6, lastname_match=False]
+  Expected: "Babbitt" by Sinclair Lewis
+  Actual:   "Anne's House of Dreams" by Montgomery, L. M. (Lucy Maud)
+  Reason:   title_score=6<85; author lastname mismatch
+SERIOUS           gid    545 (literary      )  [score=41, lastname_match=False]
+  Expected: "Arrowsmith" by Sinclair Lewis
+  Actual:   "At the Earth's Core" by Burroughs, Edgar Rice
+  Reason:   title_score=41<85; author lastname mismatch
+SERIOUS           gid    546 (literary      )  [score=29, lastname_match=False]
+  Expected: "Elmer Gantry" by Sinclair Lewis
+  Actual:   "Under the Andes" by Stout, Rex
+  Reason:   title_score=29<85; author lastname mismatch
+SERIOUS           gid   5817 (literary      )  [score=12, lastname_match=False]
+  Expected: "Lord Jim" by Joseph Conrad
+  Actual:   "The Clockmaker — or, the Sayings and Doings of Samuel Slick, of Slickville" by Haliburton, Thomas Chandler
+  Reason:   title_score=12<85; author lastname mismatch
+SERIOUS           gid   5818 (literary      )  [score=6, lastname_match=False]
+  Expected: "Nostromo" by Joseph Conrad
+  Actual:   "The Gilded Age, Part 1." by Twain, Mark; Warner, Charles Dudley
+  Reason:   title_score=6<85; author lastname mismatch
+SERIOUS           gid   6593 (literary      )  [score=33, lastname_match=False]
+  Expected: "Sons and Lovers" by D. H. Lawrence
+  Actual:   "History of Tom Jones, a Foundling" by Fielding, Henry
+  Reason:   title_score=33<85; author lastname mismatch
+SERIOUS           gid   6594 (literary      )  [score=26, lastname_match=False]
+  Expected: "Women in Love" by D. H. Lawrence
+  Actual:   "Schwatka's Search: Sledging in the Arctic in Quest of the Franklin Records" by Gilder, William H. (William Henry)
+  Reason:   title_score=26<85; author lastname mismatch
+SERIOUS           gid   6595 (literary      )  [score=19, lastname_match=False]
+  Expected: "The Rainbow" by D. H. Lawrence
+  Actual:   "Advice to a Mother on the Management of Her Children" by Chavasse, Pye Henry
+  Reason:   title_score=19<85; author lastname mismatch
+SERIOUS           gid   9182 (literary      )  [score=17, lastname_match=False]
+  Expected: "Winesburg, Ohio" by Sherwood Anderson
+  Actual:   "Villette" by Brontë, Charlotte
+  Reason:   title_score=17<85; author lastname mismatch
+SERIOUS           gid   9183 (literary      )  [score=28, lastname_match=False]
+  Expected: "Poor White" by Sherwood Anderson
+  Actual:   "Wilfrid Cumbermede" by MacDonald, George
+  Reason:   title_score=28<85; author lastname mismatch
+SERIOUS           gid    221 (mystery       )  [score=57, lastname_match=True]
+  Expected: "The Sign of the Four" by Arthur Conan Doyle
+  Actual:   "The Return of Sherlock Holmes" by Doyle, Arthur Conan
+  Reason:   title_score=57<85
+SERIOUS           gid    480 (mystery       )  [score=22, lastname_match=False]
+  Expected: "The Memoirs of Sherlock Holmes" by Arthur Conan Doyle
+  Actual:   ""Undo": A Novel" by Hutsko, Joe
+  Reason:   title_score=22<85; author lastname mismatch
+SERIOUS           gid    481 (mystery       )  [score=28, lastname_match=False]
+  Expected: "The Adventures of Sherlock Holmes" by Arthur Conan Doyle
+  Actual:   "In the Bishop's Carriage" by Michelson, Miriam
+  Reason:   title_score=28<85; author lastname mismatch
+SERIOUS           gid    583 (mystery       )  [score=40, lastname_match=False]
+  Expected: "The Mystery of Edwin Drood" by Charles Dickens
+  Actual:   "The Woman in White" by Collins, Wilkie
+  Reason:   title_score=40<85; author lastname mismatch
+SERIOUS           gid    834 (mystery       )  [score=23, lastname_match=True]
+  Expected: "His Last Bow" by Arthur Conan Doyle
+  Actual:   "The Memoirs of Sherlock Holmes" by Doyle, Arthur Conan
+  Reason:   title_score=23<85
+SERIOUS           gid   1155 (mystery       )  [score=45, lastname_match=False]
+  Expected: "The Leavenworth Case" by Anna Katharine Green
+  Actual:   "The Secret Adversary" by Christie, Agatha
+  Reason:   title_score=45<85; author lastname mismatch
+SERIOUS           gid   1851 (mystery       )  [score=38, lastname_match=False]
+  Expected: "The Man Who Was Thursday" by G. K. Chesterton
+  Actual:   "The Woman in the Alcove" by Green, Anna Katharine
+  Reason:   title_score=38<85; author lastname mismatch
+SERIOUS           gid   2155 (mystery       )  [score=32, lastname_match=False]
+  Expected: "The Door of Death" by Mary Roberts Rinehart
+  Actual:   "Phyllis of Philistia" by Moore, Frank Frankfort
+  Reason:   title_score=32<85; author lastname mismatch
+SERIOUS           gid   2156 (mystery       )  [score=43, lastname_match=False]
+  Expected: "A Thief in the Night" by E. W. Hornung
+  Actual:   "China and the Manchus" by Giles, Herbert Allen
+  Reason:   title_score=43<85; author lastname mismatch
+SERIOUS           gid   2157 (mystery       )  [score=12, lastname_match=False]
+  Expected: "Raffles" by E. W. Hornung
+  Actual:   "Female Suffrage: A Letter to the Christian Women of America" by Cooper, Susan Fenimore
+  Reason:   title_score=12<85; author lastname mismatch
+SERIOUS           gid   2856 (mystery       )  [score=44, lastname_match=False]
+  Expected: "The Four Just Men" by Edgar Wallace
+  Actual:   "Moon of Israel: A Tale of the Exodus" by Haggard, H. Rider (Henry Rider)
+  Reason:   title_score=44<85; author lastname mismatch
+SERIOUS           gid   2857 (mystery       )  [score=24, lastname_match=False]
+  Expected: "The Crimson Circle" by Edgar Wallace
+  Actual:   "A Yellow God: An Idol of Africa" by Haggard, H. Rider (Henry Rider)
+  Reason:   title_score=24<85; author lastname mismatch
+SERIOUS           gid   3300 (mystery       )  [score=38, lastname_match=False]
+  Expected: "The Mysteries of Paris" by Eugene Sue
+  Actual:   "An Inquiry into the Nature and Causes of the Wealth of Nations" by Smith, Adam
+  Reason:   title_score=38<85; author lastname mismatch
+SERIOUS           gid   3301 (mystery       )  [score=36, lastname_match=False]
+  Expected: "The Riddle of the Sands" by Erskine Childers
+  Actual:   "The Naturewoman" by Sinclair, Upton
+  Reason:   title_score=36<85; author lastname mismatch
+SERIOUS           gid   3303 (mystery       )  [score=32, lastname_match=False]
+  Expected: "The Old Man in the Corner" by Baroness Orczy
+  Actual:   "Prince Hagen" by Sinclair, Upton
+  Reason:   title_score=32<85; author lastname mismatch
+SERIOUS           gid   3304 (mystery       )  [score=42, lastname_match=False]
+  Expected: "The Mystery of a Hansom Cab" by Fergus Hume
+  Actual:   "The Machine" by Sinclair, Upton
+  Reason:   title_score=42<85; author lastname mismatch
+SERIOUS           gid   3305 (mystery       )  [score=40, lastname_match=False]
+  Expected: "The Filigree Ball" by Anna Katharine Green
+  Actual:   "Ballads of Peace in War" by Earls, Michael
+  Reason:   title_score=40<85; author lastname mismatch
+SERIOUS           gid   3306 (mystery       )  [score=11, lastname_match=False]
+  Expected: "The Affair Next Door" by Anna Katharine Green
+  Actual:   "At Suvla Bay: Being the notes and sketches of scenes, characters and adventures of the Dardanelles campaign, made by John Hargrave ("White Fox") while serving with the 32nd field ambulance, X division, Mediterranean expeditionary force, during the great war." by Hargrave, John
+  Reason:   title_score=11<85; author lastname mismatch
+SERIOUS           gid    110 (romance       )  [score=78, lastname_match=True]
+  Expected: "Tess of the d'Urbervilles" by Thomas Hardy
+  Actual:   "Tess of the d'Urbervilles: A Pure Woman" by Hardy, Thomas
+  Reason:   title_score=78<85
+SERIOUS           gid    153 (romance       )  [score=8, lastname_match=False]
+  Expected: "Cranford" by Elizabeth Gaskell
+  Actual:   "Jude the Obscure" by Hardy, Thomas
+  Reason:   title_score=8<85; author lastname mismatch
+SERIOUS           gid    432 (romance       )  [score=33, lastname_match=False]
+  Expected: "The Return of the Native" by Thomas Hardy
+  Actual:   "The Ambassadors" by James, Henry
+  Reason:   title_score=33<85; author lastname mismatch
+SERIOUS           gid    521 (romance       )  [score=19, lastname_match=False]
+  Expected: "Adam Bede" by George Eliot
+  Actual:   "The Life and Adventures of Robinson Crusoe" by Defoe, Daniel
+  Reason:   title_score=19<85; author lastname mismatch
+SERIOUS           gid    524 (romance       )  [score=26, lastname_match=False]
+  Expected: "Pamela; or, Virtue Rewarded" by Samuel Richardson
+  Actual:   "Ann Veronica: A Modern Love Story" by Wells, H. G. (Herbert George)
+  Reason:   title_score=26<85; author lastname mismatch
+SERIOUS           gid    738 (romance       )  [score=34, lastname_match=False]
+  Expected: "Doctor Thorne" by Anthony Trollope
+  Actual:   "The Puzzle of Dickens's Last Plot" by Lang, Andrew
+  Reason:   title_score=34<85; author lastname mismatch
+SERIOUS           gid    826 (romance       )  [score=26, lastname_match=False]
+  Expected: "Framley Parsonage" by Anthony Trollope
+  Actual:   "Latin Vulgate, Esther: Liber Esther" by Anonymous
+  Reason:   title_score=26<85; author lastname mismatch
+SERIOUS           gid    882 (romance       )  [score=14, lastname_match=False]
+  Expected: "The Warden" by Anthony Trollope
+  Actual:   "Sketches by Boz, Illustrative of Every-Day Life and Every-Day People" by Dickens, Charles
+  Reason:   title_score=14<85; author lastname mismatch
+SERIOUS           gid    946 (romance       )  [score=57, lastname_match=False]
+  Expected: "Lady Audley's Secret" by Mary Elizabeth Braddon
+  Actual:   "Lady Susan" by Austen, Jane
+  Reason:   title_score=57<85; author lastname mismatch
+SERIOUS           gid    969 (romance       )  [score=26, lastname_match=False]
+  Expected: "Far from the Madding Crowd" by Thomas Hardy
+  Actual:   "The Tenant of Wildfell Hall" by Brontë, Anne
+  Reason:   title_score=26<85; author lastname mismatch
+SERIOUS           gid   1245 (romance       )  [score=19, lastname_match=False]
+  Expected: "Villette" by Charlotte Bronte
+  Actual:   "Night and Day" by Woolf, Virginia
+  Reason:   title_score=19<85; author lastname mismatch
+SERIOUS           gid   1252 (romance       )  [score=17, lastname_match=False]
+  Expected: "Shirley" by Charlotte Bronte
+  Actual:   "Le Morte d'Arthur: Volume 2" by Malory, Thomas, Sir
+  Reason:   title_score=17<85; author lastname mismatch
+SERIOUS           gid   1260 (romance       )  [score=61, lastname_match=False]
+  Expected: "Jane Eyre" by Charlotte Bronte
+  Actual:   "Jane Eyre: An Autobiography" by Brontë, Charlotte
+  Reason:   title_score=61<85; author lastname mismatch
+SERIOUS           gid   2095 (romance       )  [score=45, lastname_match=False]
+  Expected: "The Tenant of Wildfell Hall" by Anne Bronte
+  Actual:   "Clotelle: A Tale of the Southern States" by Brown, William Wells
+  Reason:   title_score=45<85; author lastname mismatch
+SERIOUS           gid   4517 (romance       )  [score=23, lastname_match=False]
+  Expected: "Scenes of Clerical Life" by George Eliot
+  Actual:   "Ethan Frome" by Wharton, Edith
+  Reason:   title_score=23<85; author lastname mismatch
+SERIOUS           gid   4860 (romance       )  [score=32, lastname_match=False]
+  Expected: "The Mill on the Floss" by George Eliot
+  Actual:   "History of the United Netherlands, 1586-89 — Complete" by Motley, John Lothrop
+  Reason:   title_score=32<85; author lastname mismatch
+SERIOUS           gid   6688 (romance       )  [score=34, lastname_match=True]
+  Expected: "Daniel Deronda" by George Eliot
+  Actual:   "The Mill on the Floss" by Eliot, George
+  Reason:   title_score=34<85
+SERIOUS           gid     11 (speculative   )  [score=32, lastname_match=False]
+  Expected: "The Invisible Man" by H. G. Wells
+  Actual:   "Alice's Adventures in Wonderland" by Carroll, Lewis
+  Reason:   title_score=32<85; author lastname mismatch
+SERIOUS           gid     27 (speculative   )  [score=43, lastname_match=False]
+  Expected: "The First Men in the Moon" by H. G. Wells
+  Actual:   "Far from the Madding Crowd" by Hardy, Thomas
+  Reason:   title_score=43<85; author lastname mismatch
+SERIOUS           gid    325 (speculative   )  [score=35, lastname_match=True]
+  Expected: "Phantastes" by George MacDonald
+  Actual:   "Phantastes: A Faerie Romance for Men and Women" by MacDonald, George
+  Reason:   title_score=35<85
+SERIOUS           gid    706 (speculative   )  [score=14, lastname_match=False]
+  Expected: "Lilith" by George MacDonald
+  Actual:   "The Amateur Cracksman" by Hornung, E. W. (Ernest William)
+  Reason:   title_score=14<85; author lastname mismatch
+SERIOUS           gid    718 (speculative   )  [score=6, lastname_match=True]
+  Expected: "When the Sleeper Wakes" by H. G. Wells
+  Actual:   "Tono-Bungay" by Wells, H. G. (Herbert George)
+  Reason:   title_score=6<85
+SERIOUS           gid   1130 (speculative   )  [score=38, lastname_match=False]
+  Expected: "The Princess and the Goblin" by George MacDonald
+  Actual:   "Antony and Cleopatra" by Shakespeare, William
+  Reason:   title_score=38<85; author lastname mismatch
+SERIOUS           gid   1131 (speculative   )  [score=30, lastname_match=False]
+  Expected: "The Princess and Curdie" by George MacDonald
+  Actual:   "Coriolanus" by Shakespeare, William
+  Reason:   title_score=30<85; author lastname mismatch
+SERIOUS           gid   1652 (speculative   )  [score=34, lastname_match=True]
+  Expected: "Robur the Conqueror" by Jules Verne
+  Actual:   "The Survivors of the Chancellor: Diary of J.R. Kazallon, Passenger" by Verne, Jules
+  Reason:   title_score=34<85
+SERIOUS           gid   1842 (speculative   )  [score=33, lastname_match=True]
+  Expected: "Off on a Comet" by Jules Verne
+  Actual:   "Michael Strogoff; Or, The Courier of the Czar" by Verne, Jules
+  Reason:   title_score=33<85
+SERIOUS           gid   2083 (speculative   )  [score=48, lastname_match=True]
+  Expected: "Master of the World" by Jules Verne
+  Actual:   "In Search of the Castaways; Or, The Children of Captain Grant" by Verne, Jules
+  Reason:   title_score=48<85
+SERIOUS           gid   1012 (western       )  [score=30, lastname_match=False]
+  Expected: "The Virginian" by Owen Wister
+  Actual:   "La Divina Commedia di Dante" by Dante Alighieri
+  Reason:   title_score=30<85; author lastname mismatch
+SERIOUS           gid   1389 (western       )  [score=23, lastname_match=False]
+  Expected: "The Log of a Cowboy" by Andy Adams
+  Actual:   "Gobseck" by Balzac, Honoré de
+  Reason:   title_score=23<85; author lastname mismatch
+SERIOUS           gid   1528 (western       )  [score=35, lastname_match=False]
+  Expected: "Riders of the Purple Sage" by Zane Grey
+  Actual:   "Troilus and Cressida" by Shakespeare, William
+  Reason:   title_score=35<85; author lastname mismatch
+SERIOUS           gid   3179 (western       )  [score=40, lastname_match=False]
+  Expected: "The Spirit of the Border" by Zane Grey
+  Actual:   "The American Claimant" by Twain, Mark
+  Reason:   title_score=40<85; author lastname mismatch
+SERIOUS           gid   3285 (western       )  [score=45, lastname_match=False]
+  Expected: "The Border Legion" by Zane Grey
+  Actual:   "The Deerslayer" by Cooper, James Fenimore
+  Reason:   title_score=45<85; author lastname mismatch
+SERIOUS           gid   3752 (western       )  [score=30, lastname_match=False]
+  Expected: "The Last of the Plainsmen" by Zane Grey
+  Actual:   "Voyager's Tales" by Hakluyt, Richard
+  Reason:   title_score=30<85; author lastname mismatch
+SERIOUS           gid   3756 (western       )  [score=24, lastname_match=False]
+  Expected: "Betty Zane" by Zane Grey
+  Actual:   "Indiscretions of Archie" by Wodehouse, P. G. (Pelham Grenville)
+  Reason:   title_score=24<85; author lastname mismatch
+SERIOUS           gid   3779 (western       )  [score=28, lastname_match=False]
+  Expected: "The Young Forester" by Zane Grey
+  Actual:   "The world war : $b a history of the nations and empires involved and a study of the events culminating in the great conflict" by Marshall, Logan
+  Reason:   title_score=28<85; author lastname mismatch
+SERIOUS           gid   3784 (western       )  [score=43, lastname_match=False]
+  Expected: "The Light of Western Stars" by Zane Grey
+  Actual:   "The Sheridan Road Mystery" by Thorne, Paul; Thorne, Mabel
+  Reason:   title_score=43<85; author lastname mismatch
+SERIOUS           gid   3808 (western       )  [score=40, lastname_match=False]
+  Expected: "The Heritage of the Desert" by Zane Grey
+  Actual:   "Robur the Conqueror" by Verne, Jules
+  Reason:   title_score=40<85; author lastname mismatch
+SERIOUS           gid   3818 (western       )  [score=38, lastname_match=False]
+  Expected: "The Day of the Beast" by Zane Grey
+  Actual:   "By Reef and Palm" by Becke, Louis
+  Reason:   title_score=38<85; author lastname mismatch
+SERIOUS           gid   3829 (western       )  [score=23, lastname_match=False]
+  Expected: "Desert Gold" by Zane Grey
+  Actual:   "Love Among the Chickens" by Wodehouse, P. G. (Pelham Grenville)
+  Reason:   title_score=23<85; author lastname mismatch
+SERIOUS           gid   4051 (western       )  [score=30, lastname_match=False]
+  Expected: "The Lone Star Ranger" by Zane Grey
+  Actual:   "Lady Bridget in the Never-Never Land: a story of Australian life" by Praed, Campbell, Mrs.
+  Reason:   title_score=30<85; author lastname mismatch
+SERIOUS           gid   5755 (western       )  [score=35, lastname_match=False]
+  Expected: "The U.P. Trail" by Zane Grey
+  Actual:   "The Fool Errant: Being the Memoirs of Francis-Anthony Strelley, Esq., Citizen of Lucca" by Hewlett, Maurice
+  Reason:   title_score=35<85; author lastname mismatch
+SERIOUS           gid   5757 (western       )  [score=48, lastname_match=False]
+  Expected: "The Desert of Wheat" by Zane Grey
+  Actual:   "The Maid of Maiden Lane" by Barr, Amelia E.
+  Reason:   title_score=48<85; author lastname mismatch
+SERIOUS           gid   5765 (western       )  [score=21, lastname_match=False]
+  Expected: "The Rainbow Trail" by Zane Grey
+  Actual:   "Insectivorous Plants" by Darwin, Charles
+  Reason:   title_score=21<85; author lastname mismatch
+SERIOUS           gid   6993 (western       )  [score=18, lastname_match=False]
+  Expected: "Tappan's Burro" by Zane Grey
+  Actual:   "The Lord of the Sea" by Shiel, M. P. (Matthew Phipps)
+  Reason:   title_score=18<85; author lastname mismatch
+SERIOUS           gid   6995 (western       )  [score=30, lastname_match=False]
+  Expected: "The Mysterious Rider" by Zane Grey
+  Actual:   "Ghosts I Have Met and Some Others" by Bangs, John Kendrick
+  Reason:   title_score=30<85; author lastname mismatch
+SERIOUS           gid   6996 (western       )  [score=26, lastname_match=False]
+  Expected: "Wildfire" by Zane Grey
+  Actual:   "Romeo und Julia" by Shakespeare, William
+  Reason:   title_score=26<85; author lastname mismatch
+SERIOUS           gid   7762 (western       )  [score=21, lastname_match=False]
+  Expected: "Lin McLean" by Owen Wister
+  Actual:   "Wanderers" by Hamsun, Knut
+  Reason:   title_score=21<85; author lastname mismatch
+SERIOUS           gid   7763 (western       )  [score=39, lastname_match=False]
+  Expected: "Red Men and White" by Owen Wister
+  Actual:   "The Law-Breakers and Other Stories" by Grant, Robert
+  Reason:   title_score=39<85; author lastname mismatch
+SERIOUS           gid   7764 (western       )  [score=36, lastname_match=False]
+  Expected: "Members of the Family" by Owen Wister
+  Actual:   "Little Bear at Work and at Play" by Fox, Frances Margaret
+  Reason:   title_score=36<85; author lastname mismatch
+SERIOUS           gid   8083 (western       )  [score=20, lastname_match=False]
+  Expected: "Hopalong Cassidy" by Clarence E. Mulford
+  Actual:   "The Allis Family; or, Scenes of Western Life" by Eddy, Velda Allis
+  Reason:   title_score=20<85; author lastname mismatch
+SERIOUS           gid   8084 (western       )  [score=5, lastname_match=False]
+  Expected: "Bar-20" by Clarence E. Mulford
+  Actual:   "Hunting with the Bow & Arrow" by Pope, Saxton T. (Saxton Temple)
+  Reason:   title_score=5<85; author lastname mismatch
+SERIOUS           gid   8085 (western       )  [score=33, lastname_match=False]
+  Expected: "The Coming of Cassidy" by Clarence E. Mulford
+  Actual:   "Die Göttliche Komödie" by Dante Alighieri
+  Reason:   title_score=33<85; author lastname mismatch
+SERIOUS           gid   8086 (western       )  [score=13, lastname_match=False]
+  Expected: "Bar-20 Days" by Clarence E. Mulford
+  Actual:   "Down and Out in the Magic Kingdom" by Doctorow, Cory
+  Reason:   title_score=13<85; author lastname mismatch
+SERIOUS           gid   8093 (western       )  [score=31, lastname_match=False]
+  Expected: "The Texan Scouts" by Joseph A. Altsheler
+  Actual:   "The Canadian Elocutionist: Designed for the Use of Colleges, Schools and Self Instruction, Together with a Copious Selection in Prose and Poetry of Pieces Adapted for Reading, Recitation and Practice" by Howard, Anna K. (Anna Kelsey)
+  Reason:   title_score=31<85; author lastname mismatch
+SERIOUS           gid  10717 (western       )  [score=15, lastname_match=False]
+  Expected: "Whispering Smith" by Frank H. Spearman
+  Actual:   "The Extant Odes of Pindar: Translated with Introduction and Short Notes by Ernest Myers" by Pindar
+  Reason:   title_score=15<85; author lastname mismatch
+SERIOUS           gid  14288 (western       )  [score=24, lastname_match=False]
+  Expected: "Good Indian" by B. M. Bower
+  Actual:   "Mademoiselle de Maupin" by Gautier, Théophile
+  Reason:   title_score=24<85; author lastname mismatch
+SERIOUS           gid  20381 (western       )  [score=33, lastname_match=False]
+  Expected: "Hidden Water" by Dane Coolidge
+  Actual:   "The Village by the River" by Bedford, H. Louisa
+  Reason:   title_score=33<85; author lastname mismatch
+
+--- MISSING_GUTENDEX (0) ---
+
+--- BENIGN (95) ---
+BENIGN            gid     60 (adventure     )  [score=100, lastname_match=True]
+  Expected: "The Scarlet Pimpernel" by Baroness Orczy
+  Actual:   "The Scarlet Pimpernel" by Orczy, Emmuska Orczy, Baroness
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid     76 (adventure     )  [score=100, lastname_match=True]
+  Expected: "Adventures of Huckleberry Finn" by Mark Twain
+  Actual:   "Adventures of Huckleberry Finn" by Twain, Mark
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid     78 (adventure     )  [score=100, lastname_match=True]
+  Expected: "Tarzan of the Apes" by Edgar Rice Burroughs
+  Actual:   "Tarzan of the Apes" by Burroughs, Edgar Rice
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid     81 (adventure     )  [score=86, lastname_match=True]
+  Expected: "The Son of Tarzan" by Edgar Rice Burroughs
+  Actual:   "The Return of Tarzan" by Burroughs, Edgar Rice
+  Reason:   title_score=86>=85, author lastname matches
+BENIGN            gid     92 (adventure     )  [score=100, lastname_match=True]
+  Expected: "Tarzan and the Jewels of Opar" by Edgar Rice Burroughs
+  Actual:   "Tarzan and the Jewels of Opar" by Burroughs, Edgar Rice
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid     95 (adventure     )  [score=95, lastname_match=True]
+  Expected: "The Prisoner of Zenda" by Anthony Hope
+  Actual:   "The prisoner of Zenda" by Hope, Anthony
+  Reason:   title_score=95>=85, author lastname matches
+BENIGN            gid    120 (adventure     )  [score=100, lastname_match=True]
+  Expected: "Treasure Island" by Robert Louis Stevenson
+  Actual:   "Treasure Island" by Stevenson, Robert Louis
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    215 (adventure     )  [score=90, lastname_match=True]
+  Expected: "The Call of the Wild" by Jack London
+  Actual:   "The call of the wild" by London, Jack
+  Reason:   title_score=90>=85, author lastname matches
+BENIGN            gid    370 (adventure     )  [score=100, lastname_match=True]
+  Expected: "Moll Flanders" by Daniel Defoe
+  Actual:   "The Fortunes and Misfortunes of the Famous Moll Flanders" by Defoe, Daniel
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    421 (adventure     )  [score=100, lastname_match=True]
+  Expected: "Kidnapped" by Robert Louis Stevenson
+  Actual:   "Kidnapped" by Stevenson, Robert Louis
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    910 (adventure     )  [score=100, lastname_match=True]
+  Expected: "White Fang" by Jack London
+  Actual:   "White Fang" by London, Jack
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   1142 (adventure     )  [score=100, lastname_match=True]
+  Expected: "Typhoon" by Joseph Conrad
+  Actual:   "Typhoon" by Conrad, Joseph
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   1965 (adventure     )  [score=100, lastname_match=True]
+  Expected: "Captain Blood" by Rafael Sabatini
+  Actual:   "Captain Blood" by Sabatini, Rafael
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   5658 (adventure     )  [score=100, lastname_match=True]
+  Expected: "Lord Jim" by Joseph Conrad
+  Actual:   "Lord Jim" by Conrad, Joseph
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    174 (gothic_horror )  [score=100, lastname_match=True]
+  Expected: "The Picture of Dorian Gray" by Oscar Wilde
+  Actual:   "The Picture of Dorian Gray" by Wilde, Oscar
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    175 (gothic_horror )  [score=100, lastname_match=True]
+  Expected: "The Phantom of the Opera" by Gaston Leroux
+  Actual:   "The Phantom of the Opera" by Leroux, Gaston
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    345 (gothic_horror )  [score=100, lastname_match=True]
+  Expected: "Dracula" by Bram Stoker
+  Actual:   "Dracula" by Stoker, Bram
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    389 (gothic_horror )  [score=100, lastname_match=True]
+  Expected: "The Great God Pan" by Arthur Machen
+  Actual:   "The Great God Pan" by Machen, Arthur
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    696 (gothic_horror )  [score=100, lastname_match=True]
+  Expected: "The Castle of Otranto" by Horace Walpole
+  Actual:   "The Castle of Otranto" by Walpole, Horace
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   2276 (gothic_horror )  [score=100, lastname_match=True]
+  Expected: "The Private Memoirs and Confessions of a Justified Sinner" by James Hogg
+  Actual:   "The Private Memoirs and Confessions of a Justified Sinner" by Hogg, James
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   3268 (gothic_horror )  [score=100, lastname_match=True]
+  Expected: "The Mysteries of Udolpho" by Ann Radcliffe
+  Actual:   "The Mysteries of Udolpho" by Radcliffe, Ann Ward
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   8486 (gothic_horror )  [score=100, lastname_match=True]
+  Expected: "Ghost Stories of an Antiquary" by M. R. James
+  Actual:   "Ghost Stories of an Antiquary" by James, M. R. (Montague Rhodes)
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid  10007 (gothic_horror )  [score=100, lastname_match=True]
+  Expected: "Carmilla" by J. Sheridan Le Fanu
+  Actual:   "Carmilla" by Le Fanu, Joseph Sheridan
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid  10897 (gothic_horror )  [score=100, lastname_match=True]
+  Expected: "The Wendigo" by Algernon Blackwood
+  Actual:   "The Wendigo" by Blackwood, Algernon
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid  50133 (gothic_horror )  [score=94, lastname_match=True]
+  Expected: "The Dunwich Horror" by H. P. Lovecraft
+  Actual:   "The Dunwich horror" by Lovecraft, H. P. (Howard Phillips)
+  Reason:   title_score=94>=85, author lastname matches
+BENIGN            gid  68283 (gothic_horror )  [score=94, lastname_match=True]
+  Expected: "The Call of Cthulhu" by H. P. Lovecraft
+  Actual:   "The call of Cthulhu" by Lovecraft, H. P. (Howard Phillips)
+  Reason:   title_score=94>=85, author lastname matches
+BENIGN            gid  70652 (gothic_horror )  [score=92, lastname_match=True]
+  Expected: "At the Mountains of Madness" by H. P. Lovecraft
+  Actual:   "At the mountains of madness" by Lovecraft, H. P. (Howard Phillips)
+  Reason:   title_score=92>=85, author lastname matches
+BENIGN            gid  73181 (gothic_horror )  [score=96, lastname_match=True]
+  Expected: "The Shadow over Innsmouth" by H. P. Lovecraft
+  Actual:   "The shadow over Innsmouth" by Lovecraft, H. P. (Howard Phillips)
+  Reason:   title_score=96>=85, author lastname matches
+BENIGN            gid     98 (historical    )  [score=100, lastname_match=True]
+  Expected: "A Tale of Two Cities" by Charles Dickens
+  Actual:   "A Tale of Two Cities" by Dickens, Charles
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    135 (historical    )  [score=92, lastname_match=True]
+  Expected: "Les Miserables" by Victor Hugo
+  Actual:   "Les Misérables" by Hugo, Victor
+  Reason:   title_score=92>=85, author lastname matches
+BENIGN            gid   1184 (historical    )  [score=100, lastname_match=True]
+  Expected: "The Count of Monte Cristo" by Alexandre Dumas
+  Actual:   "The Count of Monte Cristo" by Dumas, Alexandre; Maquet, Auguste
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   1257 (historical    )  [score=90, lastname_match=True]
+  Expected: "The Three Musketeers" by Alexandre Dumas
+  Actual:   "The three musketeers" by Dumas, Alexandre; Maquet, Auguste
+  Reason:   title_score=90>=85, author lastname matches
+BENIGN            gid   1259 (historical    )  [score=88, lastname_match=True]
+  Expected: "Twenty Years After" by Alexandre Dumas
+  Actual:   "Twenty years after" by Dumas, Alexandre; Maquet, Auguste
+  Reason:   title_score=88>=85, author lastname matches
+BENIGN            gid   2145 (historical    )  [score=96, lastname_match=True]
+  Expected: "Ben-Hur: A Tale of the Christ" by Lew Wallace
+  Actual:   "Ben-Hur: A tale of the Christ" by Wallace, Lew
+  Reason:   title_score=96>=85, author lastname matches
+BENIGN            gid   2600 (historical    )  [score=100, lastname_match=True]
+  Expected: "War and Peace" by Leo Tolstoy
+  Actual:   "War and Peace" by Tolstoy, Leo, graf
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid  25344 (historical    )  [score=100, lastname_match=True]
+  Expected: "The Scarlet Letter" by Nathaniel Hawthorne
+  Actual:   "The Scarlet Letter" by Hawthorne, Nathaniel
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    144 (literary      )  [score=100, lastname_match=True]
+  Expected: "The Voyage Out" by Virginia Woolf
+  Actual:   "The Voyage Out" by Woolf, Virginia
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    145 (literary      )  [score=100, lastname_match=True]
+  Expected: "Middlemarch" by George Eliot
+  Actual:   "Middlemarch" by Eliot, George
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    209 (literary      )  [score=100, lastname_match=True]
+  Expected: "The Turn of the Screw" by Henry James
+  Actual:   "The Turn of the Screw" by James, Henry
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    219 (literary      )  [score=100, lastname_match=True]
+  Expected: "Heart of Darkness" by Joseph Conrad
+  Actual:   "Heart of Darkness" by Conrad, Joseph
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    284 (literary      )  [score=100, lastname_match=True]
+  Expected: "The House of Mirth" by Edith Wharton
+  Actual:   "The House of Mirth" by Wharton, Edith
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    541 (literary      )  [score=100, lastname_match=True]
+  Expected: "The Age of Innocence" by Edith Wharton
+  Actual:   "The Age of Innocence" by Wharton, Edith
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    543 (literary      )  [score=100, lastname_match=True]
+  Expected: "Main Street" by Sinclair Lewis
+  Actual:   "Main Street" by Lewis, Sinclair
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   2814 (literary      )  [score=100, lastname_match=True]
+  Expected: "Dubliners" by James Joyce
+  Actual:   "Dubliners" by Joyce, James
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   4217 (literary      )  [score=100, lastname_match=True]
+  Expected: "A Portrait of the Artist as a Young Man" by James Joyce
+  Actual:   "A Portrait of the Artist as a Young Man" by Joyce, James
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   5200 (literary      )  [score=100, lastname_match=True]
+  Expected: "Metamorphosis" by Franz Kafka
+  Actual:   "Metamorphosis" by Kafka, Franz
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid  64317 (literary      )  [score=100, lastname_match=True]
+  Expected: "The Great Gatsby" by F. Scott Fitzgerald
+  Actual:   "The Great Gatsby" by Fitzgerald, F. Scott (Francis Scott)
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid  67138 (literary      )  [score=100, lastname_match=True]
+  Expected: "The Sun Also Rises" by Ernest Hemingway
+  Actual:   "The Sun Also Rises" by Hemingway, Ernest
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid  71865 (literary      )  [score=96, lastname_match=True]
+  Expected: "Mrs Dalloway" by Virginia Woolf
+  Actual:   "Mrs. Dalloway" by Woolf, Virginia
+  Reason:   title_score=96>=85, author lastname matches
+BENIGN            gid  75201 (literary      )  [score=88, lastname_match=True]
+  Expected: "A Farewell to Arms" by Ernest Hemingway
+  Actual:   "A farewell to arms" by Hemingway, Ernest
+  Reason:   title_score=88>=85, author lastname matches
+BENIGN            gid    108 (mystery       )  [score=100, lastname_match=True]
+  Expected: "The Return of Sherlock Holmes" by Arthur Conan Doyle
+  Actual:   "The Return of Sherlock Holmes" by Doyle, Arthur Conan
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    155 (mystery       )  [score=100, lastname_match=True]
+  Expected: "The Moonstone" by Wilkie Collins
+  Actual:   "The Moonstone" by Collins, Wilkie
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    204 (mystery       )  [score=96, lastname_match=True]
+  Expected: "The Innocence of Father Brown" by G. K. Chesterton
+  Actual:   "The innocence of Father Brown" by Chesterton, G. K. (Gilbert Keith)
+  Reason:   title_score=96>=85, author lastname matches
+BENIGN            gid    223 (mystery       )  [score=96, lastname_match=True]
+  Expected: "The Wisdom of Father Brown" by G. K. Chesterton
+  Actual:   "The wisdom of Father Brown" by Chesterton, G. K. (Gilbert Keith)
+  Reason:   title_score=96>=85, author lastname matches
+BENIGN            gid    244 (mystery       )  [score=100, lastname_match=True]
+  Expected: "A Study in Scarlet" by Arthur Conan Doyle
+  Actual:   "A Study in Scarlet" by Doyle, Arthur Conan
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    863 (mystery       )  [score=100, lastname_match=True]
+  Expected: "The Mysterious Affair at Styles" by Agatha Christie
+  Actual:   "The Mysterious Affair at Styles" by Christie, Agatha
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   1685 (mystery       )  [score=100, lastname_match=True]
+  Expected: "The Mystery of the Yellow Room" by Gaston Leroux
+  Actual:   "The Mystery of the Yellow Room" by Leroux, Gaston
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   2852 (mystery       )  [score=100, lastname_match=True]
+  Expected: "The Hound of the Baskervilles" by Arthur Conan Doyle
+  Actual:   "The Hound of the Baskervilles" by Doyle, Arthur Conan
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid  58820 (mystery       )  [score=100, lastname_match=True]
+  Expected: "Whose Body?" by Dorothy L. Sayers
+  Actual:   "Whose Body? A Lord Peter Wimsey Novel" by Sayers, Dorothy L. (Dorothy Leigh)
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid  65238 (mystery       )  [score=100, lastname_match=True]
+  Expected: "The Secret of Chimneys" by Agatha Christie
+  Actual:   "The Secret of Chimneys" by Christie, Agatha
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid  69087 (mystery       )  [score=96, lastname_match=True]
+  Expected: "The Murder of Roger Ackroyd" by Agatha Christie
+  Actual:   "The murder of Roger Ackroyd" by Christie, Agatha
+  Reason:   title_score=96>=85, author lastname matches
+BENIGN            gid  70008 (mystery       )  [score=93, lastname_match=True]
+  Expected: "Unnatural Death" by Dorothy L. Sayers
+  Actual:   "Unnatural death" by Sayers, Dorothy L. (Dorothy Leigh)
+  Reason:   title_score=93>=85, author lastname matches
+BENIGN            gid    105 (romance       )  [score=100, lastname_match=True]
+  Expected: "Persuasion" by Jane Austen
+  Actual:   "Persuasion" by Austen, Jane
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    121 (romance       )  [score=100, lastname_match=True]
+  Expected: "Northanger Abbey" by Jane Austen
+  Actual:   "Northanger Abbey" by Austen, Jane
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    141 (romance       )  [score=100, lastname_match=True]
+  Expected: "Mansfield Park" by Jane Austen
+  Actual:   "Mansfield Park" by Austen, Jane
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    158 (romance       )  [score=100, lastname_match=True]
+  Expected: "Emma" by Jane Austen
+  Actual:   "Emma" by Austen, Jane
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    161 (romance       )  [score=100, lastname_match=True]
+  Expected: "Sense and Sensibility" by Jane Austen
+  Actual:   "Sense and Sensibility" by Austen, Jane
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    766 (romance       )  [score=100, lastname_match=True]
+  Expected: "David Copperfield" by Charles Dickens
+  Actual:   "David Copperfield" by Dickens, Charles
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   1023 (romance       )  [score=100, lastname_match=True]
+  Expected: "Bleak House" by Charles Dickens
+  Actual:   "Bleak House" by Dickens, Charles
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   1342 (romance       )  [score=100, lastname_match=True]
+  Expected: "Pride and Prejudice" by Jane Austen
+  Actual:   "Pride and Prejudice" by Austen, Jane
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   1399 (romance       )  [score=100, lastname_match=True]
+  Expected: "Anna Karenina" by Leo Tolstoy
+  Actual:   "Anna Karenina" by Tolstoy, Leo, graf
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   1400 (romance       )  [score=100, lastname_match=True]
+  Expected: "Great Expectations" by Charles Dickens
+  Actual:   "Great Expectations" by Dickens, Charles
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   2153 (romance       )  [score=100, lastname_match=True]
+  Expected: "Mary Barton" by Elizabeth Gaskell
+  Actual:   "Mary Barton" by Gaskell, Elizabeth Cleghorn
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   4274 (romance       )  [score=100, lastname_match=True]
+  Expected: "Wives and Daughters" by Elizabeth Gaskell
+  Actual:   "Wives and Daughters" by Gaskell, Elizabeth Cleghorn
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   4276 (romance       )  [score=100, lastname_match=True]
+  Expected: "North and South" by Elizabeth Gaskell
+  Actual:   "North and South" by Gaskell, Elizabeth Cleghorn
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid     35 (speculative   )  [score=100, lastname_match=True]
+  Expected: "The Time Machine" by H. G. Wells
+  Actual:   "The Time Machine" by Wells, H. G. (Herbert George)
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid     36 (speculative   )  [score=90, lastname_match=True]
+  Expected: "The War of the Worlds" by H. G. Wells
+  Actual:   "The war of the worlds" by Wells, H. G. (Herbert George)
+  Reason:   title_score=90>=85, author lastname matches
+BENIGN            gid     62 (speculative   )  [score=94, lastname_match=True]
+  Expected: "A Princess of Mars" by Edgar Rice Burroughs
+  Actual:   "A princess of Mars" by Burroughs, Edgar Rice
+  Reason:   title_score=94>=85, author lastname matches
+BENIGN            gid     83 (speculative   )  [score=87, lastname_match=True]
+  Expected: "From the Earth to the Moon" by Jules Verne
+  Actual:   "From the Earth to the moon; and, round the moon" by Verne, Jules
+  Reason:   title_score=87>=85, author lastname matches
+BENIGN            gid    103 (speculative   )  [score=100, lastname_match=True]
+  Expected: "Around the World in Eighty Days" by Jules Verne
+  Actual:   "Around the World in Eighty Days" by Verne, Jules
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    139 (speculative   )  [score=100, lastname_match=True]
+  Expected: "The Lost World" by Arthur Conan Doyle
+  Actual:   "The Lost World" by Doyle, Arthur Conan
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid    159 (speculative   )  [score=96, lastname_match=True]
+  Expected: "The Island of Doctor Moreau" by H. G. Wells
+  Actual:   "The island of Doctor Moreau" by Wells, H. G. (Herbert George)
+  Reason:   title_score=96>=85, author lastname matches
+BENIGN            gid    164 (speculative   )  [score=97, lastname_match=True]
+  Expected: "Twenty Thousand Leagues Under the Sea" by Jules Verne
+  Actual:   "Twenty Thousand Leagues under the Sea" by Verne, Jules
+  Reason:   title_score=97>=85, author lastname matches
+BENIGN            gid    169 (speculative   )  [score=92, lastname_match=True]
+  Expected: "The Well at the World's End" by William Morris
+  Actual:   "The Well at the World's End: A Tale" by Morris, William
+  Reason:   title_score=92>=85, author lastname matches
+BENIGN            gid    711 (speculative   )  [score=100, lastname_match=True]
+  Expected: "Allan Quatermain" by H. Rider Haggard
+  Actual:   "Allan Quatermain" by Haggard, H. Rider (Henry Rider)
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   1268 (speculative   )  [score=100, lastname_match=True]
+  Expected: "The Mysterious Island" by Jules Verne
+  Actual:   "The Mysterious Island" by Verne, Jules
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   2166 (speculative   )  [score=100, lastname_match=True]
+  Expected: "King Solomon's Mines" by H. Rider Haggard
+  Actual:   "King Solomon's Mines" by Haggard, H. Rider (Henry Rider)
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   2565 (speculative   )  [score=90, lastname_match=True]
+  Expected: "The Story of the Glittering Plain" by William Morris
+  Actual:   "The Story of the Glittering Plain: Which Has Been Also Called the Land of Living Men or the Acre of the Undying" by Morris, William
+  Reason:   title_score=90>=85, author lastname matches
+BENIGN            gid   2885 (speculative   )  [score=100, lastname_match=True]
+  Expected: "The House of the Wolfings" by William Morris
+  Actual:   "The House of the Wolfings: A Tale of the House of the Wolfings and All the Kindreds of the Mark Written in Prose and in Verse" by Morris, William
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   3055 (speculative   )  [score=100, lastname_match=True]
+  Expected: "The Wood Beyond the World" by William Morris
+  Actual:   "The Wood Beyond the World" by Morris, William
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   3155 (speculative   )  [score=100, lastname_match=True]
+  Expected: "She" by H. Rider Haggard
+  Actual:   "She" by Haggard, H. Rider (Henry Rider)
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   7477 (speculative   )  [score=100, lastname_match=True]
+  Expected: "The Book of Wonder" by Lord Dunsany
+  Actual:   "The Book of Wonder" by Dunsany, Lord
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid   8395 (speculative   )  [score=100, lastname_match=True]
+  Expected: "The Gods of Pegana" by Lord Dunsany
+  Actual:   "The Gods of Pegana" by Dunsany, Lord
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid  10148 (speculative   )  [score=100, lastname_match=True]
+  Expected: "The Merry Adventures of Robin Hood" by Howard Pyle
+  Actual:   "The Merry Adventures of Robin Hood" by Pyle, Howard
+  Reason:   title_score=100>=85, author lastname matches
+BENIGN            gid  18857 (speculative   )  [score=100, lastname_match=True]
+  Expected: "A Journey to the Centre of the Earth" by Jules Verne
+  Actual:   "A Journey to the Centre of the Earth" by Verne, Jules
+  Reason:   title_score=100>=85, author lastname matches
