@@ -160,9 +160,21 @@ def is_audiobook_record(book: dict) -> bool:
 
 
 def find_best_match_in_cache(title: str, author: str,
-                             cache: list[dict]) -> dict | None:
-    """Match (title, author) against an author-cache. Return the best book
-    (max download_count among fuzzy-title>=70 + author-lastname match)."""
+                             cache: list[dict],
+                             excluded_gids: set[int] | None = None) -> dict | None:
+    """Match (title, author) against an author-cache. Return the best book.
+
+    Sort priority: title score DESC, then download_count DESC. Title score is
+    primary so that an exact title match wins over a popular-but-different work
+    by the same author (e.g., "Return of Tarzan" should NOT map to "Tarzan of
+    the Apes" just because the latter has higher download_count).
+
+    `excluded_gids`: optional set of gids already chosen by other repair rows in
+    this batch; if a candidate gid is in this set, it's skipped. This prevents
+    two SERIOUS rows for distinct titles by the same author from both landing
+    on the same most-popular gid.
+    """
+    excluded = excluded_gids or set()
     candidates = []
     for book in cache:
         langs = [str(l).lower() for l in (book.get("languages") or [])]
@@ -172,14 +184,18 @@ def find_best_match_in_cache(title: str, author: str,
             continue
         if not author_lastname_matches(author, book.get("authors", []) or []):
             continue
+        bid = int(book.get("id", -1) or -1)
+        if bid in excluded:
+            continue
         score = title_fuzz_score(title, str(book.get("title", "") or ""))
         if score < TITLE_FUZZ_FLOOR:
             continue
         candidates.append((score, int(book.get("download_count", 0) or 0), book))
     if not candidates:
         return None
-    # Sort: download_count desc, then title score desc.
-    candidates.sort(key=lambda t: (-t[1], -t[0]))
+    # Sort: title score DESC (primary — we want the right title, not the most
+    # popular work by this author), then download_count DESC as tiebreaker.
+    candidates.sort(key=lambda t: (-t[0], -t[1]))
     return candidates[0][2]
 
 
@@ -318,15 +334,39 @@ def run_repair(args) -> dict:
     session.headers.update({"User-Agent": "phase-08.1-repair-corpus/1.0"})
 
     # Step 2 — match each SERIOUS row against its author-cache.
+    # Track gids already taken to prevent two distinct titles from collapsing
+    # onto the same new_gid (e.g., Return-of-Tarzan + Beasts-of-Tarzan both
+    # picking the top-download Tarzan-of-the-Apes gid).
+    # Seed with the BENIGN gids from the audit + every other SERIOUS row's
+    # current gid (so we don't pick a gid that's already in use by some other
+    # row in books.yaml).
+    # `serious` above was only the SERIOUS rows; re-scan the full audit jsonl
+    # for the full 240-row gid set (incl. BENIGN whose gids must not be reused).
+    all_in_use: set[int] = set()
+    with jsonl.open(encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            r = json.loads(line)
+            all_in_use.add(int(r["gid"]))
+    log.info("seeded exclusion set with %d gids currently in books.yaml", len(all_in_use))
+
     repairs: list[dict] = []
     needs_substitution: list[dict] = []
+    chosen_gids: set[int] = set()  # accumulates per-repair new_gids
 
     for i, row in enumerate(serious, 1):
         title = row["expected_title"]
         author = row["expected_author"]
         lastname = normalise_author_lastname(author)
         cache = author_caches.get(lastname, [])
-        chosen = find_best_match_in_cache(title, author, cache)
+        # Exclude: gids already chosen this run + all gids currently in
+        # books.yaml MINUS this row's own current gid (we may rediscover ours
+        # is correct via BENIGN_CONFIRMED).
+        excluded = (chosen_gids | all_in_use) - {int(row["gid"])}
+        chosen = find_best_match_in_cache(title, author, cache,
+                                          excluded_gids=excluded)
         if chosen is None:
             # Fall back: HTML probe the EXPECTED gid; if its meta tags match
             # the expected (title, author), the audit was over-strict and we
@@ -380,6 +420,7 @@ def run_repair(args) -> dict:
                 "rationale": f"audit-strict, gutendex agrees (download_count={chosen.get('download_count', 0)})",
                 "gutendex_title": str(chosen.get("title", "")),
             })
+            chosen_gids.add(new_gid)
             log.info("  [%d/%d] BENIGN_CONFIRMED gid=%d (audit-strict)",
                      i, len(serious), row["gid"])
             continue
@@ -395,6 +436,7 @@ def run_repair(args) -> dict:
                           f"download_count={chosen.get('download_count', 0)}"),
             "gutendex_title": str(chosen.get("title", "")),
         })
+        chosen_gids.add(new_gid)
         log.info("  [%d/%d] REPAIR %d -> %d  ('%s')",
                  i, len(serious), row["gid"], new_gid, chosen.get("title", ""))
 
