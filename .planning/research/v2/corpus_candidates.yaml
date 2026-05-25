@@ -68,7 +68,10 @@ genres:
       - {gutenberg_id: 524,   title: "Pamela; or, Virtue Rewarded",         author: "Samuel Richardson",      source_consensus_score: 2}
       - {gutenberg_id: 738,   title: "Doctor Thorne",                       author: "Anthony Trollope",       source_consensus_score: 2}
       - {gutenberg_id: 766,   title: "The Old Wives' Tale",                 author: "Arnold Bennett",         source_consensus_score: 2}
-      - {gutenberg_id: 768,   title: "Wuthering Heights",                   author: "Emily Bronte",           source_consensus_score: 2}
+      # Wave-1.5 patch: Wuthering Heights (gid 768) removed from romance candidates —
+      # the work canonically sits in gothic_horror (Bloom canon; isolation, the moors,
+      # supernatural undertones, Heathcliff as gothic hero-villain). Dual-listing was
+      # the root cause of one of the 6 duplicate-gid defects in v2 books.yaml.
       - {gutenberg_id: 826,   title: "Framley Parsonage",                   author: "Anthony Trollope",       source_consensus_score: 2}
       - {gutenberg_id: 882,   title: "The Warden",                          author: "Anthony Trollope",       source_consensus_score: 2}
       - {gutenberg_id: 946,   title: "Lady Audley's Secret",                author: "Mary Elizabeth Braddon", source_consensus_score: 2}
@@ -579,17 +582,27 @@ genres:
       - {gutenberg_id: 79,    title: "The Return of Tarzan",                author: "Edgar Rice Burroughs",   source_consensus_score: 2}
       - {gutenberg_id: 80,    title: "The Beasts of Tarzan",                author: "Edgar Rice Burroughs",   source_consensus_score: 2}
       - {gutenberg_id: 81,    title: "The Son of Tarzan",                   author: "Edgar Rice Burroughs",   source_consensus_score: 2}
-      - {gutenberg_id: 82,    title: "Tarzan and the Jewels of Opar",       author: "Edgar Rice Burroughs",   source_consensus_score: 2}
+      # Wave-1.5 patch: gid 82 was wrong (gid 82 on Gutenberg is Ivanhoe by Scott).
+      # Correct gid for "Tarzan and the Jewels of Opar" by Burroughs is 92.
+      - {gutenberg_id: 92,    title: "Tarzan and the Jewels of Opar",       author: "Edgar Rice Burroughs",   source_consensus_score: 2}
       - {gutenberg_id: 96,    title: "Rupert of Hentzau",                   author: "Anthony Hope",           source_consensus_score: 2}
-      - {gutenberg_id: 121,   title: "The Black Arrow",                     author: "Robert Louis Stevenson", source_consensus_score: 2}
+      # Wave-1.5 patch: gid 121 was wrong (gid 121 on Gutenberg is Northanger Abbey by Austen).
+      # Correct gid for "The Black Arrow" by Stevenson is 848.
+      - {gutenberg_id: 848,   title: "The Black Arrow",                     author: "Robert Louis Stevenson", source_consensus_score: 2}
       - {gutenberg_id: 247,   title: "Robinson Crusoe",                     author: "Daniel Defoe",           source_consensus_score: 2}
-      - {gutenberg_id: 521,   title: "Moll Flanders",                       author: "Daniel Defoe",           source_consensus_score: 2}
+      # Wave-1.5 patch: gid 521 was wrong (gid 521 on Gutenberg is Adam Bede by Eliot).
+      # Correct gid for "Moll Flanders" by Defoe is 370.
+      - {gutenberg_id: 370,   title: "Moll Flanders",                       author: "Daniel Defoe",           source_consensus_score: 2}
       - {gutenberg_id: 522,   title: "A Journal of the Plague Year",        author: "Daniel Defoe",           source_consensus_score: 2}
       - {gutenberg_id: 561,   title: "Mr Standfast",                        author: "John Buchan",            source_consensus_score: 2}
       - {gutenberg_id: 562,   title: "Prester John",                        author: "John Buchan",            source_consensus_score: 2}
       - {gutenberg_id: 563,   title: "Salute to Adventurers",               author: "John Buchan",            source_consensus_score: 2}
-      - {gutenberg_id: 1259,  title: "Lord Jim",                            author: "Joseph Conrad",          source_consensus_score: 2}
-      - {gutenberg_id: 1260,  title: "Typhoon",                             author: "Joseph Conrad",          source_consensus_score: 2}
+      # Wave-1.5 patch: gid 1259 was wrong (gid 1259 on Gutenberg is Twenty Years After by Dumas).
+      # Correct gid for "Lord Jim" by Conrad is 5658.
+      - {gutenberg_id: 5658,  title: "Lord Jim",                            author: "Joseph Conrad",          source_consensus_score: 2}
+      # Wave-1.5 patch: gid 1260 was wrong (gid 1260 on Gutenberg is Jane Eyre by Bronte).
+      # Correct gid for "Typhoon" by Conrad is 1142.
+      - {gutenberg_id: 1142,  title: "Typhoon",                             author: "Joseph Conrad",          source_consensus_score: 2}
       - {gutenberg_id: 1261,  title: "Youth",                               author: "Joseph Conrad",          source_consensus_score: 2}
       - {gutenberg_id: 1262,  title: "The Nigger of the Narcissus",         author: "Joseph Conrad",          source_consensus_score: 2}
       - {gutenberg_id: 1959,  title: "Scaramouche",                         author: "Rafael Sabatini",        source_consensus_score: 2}
