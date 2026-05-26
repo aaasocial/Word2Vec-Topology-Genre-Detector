@@ -158,6 +158,7 @@ def create_app() -> FastAPI:
     from backend.api.routes.health import router as health_router
     from backend.api.routes.corpus import router as corpus_router
     from backend.api.routes.classify import router as classify_router
+    from backend.api.routes.explain import router as explain_router
     from backend.api.routes.viz import router as viz_router
 
     # Mount all API routers under /api prefix via a parent router.
@@ -167,6 +168,7 @@ def create_app() -> FastAPI:
     api_router.include_router(health_router)
     api_router.include_router(corpus_router)
     api_router.include_router(classify_router)
+    api_router.include_router(explain_router)  # Phase 9 /classify/{job_id}/explain
     api_router.include_router(viz_router, prefix='/viz', tags=['viz'])
     app.include_router(api_router)
 
