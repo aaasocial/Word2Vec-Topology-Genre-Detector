@@ -1,47 +1,54 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: — Accuracy, Depth, and Polish
+milestone: v1.0
+milestone_name: — Shipped
 status: executing
-last_updated: "2026-05-26T14:50:00.000Z"
+last_updated: "2026-05-26T17:15:19.552Z"
 last_activity: 2026-05-26
 progress:
-  total_phases: 8
-  completed_phases: 7
-  total_plans: 35
-  completed_plans: 35
-  percent: 100
+  total_phases: 6
+  completed_phases: 4
+  total_plans: 21
+  completed_plans: 16
+  percent: 76
 ---
 
 # STATE
 
 ## Current Position
 
-Phase: 08 (corpus-expansion) — **COMPLETE** (with disclaimer per D-31)
+Phase: 09 (classification-depth) — **CONTEXT GATHERED**
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
-- **Phase:** 08
-- **Plans complete:** 4/4 (08-01 Wave 1 corpus build · 08-02 Wave 2 retrain · 08-03 Wave 3 validation · 08-04 Wave 4 release+docs) + 1/1 sub-phase plan (08.1-01 corpus integrity rebuild)
-- **Status:** Complete (Phase 9 unblocked)
+- **Phase:** 09
+- **Plans complete:** 0/? (planning not started)
+- **Status:** Ready to execute
 - **Last activity:** 2026-05-26
 
 ### Phase 8 Complete (2026-05-26)
 
 Phase 8 paused on 2026-05-25 after Wave 1.5 because a full gid integrity audit found 141/240 books had wrong `gid` bindings. Resumed and closed via Phase 8.1 sub-phase (drop strategy):
 
+### Phase 8 Complete (2026-05-26)
+
+Phase 8 paused on 2026-05-25 after Wave 1.5 because a full gid integrity audit found 141/240 books had wrong `gid` bindings. Resumed and closed via Phase 8.1 sub-phase (drop strategy):
+
 **Phase 8.1 — Corpus Integrity Rebuild (drop strategy):**
+
 - Repair attempt via gutendex bulk lookup reduced 145 SERIOUS → 86 SERIOUS (40.7%) but hit diminishing returns
 - User-authorized drop: removed the 86 unresolvable rows from `corpus/books.yaml` and `corpus_candidates.yaml`
 - Final v2 corpus: **154 verified-clean books** across 8 genres (15–25 per genre); 0 SERIOUS in final audit
 - Wave-2 pipeline re-run end-to-end on clean corpus; lineage rotated `f6cf71fa → 3f4fe940`; all 7 frozen hyperparameters preserved
 
 **Phase 8 Wave 3 — Validation Report:**
+
 - Hold-out macro-F1: **v2 = 0.7367 vs v1 = 0.3235** (+41pp, permutation p=0.0010) → **CEXP-03 PARTIAL-VALIDATED**
 - GroupKFold-by-author mean macro-F1: 0.2865 (gap 45pp vs hold-out, >> 15pp threshold) → **CEXP-04 BLOCKED**
 - Per-author smoke test failed → D-31 disclaimer path triggered
 - 4 §10 validation routines added to `scripts/06_validate.py` with unit-test coverage in `scripts/test_06_validate.py`
 
 **Phase 8 Wave 4 — Publish + Doc Alignment:**
+
 - D-33 publish-with-disclaimer decision applied (CEXP-03 PARTIAL-VALIDATED → publish; CEXP-04 BLOCKED non-gating)
 - v2.0-data GitHub Release published to https://github.com/aaasocial/Word2Vec-Topology-Genre-Detector/releases/tag/v2.0-data with 10 assets (~194 MB) including v2 validation report
 - Doc alignment landed: REQUIREMENTS.md CORPUS-01, PROJECT.md Validated list + Key Decisions, ROADMAP.md Phase 8 closure + Phase 9 unblock
@@ -57,9 +64,7 @@ Phase 8 paused on 2026-05-25 after Wave 1.5 because a full gid integrity audit f
 
 ### Next step
 
-Phase 9 (Classification Depth) is unblocked. Run `/gsd-discuss-phase 9` to gather context for top-N predictions + "why this genre?" explainability.
-
-
+Phase 9 (Classification Depth) — context gathered 2026-05-27. Run `/gsd-plan-phase 9` to break down DEPTH-01..07 into plans.
 
 ### Quick Tasks Completed
 
@@ -73,9 +78,9 @@ Phase 9 (Classification Depth) is unblocked. Run `/gsd-discuss-phase 9` to gathe
 |---|---|---|
 | 6 | v1 Bug-Fix Sweep | Complete (2026-05-23; commits 5a37a28, e57ea67) |
 | 7 | Corpus Sourcing Research Spike | Complete (2026-05-25; CORPUS_SOURCING.md + VALIDATION_PROTOCOL.md + corpus_candidates.yaml + v1_baseline_results.json delivered) |
-| 8 | Corpus Expansion | Context gathered (2026-05-25); ready to plan (4 waves: build → retrain → validate → release; 15 decisions captured in 08-CONTEXT.md) |
-| 9 | Classification Depth | Pending (blocked on Phase 8) |
-| 10 | Visual Polish | Pending (blocked on Phases 6–9) |
+| 8 | Corpus Expansion | Complete (2026-05-26; v2.0-data Release published with D-31 disclaimer; v2 macro-F1 = 0.7367 vs v1 0.3235) |
+| 9 | Classification Depth | Context gathered (2026-05-27); ready to plan (D-37..D-45 user-authored: calibration empirical pick · top-3 + expander · lineage extension · local zero-ablation · 5 NN · both P2 items ship) |
+| 10 | Visual Polish | Pending (blocked on Phase 9) |
 
 ## Accumulated Context
 
@@ -154,23 +159,30 @@ Documentation drift to clean up (folded into Wave 4 per D-34, no longer a separa
 
 ## Session Continuity
 
-**Next command:** `/gsd-plan-phase 8`
+**Next command:** `/gsd-plan-phase 9`
 
 **Reading order for the next session:**
 
-1. `.planning/phases/08-corpus-expansion/08-CONTEXT.md` — Phase 8 locked decisions (read FIRST)
-2. `.planning/phases/08-corpus-expansion/08-DISCUSSION-LOG.md` — alternatives considered for each Phase 8 decision
-3. `.planning/phases/07-corpus-sourcing-research-spike/07-CONTEXT.md` — Phase 7 decisions D-01..D-21 (inherited; not re-litigated)
-4. `.planning/research/v2/CORPUS_SOURCING.md` §5 selection rule + §8 entry checklist — `build_corpus.py` implements verbatim
-5. `.planning/research/v2/VALIDATION_PROTOCOL.md` §6 GroupKFold + §8 smoke test + §10 entry checklist — `scripts/06_validate.py` modifications + Wave-3 protocol
-6. `.planning/research/v2/corpus_candidates.yaml` — `build_corpus.py` reads verbatim
-7. `.planning/research/v2/v1_baseline_results.json` — Wave-1 byte-identical gate verifies against this
-8. `.planning/ROADMAP.md` §"Phase 8: Corpus Expansion" — success criteria + dependency on Phase 6 + Phase 7
-9. `.planning/REQUIREMENTS.md` CEXP-01..05 — Phase 8 requirements verbatim
-10. `.planning/research/PITFALLS.md` §1 (cache key + lineage), §4 (held-out), §5 (author leakage), §6 (class imbalance), §11 (LOOCV cost) — every Phase 8 guard traces here
-11. `corpus/books.yaml` + `config/params.yaml` — atomic-swap target + frozen hyperparameters
+1. `.planning/phases/09-classification-depth/09-CONTEXT.md` — Phase 9 locked decisions D-37..D-55 (read FIRST)
+2. `.planning/phases/09-classification-depth/09-DISCUSSION-LOG.md` — alternatives considered for each Phase 9 user-authored decision
+3. `.planning/phases/08-corpus-expansion/08-CONTEXT.md` — Phase 8 D-22..D-36 inherited (Phase 9 retrains the v2 SVM landed here; no relitigation)
+4. `.planning/research/ARCHITECTURE.md` §4 + §5b + §8 + §10 + §11 — endpoint shape, explain cache, file checklist, open questions (resolved)
+5. `.planning/research/PITFALLS.md` §7 (decision_function as probability), §8 (SHAP synchronous rejected), §9 (per-pixel persistence-image importance rejected)
+6. `.planning/research/FEATURES.md` §3a + §3b — top-N + explainability table stakes / differentiators / anti-features
+7. `.planning/research/STACK.md` §"Supporting Libraries" — sklearn helpers (no new install needed)
+8. `.planning/ROADMAP.md` §"Phase 9: Classification Depth" — success criteria + dependency on Phase 8
+9. `.planning/REQUIREMENTS.md` DEPTH-01..07 verbatim
+10. `data/models/svm_pipeline.joblib.lineage.json` — current v2 SVM lineage (D-38 retrain rotates the file + D-40 adds calibration_method)
+11. `results/v2_validation_report.md` — D-51 disclaimer links here
+
+**Phase 9 decision summary (D-37..D-45 user-authored, D-46..D-55 research-inherited):**
+
+- **Calibration**: empirical pick between libsvm Platt and `CalibratedClassifierCV` LOOCV sigmoid via reliability diagram on the 20-book hold-out; lower-Brier winner ships; loser archived in `results/v2_calibration_report.md`; lineage extended with `calibration_method`/`calibration_brier_score`/`calibration_report`.
+- **Top-N**: top-3 horizontal probability bars + collapsible "+5 more" expander revealing all 8 genres; 1-decimal percent labels; sorted descending.
+- **Explainability**: local per-upload zero-ablation for topology vs vocabulary (two extra SVM calls); 5 nearest training books on L2-normalized features with Euclidean distance; BOTH P2 items ship (DEPTH-06 driving words + DEPTH-07 entropy badge) as separable atomic plans.
+- **Research-inherited (skipped areas)**: `POST /api/classify/{job_id}/explain` synchronous ~200ms; Redis `feature_vec:{job_id}` 5-min TTL + `explain:{hash}:{model_hash}` 1-h TTL; 410 Gone on expiry; new `precompute_explain.py` artifact; walkthrough + Why-panel-footnote disclaimer; math unit tests + integration test (no Playwright); inline-hex styling deferring CSS-var sweep to Phase 10.
 
 ---
 *v1.0 shipped: 2026-04-13*
 *v2.0 milestone started: 2026-05-22*
-*Last updated: 2026-05-25 — Phase 7 complete; Phase 8 context gathered (4 waves, 15 decisions); STATE.md milestone frontmatter corrected from v1.0 → v2.0*
+*Last updated: 2026-05-27 — Phase 8 complete (2026-05-26); Phase 9 context gathered via interactive `/gsd-discuss-phase 9` (9 user-authored decisions, 10 research-inherited)*

@@ -195,7 +195,15 @@ Plans:
   4. *(P2)* The explainability payload includes a TF-IDF-driven "driving words" pill list with explicit "proxy, not literal classifier inputs" disclosure copy adjacent to it.
   5. *(P2)* The top-N display includes an entropy / uncertainty badge that flags predictions where the top-2 probabilities are within 10pp of each other.
 
-**Plans:** TBD
+**Plans:** 6 plans
+
+Plans:
+- [ ] 09-01-PLAN.md — Calibration spike + SVM retrain (D-37/D-38) + lineage extension (D-40) + Wave-0 test scaffolds (DEPTH-01)
+- [ ] 09-02-PLAN.md — precompute_explain.py + explain_artifacts.npz + FastAPI lifespan model loading + .gitattributes LFS (DEPTH-04, DEPTH-06)
+- [ ] 09-03-PLAN.md — Backend explain math (zero-ablation, NN, driving words, entropy) + Pydantic models + /explain endpoint + worker feature_vec hand-off (DEPTH-01, DEPTH-03, DEPTH-04, DEPTH-05, DEPTH-07)
+- [ ] 09-04-PLAN.md — Frontend types + uploadStore/useClassify extension + TopNList + UncertaintyBadge + ClassificationResult rewire (DEPTH-02, DEPTH-07)
+- [ ] 09-05-PLAN.md — useExplain hook + 4 sub-components + ClassificationExplain panel + Why-button + D-51 footnote (DEPTH-03, DEPTH-04, DEPTH-05, DEPTH-06)
+- [ ] 09-06-PLAN.md — Walkthrough Step7ValidationLimitations + 09-VALIDATION.md sign-off + end-to-end test gate (DEPTH-01..07)
 
 **UI hint:** yes
 
@@ -251,7 +259,7 @@ Plans:
 | 6. v1 Bug-Fix Sweep | 0/5 | Planned | — |
 | 7. Corpus Sourcing Research Spike | 0/5 | Planned | — |
 | 8. Corpus Expansion | 4/4 | Shipped (v2.0) | 2026-05-26 |
-| 9. Classification Depth | 0/? | Ready to plan (Phase 8 closed 2026-05-26; v2 SVM available with D-31 disclaimer) | — |
+| 9. Classification Depth | 0/6 | Planned (6 plans across 4 waves; 2026-05-27) | — |
 | 10. Visual Polish | 0/? | Not started (blocked on 6–9) | — |
 
 ---
