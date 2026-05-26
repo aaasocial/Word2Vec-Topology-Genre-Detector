@@ -50,6 +50,8 @@ Expected: exits with `release not found` (HTTP 404). If it returns 200, **stop**
 
 ### 3. All Release assets exist locally on disk
 
+**bash / Git Bash:**
+
 ```bash
 for f in \
   data/models/svm_pipeline.joblib \
@@ -66,14 +68,46 @@ for f in \
 done
 ```
 
+**PowerShell** (the native Windows shell — use this if you're not in Git Bash):
+
+```powershell
+$files = @(
+  "data/models/svm_pipeline.joblib",
+  "data/models/svm_pipeline.joblib.lineage.json",
+  "data/models/kmeans_w15_k200.pkl",
+  "data/models/word2vec_w15.model",
+  "data/models/word2vec_w15.model.syn1neg.npy",
+  "data/models/word2vec_w15.model.wv.vectors.npy",
+  "data/models/persistence_imager.joblib",
+  "data/models/tfidf_vectorizer_w15.joblib",
+  "data/corpus_metadata.json",
+  "results/v2_validation_report.md"
+)
+foreach ($f in $files) {
+  if ((Test-Path $f) -and ((Get-Item $f).Length -gt 0)) {
+    "{0,-6} {1,12:N0}  {2}" -f "OK", (Get-Item $f).Length, $f
+  } else {
+    "MISS         -    $f"
+  }
+}
+```
+
 Expected: 10 `OK` lines, zero `MISS` lines.
 
 If any are missing, the Wave 2 retrain or Wave 3 validation didn't finish cleanly — re-run the appropriate plan before continuing.
 
 ### 4. The validation report is the final 2026-05-26 version
 
+**bash / Git Bash:**
+
 ```bash
 head -15 results/v2_validation_report.md
+```
+
+**PowerShell:**
+
+```powershell
+Get-Content results/v2_validation_report.md -TotalCount 15
 ```
 
 Expected: the file headline reads `# v2 Validation Report — Phase 8 / CEXP-03 + CEXP-04`, generated `2026-05-26T05:09:38Z`, with `Per-author smoke test (D-31 trigger): ANTI-LEAKAGE GUARDRAIL FAILED` in the Status block.
@@ -88,9 +122,19 @@ The composed release-notes body lives at:
 
 Verify it exists and contains the D-31 disclaimer:
 
+**bash / Git Bash:**
+
 ```bash
 test -s .planning/phases/08-corpus-expansion/08-04-RELEASE-NOTES.md && echo OK
 grep -c "Limitations / Disclaimer (D-31)" .planning/phases/08-corpus-expansion/08-04-RELEASE-NOTES.md
+```
+
+**PowerShell:**
+
+```powershell
+$notes = ".planning/phases/08-corpus-expansion/08-04-RELEASE-NOTES.md"
+if ((Test-Path $notes) -and ((Get-Item $notes).Length -gt 0)) { "OK" }
+(Select-String -Path $notes -Pattern "Limitations / Disclaimer \(D-31\)" -SimpleMatch:$false).Count
 ```
 
 Expected: `OK` and a count of `≥1`.
