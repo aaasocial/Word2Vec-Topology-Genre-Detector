@@ -53,7 +53,7 @@ See [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md) for ful
 
 ### Classification Depth (Phase 9)
 
-- [ ] **DEPTH-01**: System returns top-N (default N=3) ranked genre predictions with calibrated probabilities summing to 1 (via `SVC(probability=True)` Platt-scaled, or `CalibratedClassifierCV` if reliability diagram requires) (`PITFALLS.md §7`).
+- [x] **DEPTH-01**: System returns top-N (default N=3) ranked genre predictions with calibrated probabilities summing to 1 (via `SVC(probability=True)` Platt-scaled, or `CalibratedClassifierCV` if reliability diagram requires) (`PITFALLS.md §7`). **Validated (Phase 9 plan 09-01, 2026-05-27)** — `SVC(probability=True)` libsvm Platt wins Brier comparison (0.3459 vs 0.6041 for CalibratedCV); `svm_pipeline.joblib::predict_proba` returns (n, 8) sum-to-1 matrices; lineage extended with `calibration_method`, `calibration_brier_score`, `calibration_report`. See `results/v2_calibration_report.md` and `.planning/phases/09-classification-depth/09-01-SUMMARY.md`.
 - [ ] **DEPTH-02**: `ClassificationResult` renders top-N as honestly-labeled probability bars — no pie charts, no hidden low-confidence predictions.
 - [ ] **DEPTH-03**: "Why this genre?" expander on `ClassificationResult` calls `POST /api/classify/{job_id}/explain` (synchronous ~200ms, Redis-cached `explain:{feature_vec_hash}` TTL 1h) and renders the explainability payload.
 - [ ] **DEPTH-04**: Explainability response includes the 3–5 nearest training books with Euclidean distance in the L2-normalized feature space.
@@ -189,7 +189,7 @@ Captured during v1 planning; deferred from v2.0 scope. Re-evaluate at v3 boundar
 | CEXP-03 | Phase 8 | Validated (with anti-leakage disclaimer — see results/v2_validation_report.md) |
 | CEXP-04 | Phase 8 | Blocked (see results/v2_validation_report.md) |
 | CEXP-05 | Phase 8 | Validated |
-| DEPTH-01 | Phase 9 | Pending |
+| DEPTH-01 | Phase 9 | Validated (plan 09-01, 2026-05-27) |
 | DEPTH-02 | Phase 9 | Pending |
 | DEPTH-03 | Phase 9 | Pending |
 | DEPTH-04 | Phase 9 | Pending |

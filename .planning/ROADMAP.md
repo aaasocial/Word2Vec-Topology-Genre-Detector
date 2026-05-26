@@ -198,7 +198,7 @@ Plans:
 **Plans:** 6 plans
 
 Plans:
-- [ ] 09-01-PLAN.md — Calibration spike + SVM retrain (D-37/D-38) + lineage extension (D-40) + Wave-0 test scaffolds (DEPTH-01)
+- [x] 09-01-PLAN.md — Calibration spike + SVM retrain (D-37/D-38) + lineage extension (D-40) + Wave-0 test scaffolds (DEPTH-01) — **Completed 2026-05-27**
 - [ ] 09-02-PLAN.md — precompute_explain.py + explain_artifacts.npz + FastAPI lifespan model loading + .gitattributes LFS (DEPTH-04, DEPTH-06)
 - [ ] 09-03-PLAN.md — Backend explain math (zero-ablation, NN, driving words, entropy) + Pydantic models + /explain endpoint + worker feature_vec hand-off (DEPTH-01, DEPTH-03, DEPTH-04, DEPTH-05, DEPTH-07)
 - [ ] 09-04-PLAN.md — Frontend types + uploadStore/useClassify extension + TopNList + UncertaintyBadge + ClassificationResult rewire (DEPTH-02, DEPTH-07)
@@ -259,7 +259,7 @@ Plans:
 | 6. v1 Bug-Fix Sweep | 0/5 | Planned | — |
 | 7. Corpus Sourcing Research Spike | 0/5 | Planned | — |
 | 8. Corpus Expansion | 4/4 | Shipped (v2.0) | 2026-05-26 |
-| 9. Classification Depth | 0/6 | Planned (6 plans across 4 waves; 2026-05-27) | — |
+| 9. Classification Depth | 1/6 | Executing — plan 09-01 complete 2026-05-27 (calibration spike, retrain, lineage, Wave-0 scaffolds) | — |
 | 10. Visual Polish | 0/? | Not started (blocked on 6–9) | — |
 
 ---

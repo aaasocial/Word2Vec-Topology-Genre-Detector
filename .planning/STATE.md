@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Shipped
 status: executing
-last_updated: "2026-05-26T17:26:25.551Z"
-last_activity: 2026-05-26
+last_updated: "2026-05-27T02:59:20Z"
+last_activity: 2026-05-27
 progress:
   total_phases: 10
   completed_phases: 8
   total_plans: 37
-  completed_plans: 31
-  percent: 84
+  completed_plans: 32
+  percent: 86
 ---
 
 # STATE
@@ -18,13 +18,13 @@ progress:
 ## Current Position
 
 Phase: 09 (classification-depth) — EXECUTING
-Plan: 1 of 6
+Plan: 2 of 6 (plan 09-01 complete; next is 09-02)
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
 - **Phase:** 09
-- **Plans complete:** 0/? (planning not started)
-- **Status:** Executing Phase 09
-- **Last activity:** 2026-05-26
+- **Plans complete:** 1/6
+- **Status:** Executing Phase 09 (plan 09-01 landed calibration spike + retrain + D-40 lineage + Wave-0 scaffolds)
+- **Last activity:** 2026-05-27
 
 ### Phase 8 Complete (2026-05-26)
 
@@ -56,6 +56,23 @@ Phase 8 paused on 2026-05-25 after Wave 1.5 because a full gid integrity audit f
 - Code review: 0 critical / 7 warnings / 11 info — advisory only, not blocking
 
 **Repo migration (2026-05-26):** Phase 6-8 work was originally committed to a misconfigured parent repo (`aaasocial/F1Dashboard`) because the project working tree sat inside a home-directory-rooted git repo. On 2026-05-26 the W2V subdirectory history was extracted via `git filter-repo` and fast-forwarded onto `aaasocial/Word2Vec-Topology-Genre-Detector` master (`af43deb → fb504a7`, 121 new commits + 18 LFS objects, 272 MB upload). The v2.0-data Release was republished to the correct repo; the home-directory git repo was deinitialized. Full migration sidebar in `08-04-SUMMARY.md`.
+
+### Phase 9 plan 09-01 complete (2026-05-27)
+
+Plan 09-01 landed the SVM calibration spike + retrain + D-40 lineage extension + Wave-0 test scaffolds (DEPTH-01):
+
+- **D-37 winner: libsvm_platt** (Brier 0.3459 << 0.6041 for CalibratedClassifierCV-StratifiedKFold-5; delta 0.2583 >> 1e-3 tie-break threshold).
+- **D-38 retrain:** `data/models/svm_pipeline.joblib` rotated; `predict_proba` now returns (n, 8) rows summing to 1.0 ± 1e-6. Deployed-model Brier on in-comparison hold-out: 0.0481.
+- **D-39 evidence:** `results/v2_calibration_report.md` + `results/figures/v2_calibration_reliability.png` written. Contains Brier table, reliability PNG, entropy distribution, and the load-bearing `## Entropy threshold decision` YAML block.
+- **D-40 lineage:** schema extended with `calibration_method` / `calibration_brier_score` / `calibration_report`. `verify_svm_lineage` refuses pre-Phase-9 SVMs (missing `calibration_method`) and any value outside the `{libsvm_platt, calibrated_cv_sigmoid}` allow-list.
+- **Q4 entropy decision: `tighten`.** Defaults fired on 9/17 (53%) hold-out (within 50-80% band). Operative thresholds: gap < 0.2801 (p25) OR normalized entropy > 0.7738 (p75). These values land in `backend/pipeline/explain.py` via plan 09-03.
+- **Wave-0 scaffolds:** 6 explain math tests + 4 lineage calibration tests + deterministic 600-D feature_vec_sample.npy fixture.
+- **Single source of truth:** `scripts/constants.py::HOLDOUT_GUTENBERG_IDS` is now the sole place the 20 pinned hold-out ids live (T-9-31 mitigation: 06_validate asserts the constant matches v1_baseline JSON at runtime).
+
+Plan-research deviations auto-applied:
+- Rule 1 bug: plan-prescribed `cv=LeaveOneOut()` for CalibratedClassifierCV is rejected by sklearn 1.6.1 for multiclass. Substituted `StratifiedKFold(n_splits=5)`.
+- Rule 3 blocker: `data/features/` missing on fresh machine; created `scripts/rebuild_per_book_artifacts.py` to regenerate per-book outputs from the existing W2V model without rotating `w2v_model_sha256`.
+- Rule 1 bug: two `test_lineage_smoke.py` tests asserted the pre-D-40 contract; updated to pass `calibration_method` through and assert the new D-40 fields + rotated `created_by` provenance.
 
 ### Known limitations (deferred to v2.1 / future phase)
 
