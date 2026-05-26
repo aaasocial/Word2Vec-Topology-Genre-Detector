@@ -38,7 +38,7 @@
 
 - [ ] **Phase 6: v1 Bug-Fix Sweep** — Close H₂, BookSlider, dot-scaling, restored planning docs, and the latent cache-key bug before any retrain happens.
 - [ ] **Phase 7: Corpus Sourcing Research Spike** — Decide sources, per-genre counts, author-distribution constraints, and the validation protocol. Pure research, no code.
-- [ ] **Phase 8: Corpus Expansion** — Retrain on the Phase-7 corpus; evaluate against the v1-frozen test set with GroupKFold-by-author; ship new models.
+- [x] **Phase 8: Corpus Expansion** — Retrained on the Phase-7-derived corpus (post Phase-8.1 drop strategy = 154 verified-clean books); evaluated against the v1-frozen 20-book hold-out (macro-F1 0.7367 vs v1 0.3235, p=0.0010); ships via `v2.0-data` Release with D-31 disclaimer for the per-author smoke-test failure (CEXP-04 BLOCKED — v2.1 follow-up). Closed 2026-05-26.
 - [ ] **Phase 9: Classification Depth** — Top-N calibrated predictions and "why this genre" explainability built on the Phase-8 SVM.
 - [ ] **Phase 10: Visual Polish** — Dark mode, onboarding tour, empty-state polish — horizontal sweep across components touched by Phases 6–9.
 
@@ -160,8 +160,8 @@ Plans:
 Plans:
 - [x] 08-01-PLAN.md — Wave 1: Build v2 corpus via scripts/build_corpus.py with byte-identical v1 reproducibility gate (CEXP-01, CEXP-05)
 - [x] 08-02-PLAN.md — Wave 2: Pipeline retrain on v2 corpus end-to-end + post-retrain cache invalidation verification (CEXP-02)
-- [ ] 08-03-PLAN.md — Wave 3: Validation — modify 06_validate.py, evaluate v2 vs v1, write v2_validation_report.md (CEXP-03, CEXP-04)
-- [ ] 08-04-PLAN.md — Wave 4: Publish v2.0-data GitHub Release + targeted doc alignment (PROJECT/REQUIREMENTS/ROADMAP)
+- [x] 08-03-PLAN.md — Wave 3: Validation — modify 06_validate.py, evaluate v2 vs v1, write v2_validation_report.md (CEXP-03 PARTIAL-VALIDATED with disclaimer, CEXP-04 BLOCKED)
+- [x] 08-04-PLAN.md — Wave 4: Publish v2.0-data GitHub Release with D-31 disclaimer + targeted doc alignment (PROJECT/REQUIREMENTS/ROADMAP) — completed 2026-05-26
 
 **Key pitfalls owned by this phase** (`PITFALLS.md`):
 - §1 — W2V retrain rotates the embedding space — already mitigated by Phase 6's BUG-05; Phase 8 verifies the smoke test still passes after retrain.
@@ -175,10 +175,10 @@ Plans:
 **Goal:** [Urgent work - to be planned]
 **Requirements**: TBD
 **Depends on:** Phase 8
-**Plans:** 0 plans
+**Plans:** 4/4 plans complete
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 08.1 to break down)
+- [x] TBD (run /gsd-plan-phase 08.1 to break down) (completed 2026-05-26)
 
 ### Phase 9: Classification Depth
 
@@ -250,8 +250,8 @@ Plans:
 | 5. Deployment and Public Access | 2/2 | Shipped (v1.0) | 2026-04-13 |
 | 6. v1 Bug-Fix Sweep | 0/5 | Planned | — |
 | 7. Corpus Sourcing Research Spike | 0/5 | Planned | — |
-| 8. Corpus Expansion | 0/4 | Planned (4 plans, 4 waves) | — |
-| 9. Classification Depth | 0/? | Not started (blocked on 8) | — |
+| 8. Corpus Expansion | 4/4 | Shipped (v2.0) | 2026-05-26 |
+| 9. Classification Depth | 0/? | Ready to plan (Phase 8 closed 2026-05-26; v2 SVM available with D-31 disclaimer) | — |
 | 10. Visual Polish | 0/? | Not started (blocked on 6–9) | — |
 
 ---

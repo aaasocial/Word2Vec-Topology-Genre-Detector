@@ -47,7 +47,7 @@ A user uploads any book and sees where it lives in semantic space — and why th
 - [x] Pipeline explanation walkthrough dialog (Phase 4)
 
 **Corpus & Data**
-- [x] Bundled corpus (horror, sci-fi, romance — 3 genres × 5 books) (Phase 1)
+- [x] Bundled corpus (10 genres × 10 books = 100 books) (Phase 1; per commit `db7b1f8`, 2026-04-13 — corrected from earlier framing that referenced the Phase-1 validation-spike subset rather than the shipped v1 corpus)
 - [x] User can upload .txt files into the classification + viz pipeline (Phase 2)
 - [x] Hosted and publicly accessible (Phase 5 — Railway deployment)
 
@@ -61,7 +61,15 @@ A user uploads any book and sees where it lives in semantic space — and why th
 
 **Corpus Quality**
 - [x] Research how comparable NLP/genre-classification projects source and structure training corpora; produce recommendation document (Phase 7 — `CORPUS_SOURCING.md` + `VALIDATION_PROTOCOL.md`; v1 baseline pinned at macro_f1=0.3235; corpus shape committed to 8 genres × 30 books = 240)
-- [ ] Expand or restructure the bundled corpus per research findings; demonstrate measurable accuracy improvement vs v1 baseline
+- [x] Expand or restructure the bundled corpus per research findings; demonstrate measurable accuracy improvement vs v1 baseline (Phase 8 + Phase 8.1 — 154-book verified-clean corpus, 8 genres × 15–25 books each; v2 macro-F1 = 0.7367 vs v1 = 0.3235 on the v1-frozen 20-book hold-out, permutation p = 0.0010; results in [`results/v2_validation_report.md`](../results/v2_validation_report.md). Ships with D-31 disclaimer per `VALIDATION_PROTOCOL.md §8` — per-author smoke-test gap 36.96pp exceeds 10pp threshold, so the macro-F1 is an upper bound rather than expected author-out-of-sample generalization performance.)
+
+**Validated (v2.0 Phase 8 — closed 2026-05-26):** Wave 4 closing summary of CEXP-01..05 (each row's status was flipped in the wave that closed it per D-36; this section does not introduce new status changes):
+
+- [x] **CEXP-01:** `corpus/books.yaml` restructured to 8 v2 genre keys with `author` + `word_count` + `source` provenance schema (D-10) — closed Wave 1 (240-book Proposal-A target), revalidated post-drop by Phase 8.1 (154 verified-clean books).
+- [x] **CEXP-02:** full pipeline retrained end-to-end on the v2 corpus; new `svm_pipeline.joblib` + `lineage.json` shipped via the `v2.0-data` Release (lineage: corpus_hash `3f4fe940…`, w2v_model_sha256 `cd81f9e6…`) — closed Wave 2 (re-retrained post Phase 8.1).
+- [x] **CEXP-03:** Validated with anti-leakage disclaimer — v2 macro-F1 = 0.7367 (> v1 = 0.3235), permutation p = 0.0010 satisfies D-32 strict-`>` AND p<0.05 leg; per-author smoke test failed (36.96pp gap) triggers D-31 disclaimer path. Closed Wave 3. See `results/v2_validation_report.md`.
+- [ ] **CEXP-04:** Blocked — GroupKFold-by-author mean macro-F1 = 0.2865 vs hold-out = 0.7367 = 45.03pp gap (threshold ≤ 15pp). Author-leakage exceeds threshold; v2.1 follow-up should tighten per-author caps or per-author fine-tune. Closed Wave 3 with Blocked status (per D-36).
+- [x] **CEXP-05:** deterministic `scripts/build_corpus.py` reproducibly emits canonical `corpus/books.yaml` from `corpus_candidates.yaml` per `CORPUS_SOURCING.md §5` selection rule — closed Wave 1.
 
 **Classification Depth**
 - [ ] Top-N (N=3 or configurable) genre predictions with confidence scores
@@ -116,6 +124,7 @@ Persistent homology scales poorly with point count (Vietoris-Rips complex constr
 | v2: H₀ and H₂ removed from UI | H₀ mathematically degenerate in weighted Vietoris-Rips (birth axis collapses to filtration time 0); H₂ deferred to v3 — sparse high-D point clouds rarely contain voids and the O(n⁴) runtime cliff (PITFALLS.md §2) is not worth the engineering for empirical-zero gain (PITFALLS.md §3) | Validated — v2.0 (Phase 6, BUG-01) |
 | Cache key includes corpus_hash + w2v_model_sha256 | Latent v1 footgun: cache key omitted model-lineage inputs, so a retrain could silently return stale precomputed artifacts. Lands before Phase 8 retrain to avoid mid-flight migration. | Validated — v2.0 (Phase 6, BUG-05) |
 | Planning files protected by pre-commit + CI + snapshots | v1 ROADMAP/STATE were wiped to 0 bytes by a GSD wrap-up template (commit 336eb7c, 2026-04-13). Hook rejects 0-byte commits to `.planning/**/*.md`; `.gitattributes` excludes from LFS; CI is a backstop. | Validated — v2.0 (Phase 6, BUG-04) |
+| v2: Phase 8 closes with ship-with-disclaimer for CEXP-04 (2026-05-26) | v2 corpus integrity was rebuilt via Phase 8.1's drop strategy after a Wave-1.5 audit found 141/240 books had wrong gid bindings — the verified-clean corpus is 154 books (8 genres × 15–25 each). v2 SVM macro-F1 = 0.7367 beats v1 = 0.3235 by +41pp (permutation p = 0.0010) on the 20-book hold-out, satisfying D-32 strict-`>` + significance. However, GroupKFold-by-author gap = 45.03pp (>> 15pp threshold) and the per-author smoke test fails (mean-gap 36.96pp >> 10pp threshold), indicating significant author-leakage in the v2 corpus. Per D-31, ship with explicit public disclaimer rather than restructure-and-retry. | Validated with disclaimer — v2.0 Phase 8 (v2.0-data Release published with `v2_validation_report.md` attached; Phase 9 inherits a working v2 SVM; v2.1 follow-up addresses author-leakage via stricter per-author caps OR per-author fine-tuning) |
 
 ## Evolution
 

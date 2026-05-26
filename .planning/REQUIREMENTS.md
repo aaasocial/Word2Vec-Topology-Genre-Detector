@@ -9,6 +9,8 @@
 
 All 63 v1.0 requirements (VALID-01..03, PIPE-01..05, HOM-01..08, VIZ-01..11, TOPO-01..07, COMP-01/02, CLASS-01..05, PARAM-01..06, EXPLAIN-01, UX-01..05, CORPUS-01..04, INFRA-01..06) were delivered in phases 1-5. Detailed text + per-requirement status moved to [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md). Traceability table below still indexes them.
 
+**CORPUS-01 wording correction (2026-05-26, Phase 8 / D-34):** Earlier drafts of CORPUS-01 referenced the Phase-1 validation-spike subset rather than the shipped v1 corpus. v1 actually shipped with **10 genres × 10 books = 100 books** (commit `db7b1f8`, 2026-04-13). v2 expanded this to a target of **8 genres × 30 books = 240 books** per Proposal A; Phase 8.1's drop strategy filtered out unverifiable entries and the v2 corpus shipped to the `v2.0-data` Release is **154 verified-clean books (15–25 per genre)** — see [`phases/08.1-corpus-integrity-rebuild-fix-141-240-wrong-gid-bindings-in-c/08.1-01-SUMMARY.md`](phases/08.1-corpus-integrity-rebuild-fix-141-240-wrong-gid-bindings-in-c/08.1-01-SUMMARY.md).
+
 ### Validation Spike (archived)
 
 - [x] **VALID-01**: CLI prototype trains Word2Vec, computes persistence images, runs permutation test confirming topology signal — see archive
