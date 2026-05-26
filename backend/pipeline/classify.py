@@ -1,10 +1,57 @@
-"""Genre prediction using pre-trained SVM pipeline.
+"""Genre prediction using the calibrated SVM pipeline (Phase 9).
 
-Accepts cancel_event for cooperative cancellation (per CONTEXT.md).
+D-37 / D-38: ``predict_top_n`` returns the full ranked list of (genre,
+probability) tuples from ``predict_proba`` (calibrated, sums to 1).
+``TopNList.tsx`` slices to top-3 + expander on the frontend.
+
+Legacy ``predict_genre`` is a thin wrapper around ``predict_top_n`` for
+back-compat callers -- returns the top-1 (genre, probability) tuple.
+
+Accepts ``cancel_event`` for cooperative cancellation (Blocker 4).
 """
 import asyncio
 
 import numpy as np
+
+
+def predict_top_n(
+    feature_vector: np.ndarray,
+    svm_pipeline,
+    genre_names: list[str],
+    cancel_event: asyncio.Event = None,
+) -> list[tuple[str, float]]:
+    """Return ranked list of (genre, probability), length = len(genre_names).
+
+    Sorted descending by probability. Sum of probabilities is 1.0 within
+    float epsilon (sklearn's calibrated ``predict_proba`` contract).
+
+    Args:
+        feature_vector: Combined topology + location feature vector.
+        svm_pipeline: Pre-trained sklearn Pipeline whose final estimator exposes
+            ``predict_proba``. Phase 9 D-38 retrain guarantees this.
+        genre_names: List of genre names, indexed by SVM integer label.
+        cancel_event: If set, raises ``asyncio.CancelledError`` before compute.
+
+    Returns:
+        ``list[tuple[str, float]]`` of length ``len(genre_names)`` (8 for v2),
+        sorted descending by probability.
+    """
+    if cancel_event and cancel_event.is_set():
+        raise asyncio.CancelledError('Cancelled before classify step')
+
+    X = np.asarray(feature_vector, dtype=np.float64).reshape(1, -1)
+    probas = svm_pipeline.predict_proba(X)[0]  # shape: (n_classes,)
+    classes = svm_pipeline.classes_  # integer label array, len == n_classes
+    ranked_idx = np.argsort(probas)[::-1]
+    return [
+        (
+            genre_names[int(classes[i])]
+            if int(classes[i]) < len(genre_names)
+            else f'unknown({int(classes[i])})',
+            float(probas[i]),
+        )
+        for i in ranked_idx
+    ]
 
 
 def predict_genre(
@@ -13,30 +60,13 @@ def predict_genre(
     genre_names: list[str],
     cancel_event: asyncio.Event = None,
 ) -> tuple[str, float]:
-    """Predict genre from feature vector.
+    """Legacy single-prediction wrapper. Returns top-1 (genre, probability).
 
-    Args:
-        feature_vector: Combined topology + location feature vector
-        svm_pipeline: Pre-trained sklearn Pipeline (StandardScaler -> VarianceThreshold -> SVC)
-        genre_names: List of genre names for label-to-genre mapping
-        cancel_event: If set, raises asyncio.CancelledError before computation
-
-    Returns (genre_name, confidence).
+    DO NOT use for new code -- call ``predict_top_n`` directly for the full
+    ranked list. Retained so pre-Phase-9 call sites (SSE result derivation,
+    tests) keep working without churn.
     """
-    if cancel_event and cancel_event.is_set():
-        raise asyncio.CancelledError('Cancelled before classify step')
-
-    X = feature_vector.reshape(1, -1)
-    label = int(svm_pipeline.predict(X)[0])
-
-    if hasattr(svm_pipeline, 'decision_function'):
-        decision = svm_pipeline.decision_function(X)
-        if decision.ndim > 1:
-            confidence = float(np.max(decision))
-        else:
-            confidence = float(abs(decision[0]))
-    else:
-        confidence = 0.0
-
-    genre = genre_names[label] if label < len(genre_names) else f'unknown({label})'
-    return genre, confidence
+    top_n = predict_top_n(
+        feature_vector, svm_pipeline, genre_names, cancel_event=cancel_event
+    )
+    return top_n[0]

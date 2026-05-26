@@ -155,13 +155,21 @@ def test_persistence_imager_empty_diagram():
 
 
 def test_predict_genre_returns_tuple():
-    """predict_genre returns (genre_name, confidence) tuple."""
+    """predict_genre returns (genre_name, probability) top-1 tuple.
+
+    Plan 09-03 (D-37/D-38): predict_genre is now a thin wrapper around
+    predict_top_n which uses calibrated predict_proba (not decision_function).
+    The legacy mock SVM contract -- predict() + decision_function() -- is
+    replaced with predict_proba() + classes_ to match the new wrapper.
+    """
     from unittest.mock import MagicMock
     mock_svm = MagicMock()
-    mock_svm.predict.return_value = np.array([1])
-    mock_svm.decision_function.return_value = np.array([[0.5, 1.2, 0.3]])
+    # New contract: predict_proba returns calibrated probabilities (sum=1).
+    mock_svm.predict_proba.return_value = np.array([[0.2, 0.6, 0.2]])
+    # classes_ is the integer label array aligned to predict_proba columns.
+    mock_svm.classes_ = np.array([0, 1, 2])
     genre, confidence = predict_genre(
         np.zeros(10), mock_svm, ['horror', 'romance', 'scifi']
     )
     assert genre == 'romance'
-    assert confidence == 1.2
+    assert confidence == pytest.approx(0.6)
