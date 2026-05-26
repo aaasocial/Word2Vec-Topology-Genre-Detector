@@ -2,60 +2,62 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: — Accuracy, Depth, and Polish
-status: paused
-last_updated: "2026-05-25T08:30:00.000Z"
-last_activity: 2026-05-25
+status: executing
+last_updated: "2026-05-26T14:50:00.000Z"
+last_activity: 2026-05-26
 progress:
   total_phases: 8
-  completed_phases: 6
-  total_plans: 30
-  completed_plans: 27
-  percent: 90
+  completed_phases: 7
+  total_plans: 35
+  completed_plans: 35
+  percent: 100
 ---
 
 # STATE
 
 ## Current Position
 
-Phase: 08 (corpus-expansion) — **PAUSED after Wave 1.5** (corpus integrity defect)
+Phase: 08 (corpus-expansion) — **COMPLETE** (with disclaimer per D-31)
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
 - **Phase:** 08
-- **Plan:** Wave 1 + Wave 2 + Wave 1.5 patch executed; Wave 3 + Wave 4 deferred
-- **Status:** Paused — corpus integrity blocker discovered
-- **Last activity:** 2026-05-25
+- **Plans complete:** 4/4 (08-01 Wave 1 corpus build · 08-02 Wave 2 retrain · 08-03 Wave 3 validation · 08-04 Wave 4 release+docs) + 1/1 sub-phase plan (08.1-01 corpus integrity rebuild)
+- **Status:** Complete (Phase 9 unblocked)
+- **Last activity:** 2026-05-26
 
-### Phase 8 Pause Note (2026-05-25)
+### Phase 8 Complete (2026-05-26)
 
-Phase 8 was paused after Wave 1.5 because a full gid integrity audit (run during Wave-1.5 patch — see [wave-1-5-full-gid-audit.log](phases/08-corpus-expansion/wave-1-5-full-gid-audit.log)) found **141 of 240 books (58.75%) have wrong `gid` bindings** in `corpus/books.yaml`. Wave 1.5 fixed the 6 documented duplicate-gid defects; 135 single-mapping mismatches remain.
+Phase 8 paused on 2026-05-25 after Wave 1.5 because a full gid integrity audit found 141/240 books had wrong `gid` bindings. Resumed and closed via Phase 8.1 sub-phase (drop strategy):
 
-What ran:
+**Phase 8.1 — Corpus Integrity Rebuild (drop strategy):**
+- Repair attempt via gutendex bulk lookup reduced 145 SERIOUS → 86 SERIOUS (40.7%) but hit diminishing returns
+- User-authorized drop: removed the 86 unresolvable rows from `corpus/books.yaml` and `corpus_candidates.yaml`
+- Final v2 corpus: **154 verified-clean books** across 8 genres (15–25 per genre); 0 SERIOUS in final audit
+- Wave-2 pipeline re-run end-to-end on clean corpus; lineage rotated `f6cf71fa → 3f4fe940`; all 7 frozen hyperparameters preserved
 
-- Wave 1 (08-01): v2 240-book corpus built, byte-identical v1 baseline gate held. (commits d620e89 + ancestors)
-- Wave 2 (08-02): full pipeline retrained on v2 corpus; SVM artifacts produced. (commit 8b9be64)
-- Wave 1.5 (08-02.1): 6 duplicate-gid defects patched; pipeline re-retrained; lineage rotated. Full audit log produced. (commit 9b3c95a)
+**Phase 8 Wave 3 — Validation Report:**
+- Hold-out macro-F1: **v2 = 0.7367 vs v1 = 0.3235** (+41pp, permutation p=0.0010) → **CEXP-03 PARTIAL-VALIDATED**
+- GroupKFold-by-author mean macro-F1: 0.2865 (gap 45pp vs hold-out, >> 15pp threshold) → **CEXP-04 BLOCKED**
+- Per-author smoke test failed → D-31 disclaimer path triggered
+- 4 §10 validation routines added to `scripts/06_validate.py` with unit-test coverage in `scripts/test_06_validate.py`
 
-What did NOT run:
+**Phase 8 Wave 4 — Publish + Doc Alignment:**
+- D-33 publish-with-disclaimer decision applied (CEXP-03 PARTIAL-VALIDATED → publish; CEXP-04 BLOCKED non-gating)
+- v2.0-data GitHub Release published to https://github.com/aaasocial/Word2Vec-Topology-Genre-Detector/releases/tag/v2.0-data with 10 assets (~194 MB) including v2 validation report
+- Doc alignment landed: REQUIREMENTS.md CORPUS-01, PROJECT.md Validated list + Key Decisions, ROADMAP.md Phase 8 closure + Phase 9 unblock
+- Code review: 0 critical / 7 warnings / 11 info — advisory only, not blocking
 
-- Wave 3 (08-03): validation report — would measure noise, not v2 quality
-- Wave 4 (08-04): GitHub Release publish — cannot ship known-broken corpus
+**Repo migration (2026-05-26):** Phase 6-8 work was originally committed to a misconfigured parent repo (`aaasocial/F1Dashboard`) because the project working tree sat inside a home-directory-rooted git repo. On 2026-05-26 the W2V subdirectory history was extracted via `git filter-repo` and fast-forwarded onto `aaasocial/Word2Vec-Topology-Genre-Detector` master (`af43deb → fb504a7`, 121 new commits + 18 LFS objects, 272 MB upload). The v2.0-data Release was republished to the correct repo; the home-directory git repo was deinitialized. Full migration sidebar in `08-04-SUMMARY.md`.
 
-Wave 2 + Wave 1.5 produced real trained artifacts (`data/models/svm_pipeline.joblib` + sidecar + W2V/k-means/persistence imager) on the patched-but-still-largely-wrong corpus. These are NOT v2.0-release-grade.
+### Known limitations (deferred to v2.1 / future phase)
 
-Mismatch breakdown by genre (out of 30 per genre): western 30, historical 21, adventure 21, mystery 18, literary 17, romance 14, gothic_horror 11, speculative 9.
+- **CEXP-04 author-leakage BLOCKED** — v2 SVM generalizes poorly to unseen authors (15 of 34 multi-book authors score 0% when held out). Honest mitigation candidates for v2.1: max-N-per-author cap in corpus design, or per-author held-out fine-tuning routine.
+- **86 dropped corpus rows** — listed in `.planning/research/v2/v1_to_v2_migration.md` "08.1 Final Resolution". Re-sourcing them via authoritative author bibliographies is a candidate for Phase 8.2 if corpus growth back toward 240 books is desired.
+- **7 advisory code-review warnings** — see `08-REVIEW.md`. Can be addressed via `/gsd-code-review-fix 08` when convenient.
 
-Root cause: `.planning/research/v2/corpus_candidates.yaml` had wrong `gutenberg_id` values for many entries. `build_corpus.py` trusted them verbatim because the v1 source-of-truth pattern was author-and-title-driven, not gid-validated.
+### Next step
 
-### Recommended next step
-
-Create a sub-phase `08.1 corpus-integrity` (via `/gsd-insert-phase` or `/gsd-discuss-phase` then plan) that:
-
-1. Rebuilds `corpus_candidates.yaml` by querying Gutenberg's authoritative metadata index for each `(title, author)` to get the correct gid
-2. Regenerates `corpus/books.yaml` via deterministic `build_corpus.py`
-3. Re-runs Wave 2 retrain pipeline
-4. Re-runs the strict gid audit as an entry gate
-
-After 08.1 closes with a clean corpus, resume Phase 8 by re-running `/gsd-execute-phase 8 --wave 3` and then `--wave 4`.
+Phase 9 (Classification Depth) is unblocked. Run `/gsd-discuss-phase 9` to gather context for top-N predictions + "why this genre?" explainability.
 
 
 
@@ -130,19 +132,15 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 
 | Metric | Target | Current |
 |---|---|---|
-| v2 macro-F1 (v1-frozen test set) | > v1 baseline | — (measured in Phase 8) |
-| Per-author held-out gap vs LOOCV | ≤ 15pp | — (measured in Phase 8) |
-| H₂ P95 runtime per book | < 30s | — (benched in Phase 6) |
+| v2 macro-F1 (v1-frozen test set) | > v1 baseline | **0.7367** (vs v1 0.3235; +41pp; p=0.0010) ✓ |
+| Per-author held-out gap vs LOOCV | ≤ 15pp | **45.03pp** (BLOCKED — v2.1 follow-up needed) ✗ |
+| H₂ P95 runtime per book | < 30s | — (deferred — H₂ removed from v2 per ROADMAP success criterion #1) |
 | Explainability response time | < 5s (target ~200ms) | — (measured in Phase 9) |
-| Corpus metadata endpoint payload | < 100KB total | — (measured in Phase 6) |
+| Corpus metadata endpoint payload | < 100KB total | ~35 KB ✓ |
 
 ## Open Blockers
 
-**B-08-01 (2026-05-25) — Phase 8 paused on corpus integrity blocker.**
-
-141/240 books in `corpus/books.yaml` have wrong gid bindings (audit log: `phases/08-corpus-expansion/wave-1-5-full-gid-audit.log`). Wave 3 validation + Wave 4 release blocked until a corpus-integrity sub-phase rebuilds candidates.yaml against Gutenberg's authoritative metadata.
-
-Recommended next: `/gsd-discuss-phase 08.1` (or `/gsd-insert-phase 08.1`) then plan + execute, then resume Phase 8 with `/gsd-execute-phase 8 --wave 3`.
+**B-08-01 — RESOLVED (2026-05-26).** Phase 8 corpus integrity blocker resolved via Phase 8.1 drop strategy. v2 corpus is 154 verified-clean books; 0 SERIOUS in final audit; v2.0-data Release published to `aaasocial/Word2Vec-Topology-Genre-Detector`. CEXP-04 author-leakage gap (45pp) is documented as v2.1 follow-up, not blocking Phase 9.
 
 ---
 
