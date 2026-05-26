@@ -34,3 +34,13 @@ validation:
   svm_gamma: scale          # 1/(n_features * X.var()); data-adaptive, no tuning needed
   svm_class_weight: balanced # balances penalty across genres; critical for minority-class accuracy
   permutation_n: 1000
+
+# Phase 9 / D-37 / D-40 -- calibration method that ships with svm_pipeline.joblib.
+# Two allowed values, validated by backend/cache/lineage.py::verify_svm_lineage:
+#   - libsvm_platt           : SVC(probability=True) internal Platt 5-fold CV
+#   - calibrated_cv_sigmoid  : CalibratedClassifierCV(method='sigmoid', cv=LeaveOneOut())
+# scripts/calibrate.py picks the winner empirically; the operator commits the
+# winning value here before re-running backend.pipeline.precompute. Tie-break
+# rule per CONTEXT.md §specifics: if |Brier_a - Brier_b| < 1e-3, prefer libsvm_platt.
+classify:
+  calibration_method: libsvm_platt

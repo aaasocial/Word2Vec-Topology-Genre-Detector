@@ -34,7 +34,12 @@ import yaml
 from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from utils import load_params  # noqa: E402
+# Phase 9 (D-40) single source of truth for HOLDOUT_GUTENBERG_IDS.
+# Use the `scripts.` qualified path so the import resolves identically
+# whether 06_validate.py is run directly or via importlib (test_06_validate).
+from scripts.constants import HOLDOUT_GUTENBERG_IDS  # noqa: E402
 
 
 # ============================================================================
@@ -644,7 +649,7 @@ def _compose_report(
         "## Hold-out evaluation detail (VALIDATION_PROTOCOL §3 + §5)",
         "",
         "**Test set:** 20 pinned gutenberg_ids from VALIDATION_PROTOCOL.md §3:",
-        "`[78, 83, 84, 103, 105, 120, 121, 144, 169, 175, 244, 284, 863, 1184, 1257, 1528, 2565, 3285, 50133, 70652]`",
+        f"`{sorted(HOLDOUT_GUTENBERG_IDS)}`",
         "",
         f"**In-comparison subset (present in v2 corpus):** {holdout_result['n_in_comparison']} of 20. "
         f"List: `{holdout_result['in_comparison_ids']}`",
@@ -892,10 +897,20 @@ def main():
     assert lineage.get("k_clusters") == args.k_clusters, \
         f"Lineage k mismatch: lineage={lineage.get('k_clusters')}, cli={args.k_clusters}"
 
-    # 3. Read holdout_gutenberg_ids from v1 baseline JSON
+    # 3. Read holdout_gutenberg_ids -- Phase 9 (D-40): single source of truth
+    #    lives in scripts/constants.py (imported at module level above),
+    #    not in v1_baseline_results.json.
     v1_baseline = _v1_baseline()
-    holdout_ids = sorted([int(g) for g in v1_baseline["holdout_gutenberg_ids"]])
+    holdout_ids = sorted([int(g) for g in HOLDOUT_GUTENBERG_IDS])
     v1_support = _v1_holdout_support_per_v1_genre()
+    # Backward-compat sanity check: the v1_baseline JSON record must still match
+    # the constant. If this assertion fires, VALIDATION_PROTOCOL.md §3 was changed
+    # without updating scripts/constants.py OR data/v1_baseline_results.json --
+    # fix both before proceeding (T-9-31 mitigation).
+    _v1_baseline_ids = sorted([int(g) for g in v1_baseline["holdout_gutenberg_ids"]])
+    assert holdout_ids == _v1_baseline_ids, (
+        f"HOLDOUT drift: constants.py={holdout_ids} vs v1_baseline_results.json={_v1_baseline_ids}"
+    )
 
     # 4. Train an "eval SVM" on (v2 corpus MINUS holdout_ids in v2)
     holdout_in_v2_mask = np.array([gid in holdout_ids for gid in gutenberg_ids])

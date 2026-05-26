@@ -1,8 +1,11 @@
 {
   "alpha": 0.7,
+  "calibration_brier_score": 0.04812763753149701,
+  "calibration_method": "libsvm_platt",
+  "calibration_report": "results/v2_calibration_report.md",
   "corpus_hash": "3f4fe9400b023f0847bc6975da4f3793fdd3b4db4dfc44979d43cc9b75a869d9",
-  "created_by": "Plan 06-05 (BUG-05)",
-  "created_utc": "2026-05-26T04:32:24Z",
+  "created_by": "Plan 09-01 (DEPTH-01 D-40)",
+  "created_utc": "2026-05-26T17:57:17Z",
   "feature_normalization": {
     "location": "l2",
     "structure": "l2"
