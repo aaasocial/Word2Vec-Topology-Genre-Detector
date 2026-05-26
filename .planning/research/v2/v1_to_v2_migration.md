@@ -212,3 +212,132 @@ the canonical title+author combinations in candidates.yaml, then either (a) re-r
 "mislabeled" books are simply different books in the same broad genre tradition (e.g.,
 many of the gid 7142-7170 historical entries point to other historical literature even
 though not the exact title cited).
+
+## 08.1 Final Resolution (2026-05-26)
+
+After Phase 8.1's two repair sessions (gutendex bulk-by-author lookups, audiobook-record
+filtering, title-score-first match sort) drove the SERIOUS count from 145 → 86 and the
+entry gate (`>5 SERIOUS = halt`) still failed, the user authorized a **drop strategy**:
+remove every still-SERIOUS row from both `corpus/books.yaml` and
+`.planning/research/v2/corpus_candidates.yaml` rather than continue repair attempts.
+
+**Result:** v2 corpus = 154 verified-clean books across 8 genres (per-genre counts
+15-25, see `08.1-01-SUMMARY.md` for the table). Every (title, author, gid) triple in
+the surviving manifest was verified via gutendex (rapidfuzz title token_set_ratio ≥ 85
+AND author lastname match) — i.e., the post-drop audit
+(`08.1-gid-audit-final.log`) reports **0 SERIOUS / 154 BENIGN / 0 MISSING**.
+
+### The 86 dropped rows
+
+These are the rows whose (yaml_title, yaml_author) did not match the book Gutenberg
+actually serves at the listed gid. Removed in commit `7feb909`
+(`feat(08.1-01): drop 86 SERIOUS rows`):
+
+| gid | genre | yaml_title (expected) | actual_at_gid (gutendex) | dropped_in_08.1 |
+|----:|-------|----------------------|--------------------------|:---------------:|
+| 96 | adventure | Rupert of Hentzau by Anthony Hope | The Monster Men by Burroughs, Edgar Rice | yes |
+| 559 | adventure | The Thirty-Nine Steps by John Buchan | Greenmantle by Buchan, John | yes |
+| 560 | adventure | Greenmantle by John Buchan | Mr. Standfast by Buchan, John | yes |
+| 561 | adventure | Tales of the Fish Patrol by Jack London | The Further Adventures of Robinson Crusoe by Defoe, Daniel | yes |
+| 562 | adventure | Prester John by John Buchan | The Go Ahead Boys and the Racing Motor-Boat by Kay, Ross | yes |
+| 563 | adventure | Salute to Adventurers by John Buchan | The Planet Mars and Its Inhabitants, a Psychic Revelation by Kennon, J. L. | yes |
+| 848 | adventure | The Black Arrow by Robert Louis Stevenson | The Black Arrow: A Tale of the Two Roses by Stevenson, Robert Louis | yes |
+| 864 | adventure | The Master of Ballantrae by Robert Louis Stevenson | The Master of Ballantrae: A Winter's Tale by Stevenson, Robert Louis | yes |
+| 2701 | adventure | Moby-Dick by Herman Melville | Moby Dick; Or, The Whale by Melville, Herman | yes |
+| 32954 | adventure | The Black Arrow by Robert Louis Stevenson | The Black Arrow: A Tale of the Two Roses by Stevenson, Robert Louis | yes |
+| 43 | gothic_horror | The Strange Case of Dr Jekyll and Mr Hyde by Robert Louis Stevenson | The strange case of Dr. Jekyll and Mr. Hyde by Stevenson, Robert Louis | yes |
+| 84 | gothic_horror | Frankenstein by Mary Shelley | Frankenstein; or, the modern prometheus by Shelley, Mary Wollstonecraft | yes |
+| 376 | gothic_horror | The Three Imposters by Arthur Machen | A Journal of the Plague Year: Being Observations of the Most Remarkable Occurrences by Defoe, Daniel | yes |
+| 378 | gothic_horror | The White People by Arthur Machen | The White Knight: Tirant Lo Blanc by Martorell, Joanot; Galba, Marti Joan de | yes |
+| 601 | gothic_horror | The Monk by Matthew Lewis | The Monk: A Romance by Lewis, M. G. (Matthew Gregory) | yes |
+| 768 | gothic_horror | Wuthering Heights by Emily Bronte | Wuthering Heights by Brontë, Emily | yes |
+| 792 | gothic_horror | Wieland by Charles Brockden Brown | Wieland; Or, The Transformation: An American Tale by Brown, Charles Brockden | yes |
+| 5145 | gothic_horror | The Italian by Ann Radcliffe | The Heart of the Hills by Fox, John, Jr. | yes |
+| 5152 | gothic_horror | Villette by Charlotte Bronte | One Thousand Questions in California Agriculture Answered by Wickson, Edward J. | yes |
+| 5153 | gothic_horror | Northanger Abbey by Jane Austen | Rung Ho! A Novel by Mundy, Talbot | yes |
+| 5154 | gothic_horror | Uncle Silas by J. Sheridan Le Fanu | La Bête humaine by Zola, Émile | yes |
+| 8487 | gothic_horror | More Ghost Stories by M. R. James | Dame Care by Sudermann, Hermann | yes |
+| 11323 | gothic_horror | Caleb Williams by William Godwin | Caleb Williams; Or, Things as They Are by Godwin, William | yes |
+| 14833 | gothic_horror | Varney the Vampire by James Malcolm Rymer | Varney the vampyre; or, the feast of blood by Prest, Thomas Peckett; Rymer | yes |
+| 82 | historical | Ivanhoe by Walter Scott | Ivanhoe: A Romance by Scott, Walter | yes |
+| 917 | historical | Barnaby Rudge by Charles Dickens | Barnaby Rudge: A Tale of the Riots of 'Eighty by Dickens, Charles | yes |
+| 940 | historical | The Last of the Mohicans by James Fenimore Cooper | The Last of the Mohicans; A narrative of 1757 by Cooper, James Fenimore | yes |
+| 5998 | historical | Waverley by Walter Scott | Waverley; or, 'Tis sixty years since by Scott, Walter | yes |
+| 6941 | historical | Old Mortality by Walter Scott | Old Mortality, Complete by Scott, Walter | yes |
+| 7151 | historical | Quo Vadis by Henryk Sienkiewicz | Clelia: Il governo dei preti — Romanzo storico politico by Garibaldi, Giuseppe | yes |
+| 7153 | historical | The Deluge by Henryk Sienkiewicz | Elder Conklin and Other Stories by Harris, Frank | yes |
+| 7154 | historical | Pan Michael by Henryk Sienkiewicz | The Prince and the Pauper, Part 1. by Twain, Mark | yes |
+| 7155 | historical | The Hunchback of Notre-Dame by Victor Hugo | The Prince and the Pauper, Part 2. by Twain, Mark | yes |
+| 7159 | historical | The Deerslayer by James Fenimore Cooper | The Prince and the Pauper, Part 6. by Twain, Mark | yes |
+| 7160 | historical | The Pathfinder by James Fenimore Cooper | The Prince and the Pauper, Part 7. by Twain, Mark | yes |
+| 7161 | historical | The Pioneers by James Fenimore Cooper | The Prince and the Pauper, Part 8. by Twain, Mark | yes |
+| 7162 | historical | The Prairie by James Fenimore Cooper | The Prince and the Pauper, Part 9. by Twain, Mark | yes |
+| 7163 | historical | Romola by George Eliot | The History of Australian Exploration from 1788 to 1888 by Favenc, Ernest | yes |
+| 7164 | historical | Henry Esmond by William Makepeace Thackeray | Gitanjali by Tagore, Rabindranath | yes |
+| 208 | literary | Daisy Miller by Henry James | Daisy Miller: A Study by James, Henry | yes |
+| 210 | literary | The Ambassadors by Henry James | An International Episode by James, Henry | yes |
+| 211 | literary | The Wings of the Dove by Henry James | The Aspern Papers by James, Henry | yes |
+| 214 | literary | The Golden Bowl by Henry James | In the Days When the World Was Wide, and Other Verses by Lawson, Henry | yes |
+| 542 | literary | Ethan Frome by Edith Wharton | The Life of Me: An Autobiography by Johnson, Clarence Edgar | yes |
+| 4275 | literary | Howards End by E. M. Forster | Ruth by Gaskell, Elizabeth Cleghorn | yes |
+| 5817 | literary | Lord Jim by Joseph Conrad | The Clockmaker — or, the Sayings and Doings of Samuel Slick by Haliburton, Thomas Chandler | yes |
+| 5818 | literary | Nostromo by Joseph Conrad | The Gilded Age, Part 1. by Twain, Mark; Warner, Charles D | yes |
+| 9183 | literary | Poor White by Sherwood Anderson | Wilfrid Cumbermede by MacDonald, George | yes |
+| 480 | mystery | Armadale by Wilkie Collins | "Undo": A Novel by Hutsko, Joe | yes |
+| 583 | mystery | The Mystery of Edwin Drood by Charles Dickens | The Woman in White by Collins, Wilkie | yes |
+| 834 | mystery | His Last Bow by Arthur Conan Doyle | The Memoirs of Sherlock Holmes by Doyle, Arthur Conan | yes |
+| 1155 | mystery | The Circular Staircase by Mary Roberts Rinehart | The Secret Adversary by Christie, Agatha | yes |
+| 1661 | mystery | The Memoirs of Sherlock Holmes by Arthur Conan Doyle | The Adventures of Sherlock Holmes by Doyle, Arthur Conan | yes |
+| 1695 | mystery | The Man Who Was Thursday by G. K. Chesterton | The Man Who Was Thursday: A Nightmare by Chesterton, G. K. (Gilbert Keith) | yes |
+| 1851 | mystery | The Man in Lower Ten by Mary Roberts Rinehart | The Woman in the Alcove by Green, Anna Katharine | yes |
+| 2098 | mystery | A Thief in the Night by E. W. Hornung | A Thief in the Night: A Book of Raffles' Adventures by Hornung, E. W. (Ernest William) | yes |
+| 2155 | mystery | The Door of Death by Mary Roberts Rinehart | Phyllis of Philistia by Moore, Frank Frankfort | yes |
+| 2371 | mystery | The Filigree Ball by Anna Katharine Green | The Filigree Ball: Being a full and true account of an extraordinary mystery by Green, Anna Katharine | yes |
+| 3307 | mystery | That Affair Next Door by Anna Katharine Green | The Pagan Tribes of Borneo by Hose, Charles; McDougall, William | yes |
+| 110 | romance | Tess of the d'Urbervilles by Thomas Hardy | Tess of the d'Urbervilles: A Pure Woman by Hardy, Thomas | yes |
+| 1245 | romance | Villette by Charlotte Bronte | Night and Day by Woolf, Virginia | yes |
+| 1252 | romance | Shirley by Charlotte Bronte | Le Morte d'Arthur: Volume 2 by Malory, Thomas, Sir | yes |
+| 1260 | romance | Jane Eyre by Charlotte Bronte | Jane Eyre: An Autobiography by Brontë, Charlotte | yes |
+| 1392 | romance | Lady Susan by Jane Austen | The Seven Poor Travellers by Dickens, Charles | yes |
+| 2095 | romance | The Tenant of Wildfell Hall by Anne Bronte | Clotelle: A Tale of the Southern States by Brown, William Wells | yes |
+| 2891 | romance | The Heart of Midlothian by Walter Scott | Howards End by Forster, E. M. (Edward Morgan) | yes |
+| 4860 | romance | The Mill on the Floss by George Eliot | History of the United Netherlands, 1586-89 — Complete by Motley, John Lothrop | yes |
+| 325 | speculative | Phantastes by George MacDonald | Phantastes: A Faerie Romance for Men and Women by MacDonald, George | yes |
+| 706 | speculative | Lilith by George MacDonald | The Amateur Cracksman by Hornung, E. W. (Ernest William) | yes |
+| 1353 | speculative | Off on a Comet by Jules Verne | Off on a Comet! a Journey through Planetary Space by Verne, Jules | yes |
+| 1652 | speculative | Robur the Conqueror by Jules Verne | The Survivors of the Chancellor: Diary of J.R. Kazallon by Verne, Jules | yes |
+| 5231 | speculative | The Gods of Mars by Edgar Rice Burroughs | The Way We Live Now by Trollope, Anthony | yes |
+| 1012 | western | The Virginian by Owen Wister | La Divina Commedia di Dante by Dante Alighieri | yes |
+| 1027 | western | The Spirit of the Border by Zane Grey | The Lone Star Ranger: A Romance of the Border by Grey, Zane | yes |
+| 1078 | western | The Texan Scouts by Joseph A. Altsheler | The Scouts of the Valley by Altsheler, Joseph A. | yes |
+| 3756 | western | Betty Zane by Zane Grey | Indiscretions of Archie by Wodehouse, P. G. (Pelham Grenville) | yes |
+| 4051 | western | The Lone Star Ranger by Zane Grey | Lady Bridget in the Never-Never Land by Praed, Campbell, Mrs. | yes |
+| 4684 | western | The U.P. Trail by Zane Grey | The U. P. Trail by Grey, Zane | yes |
+| 8087 | western | Buck Peters, Ranchman by Clarence E. Mulford | A Fountain Sealed by Sedgwick, Anne Douglas | yes |
+| 8088 | western | The Outlet by Andy Adams | Passages from the American Notebooks, Volume 1 by Hawthorne, Nathaniel | yes |
+| 8089 | western | Cattle Brands by Andy Adams | Passages from the American Notebooks, Volume 2. by Hawthorne, Nathaniel | yes |
+| 8090 | western | Reed Anthony, Cowman by Andy Adams | Our Old Home: A Series of English Sketches by Hawthorne, Nathaniel | yes |
+| 8091 | western | Wells Brothers by Andy Adams | Sketches and Studies by Hawthorne, Nathaniel | yes |
+| 8094 | western | The Texan Star by Joseph A. Altsheler | Certain Noble Plays of Japan by (anonymous) | yes |
+| 8095 | western | Riders of the Silences by Max Brand | Awful Disclosures of the Hotel Dieu Nunnery of Montreal by Monk, Maria | yes |
+| 12797 | western | The Log of a Cowboy by Andy Adams | The Log of a Cowboy: A Narrative of the Old Trail Days by Adams, Andy | yes |
+
+**Note on benign-looking SERIOUS rows.** Some of the 86 above are technically the
+"correct" book at the listed gid (e.g., gid 84 Frankenstein, gid 82 Ivanhoe, gid 768
+Wuthering Heights). The audit's strict `rapidfuzz token_set_ratio >= 85` + author
+lastname check is over-strict on subtitle differences ("Frankenstein" vs
+"Frankenstein; or, the modern prometheus" — token_set_ratio = 80 < 85). These rows
+were dropped along with the truly-broken ones because the drop strategy uses a single
+uniform threshold; recovering them is a v2.1 follow-up task (see below).
+
+### v2.1 follow-up: re-source the 86 dropped entries
+
+Phase 8.2 (or a v2.1 patch wave) should re-source the 86 dropped books using
+**authoritative author bibliographies** (Wikipedia author pages, Library of
+Congress catalog entries, canonical book lists like Bloom's Western Canon for
+literary/historical), then query gutendex by the verified canonical (title, author)
+to find the correct gid. Target: restore the v2 corpus to 240+ books with all gids
+verified-correct, and re-trigger the retrain pipeline. The infrastructure to do this
+already exists (`scripts/audit_corpus_gids.py`, `scripts/repair_corpus.py`,
+`scripts/build_corpus.py`) — the gap is the (title, author) → gid mapping for the
+86 entries that the Phase 8.1 author-bulk-fetch could not resolve.

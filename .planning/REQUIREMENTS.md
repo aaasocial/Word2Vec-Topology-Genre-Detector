@@ -43,7 +43,7 @@ See [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md) for ful
 
 ### Corpus Expansion (Phase 8)
 
-- [x] **CEXP-01**: `corpus/books.yaml` extended with `author` and `word_count` fields per book; new books added per Phase 7's `CORPUS_SOURCING.md` recommendation.
+- [x] **CEXP-01**: `corpus/books.yaml` extended with `author` and `word_count` fields per book; new books added per Phase 7's `CORPUS_SOURCING.md` recommendation. **Validated (post-drop, 154-book corpus)** via Phase 8.1 — see `.planning/phases/08.1-corpus-integrity-rebuild-fix-141-240-wrong-gid-bindings-in-c/08.1-01-SUMMARY.md`. Note: v2.1 follow-up should investigate restoring the 86 dropped entries via authoritative author bibliographies + gutendex re-source.
 - [x] **CEXP-02**: System retrains Word2Vec and SVM end-to-end on the expanded corpus; new model assets pushed to a versioned GitHub Release (`v2.0-data`).
 - [ ] **CEXP-03**: System evaluates the v2 model on the v1-frozen test set defined in `VALIDATION_PROTOCOL.md` and reports macro-F1, per-genre F1, and permutation p-value; v2 macro-F1 must exceed v1 baseline.
 - [ ] **CEXP-04**: System validates the expanded corpus with `GroupKFold(groups=author)` cross-validation; per-author held-out test confirms ≤15pp gap vs. LOOCV (`PITFALLS.md §5`).
@@ -182,7 +182,7 @@ Captured during v1 planning; deferred from v2.0 scope. Re-evaluate at v3 boundar
 | RES-01 | Phase 7 | Pending |
 | RES-02 | Phase 7 | Pending |
 | RES-03 | Phase 7 | Pending |
-| CEXP-01 | Phase 8 | Validated |
+| CEXP-01 | Phase 8 | Validated (post-drop, 154-book corpus) |
 | CEXP-02 | Phase 8 | Validated |
 | CEXP-03 | Phase 8 | Pending |
 | CEXP-04 | Phase 8 | Pending |

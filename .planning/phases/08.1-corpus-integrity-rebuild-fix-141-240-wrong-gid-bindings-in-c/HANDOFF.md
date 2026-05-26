@@ -1,8 +1,9 @@
 ---
-status: in-progress
+status: resolved
 updated: 2026-05-26
 parent_plan: 08.1-01
 blocker: entry-gate failed (86 SERIOUS rows remain post-T-3 audit; D-9 says halt)
+resolution: drop strategy executed by user authorization (see footer)
 ---
 
 # Phase 08.1 Plan 08.1-01 — HANDOFF (rev 2)
@@ -197,3 +198,20 @@ corpus/books.yaml                                     (regenerated; 240 books, 2
 data/raw/*.txt                                        (gitignored; 342 files now)
 data/models/*                                         (untouched; pre-rebuild state preserved)
 ```
+
+## Resolution
+
+Drop strategy executed by user authorization. The 86 SERIOUS rows were removed from both
+`corpus/books.yaml` and `corpus_candidates.yaml` rather than continuing repair attempts.
+
+**Resolution commit chain:**
+- `7feb909` — `feat(08.1-01): drop 86 SERIOUS rows — v2 corpus = 154 verified-clean books`
+- (retrain commit) — `feat(08.1-01): retrain pipeline on 154-book verified-clean corpus`
+- (docs commit) — `docs(08.1-01): finalize Phase 8.1 — drop-strategy completion summary`
+
+Post-drop state: **154 books / 8 genres / 0 SERIOUS / 0 MISSING** per
+`08.1-gid-audit-final.log`. Per-genre counts variable (15-25 vs the original
+30-target), but every (title, author, gid) triple is verified-clean.
+
+See `08.1-01-SUMMARY.md` (this directory) for the full finalization narrative,
+lineage-rotation evidence, and v2.1 follow-up recommendations.
