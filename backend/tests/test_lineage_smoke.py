@@ -110,7 +110,12 @@ def test_cache_hit_when_lineage_unchanged():
 # ---------------------------------------------------------------------------
 
 def test_svm_lineage_verify_matches(tmp_path, monkeypatch):
-    """write_svm_lineage + verify_svm_lineage agree when nothing changed."""
+    """write_svm_lineage + verify_svm_lineage agree when nothing changed.
+
+    Phase 9 (D-40): calibration_method is now required for verify_svm_lineage
+    to return ok=True. Sidecars written without it are refused by design --
+    pre-Phase-9 SVMs must be retrained for top-N.
+    """
     from backend.cache import lineage as lineage_mod
 
     # Stub corpus_hash + w2v_model_sha256 so we don't need real files.
@@ -125,6 +130,9 @@ def test_svm_lineage_verify_matches(tmp_path, monkeypatch):
         window=15,
         k_clusters=100,
         alpha=0.5,
+        calibration_method='libsvm_platt',
+        calibration_brier_score=0.42,
+        calibration_report='results/v2_calibration_report.md',
     )
     assert sidecar.exists()
 
@@ -185,7 +193,7 @@ def test_svm_lineage_verify_missing_sidecar(tmp_path):
 
 
 def test_svm_lineage_sidecar_contents(tmp_path, monkeypatch):
-    """Sidecar must include the load-bearing lineage fields per D-25."""
+    """Sidecar must include the load-bearing lineage fields per D-25 + D-40."""
     from backend.cache import lineage as lineage_mod
 
     monkeypatch.setattr(lineage_mod, 'corpus_hash', lambda: H_CORPUS_V1)
@@ -199,6 +207,9 @@ def test_svm_lineage_sidecar_contents(tmp_path, monkeypatch):
         window=15,
         k_clusters=100,
         alpha=0.42,
+        calibration_method='libsvm_platt',
+        calibration_brier_score=0.42,
+        calibration_report='results/v2_calibration_report.md',
     )
     payload = json.loads(sidecar.read_text(encoding='utf-8'))
 
@@ -211,5 +222,9 @@ def test_svm_lineage_sidecar_contents(tmp_path, monkeypatch):
     # Defense-in-depth: normalization stats logged.
     assert payload['feature_normalization']['structure'] == 'l2'
     assert payload['feature_normalization']['location'] == 'l2'
-    # Provenance marker.
-    assert payload['created_by'] == 'Plan 06-05 (BUG-05)'
+    # Provenance marker -- Phase 9 rotated this string per D-40 lineage extension.
+    assert payload['created_by'] == 'Plan 09-01 (DEPTH-01 D-40)'
+    # D-40 calibration fields:
+    assert payload['calibration_method'] == 'libsvm_platt'
+    assert payload['calibration_brier_score'] == 0.42
+    assert payload['calibration_report'] == 'results/v2_calibration_report.md'
