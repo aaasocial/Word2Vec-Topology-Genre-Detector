@@ -1,0 +1,2 @@
+2026-05-26T04:48:19Z phase=08-wave3 v1_macroF1=0.3235 v2_macroF1=0.7367 cv_mean=0.2865 cv_std=0.0331 permutation_p=0.0909 smoke_test_mean_gap=36.96pp cexp_03=FAIL cexp_04=FAIL
+2026-05-26T05:09:38Z phase=08-wave3 v1_macroF1=0.3235 v2_macroF1=0.7367 cv_mean=0.2865 cv_std=0.0331 permutation_p=0.0010 smoke_test_mean_gap=36.96pp cexp_03=PARTIAL-VALIDATED cexp_04=FAIL
