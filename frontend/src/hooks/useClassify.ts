@@ -70,6 +70,11 @@ export function useClassify(): UseClassifyReturn {
             confidence: msg.result.confidence,
             oov_count: msg.result.oov_word_count,
             total_words: msg.result.total_words,
+            // Phase 9 -- read new SSE fields (optional for backwards compat)
+            top_n: msg.result.top_n,
+            entropy: msg.result.entropy,
+            top1_top2_gap: msg.result.top1_top2_gap,
+            badge_fires: msg.result.badge_fires,
           })
           // Cap at 50k points (T-3-03 DoS guard)
           const pts: ScatterPoint[] = ((msg.result.scatter_points ?? []) as ScatterPoint[]).slice(0, MAX_UPLOADED_POINTS)

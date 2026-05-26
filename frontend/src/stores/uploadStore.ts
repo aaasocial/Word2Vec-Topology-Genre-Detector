@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import type { ScatterPoint } from '@/types/scatter'
+import type { TopNPrediction } from '@/types/explain'
 
 export interface ProgressStep {
   label: string
@@ -12,6 +13,11 @@ export interface ClassificationResult {
   confidence: number
   oov_count: number
   total_words: number
+  // Phase 9 (DEPTH-01/02/07) -- optional for backward compat with pre-Phase-9 SVM
+  top_n?: TopNPrediction[]
+  entropy?: number
+  top1_top2_gap?: number
+  badge_fires?: boolean
 }
 
 interface UploadState {
