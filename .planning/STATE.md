@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Shipped
 status: executing
-last_updated: "2026-05-27T03:14:00Z"
+last_updated: "2026-05-27T03:49:00.000Z"
 last_activity: 2026-05-27
 progress:
   total_phases: 10
   completed_phases: 8
   total_plans: 37
-  completed_plans: 33
-  percent: 89
+  completed_plans: 34
+  percent: 92
 ---
 
 # STATE
@@ -18,12 +18,12 @@ progress:
 ## Current Position
 
 Phase: 09 (classification-depth) — EXECUTING
-Plan: 3 of 6 (plans 09-01 and 09-02 complete; next is 09-03)
+Plan: 4 of 6 (plans 09-01, 09-02, 09-03 complete; next is 09-04)
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
 - **Phase:** 09
-- **Plans complete:** 2/6
-- **Status:** Executing Phase 09 (plan 09-02 landed precompute_explain artifact + FastAPI lifespan extension; DEPTH-04 + DEPTH-06 closed)
+- **Plans complete:** 3/6
+- **Status:** Ready to execute
 - **Last activity:** 2026-05-27
 
 ### Phase 8 Complete (2026-05-26)
@@ -93,6 +93,23 @@ Plan-research deviations auto-applied:
 - Rule 1 bug: `np.savez_compressed` auto-appends `.npz` to non-`.npz` filenames -- plan's `tmp_path = out_path.with_suffix(".npz.tmp")` produced `explain_artifacts.npz.tmp.npz` on disk while `os.replace` looked for `explain_artifacts.npz.tmp`. Renamed temp file to `explain_artifacts.tmp.npz` so the auto-append no-ops.
 - Rule 1 bug: `np.array(list_of_equal_length_lists, dtype=object)` collapses to a 2-D array (200, 10). Switched to pre-allocated 1-D object array with explicit element assignment so `cluster_to_representative_words[i]` is a Python list as the contract requires.
 
+### Phase 9 plan 09-03 complete (2026-05-27)
+
+Plan 09-03 landed the backend explainability spine (DEPTH-03 + DEPTH-04 + DEPTH-05 + DEPTH-07):
+
+- **Task 1 -- math + Pydantic spine** (`3bee4b7`): `backend/pipeline/explain.py` exports 7 helpers (multiclass_brier_score, normalized_entropy, compute_uncertainty_metrics, compute_track_contributions with batched (3,n_features) predict_proba per Pitfall 2, find_nearest_training_books, compute_driving_words with tfidf-desc + alpha-tiebreak sort + OOV skip, explain_cache_key). The operative entropy thresholds (`ENTROPY_BADGE_DEFAULT_TOP1_TOP2_GAP = 0.2801`, `ENTROPY_BADGE_DEFAULT_NORMALIZED_ENTROPY = 0.7738` from `results/v2_calibration_report.md`) are the SINGLE source of truth -- callers import them, never re-declare. `backend/pipeline/classify.py::predict_top_n` returns the full ranked list using calibrated `predict_proba` + `classes_`; legacy `predict_genre` is a thin top-1 wrapper for back-compat. `backend/api/models.py` gains 8 new Pydantic models with `extra='forbid'` (TopNPrediction, NearestTrainingBook, TrackContribution/s, DrivingWord, UncertaintyMetrics, ExplainResponse, ExtendedClassifyResult).
+- **Task 2 -- worker hand-off** (`4795ad5`): `backend/worker/jobs.py::classify_book` now writes `feature_vec:{job_id}` as `np.float64.tobytes()` to Redis with `ex=300` (5-min TTL per D-47) between step 5 and step 6. Step 6 calls `predict_top_n`; the SSE result payload gains `top_n` (length 8, sorted desc, sums to 1.0), `entropy`, `top1_top2_gap`, `badge_fires` (precomputed using the operative thresholds). Legacy keys (`predicted_genre`, `confidence`, `oov_word_count`, `total_words`, `processing_time_s`) preserved verbatim.
+- **Task 3 -- /explain endpoint** (`b859ab0`): `backend/api/routes/explain.py` implements POST `/api/classify/{job_id}/explain` with a 9-step defense-in-depth flow: UUID4 validation (T-9-12) -> calibration gate -> NN/artifacts gate (Pitfall 3) -> Redis gate -> feature_vec read (D-47, shape-validated against T-9-16) -> cache lookup (D-48: `explain:{sha256(feature_vec)}:{w2v_model_sha256[:16]}`) -> compute payload -> Pydantic validation -> cache SET with `ex=3600`. Canonical 410 phrasing "Upload expired — re-upload to see the explanation." preserved verbatim per D-49. Driving-words surrogate sourced from the upload's vocab slab + `cluster_to_representative_words` (no new Redis hand-off needed). `backend/api/app.py` mounts the new router additively without modifying the lifespan function 09-02 wrote.
+- **Latency measured:** cache-miss p50 = **15 ms** / cache-hit p50 = **1 ms** on the deployed v2 SVM (TestClient + MagicMock Redis). Well under the 200 ms ARCHITECTURE.md §5b target. The batched (3, n_features) predict_proba delivered a **2.79× speedup** over three separate calls (1.48 ms → 0.53 ms), beating Pitfall 2's 1.5× estimate.
+- **38 new tests:** 24 explain-math (uncertainty range + badge fire/no-fire at operative thresholds + threshold override + cache key shape + rotation + batched-call assertion + 50/50 fallback on zero total + NN order + driving-words sort + OOV skip + max_n cap + top-N sum-to-1 + real-SVM integration), 8 endpoint integration (happy + 410 + 3×503 + 404 + cache-hit short-circuit + cache-miss writes ex=3600). Suite total under the Phase 9 surface: **90 tests passing, 26.71 s**.
+
+Plan-research deviations auto-applied:
+
+- Rule 1 bug: plan `<action>` hardcoded research-default thresholds (0.10 / 0.7) while the same plan's `<success_criteria>` mandated operative thresholds (0.2801 / 0.7738). Honored the success criteria + 09-01 SUMMARY's explicit "plan 09-03 reads these values verbatim" callout. Tests verify callers CAN pass the un-tightened defaults if needed.
+- Rule 1 bug: legacy `test_predict_genre_returns_tuple` mocked the v1 SVM API (`predict` + `decision_function`); updated to the new `predict_proba` + `classes_` contract.
+- Rule 1 bug: `test_jobs_imports_pipeline_functions` asserted the old single-name import line; updated to match the new `predict_genre, predict_top_n` + `compute_uncertainty_metrics` imports. Added two new tests for the D-47 Redis write + SSE result Phase 9 additions.
+- Rule 1 bug: module-scoped TestClient fixture leaked MagicMock instances into lifespan-exit `await app.state.redis.close()` (TypeError). Fix: snapshot original redis at fixture entry, restore in try/finally.
+
 ### Known limitations (deferred to v2.1 / future phase)
 
 - **CEXP-04 author-leakage BLOCKED** — v2 SVM generalizes poorly to unseen authors (15 of 34 multi-book authors score 0% when held out). Honest mitigation candidates for v2.1: max-N-per-author cap in corpus design, or per-author held-out fine-tuning routine.
@@ -101,7 +118,7 @@ Plan-research deviations auto-applied:
 
 ### Next step
 
-Phase 9 (Classification Depth) — plan 09-02 complete 2026-05-27. Run `/gsd-execute-phase 9` to land plan 09-03 (DEPTH-07 entropy badge + Wave-2 explain endpoint logic).
+Phase 9 (Classification Depth) — plan 09-03 complete 2026-05-27. Backend explainability spine landed (DEPTH-03/04/05/07 complete; only DEPTH-02 + DEPTH-06 left, both frontend). Run `/gsd-execute-phase 9` to land plan 09-04 (frontend TopNList + UncertaintyBadge + ClassificationResult rewire; consumes the new SSE fields `top_n` / `entropy` / `top1_top2_gap` / `badge_fires` already emitted by `backend/worker/jobs.py`).
 
 ### Quick Tasks Completed
 
@@ -180,6 +197,7 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 | Explainability response time | < 5s (target ~200ms) | — (measured in Phase 9) |
 | Corpus metadata endpoint payload | < 100KB total | ~35 KB ✓ |
 | Phase 09 P02 | 25min | 2 tasks | 7 files |
+| Phase 09 P03 | 35 | 3 tasks | 10 files |
 
 ## Open Blockers
 

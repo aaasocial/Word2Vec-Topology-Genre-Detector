@@ -200,7 +200,7 @@ Plans:
 Plans:
 - [x] 09-01-PLAN.md — Calibration spike + SVM retrain (D-37/D-38) + lineage extension (D-40) + Wave-0 test scaffolds (DEPTH-01) — **Completed 2026-05-27**
 - [x] 09-02-PLAN.md — precompute_explain.py + explain_artifacts.npz + FastAPI lifespan model loading + .gitattributes LFS (DEPTH-04, DEPTH-06)
-- [ ] 09-03-PLAN.md — Backend explain math (zero-ablation, NN, driving words, entropy) + Pydantic models + /explain endpoint + worker feature_vec hand-off (DEPTH-01, DEPTH-03, DEPTH-04, DEPTH-05, DEPTH-07)
+- [x] 09-03-PLAN.md — Backend explain math (zero-ablation, NN, driving words, entropy) + Pydantic models + /explain endpoint + worker feature_vec hand-off (DEPTH-01, DEPTH-03, DEPTH-04, DEPTH-05, DEPTH-07)
 - [ ] 09-04-PLAN.md — Frontend types + uploadStore/useClassify extension + TopNList + UncertaintyBadge + ClassificationResult rewire (DEPTH-02, DEPTH-07)
 - [ ] 09-05-PLAN.md — useExplain hook + 4 sub-components + ClassificationExplain panel + Why-button + D-51 footnote (DEPTH-03, DEPTH-04, DEPTH-05, DEPTH-06)
 - [ ] 09-06-PLAN.md — Walkthrough Step7ValidationLimitations + 09-VALIDATION.md sign-off + end-to-end test gate (DEPTH-01..07)
