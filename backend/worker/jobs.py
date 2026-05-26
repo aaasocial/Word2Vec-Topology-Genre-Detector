@@ -6,8 +6,14 @@ backend/pipeline/ modules. Each step is called via run_in_executor
 
 Blocker 2 fix: No inline pipeline logic -- imports from backend.pipeline.
 Blocker 4 fix: All pipeline functions receive cancel_event parameter.
+
+Phase 9 (D-37/D-43/D-47): step 5 now writes feature_vec:{job_id} to Redis
+with a 5-min TTL so the synchronous /explain endpoint can fetch the vector
+without recomputing. Step 6's SSE result payload gains top_n + entropy +
+top1_top2_gap + badge_fires for the Wave-3 frontend (09-04 / 09-05) to render.
 """
 import json
+import logging
 import time
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
@@ -17,7 +23,8 @@ import numpy as np
 from backend.pipeline.embed import project_into_space
 from backend.pipeline.homology import compute_book_homology
 from backend.pipeline.features import build_feature_vector
-from backend.pipeline.classify import predict_genre
+from backend.pipeline.classify import predict_genre, predict_top_n
+from backend.pipeline.explain import compute_uncertainty_metrics
 from backend.pipeline.tokenize import validate_and_tokenize
 
 _executor = ThreadPoolExecutor(max_workers=1)
@@ -140,18 +147,51 @@ async def classify_book(ctx, file_content: bytes, job_id: str):
 
         await _check_cancel()
 
-        # --- Step 6: Classify ---
+        # --- D-47: store feature_vec in Redis for /explain endpoint ---
+        # Insertion point between step 5 (features) and step 6 (classify) so even
+        # a partial classify makes the feature_vec available; 5-min TTL means a
+        # failure self-cleans without explicit deletion (Pitfall 4).
+        if redis is not None:
+            try:
+                await redis.set(
+                    f'feature_vec:{job_id}',
+                    np.asarray(feature_vec, dtype=np.float64).tobytes(),
+                    ex=300,  # 5-min TTL per ARCHITECTURE.md §4
+                )
+            except Exception as exc:
+                # Non-fatal: classification still proceeds; /explain will 410 later
+                logging.getLogger(__name__).warning(
+                    f'D-47 feature_vec Redis write failed for {job_id}: {exc}'
+                )
+
+        # --- Step 6: Classify (D-37/D-38 top-N from calibrated SVM) ---
         await _publish_progress(redis, job_id, 'classify', 6)
         if svm_pipeline is None:
             raise ValueError('SVM pipeline not available. Run precompute.py first.')
 
-        predicted_genre, confidence = await loop.run_in_executor(
+        top_n_tuples = await loop.run_in_executor(
             _executor,
-            lambda: predict_genre(
+            lambda: predict_top_n(
                 feature_vec, svm_pipeline, genre_names,
-                cancel_event=cancel_event
+                cancel_event=cancel_event,
             )
         )
+        # Convert to list[dict] for JSON serialization in the SSE result payload.
+        top_n = [
+            {'genre': g, 'probability': round(float(p), 6)}
+            for g, p in top_n_tuples
+        ]
+        # Top-1 is the single source of truth (avoid svm.predict / argmax disagreement
+        # per Pitfall 1). Legacy predicted_genre / confidence derive from here.
+        predicted_genre = top_n[0]['genre']
+        confidence = top_n[0]['probability']
+
+        # Uncertainty metrics for D-43 / D-52 / DEPTH-07 badge.
+        # Operative thresholds live in backend.pipeline.explain (single source).
+        proba_array = np.array(
+            [t['probability'] for t in top_n], dtype=np.float64,
+        )
+        uncertainty = compute_uncertainty_metrics(proba_array)
 
         processing_time = time.time() - t_start
         result = {
@@ -160,6 +200,11 @@ async def classify_book(ctx, file_content: bytes, job_id: str):
             'oov_word_count': oov_count,
             'total_words': total_words,
             'processing_time_s': round(processing_time, 2),
+            # --- Phase 9 additions (D-41 / D-43 / DEPTH-07) ---
+            'top_n': top_n,
+            'entropy': round(uncertainty['entropy'], 6),
+            'top1_top2_gap': round(uncertainty['top1_top2_gap'], 6),
+            'badge_fires': uncertainty['badge_fires'],
         }
 
         await _publish_progress(redis, job_id, 'classify', 6, status='done', result=result)
