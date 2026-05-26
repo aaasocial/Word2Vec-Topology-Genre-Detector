@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Shipped
 status: executing
-last_updated: "2026-05-27T02:59:20Z"
+last_updated: "2026-05-27T03:14:00Z"
 last_activity: 2026-05-27
 progress:
   total_phases: 10
   completed_phases: 8
   total_plans: 37
-  completed_plans: 32
-  percent: 86
+  completed_plans: 33
+  percent: 89
 ---
 
 # STATE
@@ -18,12 +18,12 @@ progress:
 ## Current Position
 
 Phase: 09 (classification-depth) — EXECUTING
-Plan: 2 of 6 (plan 09-01 complete; next is 09-02)
+Plan: 3 of 6 (plans 09-01 and 09-02 complete; next is 09-03)
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
 - **Phase:** 09
-- **Plans complete:** 1/6
-- **Status:** Executing Phase 09 (plan 09-01 landed calibration spike + retrain + D-40 lineage + Wave-0 scaffolds)
+- **Plans complete:** 2/6
+- **Status:** Executing Phase 09 (plan 09-02 landed precompute_explain artifact + FastAPI lifespan extension; DEPTH-04 + DEPTH-06 closed)
 - **Last activity:** 2026-05-27
 
 ### Phase 8 Complete (2026-05-26)
@@ -70,9 +70,28 @@ Plan 09-01 landed the SVM calibration spike + retrain + D-40 lineage extension +
 - **Single source of truth:** `scripts/constants.py::HOLDOUT_GUTENBERG_IDS` is now the sole place the 20 pinned hold-out ids live (T-9-31 mitigation: 06_validate asserts the constant matches v1_baseline JSON at runtime).
 
 Plan-research deviations auto-applied:
+
 - Rule 1 bug: plan-prescribed `cv=LeaveOneOut()` for CalibratedClassifierCV is rejected by sklearn 1.6.1 for multiclass. Substituted `StratifiedKFold(n_splits=5)`.
 - Rule 3 blocker: `data/features/` missing on fresh machine; created `scripts/rebuild_per_book_artifacts.py` to regenerate per-book outputs from the existing W2V model without rotating `w2v_model_sha256`.
 - Rule 1 bug: two `test_lineage_smoke.py` tests asserted the pre-D-40 contract; updated to pass `calibration_method` through and assert the new D-40 fields + rotated `created_by` provenance.
+
+### Phase 9 plan 09-02 complete (2026-05-27)
+
+Plan 09-02 landed the build-time explain artifact (D-50) + run-time FastAPI lifespan extension (Q6) (DEPTH-04 + DEPTH-06):
+
+- **D-50 artifact:** `data/models/explain_artifacts.npz` (269.7 KB LFS-tracked) emitted with six canonical keys -- `feature_matrix_l2` (151, 600) float32 alpha-weighted + L2-normed (matches runtime feature_vec layout), `book_metadata` (151,) object array of dicts, `per_genre_centroids` (8, 150) float32 L2-normed, `genre_names` (8,) object array, `cluster_to_representative_words` (200,) object array of 10-word-lists, `metadata` dict with `corpus_hash=3f4fe940...` + `w2v_model_sha256=cd81f9e6...` + window + k_clusters + alpha + created_utc.
+- **Q6 lifespan extension:** `backend/api/app.py` now loads `svm_pipeline` + `w2v_model` + `genre_names` + `lineage` + `explain_artifacts` + `nn_index` (fitted `NearestNeighbors(5, euclidean)`) + `params` onto `app.state`. Defaults-first + isolated try/except per sub-load (Pitfall 3). `verify_svm_lineage` gates `app.state.calibration_available`.
+- **Pitfall 5 drift check:** lifespan cross-checks artifact metadata.corpus_hash vs lineage.corpus_hash; mismatch sets `nn_index = None` and logs (NOT raises) so `/health` stays green and `/explain` can 503 cleanly (T-9-06 mitigation).
+- **Q7 LFS gap closed:** `.gitattributes` now LFS-tracks `data/models/*.npz` -- verified via `git check-attr filter` returning `filter: lfs` (T-9-10 mitigation).
+- **CLAUDE.md Fresh Machine Setup updated** with the new `python -m backend.pipeline.precompute_explain --window 15` step.
+- **12 tests green:** 7 schema tests (`backend/tests/test_explain_artifacts.py`) + 5 lifespan contract tests (`backend/tests/test_app_lifespan.py`).
+- **Lifespan memory footprint observed:** ~78 MB total (5 MB SVM + 70 MB w2v + 3 MB explain_artifacts + 0.4 MB nn_index) -- well within Railway 1 GB worker budget (T-9-09 acceptable per CONTEXT.md).
+
+Plan-research deviations auto-applied:
+
+- Rule 1 bug: plan code referenced `book["id"]` but `corpus/books.yaml` uses `gutenberg_id`; added fallback for both keys in `compute_per_genre_centroids` + `book_meta_lookup` builder.
+- Rule 1 bug: `np.savez_compressed` auto-appends `.npz` to non-`.npz` filenames -- plan's `tmp_path = out_path.with_suffix(".npz.tmp")` produced `explain_artifacts.npz.tmp.npz` on disk while `os.replace` looked for `explain_artifacts.npz.tmp`. Renamed temp file to `explain_artifacts.tmp.npz` so the auto-append no-ops.
+- Rule 1 bug: `np.array(list_of_equal_length_lists, dtype=object)` collapses to a 2-D array (200, 10). Switched to pre-allocated 1-D object array with explicit element assignment so `cluster_to_representative_words[i]` is a Python list as the contract requires.
 
 ### Known limitations (deferred to v2.1 / future phase)
 
@@ -82,7 +101,7 @@ Plan-research deviations auto-applied:
 
 ### Next step
 
-Phase 9 (Classification Depth) — context gathered 2026-05-27. Run `/gsd-plan-phase 9` to break down DEPTH-01..07 into plans.
+Phase 9 (Classification Depth) — plan 09-02 complete 2026-05-27. Run `/gsd-execute-phase 9` to land plan 09-03 (DEPTH-07 entropy badge + Wave-2 explain endpoint logic).
 
 ### Quick Tasks Completed
 
@@ -160,6 +179,7 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 | H₂ P95 runtime per book | < 30s | — (deferred — H₂ removed from v2 per ROADMAP success criterion #1) |
 | Explainability response time | < 5s (target ~200ms) | — (measured in Phase 9) |
 | Corpus metadata endpoint payload | < 100KB total | ~35 KB ✓ |
+| Phase 09 P02 | 25min | 2 tasks | 7 files |
 
 ## Open Blockers
 
