@@ -175,6 +175,7 @@ python scripts/flush_v1_cache.py --yes
 python -m backend.pipeline.precompute --window 15      # features + SVM (~10 min)
 python -m backend.pipeline.precompute_viz --window 15  # PCA/KPCA/UMAP/t-SNE scatter + persistence (~10 min)
 python -m backend.pipeline.precompute_vr               # VR edges per projection (~30 s)
+python -m backend.pipeline.precompute_explain --window 15  # Phase 9: explain artifacts (~5s)
 ```
 
 **4. Start the app**
