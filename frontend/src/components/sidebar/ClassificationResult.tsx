@@ -19,14 +19,23 @@ export function ClassificationResult({ result }: ClassificationResultProps) {
   const topN = result.top_n ?? [{ genre: result.genre, probability: result.confidence }]
 
   return (
-    <div style={{ background: '#16161F', borderRadius: 8, padding: 16, marginTop: 16 }}>
+    <div
+      data-tour-id="classification-result"
+      style={{
+        background: 'hsl(var(--card))',
+        border: '1px solid hsl(var(--border))',
+        borderRadius: 8,
+        padding: 16,
+        marginTop: 16,
+      }}
+    >
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           fontSize: 18,
           fontWeight: 600,
-          color: '#F5F5FF',
+          color: 'hsl(var(--card-foreground))',
           marginBottom: 12,
         }}
       >
@@ -37,19 +46,20 @@ export function ClassificationResult({ result }: ClassificationResultProps) {
       {/* Phase 9: top-N bars + +N more expander (D-41/D-42) */}
       <TopNList topN={topN} />
 
-      <div style={{ fontSize: 12, color: '#6B6B80', marginTop: 12, marginBottom: 12 }}>
+      <div style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', marginTop: 12, marginBottom: 12 }}>
         OOV words: {result.oov_count} / {result.total_words}
       </div>
 
       {/* Phase 9 DEPTH-03 -- Why this genre? expander (mounts ClassificationExplain) */}
       <button
         data-testid="why-this-genre-button"
+        data-tour-id="why-button"
         onClick={() => setExplainOpen(!explainOpen)}
         style={{
           background: 'transparent',
-          color: '#6366F1',
+          color: 'hsl(var(--primary))',
           width: '100%',
-          border: '1px solid #6366F1',
+          border: '1px solid hsl(var(--primary))',
           borderRadius: 6,
           padding: '8px 16px',
           fontSize: 13,
@@ -64,8 +74,8 @@ export function ClassificationResult({ result }: ClassificationResultProps) {
       <button
         onClick={triggerCameraFocusUpload}
         style={{
-          background: '#6366F1',
-          color: '#fff',
+          background: 'hsl(var(--primary))',
+          color: 'hsl(var(--primary-foreground))',
           width: '100%',
           border: 'none',
           borderRadius: 6,
