@@ -3,6 +3,7 @@ import { Upload } from 'lucide-react'
 import { TOUR_ANCHORS } from '@/tour/anchors'
 import { useEffectiveTheme } from '@/stores/preferencesStore'
 import { UPLOADED_BOOK_COLOR } from '@/constants/genres'
+import { FailureCard, classifyError, type FailureVariant } from './FailureCard'
 
 interface UploadZoneProps {
   onClassify: (file: File) => Promise<void>
@@ -49,17 +50,29 @@ export function UploadZone({ onClassify }: UploadZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isDragOver, setIsDragOver] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [failureVariant, setFailureVariant] = useState<FailureVariant | null>(null)
   const theme = useEffectiveTheme()
 
-  const showError = useCallback((msg: string) => {
+  const showError = useCallback((msg: string, status?: number) => {
     setError(msg)
-    setTimeout(() => setError(null), 3000)
+    setFailureVariant(classifyError(msg, status))
+    setTimeout(() => {
+      setError(null)
+      setFailureVariant(null)
+    }, 10_000)
+  }, [])
+
+  const dismissFailure = useCallback(() => {
+    setError(null)
+    setFailureVariant(null)
   }, [])
 
   const handleFile = useCallback(
     (file: File | undefined) => {
       if (!file) return
-      onClassify(file).catch((err: Error) => showError(err.message))
+      onClassify(file).catch((err: Error & { status?: number }) => {
+        showError(err.message, err.status)
+      })
     },
     [onClassify, showError],
   )
@@ -179,10 +192,16 @@ export function UploadZone({ onClassify }: UploadZoneProps) {
         </div>
       )}
 
-      {error && (
-        <div style={{ fontSize: 12, color: 'hsl(var(--destructive))', padding: '4px 0' }}>
-          {error}
-        </div>
+      {/* D-79 failure card — replaces the v1 inline-red error string */}
+      {error && failureVariant && (
+        <FailureCard
+          variant={failureVariant}
+          message={error}
+          onRetry={() => {
+            dismissFailure()
+            inputRef.current?.click()
+          }}
+        />
       )}
       <input
         ref={inputRef}

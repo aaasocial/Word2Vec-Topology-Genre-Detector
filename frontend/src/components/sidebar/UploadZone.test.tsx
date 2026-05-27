@@ -13,7 +13,7 @@ describe('UploadZone', () => {
     expect(onClassify).toHaveBeenCalledWith(file)
   })
 
-  it('shows error message for non-txt files', async () => {
+  it('shows a failure card with locked copy for non-txt files', async () => {
     const onClassify = vi.fn().mockRejectedValue(
       new Error('Only .txt files are accepted. Convert other formats using the provided script.'),
     )
@@ -21,8 +21,11 @@ describe('UploadZone', () => {
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
     const badFile = new File(['content'], 'doc.pdf', { type: 'application/pdf' })
     fireEvent.change(input, { target: { files: [badFile] } })
-    // Wait for error to appear
-    await screen.findByText(/Only \.txt files are accepted/)
+    // Phase 10 D-79: classifyError() maps the message to the wrong_format variant
+    // and renders the locked headline + body copy. The upstream err.message is
+    // intentionally not displayed verbatim.
+    await screen.findByText(/Only .txt files for now\./)
+    await screen.findByText(/PDF and EPUB support is on the v3 roadmap\./)
   })
 
   it('applies drag-over styling on dragover', () => {
