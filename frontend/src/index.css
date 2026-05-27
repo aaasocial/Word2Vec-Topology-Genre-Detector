@@ -1,7 +1,16 @@
 @import "tailwindcss";
 
+/* ============================================================ */
+/* DESIGN TOKENS — Phase 10 dual-theme (Paper light + dark)      */
+/* ============================================================ */
+/* Dark stays the default first paint (Phase 3 lock).            */
+/* Light theme adds the `.light` scope on <html>.                */
+/* HSL CSS variables per Phase 9 D-55 — NOT Tailwind `dark:`.    */
+/* ============================================================ */
+
 @layer base {
   :root {
+    /* dark (default first paint per Phase 3 lock) */
     --background: 0 0% 4%;
     --foreground: 240 20% 93%;
     --card: 240 13% 10%;
@@ -22,23 +31,81 @@
     --input: 240 13% 16%;
     --ring: 239 84% 67%;
     --radius: 0.5rem;
+
+    /* Phase 10 NEW tokens (canvas + sidebar + warn/good + error wash) */
+    --scene-bg: 0 0% 4%;
+    --sidebar-bg: 240 13% 8%;
+    --sidebar-border: 240 13% 12%;
+
+    --warn: 35 89% 56%;
+    --warn-soft: 45 90% 92%;
+    --warn-strong: 35 80% 32%;
+
+    --good: 152 35% 50%;
+    --good-soft: 140 40% 90%;
+
+    --error-bg: 0 50% 96%;
+    --error-border: 0 35% 78%;
+    --error-fg: 0 50% 24%;
+    --error-mid: 0 30% 38%;
+  }
+
+  :root.light {
+    /* Light · Paper — warm cream canvas with white cards floating on it. */
+    --background: 40 30% 97%;     /* #FBF9F2 */
+    --foreground: 235 25% 13%;
+    --card: 40 60% 100%;          /* #FFFFFF */
+    --card-foreground: 235 28% 14%;
+    --popover: 40 60% 100%;
+    --popover-foreground: 235 28% 14%;
+    --primary: 239 84% 58%;       /* #4F46E5 deepened from dark (67%) for AA on cream */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 25% 92%;
+    --secondary-foreground: 235 28% 14%;
+    --muted: 40 25% 92%;
+    --muted-foreground: 240 10% 41%;
+    --accent: 239 84% 58%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 73% 51%;     /* #DC2626 */
+    --destructive-foreground: 0 0% 100%;
+    --border: 40 18% 86%;
+    --input: 40 18% 86%;
+    --ring: 239 84% 58%;
+    /* --radius inherits */
+
+    --scene-bg: 40 30% 97%;
+    --sidebar-bg: 40 60% 100%;
+    --sidebar-border: 40 18% 86%;
+
+    --warn: 35 78% 42%;
+    --warn-soft: 45 90% 92%;
+    --warn-strong: 35 78% 30%;
+
+    --good: 152 45% 38%;
+    --good-soft: 140 40% 90%;
+
+    --error-bg: 0 50% 97%;
+    --error-border: 0 40% 78%;
+    --error-fg: 0 50% 24%;
+    --error-mid: 0 30% 32%;
   }
 }
 
 @layer base {
   * { box-sizing: border-box; }
   body {
-    background-color: #0A0A0F;
-    color: #E0E0EC;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
     font-family: 'Inter', system-ui, sans-serif;
     margin: 0;
     overflow: hidden;
+    transition: background-color 240ms ease, color 240ms ease;
   }
 }
 
 /* Custom scrollbar for sidebar */
 .sidebar-scroll::-webkit-scrollbar { width: 4px; }
-.sidebar-scroll::-webkit-scrollbar-thumb { background: #2A2A3A; border-radius: 2px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 2px; }
 .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
 
 /* Upload progress pulse animation */
