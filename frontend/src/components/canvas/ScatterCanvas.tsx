@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber'
 import { CameraController } from './CameraController'
 import { PointCloud } from './PointCloud'
 import { usePreferencesStore } from '@/stores/preferencesStore'
+import { TOUR_ANCHORS } from '@/tour/anchors'
 import type { ScatterPoint } from '@/types/scatter'
 
 interface ScatterCanvasProps {
@@ -73,7 +74,7 @@ export function ScatterCanvas(props: ScatterCanvasProps) {
     <div
       role="img"
       aria-label="3D scatter plot of word embeddings colored by literary genre"
-      data-tour-id="scatter-canvas"
+      data-tour-id={TOUR_ANCHORS.scatterCanvas}
       style={{ width: '100%', height: '100%' }}
     >
       <Canvas

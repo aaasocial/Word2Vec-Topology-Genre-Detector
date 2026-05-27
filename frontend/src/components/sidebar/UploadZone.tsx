@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback } from 'react'
 import { Upload } from 'lucide-react'
+import { TOUR_ANCHORS } from '@/tour/anchors'
 
 interface UploadZoneProps {
   onClassify: (file: File) => Promise<void>
@@ -79,6 +80,7 @@ export function UploadZone({ onClassify }: UploadZoneProps) {
       <div
         role="button"
         aria-label="Upload text file for genre classification"
+        data-tour-id={TOUR_ANCHORS.uploadZone}
         tabIndex={0}
         onClick={handleClick}
         onKeyDown={handleKeyDown}

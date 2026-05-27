@@ -1,6 +1,7 @@
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { GENRE_LIST, genreColor as resolveGenreColor } from '@/constants/genres'
 import { useEffectiveTheme } from '@/stores/preferencesStore'
+import { TOUR_ANCHORS } from '@/tour/anchors'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useState, useEffect } from 'react'
 
@@ -27,7 +28,7 @@ export function GenreSelect() {
         Genre
       </div>
       <select
-        data-tour-id="genre-select"
+        data-tour-id={TOUR_ANCHORS.genreSelect}
         value={localValue}
         onChange={e => setLocalValue(e.target.value)}
         style={{

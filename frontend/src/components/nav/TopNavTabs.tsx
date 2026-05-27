@@ -1,10 +1,11 @@
 import { Settings, GraduationCap } from 'lucide-react'
 import { useVisualizationStore, type TabKey } from '@/stores/visualizationStore'
+import { TOUR_ANCHORS, type TourAnchorId } from '@/tour/anchors'
 
-const TABS: { key: TabKey; label: string; tourId?: string }[] = [
+const TABS: { key: TabKey; label: string; tourId?: TourAnchorId }[] = [
   { key: 'scatter', label: 'Scatter' },
-  { key: 'topology', label: 'Topology', tourId: 'topology-tab' },
-  { key: 'compare', label: 'Compare', tourId: 'compare-tab' },
+  { key: 'topology', label: 'Topology', tourId: TOUR_ANCHORS.topologyTab },
+  { key: 'compare', label: 'Compare', tourId: TOUR_ANCHORS.compareTab },
 ]
 
 export function TopNavTabs() {

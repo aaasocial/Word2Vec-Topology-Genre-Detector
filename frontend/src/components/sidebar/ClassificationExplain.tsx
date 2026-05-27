@@ -16,6 +16,7 @@
 import { useEffect, useState } from 'react'
 import { useUploadStore } from '@/stores/uploadStore'
 import { useExplain } from '@/hooks/useExplain'
+import { TOUR_ANCHORS } from '@/tour/anchors'
 import { NearestBooksList } from './NearestBooksList'
 import { TrackContributionBars } from './TrackContributionBars'
 import { DrivingWordsPills } from './DrivingWordsPills'
@@ -49,7 +50,7 @@ export function ClassificationExplain() {
     return (
       <div
         data-testid="explain-expired"
-        data-tour-id="explain-panel"
+        data-tour-id={TOUR_ANCHORS.explainPanel}
         style={{
           background: 'hsl(var(--warn-soft))',
           border: '1px solid hsl(var(--warn))',
@@ -75,7 +76,7 @@ export function ClassificationExplain() {
     return (
       <div
         data-testid="explain-uncalibrated"
-        data-tour-id="explain-panel"
+        data-tour-id={TOUR_ANCHORS.explainPanel}
         style={{
           background: 'hsl(var(--warn-soft))',
           border: '1px solid hsl(var(--warn))',
@@ -135,7 +136,7 @@ export function ClassificationExplain() {
   return (
     <div
       data-testid="explain-panel"
-      data-tour-id="explain-panel"
+      data-tour-id={TOUR_ANCHORS.explainPanel}
       style={{
         background: 'hsl(var(--card))',
         border: '1px solid hsl(var(--border))',

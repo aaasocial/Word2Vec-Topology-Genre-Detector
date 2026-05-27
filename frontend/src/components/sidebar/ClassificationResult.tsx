@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
+import { TOUR_ANCHORS } from '@/tour/anchors'
 import type { ClassificationResult as ClassificationResultType } from '@/stores/uploadStore'
 import { TopNList } from './TopNList'
 import { UncertaintyBadge } from './UncertaintyBadge'
@@ -20,7 +21,7 @@ export function ClassificationResult({ result }: ClassificationResultProps) {
 
   return (
     <div
-      data-tour-id="classification-result"
+      data-tour-id={TOUR_ANCHORS.classificationResult}
       style={{
         background: 'hsl(var(--card))',
         border: '1px solid hsl(var(--border))',
@@ -53,7 +54,7 @@ export function ClassificationResult({ result }: ClassificationResultProps) {
       {/* Phase 9 DEPTH-03 -- Why this genre? expander (mounts ClassificationExplain) */}
       <button
         data-testid="why-this-genre-button"
-        data-tour-id="why-button"
+        data-tour-id={TOUR_ANCHORS.whyButton}
         onClick={() => setExplainOpen(!explainOpen)}
         style={{
           background: 'transparent',
