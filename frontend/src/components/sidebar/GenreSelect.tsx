@@ -1,5 +1,5 @@
 import { useVisualizationStore } from '@/stores/visualizationStore'
-import { GENRE_COLORS, GENRE_LIST } from '@/constants/genres'
+import { GENRE_LIST, genreColor as resolveGenreColor } from '@/constants/genres'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useState, useEffect } from 'react'
 
@@ -53,11 +53,11 @@ export function GenreSelect() {
               width: 8,
               height: 8,
               borderRadius: '50%',
-              background: GENRE_COLORS[selectedGenre] ?? '#888',
+              background: resolveGenreColor(selectedGenre, 'dark'),
               display: 'inline-block',
             }}
           />
-          <span style={{ fontSize: 12, color: GENRE_COLORS[selectedGenre] ?? '#888' }}>
+          <span style={{ fontSize: 12, color: resolveGenreColor(selectedGenre, 'dark') }}>
             {selectedGenre}
           </span>
         </div>

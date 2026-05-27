@@ -1,5 +1,5 @@
 import { useVisualizationStore } from '@/stores/visualizationStore'
-import { GENRE_COLORS, GENRE_LIST } from '@/constants/genres'
+import { GENRE_LIST, genreColor as resolveGenreColor } from '@/constants/genres'
 
 export function GenreLegend() {
   const selectedGenre = useVisualizationStore(s => s.selectedGenre)
@@ -52,7 +52,7 @@ export function GenreLegend() {
                     width: 8,
                     height: 8,
                     borderRadius: '50%',
-                    background: GENRE_COLORS[genre],
+                    background: resolveGenreColor(genre, 'dark'),
                     display: 'inline-block',
                     flexShrink: 0,
                   }}

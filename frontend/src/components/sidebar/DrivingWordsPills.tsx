@@ -4,10 +4,8 @@
 // the pills. The phrasing is a disclosure contract; do NOT translate or paraphrase.
 // Backend computes the (word, tfidf, nearest_genre) tuple; this component renders.
 // D-55: inline-hex styling only (no CSS variables; Phase 10 owns the sweep).
-import { GENRE_COLORS } from '@/constants/genres'
+import { genreColor as resolveGenreColor } from '@/constants/genres'
 import type { DrivingWord } from '@/types/explain'
-
-const FALLBACK_COLOR = '#888888'
 
 interface DrivingWordsPillsProps {
   words: DrivingWord[]
@@ -43,7 +41,7 @@ export function DrivingWordsPills({ words }: DrivingWordsPillsProps) {
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
         {words.map((w, idx) => {
-          const color = GENRE_COLORS[w.nearest_genre] ?? FALLBACK_COLOR
+          const color = resolveGenreColor(w.nearest_genre, 'dark')
           return (
             <span
               key={`${w.word}-${idx}`}

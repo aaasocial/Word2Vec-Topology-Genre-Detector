@@ -16,7 +16,6 @@ import { useVisualizationStore } from '@/stores/visualizationStore'
 import { useUploadStore } from '@/stores/uploadStore'
 import { useUIStore } from '@/stores/uiStore'
 import { buildBuffers, buildUploadedBuffers } from '@/lib/buffers'
-import { GENRE_COLORS } from '@/constants/genres'
 
 /** Height of top nav (48px) + disclaimer banner (28px) + borders (2px) */
 const TOP_OFFSET = 78
@@ -56,7 +55,9 @@ export default function App() {
 
   const corpusBuffers = useMemo(() => {
     if (!data?.points) return null
-    return buildBuffers(data.points, GENRE_COLORS)
+    // Phase 10 D-62: buildBuffers reads from the resolved-theme palette.
+    // Until preferencesStore lands (Task 5), 'dark' is the first-paint default.
+    return buildBuffers(data.points, 'dark')
   }, [data])
 
   // Build tfidfWeights Float32Array aligned to corpus points, normalized to [0,1]

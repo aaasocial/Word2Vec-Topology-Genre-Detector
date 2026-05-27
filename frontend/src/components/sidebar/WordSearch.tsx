@@ -2,7 +2,7 @@ import { useState, useEffect, forwardRef } from 'react'
 import { Search, X } from 'lucide-react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { useDebounce } from '@/hooks/useDebounce'
-import { GENRE_COLORS } from '@/constants/genres'
+import { genreColor as resolveGenreColor } from '@/constants/genres'
 import type { ScatterPoint } from '@/types/scatter'
 
 interface WordSearchProps {
@@ -149,7 +149,7 @@ export const WordSearch = forwardRef<HTMLInputElement, WordSearchProps>(
                       width: 7,
                       height: 7,
                       borderRadius: '50%',
-                      background: GENRE_COLORS[point.genre] ?? '#888',
+                      background: resolveGenreColor(point.genre, 'dark'),
                       flexShrink: 0,
                     }}
                   />

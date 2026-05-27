@@ -2,10 +2,8 @@
 // Phase 9 DEPTH-04 -- 5 nearest training books with Euclidean distance on L2-normed features.
 // Visual is minimum-viable per Phase 10 deferred dark-mode sweep (user clarification).
 // D-55: inline-hex styling only (no CSS variables; Phase 10 owns the sweep).
-import { GENRE_COLORS } from '@/constants/genres'
+import { genreColor as resolveGenreColor } from '@/constants/genres'
 import type { NearestTrainingBook } from '@/types/explain'
-
-const FALLBACK_COLOR = '#888888'
 
 interface NearestBooksListProps {
   books: NearestTrainingBook[]   // expected length 5 from backend; component does not pad
@@ -28,7 +26,7 @@ export function NearestBooksList({ books }: NearestBooksListProps) {
         Nearest training books
       </div>
       {books.map((b, idx) => {
-        const color = GENRE_COLORS[b.genre] ?? FALLBACK_COLOR
+        const color = resolveGenreColor(b.genre, 'dark')
         return (
           <div
             key={`${b.gutenberg_id}-${idx}`}

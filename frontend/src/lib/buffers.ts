@@ -1,11 +1,25 @@
 import * as THREE from 'three'
 import type { ScatterPoint } from '@/types/scatter'
-import { UPLOADED_BOOK_COLOR } from '@/constants/genres'
+import {
+  GENRE_COLORS,
+  UPLOADED_BOOK_COLOR,
+  FALLBACK_GENRE_COLOR,
+  type Theme,
+} from '@/constants/genres'
 
+/**
+ * Phase 10 D-62 — buildBuffers takes the resolved theme so it can pick the
+ * correct light/dark hex from the dual-token genre palette. Caller passes
+ * either the GENRE_COLORS[theme] subrecord directly (legacy path) or a theme
+ * string and we resolve from the canonical map.
+ */
 export function buildBuffers(
   points: ScatterPoint[],
-  genreColors: Record<string, string>,
+  themeOrPalette: Theme | Record<string, string>,
 ): { positions: Float32Array; colors: Float32Array; sizes: Float32Array; opacities: Float32Array; normalizedWeights: Float32Array } {
+  const palette: Record<string, string> =
+    typeof themeOrPalette === 'string' ? GENRE_COLORS[themeOrPalette] : themeOrPalette
+
   const n = points.length
   const positions = new Float32Array(n * 3)
   const colors = new Float32Array(n * 3)
@@ -21,7 +35,7 @@ export function buildBuffers(
     positions[i * 3] = p.x
     positions[i * 3 + 1] = p.y
     positions[i * 3 + 2] = p.z
-    const hex = genreColors[p.genre] ?? '#888888'
+    const hex = palette[p.genre] ?? FALLBACK_GENRE_COLOR
     const color = new THREE.Color(hex)
     colors[i * 3] = color.r
     colors[i * 3 + 1] = color.g
@@ -34,7 +48,10 @@ export function buildBuffers(
   return { positions, colors, sizes, opacities, normalizedWeights }
 }
 
-export function buildUploadedBuffers(uploadedPoints: ScatterPoint[]): {
+export function buildUploadedBuffers(
+  uploadedPoints: ScatterPoint[],
+  theme: Theme = 'dark',
+): {
   positions: Float32Array
   colors: Float32Array
   sizes: Float32Array
@@ -53,7 +70,7 @@ export function buildUploadedBuffers(uploadedPoints: ScatterPoint[]): {
   const colors = new Float32Array(n * 3)
   const sizes = new Float32Array(n)
   const opacities = new Float32Array(n)
-  const color = new THREE.Color(UPLOADED_BOOK_COLOR)
+  const color = new THREE.Color(UPLOADED_BOOK_COLOR[theme])
   for (let i = 0; i < n; i++) {
     const p = uploadedPoints[i]
     positions[i * 3] = p.x

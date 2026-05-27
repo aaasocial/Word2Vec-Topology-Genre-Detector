@@ -1,6 +1,6 @@
 import { X } from 'lucide-react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
-import { GENRE_COLORS } from '@/constants/genres'
+import { genreColor as resolveGenreColor } from '@/constants/genres'
 import type { ScatterPoint } from '@/types/scatter'
 
 interface DetailPanelProps {
@@ -12,7 +12,7 @@ export function DetailPanel({ point }: DetailPanelProps) {
 
   if (!point) return null
 
-  const genreColor = GENRE_COLORS[point.genre] ?? '#888888'
+  const genreColor = resolveGenreColor(point.genre, 'dark')
 
   return (
     <div

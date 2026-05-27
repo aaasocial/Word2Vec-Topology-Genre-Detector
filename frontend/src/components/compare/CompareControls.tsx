@@ -1,6 +1,6 @@
 import { Columns2 } from 'lucide-react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
-import { GENRE_COLORS, GENRE_LIST } from '@/constants/genres'
+import { GENRE_LIST, genreColor as resolveGenreColor } from '@/constants/genres'
 
 export function CompareControls() {
   const compareMode = useVisualizationStore((s) => s.compareMode)
@@ -84,11 +84,11 @@ export function CompareControls() {
                   width: 8,
                   height: 8,
                   borderRadius: '50%',
-                  background: GENRE_COLORS[compareGenre] ?? '#888',
+                  background: resolveGenreColor(compareGenre, 'dark'),
                   display: 'inline-block',
                 }}
               />
-              <span style={{ fontSize: 12, color: GENRE_COLORS[compareGenre] ?? '#888' }}>
+              <span style={{ fontSize: 12, color: resolveGenreColor(compareGenre, 'dark') }}>
                 {compareGenre}
               </span>
             </div>

@@ -1,5 +1,5 @@
 import { Html } from '@react-three/drei'
-import { GENRE_COLORS } from '@/constants/genres'
+import { genreColor as resolveGenreColor } from '@/constants/genres'
 import type { ScatterPoint } from '@/types/scatter'
 
 // XSS: never use dangerouslySetInnerHTML here (T-3-01)
@@ -10,7 +10,9 @@ interface HoverTooltipProps {
 
 // TooltipContent is a pure DOM component so it can be tested without R3F Canvas
 export function TooltipContent({ point }: { point: ScatterPoint }) {
-  const genreColor = GENRE_COLORS[point.genre] ?? '#888888'
+  // Phase 10 D-60: genreColor resolves under the active theme.
+  // Task 5 swaps the literal 'dark' for preferencesStore.theme resolution.
+  const genreColor = resolveGenreColor(point.genre, 'dark')
   return (
     <div
       style={{

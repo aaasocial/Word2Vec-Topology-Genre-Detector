@@ -3,7 +3,7 @@
 // Visual is minimum-viable per Phase 10 deferred dark-mode sweep (user clarification).
 // D-55: inline-hex styling only (no CSS variables; Phase 10 owns the sweep).
 import { useState } from 'react'
-import { GENRE_COLORS } from '@/constants/genres'
+import { genreColor as resolveGenreColor } from '@/constants/genres'
 import type { TopNPrediction } from '@/types/explain'
 
 interface TopNListProps {
@@ -11,7 +11,6 @@ interface TopNListProps {
 }
 
 const DEFAULT_VISIBLE = 3
-const FALLBACK_COLOR = '#888888'
 
 export function TopNList({ topN }: TopNListProps) {
   const [expanded, setExpanded] = useState(false)
@@ -26,7 +25,7 @@ export function TopNList({ topN }: TopNListProps) {
   return (
     <div data-testid="top-n-list">
       {visible.map((p, idx) => {
-        const color = GENRE_COLORS[p.genre] ?? FALLBACK_COLOR
+        const color = resolveGenreColor(p.genre, 'dark')
         return (
           <div
             key={`${p.genre}-${idx}`}

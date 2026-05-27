@@ -2,7 +2,7 @@ import { useRef, useEffect, useMemo } from 'react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { usePersistenceImage } from '@/hooks/usePersistenceImage'
 import { renderHeatmap, computeMinMax } from '@/lib/heatmap'
-import { GENRE_COLORS } from '@/constants/genres'
+import { genreColor as resolveGenreColor } from '@/constants/genres'
 
 const HEATMAP_SIZE = 260
 
@@ -50,7 +50,7 @@ export function CompareHeatmaps() {
         <div
           style={{
             fontSize: 12,
-            color: GENRE_COLORS[selectedGenre] ?? '#888',
+            color: resolveGenreColor(selectedGenre, 'dark'),
             marginBottom: 4,
           }}
         >
@@ -73,7 +73,7 @@ export function CompareHeatmaps() {
         <div
           style={{
             fontSize: 12,
-            color: GENRE_COLORS[compareGenre] ?? '#888',
+            color: resolveGenreColor(compareGenre, 'dark'),
             marginBottom: 4,
           }}
         >
