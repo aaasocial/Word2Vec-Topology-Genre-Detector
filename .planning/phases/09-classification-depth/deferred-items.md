@@ -80,3 +80,51 @@ mounts both components per the contract).*
 ---
 
 *The Phase 9 success criteria do not require the 29 environmental tests to pass — only the Phase 9 surface tests (which all do). 09-06's full-suite gate is satisfied by the green Phase 9 backend suite + green Phase 9 frontend surface suite + clean tsc.*
+
+---
+
+## Found during the post-Wave-4 regression gate
+
+### 4. `tests/test_corpus.py::test_books_yaml_valid` — stale shape assertion
+
+**Severity:** low (test hygiene; production unaffected — corpus is correct)
+**Pre-existing:** asserts `len(genres) == 3` and "5 books per genre"; the corpus
+was expanded to 8 genres × ~20 books = 154 books in Phase 8 but this Phase-1
+era test was never updated. The test was already failing at master commit
+`1fc3e3f` (Phase 8 close) before Phase 9 began. `git log 1fc3e3f..HEAD --
+tests/test_corpus.py corpus/books.yaml` returns empty → Phase 9 did not modify
+either file.
+**Recommended fix:** update assertion to `len(genres) == 8` and a min-books-
+per-genre check matching the v2 corpus, or convert to a structural-only test
+(YAML loads, every genre has ≥1 book entry with required fields).
+
+### 5. `backend/api/tests/test_viz.py` — 6 path-prefix failures
+
+**Severity:** medium (test suite hygiene, no production impact — routes work,
+tests use wrong URL)
+**Pre-existing:** the viz router has been mounted at `/api/viz/...` since
+Phase 5 (`api_router = APIRouter(prefix='/api')` then
+`api_router.include_router(viz_router, prefix='/viz')`). The test file uses
+bare `/viz/...` paths. This exact issue was logged in
+`06-VERIFICATION.md` as "10/13 tests wrong path prefix" — three tests were
+since fixed but six remain. `git log 1fc3e3f..HEAD -- backend/api/tests/test_viz.py
+backend/api/routes/viz.py` returns empty → Phase 9 did not touch either file.
+**Failing tests:**
+- `test_scatter_valid_projection`
+- `test_scatter_invalid_projection`
+- `test_scatter_cache_miss`
+- `test_tfidf_genre`
+- `test_tfidf_book`
+- `test_tfidf_book_invalid_id_string`
+
+**Recommended fix:** sed `'/viz/' → '/api/viz/'` and `'/tfidf/' → '/api/viz/tfidf/'`
+across the file. Trivial mechanical edit; all six should pass after the prefix
+change. The `test_path_traversal_blocked` warning from `06-VERIFICATION.md`
+remains a separate known issue (SPA catch-all serves `index.html` for the
+URL-decoded path) and is not in this list.
+
+---
+
+*Regression gate verdict (post Wave 4): zero new Phase 9 regressions. All
+failures listed in this file are pre-existing technical debt at the Phase 8
+close (commit `1fc3e3f`).*
