@@ -21,6 +21,7 @@ import {
   resolveEffectiveTheme,
   subscribeToSystemTheme,
 } from '@/stores/preferencesStore'
+import { TourProvider } from '@/tour/TourProvider'
 import { buildBuffers, buildUploadedBuffers } from '@/lib/buffers'
 
 /** Height of top nav (48px) + disclaimer banner (28px) + borders (2px) */
@@ -139,7 +140,7 @@ export default function App() {
   }, [data, uploadedPoints])
 
   return (
-    <>
+    <TourProvider>
       {/* Unsupported screen overlay — pure CSS, no React state */}
       <style>{`
         @media (max-width: 767px) {
@@ -279,6 +280,6 @@ export default function App() {
         {/* Pipeline explanation dialog (fullscreen overlay) */}
         <PipelineExplanation />
       </div>
-    </>
+    </TourProvider>
   )
 }
