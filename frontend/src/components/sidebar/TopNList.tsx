@@ -1,7 +1,6 @@
 // frontend/src/components/sidebar/TopNList.tsx
 // Phase 9 DEPTH-01 / DEPTH-02 -- top-3 visible + collapsible +5 more expander (D-41/D-42).
-// Visual is minimum-viable per Phase 10 deferred dark-mode sweep (user clarification).
-// D-55: inline-hex styling only (no CSS variables; Phase 10 owns the sweep).
+// Phase 10 sweep (D-82): inline-hex lifted to hsl(var(--*)) tokens.
 import { useState } from 'react'
 import { genreColor as resolveGenreColor } from '@/constants/genres'
 import { useEffectiveTheme } from '@/stores/preferencesStore'
@@ -51,13 +50,13 @@ export function TopNList({ topN }: TopNListProps) {
                 flexShrink: 0,
               }}
             />
-            <span style={{ color: '#E0E0EC', minWidth: 80 }}>{p.genre}</span>
+            <span style={{ color: 'hsl(var(--foreground))', minWidth: 80 }}>{p.genre}</span>
             <div
               data-testid="top-n-bar"
               style={{
                 flex: 1,
                 height: 6,
-                background: '#1E1E2A',
+                background: 'hsl(var(--muted))',
                 borderRadius: 3,
                 overflow: 'hidden',
               }}
@@ -77,7 +76,7 @@ export function TopNList({ topN }: TopNListProps) {
                 marginLeft: 4,
                 fontSize: 12,
                 fontFamily: 'JetBrains Mono, monospace',
-                color: '#F5F5FF',
+                color: 'hsl(var(--foreground))',
                 minWidth: 48,
                 textAlign: 'right',
               }}
@@ -95,7 +94,7 @@ export function TopNList({ topN }: TopNListProps) {
           style={{
             background: 'transparent',
             border: 'none',
-            color: '#6366F1',
+            color: 'hsl(var(--primary))',
             fontSize: 12,
             cursor: 'pointer',
             padding: '4px 0',

@@ -12,7 +12,7 @@
 //   - error (non-410/503)-> generic error message with .message
 //   - success           -> sub-components + D-51 footnote
 //
-// D-55: inline-hex styling only (no CSS variables; Phase 10 owns the sweep).
+// Phase 10 D-82 sweep: inline-hex lifted to hsl(var(--*)) tokens.
 import { useEffect, useState } from 'react'
 import { useUploadStore } from '@/stores/uploadStore'
 import { useExplain } from '@/hooks/useExplain'
@@ -44,23 +44,25 @@ export function ClassificationExplain() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobId])
 
-  // --- 410 expired branch ---
+  // --- 410 expired branch (amber wash — "we'll handle this" per D-79) ---
   if (expired) {
     return (
       <div
         data-testid="explain-expired"
+        data-tour-id="explain-panel"
         style={{
-          background: '#16161F',
+          background: 'hsl(var(--warn-soft))',
+          border: '1px solid hsl(var(--warn))',
           padding: 12,
           borderRadius: 8,
           marginTop: 12,
           fontSize: 12,
-          color: '#E0E0EC',
+          color: 'hsl(var(--card-foreground))',
           lineHeight: 1.5,
         }}
       >
-        <strong style={{ color: '#FBBF24' }}>Upload expired</strong>
-        <div style={{ marginTop: 6, color: '#6B6B80' }}>
+        <strong style={{ color: 'hsl(var(--warn-strong))' }}>Upload expired</strong>
+        <div style={{ marginTop: 6, color: 'hsl(var(--muted-foreground))' }}>
           The explanation cache lives for 5 minutes after upload. Please re-upload
           your file (use the upload zone above) to see the explanation.
         </div>
@@ -68,23 +70,25 @@ export function ClassificationExplain() {
     )
   }
 
-  // --- 503 uncalibrated branch ---
+  // --- 503 uncalibrated branch (amber wash per D-79) ---
   if (uncalibrated) {
     return (
       <div
         data-testid="explain-uncalibrated"
+        data-tour-id="explain-panel"
         style={{
-          background: '#16161F',
+          background: 'hsl(var(--warn-soft))',
+          border: '1px solid hsl(var(--warn))',
           padding: 12,
           borderRadius: 8,
           marginTop: 12,
           fontSize: 12,
-          color: '#E0E0EC',
+          color: 'hsl(var(--card-foreground))',
           lineHeight: 1.5,
         }}
       >
-        <strong style={{ color: '#FBBF24' }}>Explanation unavailable</strong>
-        <div style={{ marginTop: 6, color: '#6B6B80' }}>
+        <strong style={{ color: 'hsl(var(--warn-strong))' }}>Explanation unavailable</strong>
+        <div style={{ marginTop: 6, color: 'hsl(var(--muted-foreground))' }}>
           The deployed model is missing required calibration metadata or explain
           artifacts. Re-run the precompute pipeline to enable explanations.
         </div>
@@ -100,7 +104,7 @@ export function ClassificationExplain() {
         style={{
           padding: 12,
           fontSize: 12,
-          color: '#6B6B80',
+          color: 'hsl(var(--muted-foreground))',
           marginTop: 12,
         }}
       >
@@ -117,7 +121,7 @@ export function ClassificationExplain() {
         style={{
           padding: 12,
           fontSize: 12,
-          color: '#F87171',
+          color: 'hsl(var(--destructive))',
           marginTop: 12,
         }}
       >
@@ -131,8 +135,10 @@ export function ClassificationExplain() {
   return (
     <div
       data-testid="explain-panel"
+      data-tour-id="explain-panel"
       style={{
-        background: '#16161F',
+        background: 'hsl(var(--card))',
+        border: '1px solid hsl(var(--border))',
         padding: 12,
         borderRadius: 8,
         marginTop: 12,
@@ -147,10 +153,10 @@ export function ClassificationExplain() {
         data-testid="explain-footnote"
         style={{
           fontSize: 11,
-          color: '#6B6B80',
+          color: 'hsl(var(--muted-foreground))',
           marginTop: 16,
           paddingTop: 12,
-          borderTop: '1px solid #1E1E2A',
+          borderTop: '1px solid hsl(var(--border))',
           lineHeight: 1.5,
         }}
       >
@@ -160,7 +166,7 @@ export function ClassificationExplain() {
           href={VALIDATION_REPORT_URL}
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: '#6366F1' }}
+          style={{ color: 'hsl(var(--primary))' }}
         >
           validation report
         </a>
