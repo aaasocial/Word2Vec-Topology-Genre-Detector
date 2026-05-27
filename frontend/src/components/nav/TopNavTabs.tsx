@@ -1,6 +1,7 @@
 import { Settings, GraduationCap } from 'lucide-react'
 import { useVisualizationStore, type TabKey } from '@/stores/visualizationStore'
 import { TOUR_ANCHORS, type TourAnchorId } from '@/tour/anchors'
+import { HelpDropdown } from './HelpDropdown'
 
 const TABS: { key: TabKey; label: string; tourId?: TourAnchorId }[] = [
   { key: 'scatter', label: 'Scatter' },
@@ -115,7 +116,8 @@ export function TopNavTabs() {
           <span>How It Works</span>
         </button>
 
-        {/* Phase 10: Help dropdown mounts here in Task 9 */}
+        {/* Phase 10 D-67/D-68: Help dropdown ("?" button + popover) */}
+        <HelpDropdown />
 
         <button
           onClick={() => setSettingsDrawerOpen(!settingsDrawerOpen)}
