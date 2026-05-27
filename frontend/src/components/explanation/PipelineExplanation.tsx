@@ -7,6 +7,7 @@ import { Step3PointCloud } from './steps/Step3PointCloud'
 import { Step4Homology } from './steps/Step4Homology'
 import { Step5PersistenceImage } from './steps/Step5PersistenceImage'
 import { Step6Classification } from './steps/Step6Classification'
+import { Step7ValidationLimitations } from './steps/Step7ValidationLimitations'
 
 const STEPS = [
   Step1WordEmbed,
@@ -15,6 +16,7 @@ const STEPS = [
   Step4Homology,
   Step5PersistenceImage,
   Step6Classification,
+  Step7ValidationLimitations,   // Phase 9 D-51 (placement) + D-53 (voice: "upper bound", never "wrong")
 ]
 
 const TOTAL_STEPS = STEPS.length
