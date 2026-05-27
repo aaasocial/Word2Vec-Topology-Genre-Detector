@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Shipped
-status: verifying
-last_updated: "2026-05-27T09:32:12.796Z"
+status: completed
+last_updated: "2026-05-27T10:01:05.925Z"
 last_activity: 2026-05-27
 progress:
   total_phases: 10
@@ -17,14 +17,17 @@ progress:
 
 ## Current Position
 
-Phase: 09 (classification-depth) — EXECUTING
-Plan: 6 of 6 (plans 09-01..09-05 complete; next is 09-06)
+Phase: 09 (classification-depth) — **COMPLETE 2026-05-27**
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
-- **Phase:** 09
-- **Plans complete:** 5/6
-- **Status:** Phase complete — ready for verification
+- **Phase:** 09 — Complete (6/6 plans)
+- **Status:** Phase 9 closed; 7 UAT items pending live walkthrough (see `.planning/phases/09-classification-depth/09-HUMAN-UAT.md`)
+- **Next phase:** 10 (Visual Polish) — depends on Phases 6–9 (all upstream complete)
 - **Last activity:** 2026-05-27
+
+### Phase 9 Complete (2026-05-27)
+
+6/6 plans landed end-to-end via `/gsd-execute-phase 9`. Calibration empirical pick (`libsvm_platt`, Brier 0.0481) retrained `svm_pipeline.joblib` and extended the lineage sidecar; build-time `explain_artifacts.npz` + FastAPI lifespan loader provides per-genre w2v centroids, 5-NN index, calibrated training-set probabilities, and frozen vocabulary; the explainability spine (zero-ablation track contributions, NN search, centroid-attribution driving words, entropy/gap badge) is wired through `classify.predict_top_n` → SSE → `POST /api/classify/{job_id}/explain` with Redis hand-off (5-min `feature_vec`) and 1-hour result cache (410 Gone on expiry). Frontend mounts TopNList + UncertaintyBadge inline and a Why button opening ClassificationExplain (NearestBooksList + TrackContributionBars + DrivingWordsPills); Step7ValidationLimitations walkthrough closes the loop with D-53 "upper bound" framing. Measured `/explain` p50 = 15ms cache-miss / 1ms cache-hit (200ms target). Verifier confirmed 5/5 ROADMAP success criteria + 7/7 DEPTH requirements directly from code; 91 Phase 9 tests green; code review 0 critical / 5 warnings advisory.
 
 ### Phase 8 Complete (2026-05-26)
 
