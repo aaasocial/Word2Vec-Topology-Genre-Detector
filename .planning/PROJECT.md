@@ -72,8 +72,18 @@ A user uploads any book and sees where it lives in semantic space — and why th
 - [x] **CEXP-05:** deterministic `scripts/build_corpus.py` reproducibly emits canonical `corpus/books.yaml` from `corpus_candidates.yaml` per `CORPUS_SOURCING.md §5` selection rule — closed Wave 1.
 
 **Classification Depth**
-- [ ] Top-N (N=3 or configurable) genre predictions with confidence scores
-- [ ] "Why this genre" explainability: surface driving features (words, persistence features, nearest training books)
+- [x] Top-N (N=3 or configurable) genre predictions with confidence scores (Phase 9 — `SVC(probability=True)` libsvm Platt calibration retrained; `predict_proba` returns (1,8) sum-to-1; TopNList renders top-3 + collapsible "+5 more" expander with 1-decimal labels per D-41/D-42)
+- [x] "Why this genre" explainability: surface driving features (words, persistence features, nearest training books) (Phase 9 — `POST /api/classify/{job_id}/explain` p50 = 15ms; zero-ablation track contributions + 5 NN on L2-normalized features + w2v-centroid driving words + entropy/gap badge per D-44/D-45/D-46/D-43; Step7ValidationLimitations walkthrough disclaimer uses D-53 "upper bound" framing; 7 UAT items pending live walkthrough in `.planning/phases/09-classification-depth/09-HUMAN-UAT.md`)
+
+**Validated (v2.0 Phase 9 — closed 2026-05-27):** DEPTH-01..07 closure summary:
+
+- [x] **DEPTH-01:** `SVC(probability=True)` libsvm Platt won the empirical Brier comparison (0.3459 vs 0.6041 for CalibratedClassifierCV LOOCV sigmoid); `data/models/svm_pipeline.joblib` retrained; lineage extended with `calibration_method` / `calibration_brier_score` (0.0481 deployed) / `calibration_report`. See `results/v2_calibration_report.md`.
+- [x] **DEPTH-02:** `TopNList.tsx` renders top-3 horizontal probability bars + collapsible "+5 more" expander revealing all 8 genres; no pie chart imports anywhere in `frontend/src` (`grep -r "pie\|Pie\|PieChart"` = 0); 1-decimal `XX.X%` labels.
+- [x] **DEPTH-03:** `POST /api/classify/{job_id}/explain` measured at p50 = 15ms cache-miss / 1ms cache-hit (200ms target); Redis cache `explain:{hash}:{model_hash}` 1-hour TTL; 410 Gone on expired `feature_vec:{job_id}` (5-min TTL).
+- [x] **DEPTH-04:** `data/models/explain_artifacts.npz` ships pre-built kNN index (`n_neighbors=5, metric='euclidean'`) over L2-normalized feature matrix (151×600 float32); `NearestBooksList.tsx` renders 5 rows with title/author/genre/distance.
+- [x] **DEPTH-05:** Per-track contributions via zero-ablation (D-44 — extra SVM calls with topology=0 then vocabulary=0); `compute_track_contributions` normalizes by construction (`100·abs(c)/total`) so the two bars sum to 100.
+- [x] **DEPTH-06 (P2):** `DrivingWordsPills.tsx` renders TF-IDF-driven words ranked by per-genre w2v centroid attribution; D-46 disclosure copy "proxies, not literal classifier inputs" rendered verbatim.
+- [x] **DEPTH-07 (P2):** `UncertaintyBadge` fires on `badge_fires === true`; operative thresholds gap<0.2801 OR norm_entropy>0.7738 declared exactly once in `backend/pipeline/explain.py:33-34` (tightened from research defaults 0.10/0.70 after a 53% fire-rate audit on hold-out).
 
 **Visual Polish**
 - [ ] Dark mode / refined theming pass
@@ -144,7 +154,7 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-25 — v2.0 Phase 7 complete: corpus sourcing research spike delivered `CORPUS_SOURCING.md` (688 lines), `VALIDATION_PROTOCOL.md` (343 lines), `corpus_candidates.yaml` (≥50 candidates × 10 genres), `v1_baseline_results.json` (macro_f1=0.3235 pinned). Genre set committed to Proposal A: 8 genres × 30 books = 240. Multi-label classification deferred to v3.*
+*Last updated: 2026-05-27 — v2.0 Phase 9 complete: classification depth landed end-to-end. Calibrated SVM (libsvm Platt, Brier 0.0481) retrained; explain artifact + FastAPI lifespan loader + `POST /explain` endpoint operational at p50 = 15ms; frontend renders top-3 + UncertaintyBadge + ClassificationExplain panel (5 NN + track contributions + driving words) + Step7 walkthrough disclaimer with D-53 "upper bound" framing. 7 UAT items pending live walkthrough (see `09-HUMAN-UAT.md`). Phase 10 (Visual Polish — dark mode + onboarding + empty-state polish) next; depends on Phases 6–9 (all upstream complete).*
 
 **Shipped milestones:**
 - **v1.0** (2026-04-13, archived 2026-05-24) — see [`.planning/milestones/v1.0-ROADMAP.md`](milestones/v1.0-ROADMAP.md) and [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md). Live at https://word2vec-topology-genre-detector-production.up.railway.app.
