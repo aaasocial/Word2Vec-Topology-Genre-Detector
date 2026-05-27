@@ -15,6 +15,7 @@ import { DetailPanel } from './DetailPanel'
 import { UploadZone } from './UploadZone'
 import { UploadProgress } from './UploadProgress'
 import { ClassificationResult } from './ClassificationResult'
+import { ExplainEmptyState } from './ExplainEmptyState'
 import { CompareControls } from '@/components/compare/CompareControls'
 import { CompareHeatmaps } from '@/components/compare/CompareHeatmaps'
 import { exportScatterPNG } from '@/lib/exportUtils'
@@ -147,7 +148,15 @@ export function Sidebar({ points = [], open, onToggle, searchInputRef, scatterCa
           <div style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', fontWeight: 600, marginBottom: 12 }}>
             Upload & Classify
           </div>
-          {!showProgress && !showResult && <UploadZone onClassify={classify} />}
+          {!showProgress && !showResult && (
+            <>
+              <UploadZone onClassify={classify} />
+              {/* Phase 10 D-80: ExplainEmptyState placeholder shown before any
+                  classification — provides the explain-panel tour anchor and
+                  sets expectations for what the Why-panel will reveal. */}
+              <ExplainEmptyState />
+            </>
+          )}
           {showProgress && <UploadProgress steps={steps} retryMessage={retryMessage} />}
           {showResult && (
             <>
