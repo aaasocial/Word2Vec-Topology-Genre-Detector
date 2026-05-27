@@ -6,13 +6,13 @@ export function Toggle2D3D() {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span style={{ fontSize: 12, color: '#6B6B80', fontWeight: 600 }}>View</span>
+      <span style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', fontWeight: 600 }}>View</span>
       <div
         style={{
           display: 'flex',
           borderRadius: 6,
           overflow: 'hidden',
-          border: '1px solid #2E2E3A',
+          border: '1px solid hsl(var(--border))',
         }}
       >
         {(['3D', '2D'] as const).map(mode => {
@@ -27,8 +27,8 @@ export function Toggle2D3D() {
                 cursor: 'pointer',
                 fontSize: 12,
                 fontWeight: 600,
-                background: active ? '#6366F1' : '#1E1E2A',
-                color: active ? '#FFFFFF' : '#6B6B80',
+                background: active ? 'hsl(var(--primary))' : 'hsl(var(--secondary))',
+                color: active ? 'hsl(var(--primary-foreground))' : 'hsl(var(--muted-foreground))',
                 transition: 'background 150ms ease, color 150ms ease',
               }}
             >

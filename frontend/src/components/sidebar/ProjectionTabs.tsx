@@ -8,7 +8,7 @@ export function ProjectionTabs() {
 
   return (
     <div>
-      <div style={{ fontSize: 12, color: '#6B6B80', fontWeight: 600, marginBottom: 8 }}>
+      <div style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', fontWeight: 600, marginBottom: 8 }}>
         Projection
       </div>
       <div
@@ -29,8 +29,8 @@ export function ProjectionTabs() {
               cursor: 'pointer',
               fontSize: 13,
               fontWeight: 500,
-              background: projection === key ? '#6366F1' : '#1E1E2A',
-              color: projection === key ? '#FFFFFF' : '#9090A0',
+              background: projection === key ? 'hsl(var(--primary))' : 'hsl(var(--secondary))',
+              color: projection === key ? 'hsl(var(--primary-foreground))' : 'hsl(var(--muted-foreground))',
               transition: 'background 150ms ease, color 150ms ease',
             }}
           >

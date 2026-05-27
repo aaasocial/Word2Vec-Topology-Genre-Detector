@@ -12,12 +12,12 @@ interface SliderRowProps {
   accentColor?: string
 }
 
-function SliderRow({ label, min, max, step, value, onChange, accentColor = '#6366F1' }: SliderRowProps) {
+function SliderRow({ label, min, max, step, value, onChange, accentColor = 'hsl(var(--primary))' }: SliderRowProps) {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-        <span style={{ fontSize: 12, color: '#6B6B80' }}>{label}</span>
-        <span style={{ fontSize: 12, color: '#9090A0', fontFamily: 'monospace' }}>
+        <span style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))' }}>{label}</span>
+        <span style={{ fontSize: 12, color: 'hsl(var(--foreground))', fontFamily: 'monospace' }}>
           {value.toFixed(2)}
         </span>
       </div>
@@ -55,7 +55,7 @@ export function ControlSliders() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <div style={{ fontSize: 12, color: '#6B6B80', fontWeight: 600 }}>Display</div>
+      <div style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', fontWeight: 600 }}>Display</div>
 
       {/* Instant sliders */}
       <SliderRow
@@ -77,14 +77,14 @@ export function ControlSliders() {
         min={0.0} max={1.0} step={0.01}
         value={tfidfThreshold}
         onChange={setTfidfThresholdLocal}
-        accentColor="#34D399"
+        accentColor="hsl(var(--good))"
       />
       <SliderRow
         label="Brightness"
         min={0.5} max={3.0} step={0.05}
         value={brightness}
         onChange={setBrightnessLocal}
-        accentColor="#FBBF24"
+        accentColor="hsl(var(--warn))"
       />
     </div>
   )

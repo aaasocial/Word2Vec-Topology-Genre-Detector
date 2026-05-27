@@ -23,18 +23,19 @@ export function GenreSelect() {
 
   return (
     <div>
-      <div style={{ fontSize: 12, color: '#6B6B80', fontWeight: 600, marginBottom: 8 }}>
+      <div style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', fontWeight: 600, marginBottom: 8 }}>
         Genre
       </div>
       <select
+        data-tour-id="genre-select"
         value={localValue}
         onChange={e => setLocalValue(e.target.value)}
         style={{
           width: '100%',
-          background: '#1E1E2A',
-          border: '1px solid #2E2E3A',
+          background: 'hsl(var(--secondary))',
+          border: '1px solid hsl(var(--border))',
           borderRadius: 6,
-          color: '#F5F5FF',
+          color: 'hsl(var(--foreground))',
           padding: '8px 10px',
           fontSize: 13,
           cursor: 'pointer',

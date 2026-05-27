@@ -12,22 +12,22 @@ export function ResetCamera() {
         gap: 6,
         padding: '6px 12px',
         background: 'transparent',
-        border: '1px solid #2E2E3A',
+        border: '1px solid hsl(var(--border))',
         borderRadius: 6,
-        color: '#9090A0',
+        color: 'hsl(var(--muted-foreground))',
         cursor: 'pointer',
         fontSize: 13,
         transition: 'border-color 150ms ease, color 150ms ease',
       }}
       onMouseEnter={e => {
         const btn = e.currentTarget
-        btn.style.borderColor = '#6366F1'
-        btn.style.color = '#F5F5FF'
+        btn.style.borderColor = 'hsl(var(--primary))'
+        btn.style.color = 'hsl(var(--foreground))'
       }}
       onMouseLeave={e => {
         const btn = e.currentTarget
-        btn.style.borderColor = '#2E2E3A'
-        btn.style.color = '#9090A0'
+        btn.style.borderColor = 'hsl(var(--border))'
+        btn.style.color = 'hsl(var(--muted-foreground))'
       }}
     >
       <RotateCcw size={14} />

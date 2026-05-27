@@ -53,7 +53,7 @@ export function BookSlider({ books = [] }: BookSliderProps) {
 
   return (
     <div>
-      <div style={{ fontSize: 12, color: '#6B6B80', fontWeight: 600, marginBottom: 8 }}>
+      <div style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', fontWeight: 600, marginBottom: 8 }}>
         Book
       </div>
       <input
@@ -62,14 +62,14 @@ export function BookSlider({ books = [] }: BookSliderProps) {
         max={books.length - 1}
         value={safeIdx}
         onChange={e => setLocalIdx(Number(e.target.value))}
-        style={{ width: '100%', accentColor: '#6366F1' }}
+        style={{ width: '100%', accentColor: 'hsl(var(--primary))' }}
       />
       {currentBook && (
         <div style={{ marginTop: 6, maxWidth: 240 }}>
           <div
             style={{
               fontSize: 12,
-              color: '#E5E5F0',
+              color: 'hsl(var(--foreground))',
               fontWeight: 500,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -83,7 +83,7 @@ export function BookSlider({ books = [] }: BookSliderProps) {
             <div
               style={{
                 fontSize: 11,
-                color: '#9090A0',
+                color: 'hsl(var(--muted-foreground))',
                 marginTop: 2,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -98,7 +98,7 @@ export function BookSlider({ books = [] }: BookSliderProps) {
             <div
               style={{
                 fontSize: 11,
-                color: '#6B6B80',
+                color: 'hsl(var(--muted-foreground))',
                 marginTop: 2,
               }}
             >

@@ -27,7 +27,7 @@ export function KeyboardHint() {
         bottom: 16,
         right: 16,
         fontSize: 11,
-        color: '#6B6B80',
+        color: 'hsl(var(--muted-foreground))',
         opacity: visible ? 1 : 0,
         transition: 'opacity 600ms ease',
         pointerEvents: 'none',

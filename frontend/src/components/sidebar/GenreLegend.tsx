@@ -13,7 +13,8 @@ export function GenreLegend() {
         position: 'absolute',
         bottom: 16,
         left: 16,
-        background: 'rgba(17, 17, 24, 0.85)',
+        background: 'hsl(var(--card) / 0.85)',
+        border: '1px solid hsl(var(--border))',
         borderRadius: 8,
         padding: '10px 14px',
         backdropFilter: 'blur(4px)',
@@ -59,7 +60,7 @@ export function GenreLegend() {
                     flexShrink: 0,
                   }}
                 />
-                <span style={{ fontSize: 12, color: '#E0E0EC' }}>
+                <span style={{ fontSize: 12, color: 'hsl(var(--card-foreground))' }}>
                   {genre.charAt(0).toUpperCase() + genre.slice(1)}
                 </span>
               </button>
