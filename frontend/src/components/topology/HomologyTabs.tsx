@@ -21,8 +21,8 @@ export function HomologyTabs() {
           style={{
             background: 'transparent',
             border: 'none',
-            borderBottom: '2px solid #6366F1',
-            color: '#F5F5FF',
+            borderBottom: '2px solid hsl(var(--primary))',
+            color: 'hsl(var(--foreground))',
             cursor: 'default',
             fontSize: 12,
             fontWeight: 400,

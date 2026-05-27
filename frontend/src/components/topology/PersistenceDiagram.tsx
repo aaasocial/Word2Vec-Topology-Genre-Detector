@@ -1,6 +1,23 @@
 import { useRef, useEffect, useState } from 'react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
+import { usePreferencesStore } from '@/stores/preferencesStore'
 import { usePersistenceDiagram } from '@/hooks/usePersistenceDiagram'
+
+/**
+ * Resolve a CSS HSL variable to an rgb() string the Canvas 2D context can consume.
+ * Returns a sensible dark-mode fallback if the variable is unset.
+ */
+function resolveCssVar(name: string, fallback: string): string {
+  if (typeof document === 'undefined') return fallback
+  const hsl = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  if (!hsl) return fallback
+  const el = document.createElement('div')
+  el.style.color = `hsl(${hsl})`
+  document.body.appendChild(el)
+  const rgb = getComputedStyle(el).color
+  document.body.removeChild(el)
+  return rgb
+}
 
 const SIZE = 320
 
@@ -46,6 +63,9 @@ export function PersistenceDiagram() {
   const isBook = !!selectedBookId
   const queryId = selectedBookId ?? selectedGenre
 
+  // Track active theme so the canvas re-paints when the user toggles light/dark.
+  const theme = usePreferencesStore((s) => s.theme)
+
   const { data, isLoading } = usePersistenceDiagram(queryId, selectedHomologyDim, isBook)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   // Hit-test cache: x-coordinates of infinity-strip triangles, populated by the
@@ -66,8 +86,16 @@ export function PersistenceDiagram() {
     canvas.style.height = `${SIZE}px`
     ctx.scale(dpr, dpr)
 
+    // Resolve themed colors fresh on each paint — re-runs when `theme` changes.
+    const bgColor = resolveCssVar('--muted', 'rgb(34, 35, 46)')
+    const gridColor = resolveCssVar('--border', 'rgb(39, 40, 50)')
+    const diagonalColor = resolveCssVar('--muted-foreground', 'rgb(110, 110, 131)')
+    const finiteColor = '#FACC15' // amber — finite-persistence dots stay theme-neutral signal
+    const infinityColor = '#F87171' // red — infinity-strip triangles stay theme-neutral signal
+    const axisColor = resolveCssVar('--muted-foreground', 'rgb(110, 110, 131)')
+
     ctx.clearRect(0, 0, SIZE, SIZE)
-    ctx.fillStyle = '#1A1A25'
+    ctx.fillStyle = bgColor
     ctx.fillRect(0, 0, SIZE, SIZE)
 
     // ─── Step A: split finite from infinity BEFORE axis math ──────────────
@@ -98,7 +126,7 @@ export function PersistenceDiagram() {
     const ty = (v: number) => SIZE - pad - (v / axisMax) * plotH
 
     // Grid lines
-    ctx.strokeStyle = '#2A2A3A'
+    ctx.strokeStyle = gridColor
     ctx.lineWidth = 0.5
     const gridSteps = 5
     for (let i = 0; i <= gridSteps; i++) {
@@ -110,7 +138,7 @@ export function PersistenceDiagram() {
     }
 
     // Diagonal y = x (zero-persistence reference line)
-    ctx.strokeStyle = '#4A4A5A'
+    ctx.strokeStyle = diagonalColor
     ctx.lineWidth = 1
     ctx.setLineDash([4, 4])
     ctx.beginPath()
@@ -124,7 +152,7 @@ export function PersistenceDiagram() {
     const maxFinitePersistence =
       finitePersistences.length > 0 ? Math.max(...finitePersistences) : 1.0
 
-    ctx.fillStyle = '#FACC15'
+    ctx.fillStyle = finiteColor
     ctx.globalAlpha = finitePts.length > 200 ? 0.7 : 0.9
     for (const [birth, death] of finitePts) {
       const persistence = death - birth
@@ -145,7 +173,7 @@ export function PersistenceDiagram() {
     // Triangle markers (color #F87171, distinct from finite #FACC15).
     const newHits: InfinityHit[] = []
     if (infinityPts.length > 0) {
-      ctx.fillStyle = '#F87171'
+      ctx.fillStyle = infinityColor
       for (const [birth] of infinityPts) {
         // Map birth to plot x. If birth > axisMax (rare; can happen if a near-eps
         // loop never died), clamp into the strip — drawing it off-canvas would
@@ -162,7 +190,7 @@ export function PersistenceDiagram() {
       }
 
       // Separator line just below the strip.
-      ctx.strokeStyle = '#4A4A5A'
+      ctx.strokeStyle = diagonalColor
       ctx.lineWidth = 0.5
       ctx.beginPath()
       ctx.moveTo(pad, INF_STRIP_BOTTOM_Y)
@@ -170,7 +198,7 @@ export function PersistenceDiagram() {
       ctx.stroke()
 
       // Label "∞" at left edge of strip.
-      ctx.fillStyle = '#F87171'
+      ctx.fillStyle = infinityColor
       ctx.font = '10px JetBrains Mono, monospace'
       ctx.textAlign = 'left'
       ctx.fillText('∞', 4, 12)
@@ -178,7 +206,7 @@ export function PersistenceDiagram() {
     infinityHitsRef.current = newHits
 
     // ─── Step F: axis ticks + labels ─────────────────────────────────────
-    ctx.fillStyle = '#6B6B80'
+    ctx.fillStyle = axisColor
     ctx.font = '9px JetBrains Mono, monospace'
     ctx.textAlign = 'center'
     for (let i = 0; i <= gridSteps; i++) {
@@ -192,7 +220,7 @@ export function PersistenceDiagram() {
       const label = v.toFixed(v < 1 ? 2 : 1)
       ctx.fillText(label, pad - 4, ty(v) + 3)
     }
-  }, [data])
+  }, [data, theme])
 
   // ─── Step E: mouseover tooltip on infinity strip ───────────────────────
   function handleMouseMove(e: React.MouseEvent<HTMLCanvasElement>) {
@@ -225,10 +253,10 @@ export function PersistenceDiagram() {
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-        <h3 style={{ fontSize: 14, fontWeight: 600, color: '#F5F5FF', margin: 0 }}>
+        <h3 style={{ fontSize: 14, fontWeight: 600, color: 'hsl(var(--foreground))', margin: 0 }}>
           Persistence Diagram
         </h3>
-        <span style={{ fontSize: 11, color: '#6B6B80' }}>
+        <span style={{ fontSize: 11, color: 'hsl(var(--muted-foreground))' }}>
           {data ? `${data.points.length} features` : ''}
         </span>
       </div>
@@ -242,7 +270,7 @@ export function PersistenceDiagram() {
             left: -18,
             top: SIZE / 2,
             fontSize: 11,
-            color: '#6B6B80',
+            color: 'hsl(var(--muted-foreground))',
             writingMode: 'vertical-rl',
             transform: 'rotate(180deg) translateY(50%)',
             pointerEvents: 'none',
@@ -256,14 +284,14 @@ export function PersistenceDiagram() {
             style={{
               width: SIZE,
               height: SIZE,
-              background: '#1A1A25',
+              background: 'hsl(var(--muted))',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 4,
             }}
           >
-            <span style={{ color: '#6B6B80', fontSize: 12, textAlign: 'center', padding: 16 }}>
+            <span style={{ color: 'hsl(var(--muted-foreground))', fontSize: 12, textAlign: 'center', padding: 16 }}>
               Select a genre or book
             </span>
           </div>
@@ -286,14 +314,14 @@ export function PersistenceDiagram() {
             style={{
               width: SIZE,
               height: SIZE,
-              background: '#1A1A25',
+              background: 'hsl(var(--muted))',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 4,
             }}
           >
-            <span style={{ color: '#6B6B80', fontSize: 12, textAlign: 'center', padding: 16 }}>
+            <span style={{ color: 'hsl(var(--muted-foreground))', fontSize: 12, textAlign: 'center', padding: 16 }}>
               No H{selectedHomologyDim} diagram data
             </span>
           </div>
@@ -318,10 +346,10 @@ export function PersistenceDiagram() {
               top: tooltip.y,
               maxWidth: 220,
               padding: '6px 8px',
-              background: '#1A1A25',
-              border: '1px solid #4A4A5A',
+              background: 'hsl(var(--popover))',
+              border: '1px solid hsl(var(--border))',
               borderRadius: 4,
-              color: '#F5F5FF',
+              color: 'hsl(var(--popover-foreground))',
               fontSize: 11,
               lineHeight: 1.35,
               pointerEvents: 'none',
@@ -341,7 +369,7 @@ export function PersistenceDiagram() {
 
       {/* X-axis label */}
       <div style={{ textAlign: 'center', marginTop: 4 }}>
-        <span style={{ fontSize: 11, color: '#6B6B80' }}>Birth</span>
+        <span style={{ fontSize: 11, color: 'hsl(var(--muted-foreground))' }}>Birth</span>
       </div>
     </div>
   )

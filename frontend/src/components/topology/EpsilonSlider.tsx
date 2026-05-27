@@ -25,8 +25,8 @@ export function EpsilonSlider({ vrData }: EpsilonSliderProps) {
     <div
       style={{
         padding: '12px 16px',
-        borderTop: '1px solid #1E1E2A',
-        background: '#111118',
+        borderTop: '1px solid hsl(var(--border))',
+        background: 'hsl(var(--sidebar-bg))',
       }}
     >
       <div
@@ -39,13 +39,13 @@ export function EpsilonSlider({ vrData }: EpsilonSliderProps) {
       >
         <label
           htmlFor="epsilon-slider"
-          style={{ color: '#A0A0B0', fontSize: 12 }}
+          style={{ color: 'hsl(var(--muted-foreground))', fontSize: 12 }}
         >
           Filtration radius (epsilon)
         </label>
         <span
           style={{
-            color: '#F5F5FF',
+            color: 'hsl(var(--foreground))',
             fontSize: 13,
             fontFamily: '"JetBrains Mono", monospace',
           }}
@@ -68,7 +68,10 @@ export function EpsilonSlider({ vrData }: EpsilonSliderProps) {
           height: 6,
           appearance: 'none',
           WebkitAppearance: 'none',
-          background: `linear-gradient(to right, #FACC15 0%, #FACC15 ${(vrEpsilon / epsilonMax) * 100}%, #2A2A3A ${(vrEpsilon / epsilonMax) * 100}%, #2A2A3A 100%)`,
+          // Gradient track: amber tint up to the thumb, muted past it. Amber kept
+          // as literal #FACC15 — matches the persistence-diagram finite dots so
+          // the cross-panel visual handshake survives theme flips.
+          background: `linear-gradient(to right, #FACC15 0%, #FACC15 ${(vrEpsilon / epsilonMax) * 100}%, hsl(var(--muted)) ${(vrEpsilon / epsilonMax) * 100}%, hsl(var(--muted)) 100%)`,
           borderRadius: 3,
           outline: 'none',
           cursor: 'pointer',
@@ -77,7 +80,7 @@ export function EpsilonSlider({ vrData }: EpsilonSliderProps) {
 
       <div
         style={{
-          color: '#6B6B80',
+          color: 'hsl(var(--muted-foreground))',
           fontSize: 11,
           marginTop: 4,
         }}

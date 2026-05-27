@@ -96,7 +96,7 @@ export function PersistenceHeatmap() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 600, color: '#F5F5FF', margin: 0 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 600, color: 'hsl(var(--foreground))', margin: 0 }}>
             Persistence Image
           </h2>
           <HomologyTabs />
@@ -107,8 +107,8 @@ export function PersistenceHeatmap() {
             disabled={!data}
             style={{
               background: 'transparent',
-              border: '1px solid #2A2A3A',
-              color: data ? '#9090A0' : '#6B6B80',
+              border: '1px solid hsl(var(--border))',
+              color: data ? 'hsl(var(--muted-foreground))' : 'hsl(var(--muted-foreground) / 0.6)',
               fontSize: 12,
               padding: '4px 8px',
               borderRadius: 4,
@@ -122,8 +122,8 @@ export function PersistenceHeatmap() {
             disabled={!data}
             style={{
               background: 'transparent',
-              border: '1px solid #2A2A3A',
-              color: data ? '#9090A0' : '#6B6B80',
+              border: '1px solid hsl(var(--border))',
+              color: data ? 'hsl(var(--muted-foreground))' : 'hsl(var(--muted-foreground) / 0.6)',
               fontSize: 12,
               padding: '4px 8px',
               borderRadius: 4,
@@ -149,14 +149,14 @@ export function PersistenceHeatmap() {
             style={{
               width: HEATMAP_SIZE,
               height: HEATMAP_SIZE,
-              background: '#1A1A25',
+              background: 'hsl(var(--muted))',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 4,
             }}
           >
-            <span style={{ color: '#6B6B80', fontSize: 14, textAlign: 'center', padding: 24 }}>
+            <span style={{ color: 'hsl(var(--muted-foreground))', fontSize: 14, textAlign: 'center', padding: 24 }}>
               Select a genre or book to view persistence image
             </span>
           </div>
@@ -167,7 +167,7 @@ export function PersistenceHeatmap() {
             style={{
               width: HEATMAP_SIZE,
               height: HEATMAP_SIZE,
-              background: '#1A1A25',
+              background: 'hsl(var(--muted))',
               borderRadius: 4,
               animation: 'pulse 1.5s ease-in-out infinite',
             }}
@@ -180,7 +180,7 @@ export function PersistenceHeatmap() {
             <span
               style={{
                 fontSize: 12,
-                color: '#6B6B80',
+                color: 'hsl(var(--muted-foreground))',
                 writingMode: 'vertical-rl',
                 transform: 'rotate(180deg)',
                 letterSpacing: 1,
@@ -201,14 +201,14 @@ export function PersistenceHeatmap() {
                 }}
               />
               {/* X-axis label */}
-              <span style={{ fontSize: 12, color: '#6B6B80', marginTop: 8 }}>
+              <span style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', marginTop: 8 }}>
                 Birth scale
               </span>
             </div>
 
             {/* Color bar */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-              <span style={{ fontSize: 13, fontFamily: 'JetBrains Mono, monospace', color: '#E0E0EC' }}>
+              <span style={{ fontSize: 13, fontFamily: 'JetBrains Mono, monospace', color: 'hsl(var(--foreground))' }}>
                 {data.vmax.toFixed(2)}
               </span>
               <canvas
@@ -217,7 +217,7 @@ export function PersistenceHeatmap() {
                 height={HEATMAP_SIZE}
                 style={{ width: 12, height: HEATMAP_SIZE }}
               />
-              <span style={{ fontSize: 13, fontFamily: 'JetBrains Mono, monospace', color: '#E0E0EC' }}>
+              <span style={{ fontSize: 13, fontFamily: 'JetBrains Mono, monospace', color: 'hsl(var(--foreground))' }}>
                 {data.vmin.toFixed(2)}
               </span>
             </div>

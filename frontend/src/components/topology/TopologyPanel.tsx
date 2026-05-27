@@ -26,8 +26,8 @@ export function TopologyPanel() {
       <div
         style={{
           width: '50%',
-          background: '#111118',
-          borderRight: '1px solid #1E1E2A',
+          background: 'hsl(var(--sidebar-bg))',
+          borderRight: '1px solid hsl(var(--sidebar-border))',
           padding: 24,
           display: 'flex',
           flexDirection: 'column',
@@ -36,7 +36,7 @@ export function TopologyPanel() {
         }}
       >
         <PersistenceHeatmap />
-        <div style={{ borderTop: '1px solid #1E1E2A', paddingTop: 24 }}>
+        <div style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: 24 }}>
           <PersistenceDiagram />
         </div>
       </div>
@@ -45,7 +45,7 @@ export function TopologyPanel() {
       <div
         style={{
           width: '50%',
-          background: '#0A0A0F',
+          background: 'hsl(var(--background))',
           display: 'flex',
           flexDirection: 'column',
         }}
