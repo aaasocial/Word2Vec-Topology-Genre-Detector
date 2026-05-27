@@ -6,6 +6,7 @@ import { KeyboardHint } from '@/components/sidebar/KeyboardHint'
 import { TopNavTabs } from '@/components/nav/TopNavTabs'
 import { DisclaimerBanner } from '@/components/nav/DisclaimerBanner'
 import { TopologyPanel } from '@/components/topology/TopologyPanel'
+import { CompareEmptyState } from '@/components/compare/CompareEmptyState'
 import { SettingsDrawer } from '@/components/settings/SettingsDrawer'
 import { RecomputeOverlay } from '@/components/settings/RecomputeOverlay'
 import { PipelineExplanation } from '@/components/explanation/PipelineExplanation'
@@ -225,8 +226,13 @@ export default function App() {
             {/* Topology tab */}
             {activeTab === 'topology' && <TopologyPanel />}
 
-            {/* Compare tab — renders scatter with compareMode active */}
-            {activeTab === 'compare' && (
+            {/* Compare tab — renders scatter with compareMode active.
+                Phase 10 D-78: when either genre is unselected, the empty
+                state with ghost panels + pick-genre prompt renders instead. */}
+            {activeTab === 'compare' && (!selectedGenre || !compareGenre) && (
+              <CompareEmptyState />
+            )}
+            {activeTab === 'compare' && selectedGenre && compareGenre && (
               <>
                 {isLoading && (
                   <div
