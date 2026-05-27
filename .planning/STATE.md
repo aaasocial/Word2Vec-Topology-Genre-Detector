@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Shipped
 status: completed
-last_updated: "2026-05-27T10:01:05.925Z"
-last_activity: 2026-05-27
+last_updated: "2026-05-28T00:00:00.000Z"
+last_activity: 2026-05-28
 progress:
   total_phases: 10
   completed_phases: 9
@@ -22,8 +22,8 @@ Phase: 09 (classification-depth) — **COMPLETE 2026-05-27**
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
 - **Phase:** 09 — Complete (6/6 plans)
 - **Status:** Phase 9 closed; 7 UAT items pending live walkthrough (see `.planning/phases/09-classification-depth/09-HUMAN-UAT.md`)
-- **Next phase:** 10 (Visual Polish) — depends on Phases 6–9 (all upstream complete)
-- **Last activity:** 2026-05-27
+- **Next phase:** 10 (Visual Polish) — `/gsd-discuss-phase 10` paused 2026-05-28 at gray-area selection; user is iterating visuals in Claude Design before locking CONTEXT.md. Brief: `.planning/phases/10-visual-polish/10-CLAUDE-DESIGN-BRIEF.md`
+- **Last activity:** 2026-05-28
 
 ### Phase 9 Complete (2026-05-27)
 
@@ -246,21 +246,32 @@ Documentation drift to clean up (folded into Wave 4 per D-34, no longer a separa
 
 ## Session Continuity
 
-**Next command:** `/gsd-plan-phase 9`
+**Stopped at (2026-05-28):** Phase 10 (Visual Polish) — `/gsd-discuss-phase 10` was paused at the "select gray areas" step. User is iterating Phase 10 visuals in a separate Claude Design conversation before locking palette/tour-copy/library decisions. Self-contained brief written to `.planning/phases/10-visual-polish/10-CLAUDE-DESIGN-BRIEF.md` (commit b6b4447).
 
-**Reading order for the next session:**
+**Next command (when Claude Design output is ready):** `/gsd-discuss-phase 10` — the workflow will detect the brief and fold the design output into 10-CONTEXT.md. Then `/gsd-plan-phase 10`.
 
-1. `.planning/phases/09-classification-depth/09-CONTEXT.md` — Phase 9 locked decisions D-37..D-55 (read FIRST)
-2. `.planning/phases/09-classification-depth/09-DISCUSSION-LOG.md` — alternatives considered for each Phase 9 user-authored decision
-3. `.planning/phases/08-corpus-expansion/08-CONTEXT.md` — Phase 8 D-22..D-36 inherited (Phase 9 retrains the v2 SVM landed here; no relitigation)
-4. `.planning/research/ARCHITECTURE.md` §4 + §5b + §8 + §10 + §11 — endpoint shape, explain cache, file checklist, open questions (resolved)
-5. `.planning/research/PITFALLS.md` §7 (decision_function as probability), §8 (SHAP synchronous rejected), §9 (per-pixel persistence-image importance rejected)
-6. `.planning/research/FEATURES.md` §3a + §3b — top-N + explainability table stakes / differentiators / anti-features
-7. `.planning/research/STACK.md` §"Supporting Libraries" — sklearn helpers (no new install needed)
-8. `.planning/ROADMAP.md` §"Phase 9: Classification Depth" — success criteria + dependency on Phase 8
-9. `.planning/REQUIREMENTS.md` DEPTH-01..07 verbatim
-10. `data/models/svm_pipeline.joblib.lineage.json` — current v2 SVM lineage (D-38 retrain rotates the file + D-40 adds calibration_method)
-11. `results/v2_validation_report.md` — D-51 disclaimer links here
+**Reading order for the next Phase 10 session:**
+
+1. `.planning/phases/10-visual-polish/10-CLAUDE-DESIGN-BRIEF.md` — the brief that defines what Claude Design produced output against (read FIRST)
+2. `.planning/phases/09-classification-depth/09-CONTEXT.md` — D-54 (no Playwright until Phase 10) + D-55 (inline-hex used in Phase 9 — Phase 10's sweep target)
+3. `.planning/phases/08-corpus-expansion/08-CONTEXT.md` — frontend genre relabel was explicitly deferred to Phase 10 (gothic_horror, speculative keys)
+4. `.planning/phases/06-v1-bug-fix-sweep/06-CONTEXT.md` — theme store separation rationale (lifetimes: persisted vs session)
+5. `.planning/phases/03-frontend-core-and-3d-visualization/03-CONTEXT.md` — dark theme as default established here
+6. `.planning/research/PITFALLS.md` §13 (scene background must not remount canvas) + §14 (tour anchors brittle without centralization)
+7. `.planning/research/ARCHITECTURE.md` §5c (theme store lifetime split) + §5d (tour library tradeoffs) + §6 (why dark mode is the horizontal sweep)
+8. `.planning/REQUIREMENTS.md` POLISH-01..05 verbatim
+9. `.planning/ROADMAP.md` §"Phase 10: Visual Polish" — success criteria + open tour-library decision
+10. `frontend/src/index.css` — existing `:root` HSL variables (need light-mode counterparts)
+11. `frontend/src/constants/genres.ts` — v1 palette (needs v2 key update)
+
+### Phase 9 history (closed 2026-05-27 — kept for context)
+
+Original Phase 9 reading order remains valid for any retrospective work:
+- `09-CONTEXT.md` (D-37..D-55) + `09-DISCUSSION-LOG.md` (alternatives)
+- `09-VERIFICATION.md` + `09-VALIDATION.md` + `09-HUMAN-UAT.md` (7 items pending live walkthrough)
+- `09-REVIEW.md` (0 critical / 5 warnings / 8 info — advisory)
+- `data/models/svm_pipeline.joblib.lineage.json` (calibration_method=libsvm_platt, brier=0.0481)
+- `results/v2_calibration_report.md` (D-51 walkthrough disclaimer links here)
 
 **Phase 9 decision summary (D-37..D-45 user-authored, D-46..D-55 research-inherited):**
 
