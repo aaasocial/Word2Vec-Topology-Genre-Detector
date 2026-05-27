@@ -9,6 +9,8 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     globals: true,
     coverage: { provider: 'v8', reporter: ['text', 'lcov'] },
+    // Phase 10 Task 11: keep Playwright e2e specs out of the Vitest run.
+    exclude: ['node_modules', 'tests/e2e/**', 'dist'],
   },
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
