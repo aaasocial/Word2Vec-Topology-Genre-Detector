@@ -1,11 +1,13 @@
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { GENRE_LIST, genreColor as resolveGenreColor } from '@/constants/genres'
+import { useEffectiveTheme } from '@/stores/preferencesStore'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useState, useEffect } from 'react'
 
 export function GenreSelect() {
   const selectedGenre = useVisualizationStore(s => s.selectedGenre)
   const setSelectedGenre = useVisualizationStore(s => s.setSelectedGenre)
+  const theme = useEffectiveTheme()
 
   const [localValue, setLocalValue] = useState<string>(selectedGenre ?? '')
   const debouncedValue = useDebounce(localValue, 200)
@@ -53,11 +55,11 @@ export function GenreSelect() {
               width: 8,
               height: 8,
               borderRadius: '50%',
-              background: resolveGenreColor(selectedGenre, 'dark'),
+              background: resolveGenreColor(selectedGenre, theme),
               display: 'inline-block',
             }}
           />
-          <span style={{ fontSize: 12, color: resolveGenreColor(selectedGenre, 'dark') }}>
+          <span style={{ fontSize: 12, color: resolveGenreColor(selectedGenre, theme) }}>
             {selectedGenre}
           </span>
         </div>

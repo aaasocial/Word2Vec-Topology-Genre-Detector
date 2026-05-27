@@ -3,6 +3,7 @@ import { Search, X } from 'lucide-react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { useDebounce } from '@/hooks/useDebounce'
 import { genreColor as resolveGenreColor } from '@/constants/genres'
+import { useEffectiveTheme } from '@/stores/preferencesStore'
 import type { ScatterPoint } from '@/types/scatter'
 
 interface WordSearchProps {
@@ -13,6 +14,7 @@ export const WordSearch = forwardRef<HTMLInputElement, WordSearchProps>(
   function WordSearch({ points = [] }, ref) {
     const setSearchQuery = useVisualizationStore(s => s.setSearchQuery)
     const setSelectedPoint = useVisualizationStore(s => s.setSelectedPoint)
+    const theme = useEffectiveTheme()
 
     const [localQuery, setLocalQuery] = useState('')
     const debouncedQuery = useDebounce(localQuery, 200)
@@ -149,7 +151,7 @@ export const WordSearch = forwardRef<HTMLInputElement, WordSearchProps>(
                       width: 7,
                       height: 7,
                       borderRadius: '50%',
-                      background: resolveGenreColor(point.genre, 'dark'),
+                      background: resolveGenreColor(point.genre, theme),
                       flexShrink: 0,
                     }}
                   />

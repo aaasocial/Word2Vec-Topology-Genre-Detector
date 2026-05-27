@@ -3,6 +3,7 @@
 // Visual is minimum-viable per Phase 10 deferred dark-mode sweep (user clarification).
 // D-55: inline-hex styling only (no CSS variables; Phase 10 owns the sweep).
 import { genreColor as resolveGenreColor } from '@/constants/genres'
+import { useEffectiveTheme } from '@/stores/preferencesStore'
 import type { NearestTrainingBook } from '@/types/explain'
 
 interface NearestBooksListProps {
@@ -10,6 +11,7 @@ interface NearestBooksListProps {
 }
 
 export function NearestBooksList({ books }: NearestBooksListProps) {
+  const theme = useEffectiveTheme()
   if (!books || books.length === 0) {
     return null
   }
@@ -26,7 +28,7 @@ export function NearestBooksList({ books }: NearestBooksListProps) {
         Nearest training books
       </div>
       {books.map((b, idx) => {
-        const color = resolveGenreColor(b.genre, 'dark')
+        const color = resolveGenreColor(b.genre, theme)
         return (
           <div
             key={`${b.gutenberg_id}-${idx}`}

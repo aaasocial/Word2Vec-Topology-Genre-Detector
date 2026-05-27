@@ -1,6 +1,7 @@
 import { Columns2 } from 'lucide-react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { GENRE_LIST, genreColor as resolveGenreColor } from '@/constants/genres'
+import { useEffectiveTheme } from '@/stores/preferencesStore'
 
 export function CompareControls() {
   const compareMode = useVisualizationStore((s) => s.compareMode)
@@ -8,6 +9,7 @@ export function CompareControls() {
   const compareGenre = useVisualizationStore((s) => s.compareGenre)
   const setCompareGenre = useVisualizationStore((s) => s.setCompareGenre)
   const selectedGenre = useVisualizationStore((s) => s.selectedGenre)
+  const theme = useEffectiveTheme()
 
   const handleToggle = () => {
     if (compareMode) {
@@ -84,11 +86,11 @@ export function CompareControls() {
                   width: 8,
                   height: 8,
                   borderRadius: '50%',
-                  background: resolveGenreColor(compareGenre, 'dark'),
+                  background: resolveGenreColor(compareGenre, theme),
                   display: 'inline-block',
                 }}
               />
-              <span style={{ fontSize: 12, color: resolveGenreColor(compareGenre, 'dark') }}>
+              <span style={{ fontSize: 12, color: resolveGenreColor(compareGenre, theme) }}>
                 {compareGenre}
               </span>
             </div>

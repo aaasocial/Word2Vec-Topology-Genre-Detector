@@ -4,6 +4,7 @@
 // D-55: inline-hex styling only (no CSS variables; Phase 10 owns the sweep).
 import { useState } from 'react'
 import { genreColor as resolveGenreColor } from '@/constants/genres'
+import { useEffectiveTheme } from '@/stores/preferencesStore'
 import type { TopNPrediction } from '@/types/explain'
 
 interface TopNListProps {
@@ -14,6 +15,7 @@ const DEFAULT_VISIBLE = 3
 
 export function TopNList({ topN }: TopNListProps) {
   const [expanded, setExpanded] = useState(false)
+  const theme = useEffectiveTheme()
 
   if (!topN || topN.length === 0) {
     return null
@@ -25,7 +27,7 @@ export function TopNList({ topN }: TopNListProps) {
   return (
     <div data-testid="top-n-list">
       {visible.map((p, idx) => {
-        const color = resolveGenreColor(p.genre, 'dark')
+        const color = resolveGenreColor(p.genre, theme)
         return (
           <div
             key={`${p.genre}-${idx}`}

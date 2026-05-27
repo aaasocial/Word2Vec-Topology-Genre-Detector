@@ -3,6 +3,7 @@ import { useVisualizationStore } from '@/stores/visualizationStore'
 import { usePersistenceImage } from '@/hooks/usePersistenceImage'
 import { renderHeatmap, computeMinMax } from '@/lib/heatmap'
 import { genreColor as resolveGenreColor } from '@/constants/genres'
+import { useEffectiveTheme } from '@/stores/preferencesStore'
 
 const HEATMAP_SIZE = 260
 
@@ -10,6 +11,7 @@ export function CompareHeatmaps() {
   const selectedGenre = useVisualizationStore((s) => s.selectedGenre)
   const compareGenre = useVisualizationStore((s) => s.compareGenre)
   const selectedHomologyDim = useVisualizationStore((s) => s.selectedHomologyDim)
+  const theme = useEffectiveTheme()
 
   const { data: dataA } = usePersistenceImage(selectedGenre, selectedHomologyDim, false)
   const { data: dataB } = usePersistenceImage(compareGenre, selectedHomologyDim, false)
@@ -50,7 +52,7 @@ export function CompareHeatmaps() {
         <div
           style={{
             fontSize: 12,
-            color: resolveGenreColor(selectedGenre, 'dark'),
+            color: resolveGenreColor(selectedGenre, theme),
             marginBottom: 4,
           }}
         >
@@ -73,7 +75,7 @@ export function CompareHeatmaps() {
         <div
           style={{
             fontSize: 12,
-            color: resolveGenreColor(compareGenre, 'dark'),
+            color: resolveGenreColor(compareGenre, theme),
             marginBottom: 4,
           }}
         >

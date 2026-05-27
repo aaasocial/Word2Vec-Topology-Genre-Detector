@@ -5,6 +5,7 @@
 // Backend computes the (word, tfidf, nearest_genre) tuple; this component renders.
 // D-55: inline-hex styling only (no CSS variables; Phase 10 owns the sweep).
 import { genreColor as resolveGenreColor } from '@/constants/genres'
+import { useEffectiveTheme } from '@/stores/preferencesStore'
 import type { DrivingWord } from '@/types/explain'
 
 interface DrivingWordsPillsProps {
@@ -12,6 +13,7 @@ interface DrivingWordsPillsProps {
 }
 
 export function DrivingWordsPills({ words }: DrivingWordsPillsProps) {
+  const theme = useEffectiveTheme()
   if (!words || words.length === 0) return null
   return (
     <div data-testid="driving-words-pills" style={{ marginTop: 16 }}>
@@ -41,7 +43,7 @@ export function DrivingWordsPills({ words }: DrivingWordsPillsProps) {
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
         {words.map((w, idx) => {
-          const color = resolveGenreColor(w.nearest_genre, 'dark')
+          const color = resolveGenreColor(w.nearest_genre, theme)
           return (
             <span
               key={`${w.word}-${idx}`}

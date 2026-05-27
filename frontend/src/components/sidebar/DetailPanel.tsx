@@ -1,6 +1,7 @@
 import { X } from 'lucide-react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { genreColor as resolveGenreColor } from '@/constants/genres'
+import { useEffectiveTheme } from '@/stores/preferencesStore'
 import type { ScatterPoint } from '@/types/scatter'
 
 interface DetailPanelProps {
@@ -9,10 +10,11 @@ interface DetailPanelProps {
 
 export function DetailPanel({ point }: DetailPanelProps) {
   const setSelectedPoint = useVisualizationStore(s => s.setSelectedPoint)
+  const theme = useEffectiveTheme()
 
   if (!point) return null
 
-  const genreColor = resolveGenreColor(point.genre, 'dark')
+  const genreColor = resolveGenreColor(point.genre, theme)
 
   return (
     <div

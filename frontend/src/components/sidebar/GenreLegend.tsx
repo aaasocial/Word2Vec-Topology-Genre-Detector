@@ -1,9 +1,11 @@
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { GENRE_LIST, genreColor as resolveGenreColor } from '@/constants/genres'
+import { useEffectiveTheme } from '@/stores/preferencesStore'
 
 export function GenreLegend() {
   const selectedGenre = useVisualizationStore(s => s.selectedGenre)
   const setSelectedGenre = useVisualizationStore(s => s.setSelectedGenre)
+  const theme = useEffectiveTheme()
 
   return (
     <div
@@ -52,7 +54,7 @@ export function GenreLegend() {
                     width: 8,
                     height: 8,
                     borderRadius: '50%',
-                    background: resolveGenreColor(genre, 'dark'),
+                    background: resolveGenreColor(genre, theme),
                     display: 'inline-block',
                     flexShrink: 0,
                   }}
