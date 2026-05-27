@@ -1,10 +1,10 @@
 import { Settings, GraduationCap } from 'lucide-react'
 import { useVisualizationStore, type TabKey } from '@/stores/visualizationStore'
 
-const TABS: { key: TabKey; label: string }[] = [
+const TABS: { key: TabKey; label: string; tourId?: string }[] = [
   { key: 'scatter', label: 'Scatter' },
-  { key: 'topology', label: 'Topology' },
-  { key: 'compare', label: 'Compare' },
+  { key: 'topology', label: 'Topology', tourId: 'topology-tab' },
+  { key: 'compare', label: 'Compare', tourId: 'compare-tab' },
 ]
 
 export function TopNavTabs() {
@@ -23,13 +23,14 @@ export function TopNavTabs() {
         left: 0,
         right: 0,
         height: 48,
-        background: '#0D0D14',
-        borderBottom: '1px solid #1E1E2A',
+        background: 'hsl(var(--card))',
+        borderBottom: '1px solid hsl(var(--border))',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 16px',
         zIndex: 30,
+        transition: 'background-color 240ms ease, border-color 240ms ease',
       }}
     >
       {/* Left: title + tabs */}
@@ -38,7 +39,7 @@ export function TopNavTabs() {
           style={{
             fontSize: 14,
             fontWeight: 600,
-            color: '#F5F5FF',
+            color: 'hsl(var(--card-foreground))',
             whiteSpace: 'nowrap',
           }}
         >
@@ -54,11 +55,12 @@ export function TopNavTabs() {
                 onClick={() => setActiveTab(tab.key)}
                 role="tab"
                 aria-selected={isActive}
+                data-tour-id={tab.tourId}
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  borderBottom: isActive ? '2px solid #6366F1' : '2px solid transparent',
-                  color: isActive ? '#F5F5FF' : '#6B6B80',
+                  borderBottom: isActive ? '2px solid hsl(var(--primary))' : '2px solid transparent',
+                  color: isActive ? 'hsl(var(--card-foreground))' : 'hsl(var(--muted-foreground))',
                   fontSize: 12,
                   fontWeight: 400,
                   padding: '0 12px',
@@ -70,13 +72,13 @@ export function TopNavTabs() {
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.color = '#E0E0EC'
-                    e.currentTarget.style.background = '#151520'
+                    e.currentTarget.style.color = 'hsl(var(--card-foreground))'
+                    e.currentTarget.style.background = 'hsl(var(--secondary))'
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.color = '#6B6B80'
+                    e.currentTarget.style.color = 'hsl(var(--muted-foreground))'
                     e.currentTarget.style.background = 'transparent'
                   }
                 }}
@@ -88,7 +90,7 @@ export function TopNavTabs() {
         </div>
       </div>
 
-      {/* Right: gear icon + How It Works */}
+      {/* Right: How It Works + Help + gear */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <button
           onClick={() => setPipelineExplanationOpen(!pipelineExplanationOpen)}
@@ -96,7 +98,7 @@ export function TopNavTabs() {
           style={{
             background: 'transparent',
             border: 'none',
-            color: '#6B6B80',
+            color: 'hsl(var(--muted-foreground))',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -105,12 +107,14 @@ export function TopNavTabs() {
             padding: '4px 8px',
             borderRadius: 4,
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.color = '#E0E0EC' }}
-          onMouseLeave={(e) => { e.currentTarget.style.color = '#6B6B80' }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = 'hsl(var(--foreground))' }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = 'hsl(var(--muted-foreground))' }}
         >
           <GraduationCap size={16} />
           <span>How It Works</span>
         </button>
+
+        {/* Phase 10: Help dropdown mounts here in Task 9 */}
 
         <button
           onClick={() => setSettingsDrawerOpen(!settingsDrawerOpen)}
@@ -119,7 +123,7 @@ export function TopNavTabs() {
           style={{
             background: 'transparent',
             border: 'none',
-            color: '#6B6B80',
+            color: 'hsl(var(--muted-foreground))',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -129,8 +133,8 @@ export function TopNavTabs() {
             borderRadius: 4,
             padding: 0,
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.color = '#E0E0EC' }}
-          onMouseLeave={(e) => { e.currentTarget.style.color = '#6B6B80' }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = 'hsl(var(--foreground))' }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = 'hsl(var(--muted-foreground))' }}
         >
           <Settings size={20} />
         </button>

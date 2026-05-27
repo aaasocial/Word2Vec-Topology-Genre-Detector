@@ -94,7 +94,7 @@ export function CompareHeatmaps() {
       </div>
 
       {/* Axis labels */}
-      <div style={{ fontSize: 11, color: '#6B6B80', textAlign: 'center' }}>
+      <div style={{ fontSize: 11, color: 'hsl(var(--muted-foreground))', textAlign: 'center' }}>
         Birth scale
       </div>
     </div>

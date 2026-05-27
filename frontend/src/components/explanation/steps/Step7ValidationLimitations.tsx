@@ -8,14 +8,14 @@
 export function Step7ValidationLimitations() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-      <h3 style={{ fontSize: 24, fontWeight: 600, color: '#F5F5FF', margin: 0 }}>
+      <h3 style={{ fontSize: 24, fontWeight: 600, color: 'hsl(var(--foreground))', margin: 0 }}>
         Validation &amp; Limitations
       </h3>
-      <div style={{ fontSize: 14, color: '#9090A0', lineHeight: 1.7, maxWidth: 600 }}>
+      <div style={{ fontSize: 14, color: 'hsl(var(--muted-foreground))', lineHeight: 1.7, maxWidth: 600 }}>
         <p style={{ margin: '0 0 16px' }}>
           The v2 classifier was evaluated on a 20-book hold-out drawn from authors
           already represented in the training corpus. The reported macro-F1 of 0.74
-          is an <strong style={{ color: '#E0E0EC' }}>upper bound</strong> — for books
+          is an <strong style={{ color: 'hsl(var(--foreground))' }}>upper bound</strong> — for books
           by authors not in the training set (which is most real uploads), expect a
           wider confidence band.
         </p>
@@ -30,7 +30,7 @@ export function Step7ValidationLimitations() {
             href="https://github.com/aaasocial/Word2Vec-Topology-Genre-Detector/blob/master/results/v2_validation_report.md"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: '#6366F1' }}
+            style={{ color: 'hsl(var(--primary))' }}
           >
             Read the full validation report &rarr;
           </a>

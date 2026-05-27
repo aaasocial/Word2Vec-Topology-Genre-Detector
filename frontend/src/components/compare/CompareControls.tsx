@@ -33,9 +33,9 @@ export function CompareControls() {
           display: 'flex',
           alignItems: 'center',
           gap: 6,
-          background: compareMode ? '#6366F1' : 'transparent',
-          color: compareMode ? '#F5F5FF' : '#6B6B80',
-          border: compareMode ? '1px solid #6366F1' : '1px solid #2E2E3A',
+          background: compareMode ? 'hsl(var(--primary))' : 'transparent',
+          color: compareMode ? 'hsl(var(--primary-foreground))' : 'hsl(var(--muted-foreground))',
+          border: compareMode ? '1px solid hsl(var(--primary))' : '1px solid hsl(var(--border))',
           borderRadius: 6,
           padding: '6px 10px',
           fontSize: 12,
@@ -51,7 +51,7 @@ export function CompareControls() {
         <div>
           <label
             htmlFor="compare-genre-select"
-            style={{ fontSize: 12, color: '#6B6B80', display: 'block', marginBottom: 4 }}
+            style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', display: 'block', marginBottom: 4 }}
           >
             Compare with
           </label>
@@ -62,10 +62,10 @@ export function CompareControls() {
             onChange={(e) => handleCompareGenreChange(e.target.value)}
             style={{
               width: '100%',
-              background: '#1E1E2A',
-              border: '1px solid #2E2E3A',
+              background: 'hsl(var(--secondary))',
+              border: '1px solid hsl(var(--border))',
               borderRadius: 6,
-              color: '#F5F5FF',
+              color: 'hsl(var(--foreground))',
               padding: '8px 10px',
               fontSize: 13,
               cursor: 'pointer',

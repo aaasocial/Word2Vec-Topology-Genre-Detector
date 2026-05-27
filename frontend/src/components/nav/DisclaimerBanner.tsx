@@ -16,8 +16,8 @@ export function DisclaimerBanner() {
         left: 0,
         right: 0,
         height: 28,
-        background: '#0D0D14',
-        borderBottom: '1px solid #1E1E2A',
+        background: 'hsl(var(--muted))',
+        borderBottom: '1px solid hsl(var(--border))',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -25,12 +25,12 @@ export function DisclaimerBanner() {
         zIndex: 29,
       }}
     >
-      <Info size={14} color="#6B6B80" />
+      <Info size={14} color="hsl(var(--muted-foreground))" />
       <span
         style={{
           fontSize: 12,
           fontWeight: 400,
-          color: '#6B6B80',
+          color: 'hsl(var(--muted-foreground))',
         }}
       >
         Topology is computed in the original N-dimensional space. The 3D view is a lossy projection.
