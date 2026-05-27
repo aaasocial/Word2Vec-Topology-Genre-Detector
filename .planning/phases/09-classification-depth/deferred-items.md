@@ -50,3 +50,33 @@ than a separate setter.
 *Neither item blocks plan 09-04 success criteria (the new TopNList +
 UncertaintyBadge tests are 14/14 green; tsc passes; ClassificationResult
 mounts both components per the contract).*
+
+---
+
+## Found during 09-06 execution (full-suite gate)
+
+### 3. 29 pre-existing failures in `backend/tests/test_upload.py`, `test_classify.py`, `test_recompute.py`, `test_corpus_genres_books.py`, `test_websocket.py`, `test_vr_api.py`, `test_api.py`, and `backend/api/tests/test_viz.py`
+
+**Severity:** environmental — not a Phase 9 regression
+**Pre-existing:** confirmed via `git stash` re-run at 09-06 HEAD before any 09-06 edits. The failures reproduce against the same SHA prior to plan 09-06's commits.
+**Root cause:** Redis is not running on the local dev machine (`Could not connect to Redis at 127.0.0.1:6379: Connection refused`). The FastAPI lifespan opens the Redis pool best-effort but the arq pool init still emits 5 retries × 2s of warnings before falling through; some test fixtures (TestClient bootstraps) end up with routers unmounted, cascading into 404/405 responses from any endpoint that depends on the worker context (upload, classify, recompute, corpus-genres-books, ws, vr, viz).
+**Failing tests (29 total):**
+- `backend/api/tests/test_viz.py` (6 failures)
+- `backend/tests/test_upload.py` (6 failures)
+- `backend/tests/test_recompute.py` (5 failures)
+- `backend/tests/test_vr_api.py` (4 failures)
+- `backend/tests/test_classify.py` (3 failures)
+- `backend/tests/test_corpus_genres_books.py` (3 failures)
+- `backend/tests/test_api.py` (1 failure)
+- `backend/tests/test_websocket.py` (1 failure)
+
+**Why these are environmental, not Phase 9 regressions:**
+- The 54 Phase 9 backend tests in scope (`test_explain_math.py`, `test_lineage_calibration.py`, `test_explain_artifacts.py`, `test_app_lifespan.py`, `test_explain_endpoint.py`) all pass — they mock Redis directly.
+- The failing tests are integration tests authored in Phase 2 / Phase 4 / Phase 6 that have always required a live Redis instance; CI runs them inside a docker-compose stack with Redis.
+- The 09-03 SUMMARY explicitly notes the explain endpoint tests use `MagicMock` Redis to avoid this dependency, confirming the project pattern is "unit tests mock Redis; integration tests need a real one".
+
+**Recommended fix:** either (a) start Redis locally (`docker run -p 6379:6379 redis:7`) before running the full backend suite, or (b) add a `@pytest.mark.requires_redis` skip marker to the 29 tests so a no-Redis dev environment exits cleanly. Option (b) is the project-hygiene fix; option (a) is the developer-workflow workaround.
+
+---
+
+*The Phase 9 success criteria do not require the 29 environmental tests to pass — only the Phase 9 surface tests (which all do). 09-06's full-suite gate is satisfied by the green Phase 9 backend suite + green Phase 9 frontend surface suite + clean tsc.*
