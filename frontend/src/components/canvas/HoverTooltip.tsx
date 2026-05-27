@@ -17,8 +17,9 @@ export function TooltipContent({ point }: { point: ScatterPoint }) {
   return (
     <div
       style={{
-        background: '#16161F',
-        border: '1px solid #1E1E2A',
+        background: 'hsl(var(--popover))',
+        color: 'hsl(var(--popover-foreground))',
+        border: '1px solid hsl(var(--border))',
         borderRadius: 8,
         padding: 12,
         maxWidth: 240,
@@ -44,26 +45,26 @@ export function TooltipContent({ point }: { point: ScatterPoint }) {
         style={{
           fontSize: 14,
           fontFamily: 'JetBrains Mono, monospace',
-          color: '#F5F5FF',
+          color: 'hsl(var(--popover-foreground))',
           marginBottom: 4,
         }}
       >
         {point.word}
       </div>
-      <div style={{ fontSize: 12, color: '#6B6B80', marginBottom: 8 }}>
+      <div style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', marginBottom: 8 }}>
         TF-IDF:{' '}
         <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 13 }}>
           {point.tfidf_weight.toFixed(4)}
         </span>
       </div>
-      <div style={{ fontSize: 12, color: '#6B6B80' }}>Nearest:</div>
+      <div style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))' }}>Nearest:</div>
       {point.neighbors.slice(0, 5).map((n, i) => (
         <div
           key={i}
-          style={{ fontSize: 13, fontFamily: 'JetBrains Mono, monospace', color: '#E0E0EC' }}
+          style={{ fontSize: 13, fontFamily: 'JetBrains Mono, monospace', color: 'hsl(var(--popover-foreground))' }}
         >
           {i + 1}. {n.word}{' '}
-          <span style={{ color: '#6B6B80' }}>{n.similarity.toFixed(2)}</span>
+          <span style={{ color: 'hsl(var(--muted-foreground))' }}>{n.similarity.toFixed(2)}</span>
         </div>
       ))}
     </div>

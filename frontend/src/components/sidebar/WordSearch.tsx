@@ -42,7 +42,7 @@ export const WordSearch = forwardRef<HTMLInputElement, WordSearchProps>(
 
     return (
       <div>
-        <div style={{ fontSize: 12, color: '#6B6B80', fontWeight: 600, marginBottom: 8 }}>
+        <div style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', fontWeight: 600, marginBottom: 8 }}>
           Search Words
         </div>
 
@@ -55,7 +55,7 @@ export const WordSearch = forwardRef<HTMLInputElement, WordSearchProps>(
               left: 10,
               top: '50%',
               transform: 'translateY(-50%)',
-              color: '#6B6B80',
+              color: 'hsl(var(--muted-foreground))',
               pointerEvents: 'none',
             }}
           />
@@ -70,10 +70,10 @@ export const WordSearch = forwardRef<HTMLInputElement, WordSearchProps>(
             style={{
               width: '100%',
               boxSizing: 'border-box',
-              background: '#1E1E2A',
-              border: '1px solid #2E2E3A',
+              background: 'hsl(var(--secondary))',
+              border: '1px solid hsl(var(--border))',
               borderRadius: 6,
-              color: '#F5F5FF',
+              color: 'hsl(var(--foreground))',
               padding: '8px 32px 8px 30px',
               fontSize: 13,
               outline: 'none',
@@ -91,7 +91,7 @@ export const WordSearch = forwardRef<HTMLInputElement, WordSearchProps>(
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                color: '#6B6B80',
+                color: 'hsl(var(--muted-foreground))',
                 padding: 2,
                 display: 'flex',
                 alignItems: 'center',
@@ -108,7 +108,7 @@ export const WordSearch = forwardRef<HTMLInputElement, WordSearchProps>(
             style={{
               marginTop: 8,
               borderRadius: 6,
-              border: '1px solid #1E1E2A',
+              border: '1px solid hsl(var(--border))',
               overflow: 'hidden',
               maxHeight: 240,
               overflowY: 'auto',
@@ -119,7 +119,7 @@ export const WordSearch = forwardRef<HTMLInputElement, WordSearchProps>(
                 style={{
                   padding: '10px 12px',
                   fontSize: 13,
-                  color: '#6B6B80',
+                  color: 'hsl(var(--muted-foreground))',
                   textAlign: 'center',
                 }}
               >
@@ -138,12 +138,12 @@ export const WordSearch = forwardRef<HTMLInputElement, WordSearchProps>(
                     padding: '8px 12px',
                     background: 'transparent',
                     border: 'none',
-                    borderBottom: '1px solid #1E1E2A',
+                    borderBottom: '1px solid hsl(var(--border))',
                     cursor: 'pointer',
                     textAlign: 'left',
-                    color: '#F5F5FF',
+                    color: 'hsl(var(--foreground))',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.background = '#1E1E2A' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'hsl(var(--muted))' }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
                 >
                   <span
@@ -167,7 +167,7 @@ export const WordSearch = forwardRef<HTMLInputElement, WordSearchProps>(
                   >
                     {point.word}
                   </span>
-                  <span style={{ fontSize: 11, color: '#6B6B80', fontFamily: 'monospace' }}>
+                  <span style={{ fontSize: 11, color: 'hsl(var(--muted-foreground))', fontFamily: 'monospace' }}>
                     {point.tfidf_weight.toFixed(3)}
                   </span>
                 </button>

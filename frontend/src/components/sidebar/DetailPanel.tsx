@@ -19,8 +19,8 @@ export function DetailPanel({ point }: DetailPanelProps) {
   return (
     <div
       style={{
-        background: '#16161F',
-        border: '1px solid #1E1E2A',
+        background: 'hsl(var(--card))',
+        border: '1px solid hsl(var(--border))',
         borderRadius: 8,
         padding: 16,
       }}
@@ -31,7 +31,7 @@ export function DetailPanel({ point }: DetailPanelProps) {
           style={{
             fontSize: 18,
             fontFamily: 'JetBrains Mono, monospace',
-            color: '#F5F5FF',
+            color: 'hsl(var(--card-foreground))',
             wordBreak: 'break-all',
             flex: 1,
           }}
@@ -45,7 +45,7 @@ export function DetailPanel({ point }: DetailPanelProps) {
             background: 'none',
             border: 'none',
             cursor: 'pointer',
-            color: '#6B6B80',
+            color: 'hsl(var(--muted-foreground))',
             padding: 4,
             display: 'flex',
             alignItems: 'center',
@@ -72,20 +72,20 @@ export function DetailPanel({ point }: DetailPanelProps) {
       </div>
 
       {/* TF-IDF */}
-      <div style={{ fontSize: 13, color: '#6B6B80', marginBottom: 8 }}>
+      <div style={{ fontSize: 13, color: 'hsl(var(--muted-foreground))', marginBottom: 8 }}>
         TF-IDF:{' '}
-        <span style={{ fontFamily: 'JetBrains Mono, monospace', color: '#F5F5FF' }}>
+        <span style={{ fontFamily: 'JetBrains Mono, monospace', color: 'hsl(var(--foreground))' }}>
           {point.tfidf_weight.toFixed(4)}
         </span>
       </div>
 
       {/* Coordinates */}
-      <div style={{ fontSize: 12, color: '#6B6B80', marginBottom: 12, fontFamily: 'monospace' }}>
+      <div style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', marginBottom: 12, fontFamily: 'monospace' }}>
         x: {point.x.toFixed(4)} &nbsp; y: {point.y.toFixed(4)} &nbsp; z: {point.z.toFixed(4)}
       </div>
 
       {/* Neighbors */}
-      <div style={{ fontSize: 12, color: '#6B6B80', marginBottom: 6 }}>Nearest neighbors</div>
+      <div style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', marginBottom: 6 }}>Nearest neighbors</div>
       <div
         style={{
           maxHeight: 200,
@@ -103,12 +103,12 @@ export function DetailPanel({ point }: DetailPanelProps) {
               justifyContent: 'space-between',
               fontSize: 13,
               fontFamily: 'JetBrains Mono, monospace',
-              color: '#E0E0EC',
+              color: 'hsl(var(--card-foreground))',
               padding: '2px 0',
             }}
           >
             <span>{i + 1}. {n.word}</span>
-            <span style={{ color: '#6B6B80' }}>{n.similarity.toFixed(3)}</span>
+            <span style={{ color: 'hsl(var(--muted-foreground))' }}>{n.similarity.toFixed(3)}</span>
           </div>
         ))}
       </div>

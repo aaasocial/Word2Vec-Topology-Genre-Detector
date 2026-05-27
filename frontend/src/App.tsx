@@ -192,7 +192,7 @@ export default function App() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: '#6B6B80',
+                      color: 'hsl(var(--muted-foreground))',
                       fontSize: 14,
                       zIndex: 10,
                     }}
@@ -235,7 +235,7 @@ export default function App() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: '#6B6B80',
+                      color: 'hsl(var(--muted-foreground))',
                       fontSize: 14,
                       zIndex: 10,
                     }}

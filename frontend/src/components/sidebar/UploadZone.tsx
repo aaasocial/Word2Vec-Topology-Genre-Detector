@@ -64,11 +64,15 @@ export function UploadZone({ onClassify }: UploadZoneProps) {
     [handleFile],
   )
 
-  const borderColor = error ? '#EF4444' : isDragOver ? '#6366F1' : '#2A2A3A'
+  // D-77: drop zone visual — solid --primary on drag, --primary tint background,
+  // text/icon recolor to --primary.
+  const borderColor = error
+    ? 'hsl(var(--destructive))'
+    : isDragOver ? 'hsl(var(--primary))' : 'hsl(var(--border))'
   const borderStyle = isDragOver ? 'solid' : 'dashed'
-  const bg = isDragOver ? 'rgba(99,102,241,0.08)' : 'transparent'
-  const iconColor = isDragOver ? '#818CF8' : '#6B6B80'
-  const textColor = isDragOver ? '#818CF8' : '#6B6B80'
+  const bg = isDragOver ? 'hsl(var(--primary) / 0.08)' : 'transparent'
+  const iconColor = isDragOver ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))'
+  const textColor = isDragOver ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))'
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -101,7 +105,7 @@ export function UploadZone({ onClassify }: UploadZoneProps) {
         <span style={{ fontSize: 12, color: textColor }}>or click to browse</span>
       </div>
       {error && (
-        <div style={{ fontSize: 12, color: '#EF4444', padding: '4px 0' }}>
+        <div style={{ fontSize: 12, color: 'hsl(var(--destructive))', padding: '4px 0' }}>
           {error}
         </div>
       )}

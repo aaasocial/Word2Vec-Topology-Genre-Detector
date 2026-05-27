@@ -66,8 +66,8 @@ export function Sidebar({ points = [], open, onToggle, searchInputRef, scatterCa
           top: 16,
           right: open ? 336 : 16,
           zIndex: 20,
-          background: '#1E1E2A',
-          border: '1px solid #2E2E3A',
+          background: 'hsl(var(--secondary))',
+          border: '1px solid hsl(var(--border))',
           borderRadius: 6,
           width: 28,
           height: 28,
@@ -75,7 +75,7 @@ export function Sidebar({ points = [], open, onToggle, searchInputRef, scatterCa
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          color: '#9090A0',
+          color: 'hsl(var(--muted-foreground))',
           transition: 'right 300ms ease-out',
         }}
       >
@@ -89,18 +89,18 @@ export function Sidebar({ points = [], open, onToggle, searchInputRef, scatterCa
         style={{
           width: 320,
           flexShrink: 0,
-          background: '#111118',
-          borderLeft: '1px solid #1E1E2A',
+          background: 'hsl(var(--sidebar-bg))',
+          borderLeft: '1px solid hsl(var(--sidebar-border))',
           overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',
           gap: 24,
           padding: '32px 32px 24px',
           transform: open ? 'translateX(0)' : 'translateX(320px)',
-          transition: 'transform 300ms ease-out',
+          transition: 'transform 300ms ease-out, background-color 240ms ease',
         }}
       >
-        <div style={{ fontSize: 16, fontWeight: 600, color: '#F5F5FF' }}>
+        <div style={{ fontSize: 16, fontWeight: 600, color: 'hsl(var(--card-foreground))' }}>
           Literary Genre Topology
         </div>
 
@@ -129,8 +129,8 @@ export function Sidebar({ points = [], open, onToggle, searchInputRef, scatterCa
             alignItems: 'center',
             gap: 6,
             background: 'transparent',
-            border: '1px solid #2E2E3A',
-            color: '#9090A0',
+            border: '1px solid hsl(var(--border))',
+            color: 'hsl(var(--muted-foreground))',
             borderRadius: 6,
             padding: '6px 10px',
             fontSize: 12,
@@ -143,8 +143,8 @@ export function Sidebar({ points = [], open, onToggle, searchInputRef, scatterCa
         </button>
 
         {/* Upload section */}
-        <div style={{ borderTop: '1px solid #1E1E2A', paddingTop: 16 }}>
-          <div style={{ fontSize: 12, color: '#6B6B80', fontWeight: 600, marginBottom: 12 }}>
+        <div style={{ borderTop: '1px solid hsl(var(--border))', paddingTop: 16 }}>
+          <div style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', fontWeight: 600, marginBottom: 12 }}>
             Upload & Classify
           </div>
           {!showProgress && !showResult && <UploadZone onClassify={classify} />}

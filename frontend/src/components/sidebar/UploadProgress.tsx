@@ -12,7 +12,7 @@ export function UploadProgress({ steps, retryMessage }: UploadProgressProps) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <div style={{ fontSize: 14, fontWeight: 600, color: '#F5F5FF' }}>Processing...</div>
+      <div style={{ fontSize: 14, fontWeight: 600, color: 'hsl(var(--foreground))' }}>Processing...</div>
 
       <ol
         role="progressbar"
@@ -24,10 +24,10 @@ export function UploadProgress({ steps, retryMessage }: UploadProgressProps) {
           <li key={i} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               {step.status === 'complete' && (
-                <CheckCircle size={16} color="#22C55E" />
+                <CheckCircle size={16} color="hsl(var(--good))" />
               )}
               {step.status === 'error' && (
-                <XCircle size={16} color="#EF4444" />
+                <XCircle size={16} color="hsl(var(--destructive))" />
               )}
               {step.status === 'active' && (
                 <div
@@ -36,7 +36,7 @@ export function UploadProgress({ steps, retryMessage }: UploadProgressProps) {
                     width: 8,
                     height: 8,
                     borderRadius: '50%',
-                    background: '#6366F1',
+                    background: 'hsl(var(--primary))',
                     flexShrink: 0,
                     marginLeft: 4,
                     marginRight: 4,
@@ -49,7 +49,7 @@ export function UploadProgress({ steps, retryMessage }: UploadProgressProps) {
                     width: 8,
                     height: 8,
                     borderRadius: '50%',
-                    background: '#2A2A3A',
+                    background: 'hsl(var(--muted))',
                     flexShrink: 0,
                     marginLeft: 4,
                     marginRight: 4,
@@ -59,14 +59,16 @@ export function UploadProgress({ steps, retryMessage }: UploadProgressProps) {
               <span
                 style={{
                   fontSize: 12,
-                  color: step.status === 'pending' ? '#6B6B80' : '#E0E0EC',
+                  color: step.status === 'pending'
+                    ? 'hsl(var(--muted-foreground))'
+                    : 'hsl(var(--card-foreground))',
                 }}
               >
                 {step.label}
               </span>
             </div>
             {step.status === 'error' && step.errorMessage && (
-              <div style={{ fontSize: 12, color: '#EF4444', paddingLeft: 24 }}>
+              <div style={{ fontSize: 12, color: 'hsl(var(--destructive))', paddingLeft: 24 }}>
                 {step.errorMessage}
               </div>
             )}
@@ -78,7 +80,7 @@ export function UploadProgress({ steps, retryMessage }: UploadProgressProps) {
       <div
         style={{
           height: 4,
-          background: '#2A2A3A',
+          background: 'hsl(var(--muted))',
           borderRadius: 2,
           overflow: 'hidden',
         }}
@@ -87,7 +89,7 @@ export function UploadProgress({ steps, retryMessage }: UploadProgressProps) {
           style={{
             height: '100%',
             width: `${progressPct}%`,
-            background: '#6366F1',
+            background: 'hsl(var(--primary))',
             borderRadius: 2,
             transition: 'width 300ms ease-in-out',
           }}
@@ -95,7 +97,7 @@ export function UploadProgress({ steps, retryMessage }: UploadProgressProps) {
       </div>
 
       {retryMessage && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#F87171' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'hsl(var(--destructive))' }}>
           <Loader size={12} style={{ animation: 'spin 1s linear infinite' }} />
           {retryMessage}
         </div>
