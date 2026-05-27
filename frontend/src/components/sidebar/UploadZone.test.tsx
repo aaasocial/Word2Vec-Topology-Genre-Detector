@@ -32,7 +32,9 @@ describe('UploadZone', () => {
     // Find the interactive div (role="button")
     const btn = dropZone.querySelector('[role="button"]') as HTMLElement
     fireEvent.dragOver(btn)
-    expect(btn.style.borderColor).toBe('rgb(99, 102, 241)')
+    // Phase 10 D-77: drag border is now hsl(var(--primary)), border-style flips to solid
+    expect(btn.style.borderColor).toBe('hsl(var(--primary))')
+    expect(btn.style.borderStyle).toBe('solid')
   })
 
   it('restores border on drag leave', () => {
@@ -41,7 +43,9 @@ describe('UploadZone', () => {
     const btn = (container.firstChild as HTMLElement).querySelector('[role="button"]') as HTMLElement
     fireEvent.dragOver(btn)
     fireEvent.dragLeave(btn)
-    expect(btn.style.borderColor).toBe('rgb(42, 42, 58)') // #2A2A3A
+    // Phase 10 D-77: idle border is hsl(var(--border)) (dashed)
+    expect(btn.style.borderColor).toBe('hsl(var(--border))')
+    expect(btn.style.borderStyle).toBe('dashed')
   })
 
   it('has accept=".txt" on file input', () => {

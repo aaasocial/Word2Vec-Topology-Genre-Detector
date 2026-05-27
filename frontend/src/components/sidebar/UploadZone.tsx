@@ -1,15 +1,55 @@
 import { useRef, useState, useCallback } from 'react'
 import { Upload } from 'lucide-react'
 import { TOUR_ANCHORS } from '@/tour/anchors'
+import { useEffectiveTheme } from '@/stores/preferencesStore'
+import { UPLOADED_BOOK_COLOR } from '@/constants/genres'
 
 interface UploadZoneProps {
   onClassify: (file: File) => Promise<void>
+}
+
+/**
+ * Ghost-scatter helper (D-77): tiny SVG showing ~7 dim genre dots + one
+ * dashed-circle ghost marker in UPLOADED_BOOK_COLOR[theme]. Teaches the user
+ * "your uploaded book becomes a marker in the same cloud" before they upload.
+ */
+function GhostScatterHelper({ markerColor }: { markerColor: string }) {
+  return (
+    <svg
+      width={70}
+      height={44}
+      viewBox="0 0 70 44"
+      aria-hidden="true"
+      style={{ flexShrink: 0 }}
+    >
+      {/* 7 dim genre dots (muted-foreground) scattered across the canvas */}
+      <circle cx={8} cy={14} r={2} fill="currentColor" opacity={0.35} />
+      <circle cx={16} cy={28} r={2} fill="currentColor" opacity={0.35} />
+      <circle cx={24} cy={12} r={2} fill="currentColor" opacity={0.35} />
+      <circle cx={28} cy={34} r={2} fill="currentColor" opacity={0.35} />
+      <circle cx={40} cy={22} r={2} fill="currentColor" opacity={0.35} />
+      <circle cx={52} cy={32} r={2} fill="currentColor" opacity={0.35} />
+      <circle cx={62} cy={18} r={2} fill="currentColor" opacity={0.35} />
+      {/* Ghost marker — dashed outline circle showing where the upload will land */}
+      <circle
+        cx={36}
+        cy={20}
+        r={5}
+        fill="none"
+        stroke={markerColor}
+        strokeWidth={1.5}
+        strokeDasharray="2 2"
+      />
+      <circle cx={36} cy={20} r={1.5} fill={markerColor} />
+    </svg>
+  )
 }
 
 export function UploadZone({ onClassify }: UploadZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isDragOver, setIsDragOver] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const theme = useEffectiveTheme()
 
   const showError = useCallback((msg: string) => {
     setError(msg)
@@ -88,7 +128,9 @@ export function UploadZone({ onClassify }: UploadZoneProps) {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         style={{
-          border: `2px ${borderStyle} ${borderColor}`,
+          borderWidth: '2px',
+          borderStyle,
+          borderColor,
           borderRadius: 8,
           height: 120,
           display: 'flex',
@@ -103,9 +145,40 @@ export function UploadZone({ onClassify }: UploadZoneProps) {
         }}
       >
         <Upload size={24} color={iconColor} />
-        <span style={{ fontSize: 14, color: textColor }}>Drop .txt file here</span>
-        <span style={{ fontSize: 12, color: textColor }}>or click to browse</span>
+        <span style={{ fontSize: 14, color: textColor, fontWeight: 500 }}>
+          Drop a book to classify
+        </span>
+        {/* D-77: constraints shown BEFORE upload — reduces downstream errors */}
+        <span style={{ fontSize: 11.5, color: textColor }}>
+          .txt · ≤5MB · ≥500 words
+        </span>
       </div>
+
+      {/* D-77 ghost-scatter helper: only renders when not actively uploading + no error */}
+      {!error && (
+        <div
+          style={{
+            display: 'flex',
+            gap: 10,
+            alignItems: 'center',
+            padding: '10px 12px',
+            background: 'hsl(var(--muted))',
+            borderRadius: 6,
+            fontSize: 11.5,
+            color: 'hsl(var(--muted-foreground))',
+            lineHeight: 1.45,
+          }}
+        >
+          <GhostScatterHelper markerColor={UPLOADED_BOOK_COLOR[theme]} />
+          <div>
+            Your book will appear in the cloud — the marker shows where it&apos;ll land.
+            <div style={{ marginTop: 2, fontSize: 10.5, opacity: 0.85 }}>
+              Usually under 12 seconds.
+            </div>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div style={{ fontSize: 12, color: 'hsl(var(--destructive))', padding: '4px 0' }}>
           {error}
