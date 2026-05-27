@@ -3,7 +3,8 @@
 // D-46 canonical disclosure copy ("proxies -- not literal classifier inputs") sits ABOVE
 // the pills. The phrasing is a disclosure contract; do NOT translate or paraphrase.
 // Backend computes the (word, tfidf, nearest_genre) tuple; this component renders.
-// D-55: inline-hex styling only (no CSS variables; Phase 10 owns the sweep).
+// Phase 10 D-82 sweep: inline-hex lifted to hsl(var(--*)) tokens. Pill border
+// stays per-genre color; pill bg/text use card/foreground tokens.
 import { genreColor as resolveGenreColor } from '@/constants/genres'
 import { useEffectiveTheme } from '@/stores/preferencesStore'
 import type { DrivingWord } from '@/types/explain'
@@ -21,7 +22,7 @@ export function DrivingWordsPills({ words }: DrivingWordsPillsProps) {
         style={{
           fontSize: 13,
           fontWeight: 600,
-          color: '#F5F5FF',
+          color: 'hsl(var(--card-foreground))',
           marginBottom: 8,
         }}
       >
@@ -31,14 +32,14 @@ export function DrivingWordsPills({ words }: DrivingWordsPillsProps) {
         data-testid="driving-words-disclosure"
         style={{
           fontSize: 11,
-          color: '#6B6B80',
+          color: 'hsl(var(--muted-foreground))',
           marginBottom: 8,
           lineHeight: 1.4,
         }}
       >
         High-TF-IDF words from your upload, tagged with the nearest training genre by
         word-vector similarity. These are{' '}
-        <strong style={{ color: '#9090A0' }}>proxies</strong> for the cluster-distribution
+        <strong style={{ color: 'hsl(var(--foreground))' }}>proxies</strong> for the cluster-distribution
         signal — not literal classifier inputs.
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -54,8 +55,8 @@ export function DrivingWordsPills({ words }: DrivingWordsPillsProps) {
                 alignItems: 'center',
                 gap: 4,
                 padding: '2px 8px',
-                background: '#1E1E2A',
-                color: '#E0E0EC',
+                background: 'hsl(var(--card))',
+                color: 'hsl(var(--card-foreground))',
                 borderRadius: 12,
                 fontSize: 11,
                 border: `1px solid ${color}`,

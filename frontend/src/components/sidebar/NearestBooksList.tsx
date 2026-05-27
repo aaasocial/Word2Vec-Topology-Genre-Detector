@@ -1,7 +1,7 @@
 // frontend/src/components/sidebar/NearestBooksList.tsx
 // Phase 9 DEPTH-04 -- 5 nearest training books with Euclidean distance on L2-normed features.
 // Visual is minimum-viable per Phase 10 deferred dark-mode sweep (user clarification).
-// D-55: inline-hex styling only (no CSS variables; Phase 10 owns the sweep).
+// Phase 10 D-82 sweep: inline-hex lifted to hsl(var(--*)) tokens.
 import { genreColor as resolveGenreColor } from '@/constants/genres'
 import { useEffectiveTheme } from '@/stores/preferencesStore'
 import type { NearestTrainingBook } from '@/types/explain'
@@ -21,7 +21,7 @@ export function NearestBooksList({ books }: NearestBooksListProps) {
         style={{
           fontSize: 13,
           fontWeight: 600,
-          color: '#F5F5FF',
+          color: 'hsl(var(--card-foreground))',
           marginBottom: 8,
         }}
       >
@@ -38,7 +38,7 @@ export function NearestBooksList({ books }: NearestBooksListProps) {
               alignItems: 'center',
               gap: 8,
               padding: '6px 0',
-              borderBottom: '1px solid #1E1E2A',
+              borderBottom: '1px solid hsl(var(--border))',
               fontSize: 12,
             }}
           >
@@ -58,7 +58,7 @@ export function NearestBooksList({ books }: NearestBooksListProps) {
                 data-testid="nearest-book-title"
                 title={b.title}
                 style={{
-                  color: '#E0E0EC',
+                  color: 'hsl(var(--card-foreground))',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -68,7 +68,7 @@ export function NearestBooksList({ books }: NearestBooksListProps) {
               </div>
               <div
                 data-testid="nearest-book-author-genre"
-                style={{ color: '#6B6B80', fontSize: 11 }}
+                style={{ color: 'hsl(var(--muted-foreground))', fontSize: 11 }}
               >
                 {b.author} · {b.genre}
               </div>
@@ -77,7 +77,7 @@ export function NearestBooksList({ books }: NearestBooksListProps) {
               data-testid="nearest-book-distance"
               style={{
                 fontFamily: 'JetBrains Mono, monospace',
-                color: '#F5F5FF',
+                color: 'hsl(var(--foreground))',
                 fontSize: 11,
               }}
             >
