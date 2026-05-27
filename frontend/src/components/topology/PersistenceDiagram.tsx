@@ -302,7 +302,7 @@ export function PersistenceDiagram() {
             style={{
               width: SIZE,
               height: SIZE,
-              background: '#1A1A25',
+              background: 'hsl(var(--muted))',
               borderRadius: 4,
               animation: 'pulse 1.5s ease-in-out infinite',
             }}
