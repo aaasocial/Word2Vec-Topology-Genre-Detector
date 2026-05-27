@@ -1,0 +1,1373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Phase 10 — Wireframe Mockups · Literary Genre Topology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:       #FBF9F2;
+    --paper-edge:  #F2EFE4;
+    --trace:       #FEFDF8;
+    --rule:        #D8D5CB;
+    --rule-soft:   #E6E3D8;
+    --ink:         #181A2D;
+    --ink-mid:     #4B4D5C;
+    --ink-soft:    #8B8D9A;
+    --pencil:      #2A2A35;
+    --marker:      #4F46E5;     /* light theme primary */
+    --marker-soft: #E0E2FA;
+    --marker-d:    #6366F1;     /* dark theme primary */
+    --highlight:   #FBE89A;
+    --good:        #59B488;
+    --warn:        #C77E0A;
+    --bad:         #D45A5A;
+
+    /* v2 genre palette — LIGHT */
+    --gn-adv-l:    #DC2626;
+    --gn-gh-l:     #7C3AED;
+    --gn-hist-l:   #B45309;
+    --gn-lit-l:    #0F766E;
+    --gn-mys-l:    #1D4ED8;
+    --gn-rom-l:    #BE185D;
+    --gn-spec-l:   #4338CA;
+    --gn-west-l:   #9A3412;
+
+    /* v2 genre palette — DARK */
+    --gn-adv-d:    #F87171;
+    --gn-gh-d:     #B47AE6;
+    --gn-hist-d:   #FBBF24;
+    --gn-lit-d:    #5EEAD4;
+    --gn-mys-d:    #60A5FA;
+    --gn-rom-d:    #F472B6;
+    --gn-spec-d:   #818CF8;
+    --gn-west-d:   #F97316;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); font-family: 'Inter', system-ui, sans-serif; font-size: 14px; line-height: 1.55; }
+  body { padding: 56px 6vw 120px; }
+
+  /* ============ Doc head ============ */
+  .doc-head { max-width: 1140px; margin: 0 auto 56px; }
+  .doc-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 14px; }
+  .doc-title { font-size: 38px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 12px; line-height: 1.05; }
+  .doc-sub { font-size: 16px; color: var(--ink-mid); max-width: 700px; margin: 0 0 24px; }
+  .doc-meta { display: flex; flex-wrap: wrap; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-soft); }
+  .doc-meta span { padding: 4px 10px; border: 1px solid var(--rule); border-radius: 100px; background: var(--trace); }
+  .doc-meta span strong { color: var(--ink); font-weight: 500; }
+
+  .index { max-width: 1140px; margin: 0 auto 64px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 18px; border: 1px dashed var(--rule); border-radius: 12px; background: var(--trace); }
+  .index a { display: flex; gap: 10px; padding: 8px 10px; text-decoration: none; color: var(--ink); border-radius: 6px; font-size: 12.5px; }
+  .index a .num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--marker); font-weight: 600; width: 28px; flex-shrink: 0; }
+  .index a:hover { background: var(--marker-soft); }
+
+  /* ============ Artboard scaffold ============ */
+  .artboard { max-width: 1280px; margin: 0 auto 80px; }
+  .ab-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
+  .ab-num { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--marker); letter-spacing: 0.1em; font-weight: 600; }
+  .ab-title { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+  .ab-meta { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-soft); display: flex; gap: 12px; }
+  .ab-lede { color: var(--ink-mid); font-size: 13.5px; margin: 0 0 18px; max-width: 720px; }
+
+  /* main mockup frame */
+  .frame { position: relative; }
+  .stage {
+    position: relative;
+    background: var(--trace);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 1px 3px 6px rgba(0,0,0,0.04);
+  }
+  .stage.dark-paper { background: #0E0E14; border-color: #272832; }
+
+  /* ============ App-shell mock styles ============ */
+  /* These render a faithful-ish mini app inside the artboard */
+  .app-shell {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    height: 540px;
+    display: flex;
+    flex-direction: column;
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .app-shell.dark { background: #0A0A0F; border-color: #1E1E2A; color: #E8E8F2; }
+
+  /* Top nav */
+  .nav {
+    height: 38px;
+    flex-shrink: 0;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E5E2D6;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 22px;
+    font-size: 12px;
+  }
+  .app-shell.dark .nav { background: #0D0D14; border-bottom-color: #1E1E2A; }
+  .nav .wordmark { font-weight: 600; font-size: 12.5px; color: var(--ink); }
+  .app-shell.dark .nav .wordmark { color: #F5F5FF; }
+  .nav .tabs { display: flex; gap: 0; }
+  .nav .tab { padding: 0 11px; height: 22px; line-height: 22px; font-size: 11.5px; color: var(--ink-soft); border-bottom: 2px solid transparent; }
+  .nav .tab.active { color: var(--ink); border-bottom-color: var(--marker); }
+  .app-shell.dark .nav .tab { color: #6B6B80; }
+  .app-shell.dark .nav .tab.active { color: #F5F5FF; border-bottom-color: var(--marker-d); }
+  .nav .spacer { flex: 1; }
+  .nav .icon { color: var(--ink-soft); font-size: 11.5px; padding: 4px 6px; }
+  .app-shell.dark .nav .icon { color: #6B6B80; }
+  .nav .icon.q-icon { border: 1px solid var(--marker); border-radius: 4px; color: var(--marker); padding: 1px 6px; font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+  .app-shell.dark .nav .icon.q-icon { color: var(--marker-d); border-color: var(--marker-d); }
+
+  /* Disclaimer ribbon */
+  .ribbon {
+    height: 22px;
+    background: var(--paper-edge);
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--ink-mid);
+    flex-shrink: 0;
+  }
+  .app-shell.dark .ribbon { background: #16161F; border-bottom-color: #1E1E2A; color: #9090A0; }
+
+  /* Body grid */
+  .body { flex: 1; display: flex; min-height: 0; }
+  .canvas-region { flex: 1; position: relative; overflow: hidden; }
+  .canvas-region svg { width: 100%; height: 100%; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: #FFFFFF;
+    border-left: 1px solid #E5E2D6;
+    padding: 14px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow-y: auto;
+    font-size: 11px;
+  }
+  .app-shell.dark .sidebar { background: #111118; border-left-color: #1E1E2A; }
+  .sb-title { font-size: 11.5px; font-weight: 600; }
+  .app-shell.dark .sb-title { color: #F5F5FF; }
+  .sb-label { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 4px; }
+  .app-shell.dark .sb-label { color: #6B6B80; }
+
+  /* Tabs row (PCA/KPCA/UMAP/tSNE) */
+  .proj-tabs { display: flex; gap: 3px; }
+  .proj-tabs .pt { flex: 1; text-align: center; padding: 4px 0; border-radius: 4px; font-size: 10px; color: var(--ink-mid); background: var(--paper-edge); }
+  .app-shell.dark .proj-tabs .pt { background: #22232E; color: #9090A0; }
+  .proj-tabs .pt.active { background: var(--marker); color: white; }
+  .app-shell.dark .proj-tabs .pt.active { background: var(--marker-d); color: white; }
+
+  /* Dropdown box */
+  .dropdown { background: var(--paper-edge); border: 1px solid var(--rule); border-radius: 4px; padding: 5px 8px; font-size: 11px; color: var(--ink); display: flex; align-items: center; justify-content: space-between; }
+  .app-shell.dark .dropdown { background: #22232E; border-color: #272832; color: #E0E0EC; }
+  .dropdown.outline { background: transparent; }
+  .dropdown::after { content: "▾"; opacity: 0.5; font-size: 9px; }
+
+  /* Button */
+  .btn { padding: 5px 8px; border-radius: 5px; font-size: 11px; display: flex; align-items: center; gap: 5px; justify-content: center; cursor: pointer; }
+  .btn.ghost { background: transparent; border: 1px solid var(--rule); color: var(--ink-mid); }
+  .app-shell.dark .btn.ghost { border-color: #272832; color: #9090A0; }
+  .btn.primary { background: var(--marker); color: white; border: none; }
+  .app-shell.dark .btn.primary { background: var(--marker-d); }
+
+  /* Slider */
+  .slider { display: flex; flex-direction: column; gap: 3px; }
+  .slider .row { display: flex; align-items: center; justify-content: space-between; font-size: 10.5px; color: var(--ink-mid); }
+  .app-shell.dark .slider .row { color: #9090A0; }
+  .slider .track { height: 3px; background: var(--paper-edge); border-radius: 100px; position: relative; }
+  .app-shell.dark .slider .track { background: #22232E; }
+  .slider .thumb { position: absolute; top: -3px; width: 9px; height: 9px; border-radius: 50%; background: var(--marker); }
+  .app-shell.dark .slider .thumb { background: var(--marker-d); }
+  .slider.amber .thumb { background: var(--gn-hist-l); }
+  .app-shell.dark .slider.amber .thumb { background: var(--gn-hist-d); }
+  .slider.teal .thumb { background: var(--gn-lit-l); }
+  .app-shell.dark .slider.teal .thumb { background: var(--gn-lit-d); }
+
+  /* Search field */
+  .search { padding: 5px 8px; background: var(--paper-edge); border: 1px solid var(--rule); border-radius: 5px; color: var(--ink-soft); font-size: 11px; display: flex; align-items: center; gap: 6px; }
+  .app-shell.dark .search { background: #22232E; border-color: #272832; color: #6B6B80; }
+
+  /* Upload zone */
+  .upload {
+    border: 1.5px dashed #C9C7BD; border-radius: 7px;
+    padding: 14px 10px; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    color: var(--ink-soft); font-size: 11px;
+  }
+  .app-shell.dark .upload { border-color: #2A2A3A; color: #6B6B80; }
+  .upload .head { color: var(--ink); font-weight: 500; font-size: 12px; }
+  .app-shell.dark .upload .head { color: #E0E0EC; }
+  .upload-section .label { font-size: 10.5px; color: var(--ink-soft); font-family: 'JetBrains Mono', monospace; font-weight: 600; letter-spacing: 0.06em; padding-top: 10px; border-top: 1px solid var(--rule); margin-bottom: 8px; }
+  .app-shell.dark .upload-section .label { color: #6B6B80; border-top-color: #1E1E2A; }
+
+  /* Legend (corpus-bottom-left) */
+  .legend { position: absolute; left: 14px; bottom: 14px; background: rgba(255,255,255,0.85); border: 1px solid var(--rule); border-radius: 8px; padding: 8px 10px; display: grid; grid-template-columns: auto auto; gap: 4px 14px; font-size: 10.5px; backdrop-filter: blur(4px); }
+  .app-shell.dark .legend { background: rgba(14,14,20,0.85); border-color: #1E1E2A; color: #E0E0EC; }
+  .legend .item { display: flex; align-items: center; gap: 5px; }
+  .legend .dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  /* Keyboard hint */
+  .kbd-hint { position: absolute; right: 234px; bottom: 14px; background: rgba(255,255,255,0.85); border: 1px solid var(--rule); padding: 5px 9px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-soft); backdrop-filter: blur(4px); }
+  .app-shell.dark .kbd-hint { background: rgba(14,14,20,0.85); border-color: #1E1E2A; color: #6B6B80; }
+  .kbd-hint kbd { padding: 0 4px; border: 1px solid var(--rule); border-radius: 3px; }
+  .app-shell.dark .kbd-hint kbd { border-color: #272832; }
+
+  /* Annotations layer */
+  .ann-layer {
+    position: absolute; inset: 0; pointer-events: none;
+  }
+  .ann {
+    position: absolute;
+    font-family: 'Caveat', cursive;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--pencil);
+    line-height: 1.25;
+    max-width: 220px;
+  }
+  .ann strong { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--marker); display: block; margin-bottom: 2px; }
+  .ann em { background: var(--highlight); padding: 0 3px; border-radius: 2px; font-style: normal; }
+
+  .ann-arrow { position: absolute; pointer-events: none; }
+
+  /* Sticky-note callouts under each artboard */
+  .callouts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 20px; }
+  .callout {
+    background: var(--trace);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .callout .head { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 6px; }
+  .callout .body { font-size: 13px; color: var(--ink-mid); line-height: 1.55; }
+  .callout .body strong { color: var(--ink); font-weight: 600; }
+
+  /* Empty-state zoomed sidebar */
+  .sidebar-zoom {
+    width: 360px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    border-radius: 10px;
+    border: 1px solid #E5E2D6;
+    padding: 22px 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    font-size: 12px;
+  }
+  .sidebar-zoom.dark { background: #111118; border-color: #1E1E2A; color: #E0E0EC; }
+  .sidebar-zoom .sec-title { font-size: 10.5px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); padding-top: 12px; border-top: 1px solid var(--rule); margin-bottom: 12px; }
+
+  /* Stickynote */
+  .stickynote {
+    background: var(--highlight);
+    padding: 12px 14px;
+    border-radius: 2px;
+    box-shadow: 1px 3px 6px rgba(0,0,0,0.06);
+    font-family: 'Caveat', cursive;
+    font-size: 16px;
+    color: var(--pencil);
+    line-height: 1.3;
+    transform: rotate(-0.3deg);
+  }
+  .stickynote strong {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    display: block;
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEAD ============ -->
+<div class="doc-head">
+  <div class="doc-eyebrow">Literary Genre Topology · Phase 10 · Wireframe pack</div>
+  <h1 class="doc-title">Eight screens, post-polish.</h1>
+  <p class="doc-sub">Wireframe mockups of every Phase 10 surface, built from the locked decisions: Paper light theme, header-dropdown help menu, hand-rolled 4-step tour, and the four empty states. Each screen uses the v2 genre palette + locked HSL tokens so the planner can see what the live app will look like once the sweep lands.</p>
+  <div class="doc-meta">
+    <span>Locked from <strong>Phase 10 Final Spec</strong></span>
+    <span>2026-05-28</span>
+    <span>Format <strong>wireframe + locked colors</strong></span>
+    <span>Count <strong>8 artboards</strong></span>
+  </div>
+</div>
+
+<nav class="index">
+  <a href="#ab1"><span class="num">01</span> App shell · Paper (light)</a>
+  <a href="#ab2"><span class="num">02</span> App shell · Dark</a>
+  <a href="#ab3"><span class="num">03</span> Header help dropdown</a>
+  <a href="#ab4"><span class="num">04</span> Tour Step 3 · in flight</a>
+  <a href="#ab5"><span class="num">05</span> Empty A · UploadZone pre-upload</a>
+  <a href="#ab6"><span class="num">06</span> Empty B · Compare, no genres</a>
+  <a href="#ab7"><span class="num">07</span> Empty C · Classification failure</a>
+  <a href="#ab8"><span class="num">08</span> Empty D · Explain pre-upload</a>
+</nav>
+
+<!-- ============================================================ -->
+<!-- ARTBOARD 01 — App shell · Paper (light)                        -->
+<!-- ============================================================ -->
+<section id="ab1" class="artboard">
+  <header class="ab-head">
+    <div class="ab-num">AB · 01</div>
+    <h2 class="ab-title">App shell · Paper (light)</h2>
+    <div class="ab-meta"><span>1280 × 720</span><span>scatter tab</span><span>genre = literary</span></div>
+  </header>
+  <p class="ab-lede">The canonical post-Phase-10 view. Cream canvas, white cards floating on it, deep indigo primary. <code>--scene-bg</code> matches <code>--background</code> so the 3D scene blends into the page; the genre colors carry all the visual weight.</p>
+
+  <div class="frame">
+    <div class="stage">
+      <div class="app-shell">
+        <!-- Top nav -->
+        <div class="nav">
+          <span class="wordmark">Literary Genre Topology</span>
+          <div class="tabs">
+            <span class="tab active">Scatter</span>
+            <span class="tab">Topology</span>
+            <span class="tab">Compare</span>
+          </div>
+          <div class="spacer"></div>
+          <span class="icon">🎓 How It Works</span>
+          <span class="icon q-icon">?</span>
+          <span class="icon">⚙</span>
+        </div>
+        <div class="ribbon">ⓘ &nbsp; Topology is computed in the original N-dimensional space. The 3D view is a lossy projection.</div>
+
+        <div class="body">
+          <!-- Canvas -->
+          <div class="canvas-region">
+            <svg viewBox="0 0 800 460" preserveAspectRatio="xMidYMid slice">
+              <!-- scatter dots (literary highlighted = teal bright, others dim) -->
+              <g>
+                <!-- background dots, dim -->
+                <circle cx="380" cy="220" r="1.6" fill="#DC2626" opacity="0.18"/>
+                <circle cx="392" cy="232" r="1.4" fill="#1D4ED8" opacity="0.18"/>
+                <circle cx="370" cy="208" r="1.2" fill="#7C3AED" opacity="0.18"/>
+                <circle cx="402" cy="226" r="1.6" fill="#B45309" opacity="0.18"/>
+                <circle cx="366" cy="236" r="1.4" fill="#4338CA" opacity="0.18"/>
+                <circle cx="386" cy="202" r="1.6" fill="#BE185D" opacity="0.18"/>
+                <circle cx="412" cy="216" r="1.2" fill="#9A3412" opacity="0.18"/>
+                <circle cx="356" cy="222" r="1.6" fill="#DC2626" opacity="0.18"/>
+                <circle cx="426" cy="234" r="1.4" fill="#1D4ED8" opacity="0.18"/>
+                <circle cx="376" cy="252" r="1.2" fill="#7C3AED" opacity="0.18"/>
+                <circle cx="346" cy="208" r="1.4" fill="#B45309" opacity="0.18"/>
+                <circle cx="436" cy="220" r="1.6" fill="#BE185D" opacity="0.18"/>
+                <circle cx="396" cy="262" r="1.4" fill="#4338CA" opacity="0.18"/>
+                <circle cx="450" cy="206" r="1.2" fill="#9A3412" opacity="0.18"/>
+                <circle cx="334" cy="232" r="1.4" fill="#DC2626" opacity="0.18"/>
+                <circle cx="402" cy="190" r="1.4" fill="#BE185D" opacity="0.18"/>
+                <circle cx="464" cy="226" r="1.2" fill="#7C3AED" opacity="0.18"/>
+                <circle cx="320" cy="220" r="1.2" fill="#4338CA" opacity="0.18"/>
+                <circle cx="382" cy="276" r="1.4" fill="#1D4ED8" opacity="0.18"/>
+                <circle cx="356" cy="186" r="1.4" fill="#B45309" opacity="0.18"/>
+                <circle cx="478" cy="218" r="1.2" fill="#9A3412" opacity="0.18"/>
+                <circle cx="312" cy="246" r="1.2" fill="#7C3AED" opacity="0.18"/>
+                <circle cx="426" cy="194" r="1.4" fill="#DC2626" opacity="0.18"/>
+                <!-- literary genre brighter -->
+                <circle cx="378" cy="222" r="2.4" fill="#0F766E"/>
+                <circle cx="394" cy="216" r="2.2" fill="#0F766E"/>
+                <circle cx="372" cy="226" r="2"   fill="#0F766E"/>
+                <circle cx="406" cy="224" r="2.2" fill="#0F766E"/>
+                <circle cx="366" cy="214" r="2"   fill="#0F766E"/>
+                <circle cx="386" cy="234" r="2.4" fill="#0F766E"/>
+                <circle cx="416" cy="218" r="1.8" fill="#0F766E"/>
+                <circle cx="362" cy="240" r="1.8" fill="#0F766E"/>
+                <circle cx="396" cy="240" r="2"   fill="#0F766E"/>
+                <circle cx="384" cy="206" r="1.8" fill="#0F766E"/>
+                <circle cx="406" cy="208" r="1.8" fill="#0F766E"/>
+                <circle cx="424" cy="232" r="1.8" fill="#0F766E"/>
+                <circle cx="356" cy="226" r="1.6" fill="#0F766E"/>
+                <circle cx="442" cy="222" r="1.6" fill="#0F766E"/>
+                <circle cx="350" cy="194" r="1.6" fill="#0F766E"/>
+                <circle cx="420" cy="246" r="1.6" fill="#0F766E"/>
+                <circle cx="378" cy="190" r="1.6" fill="#0F766E"/>
+                <circle cx="324" cy="216" r="1.4" fill="#0F766E" opacity="0.9"/>
+                <circle cx="458" cy="240" r="1.4" fill="#0F766E" opacity="0.9"/>
+                <circle cx="338" cy="252" r="1.4" fill="#0F766E" opacity="0.9"/>
+                <circle cx="446" cy="190" r="1.4" fill="#0F766E" opacity="0.9"/>
+                <circle cx="298" cy="232" r="1.2" fill="#0F766E" opacity="0.8"/>
+                <circle cx="486" cy="234" r="1.2" fill="#0F766E" opacity="0.8"/>
+                <circle cx="310" cy="184" r="1.2" fill="#0F766E" opacity="0.8"/>
+                <circle cx="492" cy="208" r="1.2" fill="#0F766E" opacity="0.8"/>
+                <circle cx="282" cy="260" r="1"   fill="#0F766E" opacity="0.7"/>
+                <circle cx="510" cy="222" r="1"   fill="#0F766E" opacity="0.7"/>
+              </g>
+            </svg>
+            <!-- legend -->
+            <div class="legend">
+              <div class="item"><span class="dot" style="background:#0F766E"></span>Literary</div>
+              <div class="item"><span class="dot" style="background:#DC2626"></span>Adventure</div>
+              <div class="item"><span class="dot" style="background:#7C3AED"></span>Gothic Horror</div>
+              <div class="item"><span class="dot" style="background:#B45309"></span>Historical</div>
+              <div class="item"><span class="dot" style="background:#1D4ED8"></span>Mystery</div>
+              <div class="item"><span class="dot" style="background:#BE185D"></span>Romance</div>
+              <div class="item"><span class="dot" style="background:#4338CA"></span>Speculative</div>
+              <div class="item"><span class="dot" style="background:#9A3412"></span>Western</div>
+            </div>
+            <div class="kbd-hint"><kbd>R</kbd> reset · <kbd>Esc</kbd> deselect · <kbd>1-4</kbd> projection</div>
+          </div>
+
+          <!-- Sidebar -->
+          <aside class="sidebar">
+            <div class="sb-title">Literary Genre Topology</div>
+            <div>
+              <div class="sb-label">Projection</div>
+              <div class="proj-tabs"><span class="pt active">PCA</span><span class="pt">KPCA</span><span class="pt">UMAP</span><span class="pt">tSNE</span></div>
+            </div>
+            <div>
+              <div class="sb-label">Genre</div>
+              <div class="dropdown" style="border-color:#0F766E;color:#0F766E;font-weight:500;">Literary</div>
+            </div>
+            <div class="dropdown outline">Compare Genres</div>
+            <div>
+              <div class="sb-label">Display</div>
+              <div class="slider"><div class="row"><span>Point Size</span><span>0.50</span></div><div class="track"><div class="thumb" style="left:48%"></div></div></div>
+            </div>
+            <div class="slider"><div class="row"><span>Opacity</span><span>1.00</span></div><div class="track"><div class="thumb" style="left:97%"></div></div></div>
+            <div class="slider teal"><div class="row"><span>TF-IDF Threshold</span><span>0.00</span></div><div class="track"><div class="thumb" style="left:3%"></div></div></div>
+            <div class="slider amber"><div class="row"><span>Brightness</span><span>1.00</span></div><div class="track"><div class="thumb" style="left:97%"></div></div></div>
+            <div style="display:flex; gap:6px;">
+              <div class="btn ghost" style="flex:1;"><strong style="font-size:10px;">3D</strong></div>
+              <div class="btn ghost" style="flex:1;">↻ Reset</div>
+            </div>
+            <div class="search">🔍 Search words…</div>
+            <div class="upload-section">
+              <div class="label">UPLOAD &amp; CLASSIFY</div>
+              <div class="upload">
+                <span>↑</span>
+                <span class="head">Drop a book to classify</span>
+                <span>.txt · ≤5MB · ≥500 words</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- Annotations layer overlaying the stage -->
+      <div class="ann-layer">
+        <!-- Annotation 1: theme toggle -->
+        <div class="ann" style="top: 6px; right: 30px;">
+          <strong>NEW</strong>
+          theme + tour live in this <em>?</em> dropdown
+        </div>
+        <svg class="ann-arrow" style="top: 36px; right: 96px; width: 60px; height: 30px;" viewBox="0 0 60 30">
+          <path d="M55 5 Q 40 5, 30 18 T 5 26" stroke="#2A2A35" stroke-width="1.2" fill="none" stroke-dasharray="2 2"/>
+          <path d="M5 26 L 11 22 M 5 26 L 9 30" stroke="#2A2A35" stroke-width="1.2" fill="none"/>
+        </svg>
+
+        <!-- Annotation 2: scene background -->
+        <div class="ann" style="top: 130px; left: 30px;">
+          <strong>SCENE-BG</strong>
+          <em>--scene-bg</em> matches <em>--background</em><br/>
+          (cream canvas, no card)
+        </div>
+        <svg class="ann-arrow" style="top: 180px; left: 100px; width: 70px; height: 60px;" viewBox="0 0 70 60">
+          <path d="M5 5 Q 20 30, 50 40" stroke="#2A2A35" stroke-width="1.2" fill="none" stroke-dasharray="2 2"/>
+          <path d="M50 40 L 44 39 M 50 40 L 47 45" stroke="#2A2A35" stroke-width="1.2" fill="none"/>
+        </svg>
+
+        <!-- Annotation 3: sidebar token swap -->
+        <div class="ann" style="bottom: 90px; right: 26px;">
+          <strong>SIDEBAR</strong>
+          inline-hex lifted to<br/>
+          <em>hsl(var(--*))</em> tokens<br/>
+          (one PR per file)
+        </div>
+        <svg class="ann-arrow" style="bottom: 140px; right: 254px; width: 60px; height: 40px;" viewBox="0 0 60 40">
+          <path d="M5 30 Q 25 20, 55 8" stroke="#2A2A35" stroke-width="1.2" fill="none" stroke-dasharray="2 2"/>
+          <path d="M5 30 L 12 27 M 5 30 L 10 35" stroke="#2A2A35" stroke-width="1.2" fill="none"/>
+        </svg>
+
+        <!-- Annotation 4: literary teal -->
+        <div class="ann" style="top: 270px; left: 28px;">
+          <strong>v2 PALETTE</strong>
+          Literary now uses <em>#0F766E</em><br/>
+          teal-700 (light mode)
+        </div>
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout">
+        <div class="head">Background</div>
+        <div class="body"><strong>#FBF9F2</strong> · cream paper · same across page + scene + sidebar bg. Cards (white) float on it. No gradient.</div>
+      </div>
+      <div class="callout">
+        <div class="head">Sidebar surface</div>
+        <div class="body"><strong>White cards</strong> on cream, <strong>1px #E5E2D6 border</strong>. Sliders pick up <code>--primary</code> #4F46E5 for the thumb; amber slider keeps Historical color, teal slider keeps Literary.</div>
+      </div>
+      <div class="callout">
+        <div class="head">Disclaimer ribbon</div>
+        <div class="body">Stays in place, recolored to <code>--paper-edge</code> on a 1px border. Copy unchanged (POLISH NOT-list).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ARTBOARD 02 — App shell · Dark                                 -->
+<!-- ============================================================ -->
+<section id="ab2" class="artboard">
+  <header class="ab-head">
+    <div class="ab-num">AB · 02</div>
+    <h2 class="ab-title">App shell · Dark</h2>
+    <div class="ab-meta"><span>1280 × 720</span><span>scatter tab</span><span>same screen, dark mode</span></div>
+  </header>
+  <p class="ab-lede">For comparison. Dark stays default first paint (Phase 3 lock). Same layout, same tokens, just the <code>:root</code> values. Everything that changed in Phase 10 changed structurally — not visually in dark mode.</p>
+
+  <div class="frame">
+    <div class="stage dark-paper">
+      <div class="app-shell dark">
+        <!-- Top nav -->
+        <div class="nav">
+          <span class="wordmark">Literary Genre Topology</span>
+          <div class="tabs">
+            <span class="tab active">Scatter</span>
+            <span class="tab">Topology</span>
+            <span class="tab">Compare</span>
+          </div>
+          <div class="spacer"></div>
+          <span class="icon">🎓 How It Works</span>
+          <span class="icon q-icon">?</span>
+          <span class="icon">⚙</span>
+        </div>
+        <div class="ribbon">ⓘ &nbsp; Topology is computed in the original N-dimensional space. The 3D view is a lossy projection.</div>
+
+        <div class="body">
+          <div class="canvas-region">
+            <svg viewBox="0 0 800 460" preserveAspectRatio="xMidYMid slice">
+              <g>
+                <!-- background dim -->
+                <circle cx="380" cy="220" r="1.6" fill="#F87171" opacity="0.22"/>
+                <circle cx="392" cy="232" r="1.4" fill="#60A5FA" opacity="0.22"/>
+                <circle cx="370" cy="208" r="1.2" fill="#B47AE6" opacity="0.22"/>
+                <circle cx="402" cy="226" r="1.6" fill="#FBBF24" opacity="0.22"/>
+                <circle cx="366" cy="236" r="1.4" fill="#818CF8" opacity="0.22"/>
+                <circle cx="386" cy="202" r="1.6" fill="#F472B6" opacity="0.22"/>
+                <circle cx="412" cy="216" r="1.2" fill="#F97316" opacity="0.22"/>
+                <circle cx="356" cy="222" r="1.6" fill="#F87171" opacity="0.22"/>
+                <circle cx="426" cy="234" r="1.4" fill="#60A5FA" opacity="0.22"/>
+                <circle cx="376" cy="252" r="1.2" fill="#B47AE6" opacity="0.22"/>
+                <circle cx="346" cy="208" r="1.4" fill="#FBBF24" opacity="0.22"/>
+                <circle cx="436" cy="220" r="1.6" fill="#F472B6" opacity="0.22"/>
+                <circle cx="396" cy="262" r="1.4" fill="#818CF8" opacity="0.22"/>
+                <circle cx="450" cy="206" r="1.2" fill="#F97316" opacity="0.22"/>
+                <circle cx="334" cy="232" r="1.4" fill="#F87171" opacity="0.22"/>
+                <circle cx="402" cy="190" r="1.4" fill="#F472B6" opacity="0.22"/>
+                <circle cx="464" cy="226" r="1.2" fill="#B47AE6" opacity="0.22"/>
+                <circle cx="320" cy="220" r="1.2" fill="#818CF8" opacity="0.22"/>
+                <circle cx="382" cy="276" r="1.4" fill="#60A5FA" opacity="0.22"/>
+                <circle cx="356" cy="186" r="1.4" fill="#FBBF24" opacity="0.22"/>
+                <!-- literary teal (dark mode = brighter #5EEAD4) -->
+                <circle cx="378" cy="222" r="2.4" fill="#5EEAD4"/>
+                <circle cx="394" cy="216" r="2.2" fill="#5EEAD4"/>
+                <circle cx="372" cy="226" r="2"   fill="#5EEAD4"/>
+                <circle cx="406" cy="224" r="2.2" fill="#5EEAD4"/>
+                <circle cx="366" cy="214" r="2"   fill="#5EEAD4"/>
+                <circle cx="386" cy="234" r="2.4" fill="#5EEAD4"/>
+                <circle cx="416" cy="218" r="1.8" fill="#5EEAD4"/>
+                <circle cx="362" cy="240" r="1.8" fill="#5EEAD4"/>
+                <circle cx="396" cy="240" r="2"   fill="#5EEAD4"/>
+                <circle cx="384" cy="206" r="1.8" fill="#5EEAD4"/>
+                <circle cx="406" cy="208" r="1.8" fill="#5EEAD4"/>
+                <circle cx="424" cy="232" r="1.8" fill="#5EEAD4"/>
+                <circle cx="356" cy="226" r="1.6" fill="#5EEAD4"/>
+                <circle cx="442" cy="222" r="1.6" fill="#5EEAD4"/>
+                <circle cx="350" cy="194" r="1.6" fill="#5EEAD4"/>
+                <circle cx="420" cy="246" r="1.6" fill="#5EEAD4"/>
+                <circle cx="378" cy="190" r="1.6" fill="#5EEAD4"/>
+                <circle cx="324" cy="216" r="1.4" fill="#5EEAD4" opacity="0.9"/>
+                <circle cx="458" cy="240" r="1.4" fill="#5EEAD4" opacity="0.9"/>
+                <circle cx="338" cy="252" r="1.4" fill="#5EEAD4" opacity="0.9"/>
+                <circle cx="446" cy="190" r="1.4" fill="#5EEAD4" opacity="0.9"/>
+                <circle cx="298" cy="232" r="1.2" fill="#5EEAD4" opacity="0.8"/>
+                <circle cx="486" cy="234" r="1.2" fill="#5EEAD4" opacity="0.8"/>
+              </g>
+            </svg>
+            <div class="legend">
+              <div class="item"><span class="dot" style="background:#5EEAD4"></span>Literary</div>
+              <div class="item"><span class="dot" style="background:#F87171"></span>Adventure</div>
+              <div class="item"><span class="dot" style="background:#B47AE6"></span>Gothic Horror</div>
+              <div class="item"><span class="dot" style="background:#FBBF24"></span>Historical</div>
+              <div class="item"><span class="dot" style="background:#60A5FA"></span>Mystery</div>
+              <div class="item"><span class="dot" style="background:#F472B6"></span>Romance</div>
+              <div class="item"><span class="dot" style="background:#818CF8"></span>Speculative</div>
+              <div class="item"><span class="dot" style="background:#F97316"></span>Western</div>
+            </div>
+            <div class="kbd-hint"><kbd>R</kbd> reset · <kbd>Esc</kbd> deselect · <kbd>1-4</kbd> projection</div>
+          </div>
+
+          <aside class="sidebar">
+            <div class="sb-title">Literary Genre Topology</div>
+            <div>
+              <div class="sb-label">Projection</div>
+              <div class="proj-tabs"><span class="pt active">PCA</span><span class="pt">KPCA</span><span class="pt">UMAP</span><span class="pt">tSNE</span></div>
+            </div>
+            <div>
+              <div class="sb-label">Genre</div>
+              <div class="dropdown" style="border-color:#5EEAD4;color:#5EEAD4;font-weight:500;">Literary</div>
+            </div>
+            <div class="dropdown outline">Compare Genres</div>
+            <div>
+              <div class="sb-label">Display</div>
+              <div class="slider"><div class="row"><span>Point Size</span><span>0.50</span></div><div class="track"><div class="thumb" style="left:48%"></div></div></div>
+            </div>
+            <div class="slider"><div class="row"><span>Opacity</span><span>1.00</span></div><div class="track"><div class="thumb" style="left:97%"></div></div></div>
+            <div class="slider teal"><div class="row"><span>TF-IDF Threshold</span><span>0.00</span></div><div class="track"><div class="thumb" style="left:3%"></div></div></div>
+            <div class="slider amber"><div class="row"><span>Brightness</span><span>1.00</span></div><div class="track"><div class="thumb" style="left:97%"></div></div></div>
+            <div style="display:flex; gap:6px;">
+              <div class="btn ghost" style="flex:1;"><strong style="font-size:10px;">3D</strong></div>
+              <div class="btn ghost" style="flex:1;">↻ Reset</div>
+            </div>
+            <div class="search">🔍 Search words…</div>
+            <div class="upload-section">
+              <div class="label">UPLOAD &amp; CLASSIFY</div>
+              <div class="upload">
+                <span>↑</span>
+                <span class="head">Drop a book to classify</span>
+                <span>.txt · ≤5MB · ≥500 words</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="ann-layer">
+        <div class="ann" style="top: 6px; right: 30px; color:#FAFAF7;">
+          <strong style="color:#A5A8FA;">SAME</strong>
+          <span style="color:#FAFAF7;">"?" appears on both themes</span>
+        </div>
+        <div class="ann" style="bottom: 30px; left: 30px; color:#FAFAF7;">
+          <strong style="color:#A5A8FA;">DARK</strong>
+          <span style="color:#FAFAF7;">remains the default first paint</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout">
+        <div class="head">Default first paint</div>
+        <div class="body">Dark stays default until user picks. Phase 3 CONTEXT lock. Brand-new visitor sees this.</div>
+      </div>
+      <div class="callout">
+        <div class="head">Same structure</div>
+        <div class="body">Every component renders identically — only the HSL tokens shift. No layout reflows on theme switch.</div>
+      </div>
+      <div class="callout">
+        <div class="head">Genre palette</div>
+        <div class="body">Dark palette is the brighter pair of the dual-token (e.g. literary <strong>#5EEAD4</strong> on dark, <strong>#0F766E</strong> on light). Same key, different value.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ARTBOARD 03 — Header help dropdown                             -->
+<!-- ============================================================ -->
+<section id="ab3" class="artboard">
+  <header class="ab-head">
+    <div class="ab-num">AB · 03</div>
+    <h2 class="ab-title">Header help dropdown</h2>
+    <div class="ab-meta"><span>closeup of header</span><span>"?" expanded</span></div>
+  </header>
+  <p class="ab-lede">The new "?" affordance, between "How It Works" and the gear. Dropdown groups the things the user might need when they're disoriented: replay tour, the math walkthrough, keyboard shortcuts. Theme toggle (3-state segmented control) sits inside the same dropdown — one chrome instead of two.</p>
+
+  <div class="frame">
+    <div class="stage" style="background:#FBF9F2; padding: 60px 40px 80px;">
+      <!-- Mock header bar -->
+      <div style="background: #FFFFFF; border: 1px solid #E5E2D6; border-radius: 8px; height: 48px; display: flex; align-items: center; padding: 0 16px; gap: 28px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); position: relative;">
+        <span style="font-weight: 600; font-size: 14px;">Literary Genre Topology</span>
+        <div style="display:flex; gap: 0;">
+          <span style="padding: 0 12px; font-size: 12px; color: #181A2D; height: 24px; line-height: 24px; border-bottom: 2px solid #4F46E5;">Scatter</span>
+          <span style="padding: 0 12px; font-size: 12px; color: #5E6075;">Topology</span>
+          <span style="padding: 0 12px; font-size: 12px; color: #5E6075;">Compare</span>
+        </div>
+        <div style="flex: 1"></div>
+        <span style="font-size: 12.5px; color: #5E6075; display:inline-flex; align-items:center; gap:6px;">🎓 How It Works</span>
+        <!-- The new ? button, highlighted -->
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #4F46E5; font-weight: 600; border: 1.5px solid #4F46E5; border-radius: 6px; padding: 3px 10px; background: rgba(79,70,229,0.08); box-shadow: 0 0 0 3px rgba(79,70,229,0.12);">?</span>
+        <span style="font-size: 18px; color: #5E6075;">⚙</span>
+
+        <!-- The dropdown -->
+        <div style="position: absolute; top: 56px; right: 62px; width: 280px; background: #FFFFFF; border: 1px solid #E5E2D6; border-radius: 10px; box-shadow: 0 14px 40px rgba(0,0,0,0.12); padding: 8px; font-size: 13px;">
+          <!-- Tip arrow -->
+          <div style="position: absolute; top: -7px; right: 38px; width: 12px; height: 12px; background: #FFFFFF; border-top: 1px solid #E5E2D6; border-left: 1px solid #E5E2D6; transform: rotate(45deg);"></div>
+
+          <!-- Item: Replay tour -->
+          <div style="display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: 6px; color: #181A2D; background: rgba(79,70,229,0.06);">
+            <span style="font-size: 14px;">↻</span>
+            <div style="flex: 1;">
+              <div style="font-weight: 500;">Replay tour</div>
+              <div style="font-size: 11px; color: #5E6075; margin-top: 2px;">4 steps · ~90 seconds</div>
+            </div>
+          </div>
+
+          <!-- Item: How It Works -->
+          <div style="display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: 6px; color: #181A2D;">
+            <span style="font-size: 14px;">📖</span>
+            <div style="flex: 1;">
+              <div style="font-weight: 500;">How It Works</div>
+              <div style="font-size: 11px; color: #5E6075; margin-top: 2px;">7-step math walkthrough</div>
+            </div>
+          </div>
+
+          <!-- Item: Keyboard shortcuts -->
+          <div style="display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: 6px; color: #181A2D;">
+            <span style="font-size: 14px;">⌨</span>
+            <div style="flex: 1;">
+              <div style="font-weight: 500;">Keyboard shortcuts</div>
+              <div style="font-size: 11px; color: #5E6075; margin-top: 2px;">R · Esc · 1-4</div>
+            </div>
+          </div>
+
+          <div style="height: 1px; background: #E5E2D6; margin: 6px 8px;"></div>
+
+          <!-- Theme segmented control -->
+          <div style="padding: 8px 11px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #5E6075; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;">THEME</div>
+            <div style="display: flex; background: #F0EDE2; border-radius: 6px; padding: 2px; font-size: 11px;">
+              <div style="flex:1; padding: 5px 8px; text-align: center; color: #5E6075; display:flex; align-items:center; justify-content:center; gap:5px;"><span>☀</span>Light</div>
+              <div style="flex:1; padding: 5px 8px; text-align: center; background: #FFFFFF; color: #181A2D; border-radius: 4px; font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,0.06); display:flex; align-items:center; justify-content:center; gap:5px;"><span>⟳</span>System</div>
+              <div style="flex:1; padding: 5px 8px; text-align: center; color: #5E6075; display:flex; align-items:center; justify-content:center; gap:5px;"><span>☾</span>Dark</div>
+            </div>
+          </div>
+
+          <div style="height: 1px; background: #E5E2D6; margin: 6px 8px;"></div>
+
+          <!-- GitHub link -->
+          <div style="display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: 6px; color: #5E6075; font-size: 12px;">
+            <span style="font-size: 14px;">⊞</span>
+            <span style="flex: 1;">View on GitHub</span>
+            <span style="opacity: 0.5;">↗</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annotations -->
+      <div class="ann-layer">
+        <div class="ann" style="top: 28px; left: 30px;">
+          <strong>HIGHLIGHTED</strong>
+          when dropdown is open<br/>
+          <em>3px ring + tint</em>
+        </div>
+        <svg class="ann-arrow" style="top: 36px; left: 190px; width: 290px; height: 60px;" viewBox="0 0 290 60">
+          <path d="M5 5 Q 100 35, 245 30 T 285 28" stroke="#2A2A35" stroke-width="1.2" fill="none" stroke-dasharray="2 2"/>
+          <path d="M285 28 L 278 25 M 285 28 L 280 33" stroke="#2A2A35" stroke-width="1.2" fill="none"/>
+        </svg>
+
+        <div class="ann" style="top: 200px; left: 40px;">
+          <strong>REPLAY TOUR</strong>
+          top item · tooltip<br/>
+          shows step count
+        </div>
+        <svg class="ann-arrow" style="top: 220px; left: 220px; width: 320px; height: 70px;" viewBox="0 0 320 70">
+          <path d="M5 25 Q 130 5, 290 30" stroke="#2A2A35" stroke-width="1.2" fill="none" stroke-dasharray="2 2"/>
+          <path d="M290 30 L 282 28 M 290 30 L 286 35" stroke="#2A2A35" stroke-width="1.2" fill="none"/>
+        </svg>
+
+        <div class="ann" style="top: 340px; right: 30px;">
+          <strong>THEME</strong>
+          3-state segmented<br/>
+          control · <em>System</em> default<br/>
+          (once chosen)
+        </div>
+        <svg class="ann-arrow" style="top: 360px; right: 180px; width: 80px; height: 50px;" viewBox="0 0 80 50">
+          <path d="M75 5 Q 50 20, 5 35" stroke="#2A2A35" stroke-width="1.2" fill="none" stroke-dasharray="2 2"/>
+          <path d="M5 35 L 12 32 M 5 35 L 10 40" stroke="#2A2A35" stroke-width="1.2" fill="none"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout">
+        <div class="head">Why this menu</div>
+        <div class="body"><strong>One affordance</strong> for the "I'm lost" moment. Pairs naturally with the existing How-It-Works button to its left. The "?" icon is universal muscle memory.</div>
+      </div>
+      <div class="callout">
+        <div class="head">Theme inside</div>
+        <div class="body">Theme toggle isn't a separate top-right control. Lives inside the dropdown to keep the chrome quiet. Segmented control means <em>System</em> is visible — not a hidden default.</div>
+      </div>
+      <div class="callout">
+        <div class="head">Behaviour</div>
+        <div class="body">Click "?" to open. Click outside or hit <code>Esc</code> to close. Replay-tour click closes the menu and triggers <code>setTourActive(true)</code> with <code>tourStep: 0</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ARTBOARD 04 — Tour Step 3 · in flight                          -->
+<!-- ============================================================ -->
+<section id="ab4" class="artboard">
+  <header class="ab-head">
+    <div class="ab-num">AB · 04</div>
+    <h2 class="ab-title">Tour Step 3 · in flight</h2>
+    <div class="ab-meta"><span>1280 × 720</span><span>hand-rolled overlay</span><span>step 3 of 4 · upload</span></div>
+  </header>
+  <p class="ab-lede">The hand-rolled tour in action on the live app, Paper theme. <em>Drop a book.</em> step targeting the UploadZone. Spotlight is a soft dim — not a hard mask cutout — to avoid R3F z-index complications. The card sits pinned bottom-right and never follows the anchor, so it doesn't compete with the HoverTooltip.</p>
+
+  <div class="frame">
+    <div class="stage" style="padding: 18px;">
+      <div class="app-shell" style="position: relative; height: 560px;">
+        <!-- Top nav -->
+        <div class="nav">
+          <span class="wordmark">Literary Genre Topology</span>
+          <div class="tabs">
+            <span class="tab active">Scatter</span>
+            <span class="tab">Topology</span>
+            <span class="tab">Compare</span>
+          </div>
+          <div class="spacer"></div>
+          <span class="icon">🎓 How It Works</span>
+          <span class="icon q-icon">?</span>
+          <span class="icon">⚙</span>
+        </div>
+        <div class="ribbon">ⓘ &nbsp; Topology is computed in the original N-dimensional space. The 3D view is a lossy projection.</div>
+
+        <div class="body">
+          <div class="canvas-region">
+            <svg viewBox="0 0 800 480" preserveAspectRatio="xMidYMid slice">
+              <g opacity="0.55">
+                <circle cx="380" cy="220" r="1.6" fill="#DC2626"/>
+                <circle cx="392" cy="232" r="1.4" fill="#1D4ED8"/>
+                <circle cx="370" cy="208" r="1.2" fill="#7C3AED"/>
+                <circle cx="402" cy="226" r="1.6" fill="#B45309"/>
+                <circle cx="366" cy="236" r="1.4" fill="#4338CA"/>
+                <circle cx="386" cy="202" r="1.6" fill="#BE185D"/>
+                <circle cx="412" cy="216" r="1.2" fill="#9A3412"/>
+                <circle cx="356" cy="222" r="1.6" fill="#0F766E"/>
+                <circle cx="426" cy="234" r="1.4" fill="#1D4ED8"/>
+                <circle cx="376" cy="252" r="1.2" fill="#7C3AED"/>
+                <circle cx="346" cy="208" r="1.4" fill="#B45309"/>
+                <circle cx="436" cy="220" r="1.6" fill="#BE185D"/>
+                <circle cx="396" cy="262" r="1.4" fill="#4338CA"/>
+                <circle cx="450" cy="206" r="1.2" fill="#0F766E"/>
+                <circle cx="334" cy="232" r="1.4" fill="#DC2626"/>
+                <circle cx="464" cy="226" r="1.2" fill="#7C3AED"/>
+                <circle cx="320" cy="220" r="1.2" fill="#4338CA"/>
+                <circle cx="382" cy="276" r="1.4" fill="#0F766E"/>
+                <circle cx="356" cy="186" r="1.4" fill="#B45309"/>
+                <circle cx="478" cy="218" r="1.2" fill="#9A3412"/>
+                <circle cx="312" cy="246" r="1.2" fill="#7C3AED"/>
+                <circle cx="426" cy="194" r="1.4" fill="#DC2626"/>
+              </g>
+            </svg>
+          </div>
+
+          <aside class="sidebar" style="position: relative; z-index: 4;">
+            <div class="sb-title">Literary Genre Topology</div>
+            <div>
+              <div class="sb-label">Projection</div>
+              <div class="proj-tabs"><span class="pt active">PCA</span><span class="pt">KPCA</span><span class="pt">UMAP</span><span class="pt">tSNE</span></div>
+            </div>
+            <div>
+              <div class="sb-label">Genre</div>
+              <div class="dropdown">All Genres</div>
+            </div>
+            <div class="dropdown outline">Compare Genres</div>
+            <div>
+              <div class="sb-label">Display</div>
+              <div class="slider"><div class="row"><span>Point Size</span><span>0.50</span></div><div class="track"><div class="thumb" style="left:48%"></div></div></div>
+            </div>
+            <div class="slider"><div class="row"><span>Opacity</span><span>1.00</span></div><div class="track"><div class="thumb" style="left:97%"></div></div></div>
+            <div class="slider teal"><div class="row"><span>TF-IDF Threshold</span><span>0.00</span></div><div class="track"><div class="thumb" style="left:3%"></div></div></div>
+            <div class="slider amber"><div class="row"><span>Brightness</span><span>1.00</span></div><div class="track"><div class="thumb" style="left:97%"></div></div></div>
+            <div style="display:flex; gap:6px;">
+              <div class="btn ghost" style="flex:1;"><strong style="font-size:10px;">3D</strong></div>
+              <div class="btn ghost" style="flex:1;">↻ Reset</div>
+            </div>
+            <div class="search">🔍 Search words…</div>
+            <div class="upload-section">
+              <div class="label">UPLOAD &amp; CLASSIFY</div>
+              <!-- The highlighted anchor -->
+              <div data-tour-id="upload-zone" style="border: 2px solid #4F46E5; background: rgba(79,70,229,0.08); border-radius: 8px; padding: 14px 10px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #4F46E5; font-size: 11px; box-shadow: 0 0 0 4px rgba(79,70,229,0.18), 0 0 24px rgba(79,70,229,0.4); position: relative; z-index: 4;">
+                <span style="font-size: 18px;">↑</span>
+                <span style="color: #181A2D; font-weight: 500; font-size: 12px;">Drop a book to classify</span>
+                <span style="color: #5E6075;">.txt · ≤5MB · ≥500 words</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <!-- Dim overlay over canvas (NOT sidebar — sidebar is z-index 4) -->
+        <div style="position: absolute; left: 0; top: 60px; right: 220px; bottom: 0; background: rgba(24,26,45,0.32); pointer-events: none; z-index: 3;"></div>
+
+        <!-- Tour card pinned bottom-right -->
+        <div style="position: absolute; right: 232px; bottom: 18px; width: 320px; background: #FFFFFF; border: 1px solid #E5E2D6; border-radius: 12px; padding: 18px 20px; box-shadow: 0 18px 48px rgba(0,0,0,0.22); z-index: 5;">
+          <!-- Step indicator + progress dots -->
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #5E6075; letter-spacing: 0.1em;">STEP 3 / 4</div>
+            <div style="flex: 1; display: flex; gap: 3px;">
+              <div style="height: 3px; flex: 1; background: #4F46E5; border-radius: 2px;"></div>
+              <div style="height: 3px; flex: 1; background: #4F46E5; border-radius: 2px;"></div>
+              <div style="height: 3px; flex: 1; background: #4F46E5; border-radius: 2px;"></div>
+              <div style="height: 3px; flex: 1; background: #E5E2D6; border-radius: 2px;"></div>
+            </div>
+          </div>
+
+          <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px; color: #181A2D;">Drop a book.</div>
+          <div style="font-size: 12.5px; color: #4B4D5C; line-height: 1.55;">Drag in any <code style="font-family: 'JetBrains Mono', monospace; font-size: 11px; background: #F0EDE2; padding: 1px 4px; border-radius: 3px;">.txt</code> file. We compare its shape to each genre's shape and predict what it is — you'll get the three most likely genres with confidence scores, and the book itself shows up in the cloud with its own bright words highlighted.</div>
+
+          <div style="margin-top: 14px; display: flex; align-items: center; gap: 8px;">
+            <button style="background: transparent; border: none; font-size: 11.5px; color: #5E6075; cursor: pointer; padding: 6px 0;">Skip tour</button>
+            <div style="flex: 1;"></div>
+            <button style="background: transparent; border: 1px solid #E5E2D6; color: #181A2D; padding: 6px 14px; border-radius: 6px; font-size: 12px;">← Back</button>
+            <button style="background: #4F46E5; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 500;">Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ann-layer">
+        <div class="ann" style="top: 100px; left: 30px;">
+          <strong>SPOTLIGHT</strong>
+          soft dim · not a hard<br/>
+          mask cutout (no R3F<br/>
+          z-index drama)
+        </div>
+        <svg class="ann-arrow" style="top: 140px; left: 110px; width: 140px; height: 90px;" viewBox="0 0 140 90">
+          <path d="M5 5 Q 60 30, 130 70" stroke="#2A2A35" stroke-width="1.2" fill="none" stroke-dasharray="2 2"/>
+          <path d="M130 70 L 122 67 M 130 70 L 126 76" stroke="#2A2A35" stroke-width="1.2" fill="none"/>
+        </svg>
+
+        <div class="ann" style="top: 220px; right: 30px;">
+          <strong>ANCHOR</strong>
+          <em>data-tour-id="upload-zone"</em><br/>
+          stays unmasked + glows<br/>
+          (CSS box-shadow ring)
+        </div>
+        <svg class="ann-arrow" style="top: 240px; right: 252px; width: 70px; height: 70px;" viewBox="0 0 70 70">
+          <path d="M65 5 Q 40 25, 5 45" stroke="#2A2A35" stroke-width="1.2" fill="none" stroke-dasharray="2 2"/>
+          <path d="M5 45 L 12 42 M 5 45 L 10 50" stroke="#2A2A35" stroke-width="1.2" fill="none"/>
+        </svg>
+
+        <div class="ann" style="bottom: 40px; left: 32px;">
+          <strong>CARD</strong>
+          pinned bottom-right ·<br/>
+          never moves between<br/>
+          steps · no jitter
+        </div>
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout">
+        <div class="head">Position strategy</div>
+        <div class="body"><strong>Anchor-agnostic.</strong> The card sits in the same corner for all 4 steps. No reflow, no positioning bugs. Only the anchor glow moves.</div>
+      </div>
+      <div class="callout">
+        <div class="head">Spotlight technique</div>
+        <div class="body">Single absolute-positioned dim layer over the canvas region (not the sidebar). Anchor element gets a high z-index + <code>box-shadow: 0 0 0 4px</code> ring. ~30 LoC total.</div>
+      </div>
+      <div class="callout">
+        <div class="head">Copy revised</div>
+        <div class="body">"We compare its shape to each genre's shape" replaces "tokenize, embed, compute persistent homology." Same meaning, no math vocabulary.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ARTBOARD 05 — Empty A · UploadZone pre-upload                  -->
+<!-- ============================================================ -->
+<section id="ab5" class="artboard">
+  <header class="ab-head">
+    <div class="ab-num">AB · 05</div>
+    <h2 class="ab-title">Empty A · UploadZone, pre-upload</h2>
+    <div class="ab-meta"><span>sidebar zoom</span><span>light · Paper</span><span>POLISH-05</span></div>
+  </header>
+  <p class="ab-lede">First of the four empty states. The drop zone does the headline work — no "No file selected" preamble. Below it, a tiny conceptual scatter shows the ghost-marker where the upload will land, with a one-line explainer.</p>
+
+  <div class="frame">
+    <div class="stage" style="padding: 60px 40px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E6075; margin-bottom: 10px;">CONTEXT · LOWER SIDEBAR</div>
+          <div class="sidebar-zoom">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #8B8D9A; margin-bottom: 8px;">SEARCH WORDS</div>
+            <div class="search" style="margin-bottom: 16px;">🔍 Search words…</div>
+
+            <div class="sec-title">UPLOAD &amp; CLASSIFY</div>
+
+            <div style="border: 1.5px dashed #C9C7BD; border-radius: 8px; padding: 22px 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8B8D9A" stroke-width="1.5"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
+              <div style="font-size: 13.5px; color: #181A2D; font-weight: 500;">Drop a book to classify</div>
+              <div style="font-size: 11.5px; color: #5E6075;">.txt · ≤5MB · ≥500 words</div>
+            </div>
+
+            <div style="margin-top: 12px; padding: 12px; background: #FBF9F2; border-radius: 6px; display: flex; gap: 10px; align-items: center;">
+              <svg viewBox="0 0 80 50" style="width: 70px; height: 44px; flex-shrink: 0;">
+                <g opacity="0.4">
+                  <circle cx="36" cy="24" r="1.4" fill="#7C3AED"/><circle cx="42" cy="20" r="1" fill="#1D4ED8"/>
+                  <circle cx="30" cy="28" r="1.2" fill="#BE185D"/><circle cx="46" cy="26" r="0.8" fill="#0F766E"/>
+                  <circle cx="32" cy="20" r="0.8" fill="#B45309"/><circle cx="40" cy="30" r="1" fill="#DC2626"/>
+                  <circle cx="48" cy="22" r="0.8" fill="#4338CA"/><circle cx="34" cy="32" r="0.7" fill="#9A3412"/>
+                </g>
+                <circle cx="40" cy="25" r="4" fill="none" stroke="#1D4ED8" stroke-width="1.2" stroke-dasharray="2 1.5"/>
+                <circle cx="40" cy="25" r="1.6" fill="#1D4ED8" opacity="0.6"/>
+              </svg>
+              <div style="font-size: 11px; color: #4B4D5C; line-height: 1.45;">Your book will appear in the cloud with its own brightness — the blue marker is where it'll land.</div>
+            </div>
+
+            <div style="margin-top: 10px; font-size: 11px; color: #8B8D9A; line-height: 1.5; text-align: center;">Usually under 12 seconds.</div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E6075; margin-bottom: 10px;">DESIGN INTENT</div>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div style="background: white; border: 1px solid #E5E2D6; border-radius: 10px; padding: 14px 16px;">
+              <div style="font-size: 11.5px; font-family: 'JetBrains Mono', monospace; color: #4F46E5; font-weight: 600; letter-spacing: 0.06em; margin-bottom: 4px;">HEADLINE</div>
+              <div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">"Drop a book to classify"</div>
+              <div style="font-size: 12.5px; color: #4B4D5C;">Verb-led. Tells the user what to do, not what's missing.</div>
+            </div>
+            <div style="background: white; border: 1px solid #E5E2D6; border-radius: 10px; padding: 14px 16px;">
+              <div style="font-size: 11.5px; font-family: 'JetBrains Mono', monospace; color: #4F46E5; font-weight: 600; letter-spacing: 0.06em; margin-bottom: 4px;">CONSTRAINTS</div>
+              <div style="font-size: 12.5px; color: #4B4D5C;">.txt · ≤5MB · ≥500 words shown <em>before</em> upload — fewer error states downstream.</div>
+            </div>
+            <div style="background: white; border: 1px solid #E5E2D6; border-radius: 10px; padding: 14px 16px;">
+              <div style="font-size: 11.5px; font-family: 'JetBrains Mono', monospace; color: #4F46E5; font-weight: 600; letter-spacing: 0.06em; margin-bottom: 4px;">GHOST SCATTER</div>
+              <div style="font-size: 12.5px; color: #4B4D5C;">A blue ghost-marker shows where the uploaded book will land. Sells the payoff visually before the user commits.</div>
+            </div>
+            <div class="stickynote" style="transform: rotate(0.3deg);">
+              <strong>NOT a card title</strong>
+              No "Upload" header above the drop zone — the drop zone <em>is</em> the affordance. One thing, one message.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout"><div class="head">Dragging state</div><div class="body">Border switches to <strong>solid #4F46E5</strong>, background to <code>rgba(79,70,229,0.08)</code>, icon/text recolor to indigo.</div></div>
+      <div class="callout"><div class="head">Uploading state</div><div class="body">Replaced by <code>UploadProgress</code> showing each pipeline step with SSE-streamed checkmarks. Not shown.</div></div>
+      <div class="callout"><div class="head">Success state</div><div class="body">Drop zone stays so user can re-upload. <code>ClassificationResult</code> appears below — see the populated version in §2 of the final spec.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ARTBOARD 06 — Empty B · Compare, no genres                     -->
+<!-- ============================================================ -->
+<section id="ab6" class="artboard">
+  <header class="ab-head">
+    <div class="ab-num">AB · 06</div>
+    <h2 class="ab-title">Empty B · Compare tab, no genres selected</h2>
+    <div class="ab-meta"><span>1280 × 720</span><span>compare tab</span><span>both genres null</span></div>
+  </header>
+  <p class="ab-lede">Compare tab landed on for the first time. Two ghost panels, each in its own placeholder color at 25% opacity, hint at the dual-genre layout — the user gets a preview of the structure before they pick anything.</p>
+
+  <div class="frame">
+    <div class="stage" style="padding: 18px;">
+      <div class="app-shell" style="height: 560px;">
+        <div class="nav">
+          <span class="wordmark">Literary Genre Topology</span>
+          <div class="tabs"><span class="tab">Scatter</span><span class="tab">Topology</span><span class="tab active">Compare</span></div>
+          <div class="spacer"></div>
+          <span class="icon">🎓 How It Works</span><span class="icon q-icon">?</span><span class="icon">⚙</span>
+        </div>
+        <div class="ribbon">ⓘ &nbsp; Topology is computed in the original N-dimensional space. The 3D view is a lossy projection.</div>
+
+        <div class="body">
+          <div class="canvas-region" style="padding: 36px 30px; display: flex; flex-direction: column; gap: 22px;">
+            <div style="text-align: center; max-width: 480px; margin: 0 auto;">
+              <div style="font-size: 20px; font-weight: 600; color: #181A2D; margin-bottom: 6px;">Pick two genres to compare</div>
+              <div style="font-size: 13px; color: #4B4D5C; line-height: 1.55;">Shared color scale · same projection · synchronised camera. Compare reveals where two genres' vocabularies overlap and where they diverge.</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; min-height: 0;">
+              <div style="border: 1.5px dashed #C9C7BD; border-radius: 12px; background: rgba(29,78,216,0.04); padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between;">
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #8B8D9A; letter-spacing: 0.1em;">GENRE A</div>
+                  <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid #C9D0FF; border-radius: 6px; background: white; color: #1D4ED8; font-size: 12px;">+ Pick genre</div>
+                </div>
+                <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                  <svg viewBox="0 0 120 80" style="width: 60%; opacity: 0.35;">
+                    <circle cx="40" cy="40" r="2.2" fill="#1D4ED8"/><circle cx="56" cy="32" r="1.6" fill="#1D4ED8"/>
+                    <circle cx="68" cy="44" r="1.8" fill="#1D4ED8"/><circle cx="50" cy="52" r="1.4" fill="#1D4ED8"/>
+                    <circle cx="64" cy="28" r="1.2" fill="#1D4ED8"/><circle cx="78" cy="56" r="1.4" fill="#1D4ED8"/>
+                    <circle cx="44" cy="28" r="1.2" fill="#1D4ED8"/><circle cx="80" cy="38" r="1.4" fill="#1D4ED8"/>
+                    <circle cx="32" cy="46" r="1.2" fill="#1D4ED8"/><circle cx="72" cy="34" r="1" fill="#1D4ED8"/>
+                  </svg>
+                </div>
+                <div style="font-size: 11.5px; color: #8B8D9A; text-align: center; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em;">brightness map will appear here</div>
+              </div>
+
+              <div style="border: 1.5px dashed #C9C7BD; border-radius: 12px; background: rgba(190,24,93,0.04); padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between;">
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #8B8D9A; letter-spacing: 0.1em;">GENRE B</div>
+                  <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid #F2C9DC; border-radius: 6px; background: white; color: #BE185D; font-size: 12px;">+ Pick genre</div>
+                </div>
+                <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                  <svg viewBox="0 0 120 80" style="width: 60%; opacity: 0.35;">
+                    <circle cx="46" cy="38" r="2" fill="#BE185D"/><circle cx="58" cy="32" r="1.6" fill="#BE185D"/>
+                    <circle cx="68" cy="42" r="1.4" fill="#BE185D"/><circle cx="52" cy="50" r="1.2" fill="#BE185D"/>
+                    <circle cx="64" cy="26" r="1.4" fill="#BE185D"/><circle cx="76" cy="50" r="1.2" fill="#BE185D"/>
+                    <circle cx="40" cy="28" r="1" fill="#BE185D"/><circle cx="78" cy="34" r="1.4" fill="#BE185D"/>
+                    <circle cx="34" cy="44" r="1.2" fill="#BE185D"/><circle cx="70" cy="32" r="1" fill="#BE185D"/>
+                  </svg>
+                </div>
+                <div style="font-size: 11.5px; color: #8B8D9A; text-align: center; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em;">brightness map will appear here</div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="sidebar">
+            <div class="sb-title">Literary Genre Topology</div>
+            <div>
+              <div class="sb-label">Projection</div>
+              <div class="proj-tabs"><span class="pt active">PCA</span><span class="pt">KPCA</span><span class="pt">UMAP</span><span class="pt">tSNE</span></div>
+            </div>
+            <div><div class="sb-label">Compare · Genre A</div><div class="dropdown">Choose a genre</div></div>
+            <div><div class="sb-label">Compare · Genre B</div><div class="dropdown">Choose a genre</div></div>
+            <div style="font-size: 11.5px; color: #4B4D5C; line-height: 1.5; padding-top: 6px; border-top: 1px dashed #E5E2D6;">
+              Useful for the merged keys — <strong style="color:#7C3AED;">gothic_horror</strong> vs <strong style="color:#4338CA;">speculative</strong> — to see where their vocabularies overlap.
+            </div>
+            <div>
+              <div class="sb-label">Display</div>
+              <div class="slider"><div class="row"><span>Point Size</span><span>0.50</span></div><div class="track"><div class="thumb" style="left:48%"></div></div></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout"><div class="head">Two ghost panels</div><div class="body">Each pre-colored to its placeholder genre at 25% opacity. <strong>Not</strong> generic grey boxes.</div></div>
+      <div class="callout"><div class="head">Inline picker</div><div class="body">"+ Pick genre" in each panel as an alternative to sidebar dropdowns. Either path works.</div></div>
+      <div class="callout"><div class="head">Suggestion copy</div><div class="body">Sidebar hint surfaces the merged v2 keys (gothic_horror, speculative) as natural compare candidates. Teaches the new palette.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ARTBOARD 07 — Empty C · Classification failure                 -->
+<!-- ============================================================ -->
+<section id="ab7" class="artboard">
+  <header class="ab-head">
+    <div class="ab-num">AB · 07</div>
+    <h2 class="ab-title">Empty C · Classification failure</h2>
+    <div class="ab-meta"><span>sidebar zoom</span><span>light · Paper</span><span>3 specific variants</span></div>
+  </header>
+  <p class="ab-lede">Never "Error occurred." Each failure mode gets its own headline pattern — "We couldn't [verb] this file" — plus one clear next action. The 410-Gone (5-min Redis TTL) and 503 (calibration missing) variants are shown below since they're the two that most users hit when a job stalls.</p>
+
+  <div class="frame">
+    <div class="stage" style="padding: 50px 40px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start;">
+
+        <!-- Left column: primary failure card + variants -->
+        <div style="display: flex; flex-direction: column; gap: 18px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E6075;">PRIMARY · ENCODING ERROR</div>
+          <div class="sidebar-zoom">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8B8D9A; margin-bottom: 10px;">UPLOAD &amp; CLASSIFY</div>
+
+            <!-- The error card -->
+            <div style="background: #FCF3F3; border: 1.5px solid #E0BFBF; border-radius: 10px; padding: 16px; display: flex; gap: 12px; align-items: flex-start;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E2D2D" stroke-width="1.8" style="flex-shrink: 0; margin-top: 2px;">
+                <circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>
+              </svg>
+              <div style="flex: 1;">
+                <div style="font-size: 14px; font-weight: 600; color: #5A1F1F; margin-bottom: 6px;">We couldn't read this file</div>
+                <div style="font-size: 12px; color: #7A4444; line-height: 1.55;">Looks like the encoding wasn't UTF-8. Try saving the file as plain UTF-8 text and dropping it again.</div>
+                <button style="margin-top: 12px; padding: 6px 14px; background: transparent; color: #5A1F1F; border: 1px solid #C68B8B; border-radius: 5px; font-size: 11.5px; cursor: pointer; font-family: inherit;">Try another file</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Variants strip -->
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E6075; margin-top: 8px;">VARIANTS</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div style="background: #FFF6E7; border: 1px solid #E8C97A; border-radius: 8px; padding: 12px;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #7A5410; font-weight: 600; margin-bottom: 6px;">410 GONE</div>
+              <div style="font-size: 12px; color: #181A2D; font-weight: 500; margin-bottom: 4px;">This result expired.</div>
+              <div style="font-size: 11.5px; color: #7A5410; line-height: 1.45;">Upload the file again to recompute. <em>(5-min Redis TTL on feature_vec.)</em></div>
+            </div>
+            <div style="background: #FFF6E7; border: 1px solid #E8C97A; border-radius: 8px; padding: 12px;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #7A5410; font-weight: 600; margin-bottom: 6px;">503 · CALIBRATION</div>
+              <div style="font-size: 12px; color: #181A2D; font-weight: 500; margin-bottom: 4px;">Top genre still shown.</div>
+              <div style="font-size: 11.5px; color: #7A5410; line-height: 1.45;">Probability bars degraded. The classifier is fine; only the calibration step missed.</div>
+            </div>
+            <div style="background: #FCF3F3; border: 1px solid #E0BFBF; border-radius: 8px; padding: 12px;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #5A1F1F; font-weight: 600; margin-bottom: 6px;">&lt; 500 WORDS</div>
+              <div style="font-size: 12px; color: #181A2D; font-weight: 500; margin-bottom: 4px;">Too short to classify.</div>
+              <div style="font-size: 11.5px; color: #7A4444; line-height: 1.45;">Try a longer book — at least 500 words.</div>
+            </div>
+            <div style="background: #FCF3F3; border: 1px solid #E0BFBF; border-radius: 8px; padding: 12px;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #5A1F1F; font-weight: 600; margin-bottom: 6px;">WRONG FORMAT</div>
+              <div style="font-size: 12px; color: #181A2D; font-weight: 500; margin-bottom: 4px;">Only .txt files for now.</div>
+              <div style="font-size: 11.5px; color: #7A4444; line-height: 1.45;">PDF and EPUB support is on the v3 roadmap.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: design intent + voice rules -->
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E6075; margin-bottom: 10px;">DESIGN INTENT</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="background: white; border: 1px solid #E5E2D6; border-radius: 10px; padding: 14px 16px;">
+              <div style="font-size: 11.5px; font-family: 'JetBrains Mono', monospace; color: #4F46E5; font-weight: 600; letter-spacing: 0.06em; margin-bottom: 4px;">HEADLINE PATTERN</div>
+              <div style="font-size: 13.5px; color: #181A2D; font-weight: 500; margin-bottom: 4px;">"We couldn't [verb] this file"</div>
+              <div style="font-size: 12.5px; color: #4B4D5C;">Apologetic + specific. Never "Error occurred" or "Something went wrong."</div>
+            </div>
+            <div style="background: white; border: 1px solid #E5E2D6; border-radius: 10px; padding: 14px 16px;">
+              <div style="font-size: 11.5px; font-family: 'JetBrains Mono', monospace; color: #4F46E5; font-weight: 600; letter-spacing: 0.06em; margin-bottom: 4px;">TWO COLOR LEVELS</div>
+              <div style="font-size: 12.5px; color: #4B4D5C;"><strong style="color:#5A1F1F;">Red wash</strong> for "you need to fix this" (encoding, too short, wrong format). <strong style="color:#7A5410;">Amber wash</strong> for "we'll handle this" (410 expired, 503 calibration). Different action ladder.</div>
+            </div>
+            <div style="background: white; border: 1px solid #E5E2D6; border-radius: 10px; padding: 14px 16px;">
+              <div style="font-size: 11.5px; font-family: 'JetBrains Mono', monospace; color: #4F46E5; font-weight: 600; letter-spacing: 0.06em; margin-bottom: 4px;">ONE NEXT ACTION</div>
+              <div style="font-size: 12.5px; color: #4B4D5C;">Every variant offers exactly one button or one explicit re-try path. No "Contact support."</div>
+            </div>
+            <div class="stickynote" style="transform: rotate(0.3deg);">
+              <strong>What stays</strong>
+              The classify input remains visible above the error so the user can try a new file without navigating away.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout"><div class="head">410 framing</div><div class="body"><strong>"Expired"</strong>, not "Lost". The user understands TTL implicitly when the language is concrete.</div></div>
+      <div class="callout"><div class="head">503 framing</div><div class="body">Top-1 prediction still rendered with no probability bars. The error sits <em>next to</em> the partial result, not instead of it.</div></div>
+      <div class="callout"><div class="head">Future-proofing</div><div class="body">Wrong-format card pre-mentions v3 PDF/EPUB to set the right expectation. Costs nothing now.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ARTBOARD 08 — Empty D · ClassificationExplain, pre-upload      -->
+<!-- ============================================================ -->
+<section id="ab8" class="artboard">
+  <header class="ab-head">
+    <div class="ab-num">AB · 08</div>
+    <h2 class="ab-title">Empty D · ClassificationExplain, pre-upload</h2>
+    <div class="ab-meta"><span>panel zoom</span><span>light · Paper</span><span>3 ghost rows</span></div>
+  </header>
+  <p class="ab-lede">The "Why this genre?" panel before any upload exists. Three ghost rows mirror the three real sub-panels (NearestBooks, TrackContributionBars, DrivingWordsPills) — the user can see the <em>structure</em> of what'll appear, just not the data. Honest, not coy: "Upload a book first."</p>
+
+  <div class="frame">
+    <div class="stage" style="padding: 50px 40px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start;">
+
+        <!-- Left: the empty explain panel -->
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E6075; margin-bottom: 10px;">EMPTY STATE · EXPLAIN PANEL</div>
+          <div class="sidebar-zoom" style="padding: 20px 18px;">
+            <!-- Header -->
+            <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px;">
+              <div style="font-size: 14.5px; font-weight: 600; color: #181A2D;">Why this genre?</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #8B8D9A; letter-spacing: 0.08em;">— EMPTY</div>
+            </div>
+
+            <!-- Ghost row 1: NearestBooks -->
+            <div style="border: 1.5px dashed #C9C7BD; border-radius: 8px; padding: 12px 13px; margin-bottom: 10px;">
+              <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 6px;">
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: #8B8D9A; letter-spacing: 0.06em;">5 NEAREST TRAINING BOOKS</div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <div style="height: 5px; background: #EFEDE3; border-radius: 3px; width: 78%;"></div>
+                <div style="height: 5px; background: #EFEDE3; border-radius: 3px; width: 64%;"></div>
+                <div style="height: 5px; background: #EFEDE3; border-radius: 3px; width: 72%;"></div>
+                <div style="height: 5px; background: #EFEDE3; border-radius: 3px; width: 56%;"></div>
+                <div style="height: 5px; background: #EFEDE3; border-radius: 3px; width: 68%;"></div>
+              </div>
+            </div>
+
+            <!-- Ghost row 2: TrackContribution -->
+            <div style="border: 1.5px dashed #C9C7BD; border-radius: 8px; padding: 12px 13px; margin-bottom: 10px;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: #8B8D9A; letter-spacing: 0.06em; margin-bottom: 8px;">TRACK CONTRIBUTION</div>
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 5px;">
+                <div style="font-size: 10px; color: #8B8D9A; font-family: 'JetBrains Mono', monospace; width: 56px;">topology</div>
+                <div style="flex: 1; height: 6px; background: linear-gradient(to right, #C9D0FF 0%, #C9D0FF 60%, #EFEDE3 60%); border-radius: 3px;"></div>
+                <div style="font-size: 10px; color: #8B8D9A; width: 30px; text-align: right; font-family: 'JetBrains Mono', monospace;">—%</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <div style="font-size: 10px; color: #8B8D9A; font-family: 'JetBrains Mono', monospace; width: 56px;">vocabulary</div>
+                <div style="flex: 1; height: 6px; background: linear-gradient(to right, #C9D0FF 0%, #C9D0FF 40%, #EFEDE3 40%); border-radius: 3px;"></div>
+                <div style="font-size: 10px; color: #8B8D9A; width: 30px; text-align: right; font-family: 'JetBrains Mono', monospace;">—%</div>
+              </div>
+            </div>
+
+            <!-- Ghost row 3: DrivingWords -->
+            <div style="border: 1.5px dashed #C9C7BD; border-radius: 8px; padding: 12px 13px; margin-bottom: 14px;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: #8B8D9A; letter-spacing: 0.06em; margin-bottom: 8px;">DRIVING WORDS</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                <span style="font-size: 10.5px; color: #8B8D9A; padding: 3px 9px; border: 1px solid #D8D5CB; border-radius: 100px;">word</span>
+                <span style="font-size: 10.5px; color: #8B8D9A; padding: 3px 9px; border: 1px solid #D8D5CB; border-radius: 100px;">word</span>
+                <span style="font-size: 10.5px; color: #8B8D9A; padding: 3px 9px; border: 1px solid #D8D5CB; border-radius: 100px;">word</span>
+                <span style="font-size: 10.5px; color: #8B8D9A; padding: 3px 9px; border: 1px solid #D8D5CB; border-radius: 100px;">word</span>
+                <span style="font-size: 10.5px; color: #8B8D9A; padding: 3px 9px; border: 1px solid #D8D5CB; border-radius: 100px;">word</span>
+                <span style="font-size: 10.5px; color: #8B8D9A; padding: 3px 9px; border: 1px solid #D8D5CB; border-radius: 100px;">word</span>
+              </div>
+            </div>
+
+            <!-- The headline -->
+            <div style="text-align: center; padding: 8px 4px 4px;">
+              <div style="font-size: 14px; font-weight: 600; color: #181A2D; margin-bottom: 6px;">Upload a book first.</div>
+              <div style="font-size: 11.5px; color: #4B4D5C; line-height: 1.55;">This panel will show the five nearest training books, how topology and vocabulary contributed to the verdict, and the words that drove the prediction — once there's a verdict to explain.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: design intent -->
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E6075; margin-bottom: 10px;">DESIGN INTENT</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="background: white; border: 1px solid #E5E2D6; border-radius: 10px; padding: 14px 16px;">
+              <div style="font-size: 11.5px; font-family: 'JetBrains Mono', monospace; color: #4F46E5; font-weight: 600; letter-spacing: 0.06em; margin-bottom: 4px;">HEADLINE</div>
+              <div style="font-size: 13.5px; color: #181A2D; font-weight: 500; margin-bottom: 4px;">"Upload a book first."</div>
+              <div style="font-size: 12.5px; color: #4B4D5C;">Honest, not coy. Doesn't pretend the panel has content.</div>
+            </div>
+
+            <div style="background: white; border: 1px solid #E5E2D6; border-radius: 10px; padding: 14px 16px;">
+              <div style="font-size: 11.5px; font-family: 'JetBrains Mono', monospace; color: #4F46E5; font-weight: 600; letter-spacing: 0.06em; margin-bottom: 4px;">THREE GHOST ROWS</div>
+              <div style="font-size: 12.5px; color: #4B4D5C;">Mirror the three real sub-panels — <em>NearestBooks</em>, <em>TrackContribution</em>, <em>DrivingWords</em>. User sees the structure before the data.</div>
+            </div>
+
+            <div style="background: white; border: 1px solid #E5E2D6; border-radius: 10px; padding: 14px 16px;">
+              <div style="font-size: 11.5px; font-family: 'JetBrains Mono', monospace; color: #4F46E5; font-weight: 600; letter-spacing: 0.06em; margin-bottom: 4px;">SUB-LABELS VISIBLE</div>
+              <div style="font-size: 12.5px; color: #4B4D5C;"><em>5 NEAREST · TRACK CONTRIBUTION · DRIVING WORDS</em> are visible even when empty — explains what'll be shown without prose.</div>
+            </div>
+
+            <div class="stickynote" style="transform: rotate(0.3deg);">
+              <strong>D-51 footnote</strong>
+              The "upper bound" macro-F1 caveat <em>does not</em> appear in the empty state. It only renders once there's a verdict to qualify.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout"><div class="head">Mounted, not gated</div><div class="body">The panel mounts in both empty and populated states. Same component, different content. Theme tokens drive both.</div></div>
+      <div class="callout"><div class="head">No emoji, no illustration</div><div class="body">Ghost rows do the visual work. Honest minimalism — fits the rest of the polish surface.</div></div>
+      <div class="callout"><div class="head">Reachable from sidebar</div><div class="body">The panel is reachable independently of the tour now that Step 4 ("Why this genre?") was dropped. Surface stands on its own.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CLOSING                                                       -->
+<!-- ============================================================ -->
+<footer style="max-width: 980px; margin: 80px auto 0; padding: 20px 22px; border-top: 1px solid var(--rule); color: var(--ink-soft); font-size: 12px; font-family: 'JetBrains Mono', monospace; display: flex; gap: 14px; justify-content: space-between; flex-wrap: wrap;">
+  <span>Phase 10 — Visual Polish · wireframe pack · 8 artboards</span>
+  <span>Locked decisions from <strong style="color: var(--ink);">Phase 10 Final Spec</strong></span>
+  <span>2026-05-28 · ready for planner handoff</span>
+</footer>
+
+</body>
+</html>

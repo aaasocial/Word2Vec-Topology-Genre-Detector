@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Phase 10 — Final Spec · Literary Genre Topology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:        #FBF9F2;
+    --paper-edge:   #F2EFE4;
+    --ink:          #1A1B23;
+    --ink-mid:      #4B4D5C;
+    --ink-soft:     #8B8D9A;
+    --pencil:       #2A2A35;
+    --rule:         #D8D5CB;
+    --rule-soft:    #E6E3D8;
+    --marker:       #4F46E5;
+    --marker-soft:  #E0E2FA;
+    --highlight:    #FBE89A;
+    --good:         #59B488;
+    --good-soft:    #DCEFE2;
+    --warn:         #C77E0A;
+    --warn-soft:    #FAEBC8;
+    --bad:          #D45A5A;
+    --bad-soft:     #F6D7D7;
+    --sketch-bg:    #FEFDF8;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); font-family: 'Inter', system-ui, sans-serif; font-size: 14px; line-height: 1.55; }
+  body { padding: 64px 8vw 120px; }
+
+  /* ============ Head ============ */
+  .doc-head { max-width: 980px; margin: 0 auto 48px; }
+  .doc-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 16px; }
+  .doc-title { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 12px; line-height: 1.05; }
+  .doc-sub { font-size: 16px; color: var(--ink-mid); max-width: 720px; margin: 0 0 28px; }
+  .doc-meta { display: flex; flex-wrap: wrap; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-soft); }
+  .doc-meta span { padding: 4px 10px; border: 1px solid var(--rule); border-radius: 100px; background: var(--sketch-bg); }
+  .doc-meta span strong { color: var(--ink); font-weight: 500; }
+
+  /* ============ TLDR ============ */
+  .tldr {
+    max-width: 980px; margin: 0 auto 56px;
+    background: linear-gradient(180deg, #ECEEFC 0%, #E0E2FA 100%);
+    border: 1px solid #C3C7F7; border-radius: 14px;
+    padding: 24px 28px;
+  }
+  .tldr h2 { margin: 0 0 14px; font-size: 18px; letter-spacing: -0.01em; }
+  .tldr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 22px; }
+  .tldr-grid .pair { display: flex; flex-direction: column; gap: 2px; }
+  .tldr-grid .pair .k { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+  .tldr-grid .pair .v { font-size: 14.5px; font-weight: 500; color: var(--ink); }
+
+  /* ============ Sections ============ */
+  section.doc { max-width: 1180px; margin: 0 auto 72px; }
+  .sect-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
+  .sect-num { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink-soft); letter-spacing: 0.1em; }
+  .sect-title { font-size: 26px; font-weight: 600; letter-spacing: -0.015em; margin: 0; }
+  .sect-lede { color: var(--ink-mid); max-width: 760px; margin: 14px 0 24px; font-size: 14.5px; }
+  .sect-status { display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 3px 10px; border-radius: 100px; background: var(--good-soft); color: #1F6B3F; margin-left: auto; }
+  .sect-status.warn { background: var(--warn-soft); color: #7A5410; }
+
+  h3.subhead { font-size: 17px; font-weight: 600; margin: 32px 0 14px; display: flex; align-items: baseline; gap: 14px; }
+  h3.subhead::before { content: ""; display: inline-block; width: 24px; height: 1px; background: var(--ink); }
+  h3.subhead .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-soft); letter-spacing: 0.1em; font-weight: 500; }
+
+  .label { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); }
+
+  /* ============ Token tables ============ */
+  .token-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 12px; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--sketch-bg); }
+  .token-table th { text-align: left; padding: 10px 14px; font-weight: 500; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); background: var(--paper-edge); border-bottom: 1px solid var(--rule); }
+  .token-table td { padding: 10px 14px; border-bottom: 1px solid var(--rule-soft); color: var(--ink-mid); }
+  .token-table tr:last-child td { border-bottom: 0; }
+  .token-table .name { color: var(--ink); font-weight: 500; }
+  .token-table .sw { display: inline-block; width: 18px; height: 18px; border-radius: 4px; vertical-align: middle; margin-right: 8px; border: 1px solid rgba(0,0,0,0.08); }
+
+  /* ============ Genre palette grid ============ */
+  .genre-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; margin-top: 8px; }
+  .genre-cell { border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--sketch-bg); }
+  .genre-cell .name { padding: 9px 11px 4px; font-size: 12px; font-weight: 600; }
+  .genre-cell .key { padding: 0 11px 8px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-soft); }
+  .genre-cell .pair { display: grid; grid-template-columns: 1fr 1fr; }
+  .genre-cell .pair .light, .genre-cell .pair .dark { padding: 12px 9px; }
+  .genre-cell .pair .light { background: #FBF9F2; }
+  .genre-cell .pair .dark { background: #0A0A0F; }
+  .genre-cell .chip { width: 100%; height: 22px; border-radius: 4px; }
+  .genre-cell .hex { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; margin-top: 4px; }
+  .genre-cell .pair .light .hex { color: #4B4D5C; }
+  .genre-cell .pair .dark .hex { color: #9090A0; }
+
+  /* ============ Tour cards (final 4-step) ============ */
+  .tour-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .tour-frame { border: 1px solid var(--rule); border-radius: 12px; background: var(--sketch-bg); padding: 16px; display: flex; flex-direction: column; gap: 10px; min-height: 280px; }
+  .tour-frame .nstep { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--ink-soft); letter-spacing: 0.1em; }
+  .tour-frame .anchor { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--marker); }
+  .tour-frame .head { font-weight: 600; font-size: 15px; line-height: 1.25; letter-spacing: -0.005em; }
+  .tour-frame .body { font-size: 13px; color: var(--ink-mid); line-height: 1.55; flex: 1; }
+  .tour-frame .meta { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-soft); padding-top: 6px; border-top: 1px dashed var(--rule); }
+  .tour-frame .diff { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--good); padding: 4px 8px; background: rgba(89,180,136,0.08); border-radius: 4px; line-height: 1.4; }
+
+  .compare-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: var(--paper-edge); padding: 14px; border-radius: 10px; font-size: 12px; line-height: 1.55; margin-top: 14px; }
+  .compare-strip .col h4 { margin: 0 0 6px; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+  .compare-strip .col.before { color: #8E2D2D; }
+  .compare-strip .col.before .label-tag { color: #8E2D2D; }
+  .compare-strip .col.after { color: #1F6B3F; }
+  .compare-strip .col.after .label-tag { color: #1F6B3F; }
+
+  /* ============ Cards / boxes ============ */
+  .card-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .card { border: 1px solid var(--rule); border-radius: 12px; background: var(--sketch-bg); padding: 18px 20px; }
+  .card h4 { margin: 0 0 8px; font-size: 14.5px; font-weight: 600; }
+  .card p { margin: 0 0 8px; font-size: 13px; color: var(--ink-mid); line-height: 1.6; }
+  .card ul { padding-left: 18px; margin: 6px 0; color: var(--ink-mid); font-size: 13px; line-height: 1.65; }
+  .card ul li { margin-bottom: 4px; }
+  .card code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--paper-edge); padding: 1px 5px; border-radius: 3px; color: var(--ink); }
+
+  /* ============ NOT-list ============ */
+  .not-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 22px; margin-top: 4px; }
+  .not-list .item { display: grid; grid-template-columns: 24px 1fr; gap: 10px; align-items: baseline; padding: 10px 0; border-top: 1px dashed var(--rule); }
+  .not-list .item .mark { font-family: 'JetBrains Mono', monospace; color: var(--bad); font-weight: 700; font-size: 12px; }
+  .not-list .item .text { font-size: 13px; color: var(--ink-mid); }
+  .not-list .item .text strong { color: var(--ink); font-weight: 600; }
+  .not-list .item.open .mark { color: var(--warn); }
+  .not-list .item.open .text strong::after { content: " · open"; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 11px; color: var(--warn); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* ============ Open questions ============ */
+  .open-q { background: #FFFCE9; border: 1px solid #E8DC9C; border-radius: 12px; padding: 18px 22px; margin-top: 24px; }
+  .open-q .q-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warn); margin-bottom: 6px; }
+  .open-q .q-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .open-q .q-body { font-size: 13.5px; color: var(--ink-mid); line-height: 1.6; }
+
+  /* ============ Code block ============ */
+  pre.code { background: #16161F; color: #E0E0EC; border-radius: 10px; padding: 20px 22px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.65; overflow-x: auto; }
+  pre.code .k { color: #C792EA; }
+  pre.code .s { color: #C3E88D; }
+  pre.code .c { color: #5C6370; font-style: italic; }
+  pre.code .p { color: #FFCB6B; }
+  pre.code .v { color: #82AAFF; }
+
+  /* ============ Stickynote ============ */
+  .stickynote { background: var(--highlight); padding: 14px 16px; border-radius: 2px; box-shadow: 1px 3px 6px rgba(0,0,0,0.06); font-family: 'Caveat', cursive; font-size: 17px; color: var(--pencil); line-height: 1.3; transform: rotate(-0.3deg); }
+  .stickynote strong { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pencil); display: block; margin-bottom: 4px; }
+
+  .footer-note { max-width: 980px; margin: 80px auto 0; padding: 18px 22px; border-top: 1px solid var(--rule); color: var(--ink-soft); font-size: 12px; font-family: 'JetBrains Mono', monospace; display: flex; gap: 14px; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+<!-- ==================== HEAD ==================== -->
+<div class="doc-head">
+  <div class="doc-eyebrow">Literary Genre Topology · Phase 10 · Visual Polish</div>
+  <h1 class="doc-title">Final spec from review.</h1>
+  <p class="doc-sub">Picks consolidated from the review questionnaire (2026-05-27). Tour copy rewritten to drop the math jargon — same surface, friendlier language. The 30-component sweep, theme system, and tour can begin against this doc.</p>
+  <div class="doc-meta">
+    <span>v2.0 polish layer</span>
+    <span>Reviewer <strong>user@gmail.com</strong></span>
+    <span>2026-05-28</span>
+    <span>Status <strong>locked except 1 open item</strong></span>
+  </div>
+</div>
+
+<!-- ==================== TLDR ==================== -->
+<div class="tldr">
+  <h2>Decisions locked</h2>
+  <div class="tldr-grid">
+    <div class="pair"><div class="k">Light theme</div><div class="v">A · Paper (warm cream #FBF9F2)</div></div>
+    <div class="pair"><div class="k">Help menu</div><div class="v">A · Header dropdown</div></div>
+    <div class="pair"><div class="k">Tour library</div><div class="v">Hand-rolled overlay</div></div>
+    <div class="pair"><div class="k">Tour length</div><div class="v">4 steps · dropped "Why this genre?"</div></div>
+    <div class="pair"><div class="k">Genre palette</div><div class="v">Ship as drawn · 8 × dual-token</div></div>
+    <div class="pair"><div class="k">anchors.ts</div><div class="v">Ship as drawn (4-step variant)</div></div>
+    <div class="pair"><div class="k">Empty states</div><div class="v">4/4 approved</div></div>
+    <div class="pair"><div class="k">ClassificationResult B/A</div><div class="v">Approved as canonical sweep pattern</div></div>
+    <div class="pair"><div class="k">Tour copy</div><div class="v">Rewritten · jargon reduced (see §3)</div></div>
+  </div>
+</div>
+
+<!-- ==================== §1 THEME TOKENS ==================== -->
+<section id="theme" class="doc">
+  <header class="sect-head">
+    <div class="sect-num">§ 01</div>
+    <h2 class="sect-title">Theme tokens — Paper + dark</h2>
+    <span class="sect-status">✓ locked</span>
+  </header>
+  <p class="sect-lede">Light values live under <code>:root.light</code> (added in Phase 10); dark values stay under <code>:root</code> (unchanged from Phase 9). Theme is applied by toggling the <code>.light</code> class on <code>document.documentElement</code>; <code>scene.background</code> reads <code>--scene-bg</code> imperatively.</p>
+
+  <h3 class="subhead">Light · Paper <span class="tag">:root.light</span></h3>
+  <table class="token-table">
+    <thead><tr><th style="width:30%">Variable</th><th style="width:25%">HSL</th><th style="width:25%">Hex</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="name"><span class="sw" style="background:#FBF9F2"></span>--background</td><td>40 30% 97%</td><td>#FBF9F2</td><td>warm off-white canvas</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#181A2D"></span>--foreground</td><td>235 25% 13%</td><td>#181A2D</td><td>body text</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#FFFFFF"></span>--card</td><td>40 60% 100%</td><td>#FFFFFF</td><td>cards float on cream</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#191B2E"></span>--card-foreground</td><td>235 28% 14%</td><td>#191B2E</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#FFFFFF"></span>--popover</td><td>40 60% 100%</td><td>#FFFFFF</td><td>matches card</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#191B2E"></span>--popover-foreground</td><td>235 28% 14%</td><td>#191B2E</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#F0EDE2"></span>--secondary</td><td>40 25% 92%</td><td>#F0EDE2</td><td>track / dim surface</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#191B2E"></span>--secondary-foreground</td><td>235 28% 14%</td><td>#191B2E</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#F0EDE2"></span>--muted</td><td>40 25% 92%</td><td>#F0EDE2</td><td>matches secondary</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#5E6075"></span>--muted-foreground</td><td>240 10% 41%</td><td>#5E6075</td><td>meta / helper text</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#4F46E5"></span>--accent</td><td>239 84% 58%</td><td>#4F46E5</td><td>matches primary</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#FFFFFF"></span>--accent-foreground</td><td>0 0% 100%</td><td>#FFFFFF</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#DC2626"></span>--destructive</td><td>0 73% 51%</td><td>#DC2626</td><td>error red, AA on cream</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#FFFFFF"></span>--destructive-foreground</td><td>0 0% 100%</td><td>#FFFFFF</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#E5E2D6"></span>--border</td><td>40 18% 86%</td><td>#E5E2D6</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#E5E2D6"></span>--input</td><td>40 18% 86%</td><td>#E5E2D6</td><td>matches border</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#4F46E5"></span>--primary</td><td>239 84% 58%</td><td>#4F46E5</td><td>deepened from dark (was 67%) for AA on cream</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#FFFFFF"></span>--primary-foreground</td><td>0 0% 100%</td><td>#FFFFFF</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#4F46E5"></span>--ring</td><td>239 84% 58%</td><td>#4F46E5</td><td>matches primary</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#FBF9F2"></span>--scene-bg</td><td>40 30% 97%</td><td>#FBF9F2</td><td><strong>NEW</strong> · matches --background; R3F reads imperatively</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subhead">Dark — unchanged baseline <span class="tag">:root</span></h3>
+  <table class="token-table">
+    <thead><tr><th style="width:30%">Variable</th><th style="width:25%">HSL</th><th style="width:25%">Hex</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="name"><span class="sw" style="background:#0A0A0F"></span>--background</td><td>0 0% 4%</td><td>#0A0A0F</td><td>default first paint</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#E8E8F2"></span>--foreground</td><td>240 20% 93%</td><td>#E8E8F2</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#16161F"></span>--card</td><td>240 13% 10%</td><td>#16161F</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#22232E"></span>--secondary / --muted</td><td>240 10% 14%</td><td>#22232E</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#272832"></span>--border / --input</td><td>240 13% 16%</td><td>#272832</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#6E6E83"></span>--muted-foreground</td><td>240 5% 46%</td><td>#6E6E83</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#6366F1"></span>--primary / --accent / --ring</td><td>239 84% 67%</td><td>#6366F1</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#EF4444"></span>--destructive</td><td>0 84% 60%</td><td>#EF4444</td><td>—</td></tr>
+      <tr><td class="name"><span class="sw" style="background:#0A0A0F"></span>--scene-bg</td><td>0 0% 4%</td><td>#0A0A0F</td><td><strong>NEW</strong> · matches --background</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subhead">Scene-adjacent overrides <span class="tag">historical-dim · uploaded-book</span></h3>
+  <table class="token-table">
+    <thead><tr><th style="width:38%">Constant</th><th style="width:20%">Light</th><th style="width:20%">Dark</th><th>Rationale</th></tr></thead>
+    <tbody>
+      <tr><td class="name">HISTORICAL_DIM_COLOR</td><td><span class="sw" style="background:#B45309"></span>#B45309</td><td><span class="sw" style="background:#D97706"></span>#D97706</td><td>amber dims to a darker amber on each canvas so it stays distinct from the bright historical fill while uploads are active</td></tr>
+      <tr><td class="name">UPLOADED_BOOK_COLOR</td><td><span class="sw" style="background:#1D4ED8"></span>#1D4ED8</td><td><span class="sw" style="background:#FBBF24"></span>#FBBF24</td><td>saffron melts into cream → flip to deep blue on light; saffron stays on dark</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subhead">v2 genre palette — dual-token <span class="tag">8 genres · AA verified both canvases</span></h3>
+  <div class="genre-grid">
+    <div class="genre-cell"><div class="name">Adventure</div><div class="key">adventure</div><div class="pair">
+      <div class="light"><div class="chip" style="background:#DC2626"></div><div class="hex">#DC2626</div></div>
+      <div class="dark"><div class="chip" style="background:#F87171"></div><div class="hex">#F87171</div></div></div></div>
+    <div class="genre-cell"><div class="name">Gothic Horror</div><div class="key">gothic_horror</div><div class="pair">
+      <div class="light"><div class="chip" style="background:#7C3AED"></div><div class="hex">#7C3AED</div></div>
+      <div class="dark"><div class="chip" style="background:#B47AE6"></div><div class="hex">#B47AE6</div></div></div></div>
+    <div class="genre-cell"><div class="name">Historical</div><div class="key">historical</div><div class="pair">
+      <div class="light"><div class="chip" style="background:#B45309"></div><div class="hex">#B45309</div></div>
+      <div class="dark"><div class="chip" style="background:#FBBF24"></div><div class="hex">#FBBF24</div></div></div></div>
+    <div class="genre-cell"><div class="name">Literary</div><div class="key">literary</div><div class="pair">
+      <div class="light"><div class="chip" style="background:#0F766E"></div><div class="hex">#0F766E</div></div>
+      <div class="dark"><div class="chip" style="background:#5EEAD4"></div><div class="hex">#5EEAD4</div></div></div></div>
+    <div class="genre-cell"><div class="name">Mystery</div><div class="key">mystery</div><div class="pair">
+      <div class="light"><div class="chip" style="background:#1D4ED8"></div><div class="hex">#1D4ED8</div></div>
+      <div class="dark"><div class="chip" style="background:#60A5FA"></div><div class="hex">#60A5FA</div></div></div></div>
+    <div class="genre-cell"><div class="name">Romance</div><div class="key">romance</div><div class="pair">
+      <div class="light"><div class="chip" style="background:#BE185D"></div><div class="hex">#BE185D</div></div>
+      <div class="dark"><div class="chip" style="background:#F472B6"></div><div class="hex">#F472B6</div></div></div></div>
+    <div class="genre-cell"><div class="name">Speculative</div><div class="key">speculative</div><div class="pair">
+      <div class="light"><div class="chip" style="background:#4338CA"></div><div class="hex">#4338CA</div></div>
+      <div class="dark"><div class="chip" style="background:#818CF8"></div><div class="hex">#818CF8</div></div></div></div>
+    <div class="genre-cell"><div class="name">Western</div><div class="key">western</div><div class="pair">
+      <div class="light"><div class="chip" style="background:#9A3412"></div><div class="hex">#9A3412</div></div>
+      <div class="dark"><div class="chip" style="background:#F97316"></div><div class="hex">#F97316</div></div></div></div>
+  </div>
+</section>
+
+<!-- ==================== §2 ONBOARDING TOUR ==================== -->
+<section id="tour" class="doc">
+  <header class="sect-head">
+    <div class="sect-num">§ 02</div>
+    <h2 class="sect-title">Onboarding tour — 4 steps</h2>
+    <span class="sect-status">✓ locked · copy revised</span>
+  </header>
+  <p class="sect-lede">Step 4 ("Inspect the prediction.") dropped per review — the explainability panel is still reachable from the sidebar, and pulling it into the first-load tour added jargon without a clear payoff. Remaining four steps rewritten to drop the math vocabulary: <em>embedding space</em>, <em>persistent homology</em>, <em>calibrated classifier</em>, <em>filtration</em>, <em>N-dimensional space</em> are all gone. The math still lives in How It Works — the tour is for the surface.</p>
+
+  <div class="tour-strip">
+
+    <article class="tour-frame">
+      <div class="nstep">STEP 1 of 4</div>
+      <div class="anchor">data-tour-id="scatter-canvas"</div>
+      <div class="head">Each dot is a word.</div>
+      <div class="body">Words from 154 books, arranged so similar-meaning words sit close together. Drag to rotate, scroll to zoom, press <strong>R</strong> to reset. You're seeing a 3D version of something that lives in higher dimensions — close enough to explore.</div>
+      <div class="diff">dropped: "embedding space" · "3D projection" · "the real geometry"</div>
+      <div class="meta">48 words · welcome</div>
+    </article>
+
+    <article class="tour-frame">
+      <div class="nstep">STEP 2 of 4</div>
+      <div class="anchor">data-tour-id="genre-select"</div>
+      <div class="head">Light up a genre.</div>
+      <div class="body">Pick one — its signature words brighten, the common ones fade. Brightness shows how strongly a word belongs to that genre vs the others. Slide through individual books in that genre and watch the pattern shift, book by book.</div>
+      <div class="diff">dropped: "TF-IDF weight" · "distinctive vocabulary"</div>
+      <div class="meta">44 words · interaction</div>
+    </article>
+
+    <article class="tour-frame">
+      <div class="nstep">STEP 3 of 4</div>
+      <div class="anchor">data-tour-id="upload-zone"</div>
+      <div class="head">Drop a book.</div>
+      <div class="body">Drag in any <code>.txt</code> file. We compare its shape to each genre's shape and predict what it is — you'll get the three most likely genres with confidence scores, and the book itself shows up in the cloud with its own bright words highlighted.</div>
+      <div class="diff">dropped: "tokenize, embed" · "persistent homology" · "calibrated classifier"</div>
+      <div class="meta">50 words · core action</div>
+    </article>
+
+    <article class="tour-frame">
+      <div class="nstep">STEP 4 of 4</div>
+      <div class="anchor">data-tour-id="topology-tab"</div>
+      <div class="head">Two more views worth a look.</div>
+      <div class="body">Topology shows each genre as a shape, and tracks the holes that survive as you zoom out — a fingerprint the classifier actually uses. Compare puts two genres side-by-side. Both work from the full geometry, not the 3D view you've been rotating.</div>
+      <div class="diff">dropped: "H₁ persistence image" · "loops persist" · "filtration tightens" · "N-dimensional space"</div>
+      <div class="meta">48 words · close</div>
+    </article>
+  </div>
+
+  <div class="compare-strip">
+    <div class="col before">
+      <h4>BEFORE · Step 4 (was Step 5) — original draft</h4>
+      <em>"Topology shows the H₁ persistence image — what loops persist as the filtration tightens. Compare puts two genres side-by-side on a shared scale. Both run on the original N-dimensional space, not the 3D projection you've been rotating."</em>
+    </div>
+    <div class="col after">
+      <h4>AFTER · Step 4 — revised</h4>
+      <em>"Topology shows each genre as a shape, and tracks the holes that survive as you zoom out — a fingerprint the classifier actually uses. Compare puts two genres side-by-side. Both work from the full geometry, not the 3D view you've been rotating."</em>
+    </div>
+  </div>
+
+  <div class="stickynote" style="margin-top: 22px;">
+    <strong>Voice check</strong>
+    Step 7 voice held: confident, qualifies once, hands the verdict to the user. What changed is the vocabulary — "embedding," "filtration," "N-dimensional" all became something a non-mathematician can picture without losing meaning.
+  </div>
+
+  <h3 class="subhead">Updated <code>anchors.ts</code> <span class="tag">4-step tour · whyButton kept for future re-add</span></h3>
+<pre class="code"><span class="c">// src/tour/anchors.ts — Phase 10, 4-step tour variant</span>
+<span class="k">export const</span> <span class="v">TOUR_ANCHORS</span> = {
+  <span class="p">scatterCanvas</span>:        <span class="s">'scatter-canvas'</span>,         <span class="c">// Step 1</span>
+  <span class="p">genreSelect</span>:          <span class="s">'genre-select'</span>,          <span class="c">// Step 2</span>
+  <span class="p">uploadZone</span>:           <span class="s">'upload-zone'</span>,           <span class="c">// Step 3</span>
+  <span class="p">topologyTab</span>:          <span class="s">'topology-tab'</span>,          <span class="c">// Step 4</span>
+
+  <span class="c">// Anchors used by empty-state contextual hints + future re-add of Step 4-Why</span>
+  <span class="p">whyButton</span>:            <span class="s">'why-button'</span>,
+  <span class="p">classificationResult</span>: <span class="s">'classification-result'</span>,
+  <span class="p">explainPanel</span>:         <span class="s">'explain-panel'</span>,
+  <span class="p">compareTab</span>:           <span class="s">'compare-tab'</span>,
+  <span class="p">brightnessSlider</span>:     <span class="s">'brightness-slider'</span>,
+  <span class="p">bookSlider</span>:           <span class="s">'book-slider'</span>,
+  <span class="p">resetCamera</span>:          <span class="s">'reset-camera'</span>,
+  <span class="p">helpMenu</span>:             <span class="s">'help-menu'</span>,
+  <span class="p">themeToggle</span>:          <span class="s">'theme-toggle'</span>,
+} <span class="k">as const</span>;
+
+<span class="k">export const</span> <span class="v">TOUR_STEPS</span> = [
+  { <span class="p">anchor</span>: <span class="v">TOUR_ANCHORS</span>.<span class="p">scatterCanvas</span>,
+    <span class="p">title</span>: <span class="s">'Each dot is a word.'</span>,
+    <span class="p">body</span>:  <span class="s">"Words from 154 books, arranged so similar-meaning words sit close together. Drag to rotate, scroll to zoom, press R to reset. You're seeing a 3D version of something that lives in higher dimensions — close enough to explore."</span> },
+  { <span class="p">anchor</span>: <span class="v">TOUR_ANCHORS</span>.<span class="p">genreSelect</span>,
+    <span class="p">title</span>: <span class="s">'Light up a genre.'</span>,
+    <span class="p">body</span>:  <span class="s">"Pick one — its signature words brighten, the common ones fade. Brightness shows how strongly a word belongs to that genre vs the others. Slide through individual books in that genre and watch the pattern shift, book by book."</span> },
+  { <span class="p">anchor</span>: <span class="v">TOUR_ANCHORS</span>.<span class="p">uploadZone</span>,
+    <span class="p">title</span>: <span class="s">'Drop a book.'</span>,
+    <span class="p">body</span>:  <span class="s">"Drag in any .txt file. We compare its shape to each genre's shape and predict what it is — you'll get the three most likely genres with confidence scores, and the book itself shows up in the cloud with its own bright words highlighted."</span> },
+  { <span class="p">anchor</span>: <span class="v">TOUR_ANCHORS</span>.<span class="p">topologyTab</span>,
+    <span class="p">title</span>: <span class="s">'Two more views worth a look.'</span>,
+    <span class="p">body</span>:  <span class="s">"Topology shows each genre as a shape, and tracks the holes that survive as you zoom out — a fingerprint the classifier actually uses. Compare puts two genres side-by-side. Both work from the full geometry, not the 3D view you've been rotating."</span> },
+] <span class="k">as const</span>;
+
+<span class="c">// PITFALLS §14: missing-anchor fallback is 'skip', not 'error'.</span>
+<span class="k">export function</span> <span class="v">findAnchor</span>(id: <span class="v">TourAnchorId</span>): <span class="v">HTMLElement</span> | <span class="k">null</span> {
+  <span class="k">return</span> document.<span class="p">querySelector</span>(<span class="s">`[data-tour-id="</span><span class="p">${id}</span><span class="s">"]`</span>);
+}
+</pre>
+</section>
+
+<!-- ==================== §3 EMPTY STATES ==================== -->
+<section id="empty" class="doc">
+  <header class="sect-head">
+    <div class="sect-num">§ 03</div>
+    <h2 class="sect-title">Empty states — 4 surfaces</h2>
+    <span class="sect-status">✓ all approved</span>
+  </header>
+  <p class="sect-lede">All four empty states approved in review. Copy and ghost-scatter visual treatment as drawn in the design doc; below is the copy locked for handoff. Conceptual icon per surface stays the ghost-scatter pattern — never a generic "no data."</p>
+
+  <div class="card-row">
+    <div class="card">
+      <h4>A · Pre-upload UploadZone</h4>
+      <p><strong>Headline:</strong> Drop a book to classify</p>
+      <p><strong>Sub:</strong> .txt · ≤5MB · ≥500 words</p>
+      <p><strong>Helper:</strong> We chop it up, compare its shape to each genre, and predict — usually under 12s.</p>
+      <p><strong>Icon:</strong> ghost-marker showing where the upload will land in the scatter</p>
+    </div>
+    <div class="card">
+      <h4>B · Compare — no genres selected</h4>
+      <p><strong>Headline:</strong> Pick two genres to compare</p>
+      <p><strong>Sub:</strong> Shared color scale · same projection · synchronised camera</p>
+      <p><strong>Helper:</strong> Compare reveals where two genres' vocabularies overlap and where they diverge — useful for the merged keys (gothic_horror, speculative).</p>
+      <p><strong>Icon:</strong> two ghost-scatters, one per panel, each in its own genre color at 25% opacity</p>
+    </div>
+    <div class="card">
+      <h4>C · Classification failure</h4>
+      <p><strong>Headline pattern:</strong> "We couldn't [verb] this file" — never "Error occurred"</p>
+      <p><strong>410 Gone:</strong> "This result expired — upload the file again to recompute."</p>
+      <p><strong>503 (calibration missing):</strong> "Top genre still shown; probability bars are degraded."</p>
+      <p><strong>&lt;500 words:</strong> "Try a longer book — at least 500 words."</p>
+    </div>
+    <div class="card">
+      <h4>D · ClassificationExplain — pre-upload</h4>
+      <p><strong>Headline:</strong> Upload a book first.</p>
+      <p><strong>Sub:</strong> This panel will show the five nearest training books, how topology and vocabulary contributed, and the words that drove it — once there's a verdict to explain.</p>
+      <p><strong>Icon:</strong> three ghost rows mirroring the three real sub-panels</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== §4 HELP MENU + LIBRARY ==================== -->
+<section id="help" class="doc">
+  <header class="sect-head">
+    <div class="sect-num">§ 04</div>
+    <h2 class="sect-title">Help menu + tour library</h2>
+    <span class="sect-status">✓ locked</span>
+  </header>
+  <p class="sect-lede">Help menu lives in the header as a "?" icon to the right of "How It Works," left of the gear. Theme toggle (3-state segmented control: Light · System · Dark) lives inside the dropdown so we're not adding two new top-right controls. Tour is built hand-rolled, ~150 LoC, no external dep.</p>
+
+  <div class="card-row">
+    <div class="card">
+      <h4>Help menu · A — Header dropdown</h4>
+      <ul>
+        <li>Trigger: <code>?</code> icon in header, between "How It Works" and ⚙</li>
+        <li>Items: <em>Replay tour</em> · <em>How It Works</em> · <em>Keyboard shortcuts</em> · theme segmented control · <em>GitHub ↗</em></li>
+        <li>Anchor: <code>data-tour-id="help-menu"</code> (registered for future tour additions, not used in v1 tour)</li>
+        <li>State key: <code>preferencesStore.lastHelpOpen</code> — closes on outside click or Esc</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Tour · Hand-rolled overlay</h4>
+      <ul>
+        <li><code>TourProvider</code> — Zustand slice in <code>preferencesStore</code>: <code>tourActive</code>, <code>tourStep</code>, <code>tourCompleted</code></li>
+        <li><code>&lt;TourCard /&gt;</code> — fixed-position card, reads <code>TOUR_STEPS[step]</code>; no-ops if <code>findAnchor</code> returns null</li>
+        <li><code>&lt;TourSpotlight /&gt;</code> — soft dim + glow, not a hard mask cutout (avoids R3F z-index quirks)</li>
+        <li><code>useTourFirstLoad()</code> — flips <code>tourActive: true</code> on first render if <code>tourCompleted</code> false</li>
+        <li>Playwright smoke test in CI iterates <code>TOUR_STEPS</code>, asserts each <code>findAnchor()</code> is non-null</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== §5 NOT LIST ==================== -->
+<section id="not-list" class="doc">
+  <header class="sect-head">
+    <div class="sect-num">§ 05</div>
+    <h2 class="sect-title">Out of scope</h2>
+    <span class="sect-status warn">1 open · logo question</span>
+  </header>
+  <p class="sect-lede">Eleven items confirmed out of scope. One — the logo / wordmark — was left undecided in review; see the open question at the bottom.</p>
+
+  <div class="not-list">
+    <div class="item"><div class="mark">✕</div><div class="text"><strong>The shadcn token names.</strong> Names stay; light theme adds a <code>.light</code> scope.</div></div>
+    <div class="item"><div class="mark">✕</div><div class="text"><strong>The 7-step How-It-Works walkthrough.</strong> Math copy unchanged.</div></div>
+    <div class="item"><div class="mark">✕</div><div class="text"><strong>Three.js or the 3D scatter itself.</strong> Only background + point colors theme.</div></div>
+    <div class="item"><div class="mark">✕</div><div class="text"><strong>The 30-component sweep target list.</strong> Phase 9 nailed layout; Phase 10 lifts inline-hex.</div></div>
+    <div class="item"><div class="mark">✕</div><div class="text"><strong>UncertaintyBadge visual identity.</strong> Stays amber-on-amber across themes.</div></div>
+    <div class="item open"><div class="mark">?</div><div class="text"><strong>The logo / "Literary Genre Topology" wordmark.</strong> Brief said locked, review left this undecided. See open question §6.</div></div>
+    <div class="item"><div class="mark">✕</div><div class="text"><strong>Empty states beyond the four listed.</strong> POLISH-05 scopes exactly four.</div></div>
+    <div class="item"><div class="mark">✕</div><div class="text"><strong>Parameter-drawer tier UI.</strong> Themes the 4-tier grouping; doesn't restructure.</div></div>
+    <div class="item"><div class="mark">✕</div><div class="text"><strong>Disclaimer banner copy + position.</strong> Stays exactly as is.</div></div>
+    <div class="item"><div class="mark">✕</div><div class="text"><strong>The H₁-only homology tab structure.</strong> Phase 6 decision; not a polish gap.</div></div>
+    <div class="item"><div class="mark">✕</div><div class="text"><strong>Default theme.</strong> Dark stays default for first paint.</div></div>
+    <div class="item"><div class="mark">✕</div><div class="text"><strong>Store unification.</strong> preferencesStore + visualizationStore stay separate.</div></div>
+  </div>
+</section>
+
+<!-- ==================== §6 OPEN QUESTION ==================== -->
+<section id="open" class="doc">
+  <header class="sect-head">
+    <div class="sect-num">§ 06</div>
+    <h2 class="sect-title">Open question back to you</h2>
+    <span class="sect-status warn">1 item</span>
+  </header>
+
+  <div class="open-q">
+    <div class="q-label">Open · NOT-list item</div>
+    <div class="q-title">The logo / "Literary Genre Topology" wordmark.</div>
+    <div class="q-body">The original brief said brand identity is locked and out of scope. In review, this was the only NOT-list item left undecided. Three reads:
+      <ul style="margin-top:8px;">
+        <li><strong>Confirm out of scope</strong> — wordmark stays exactly as the live app renders it; no changes in Phase 10. <em>(Default if no answer.)</em></li>
+        <li><strong>Theme it lightly</strong> — wordmark color responds to theme via <code>--foreground</code> (no shape changes). One-line change.</li>
+        <li><strong>Pull into scope</strong> — design a small revised wordmark as part of Phase 10. Bigger ask; would need its own design cycle.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="footer-note">
+  <span>Phase 10 — Visual Polish · final spec</span>
+  <span>Locked 2026-05-28 · pending 1 open item</span>
+  <span>Hand off to: Phase 10 planner</span>
+</div>
+
+</body>
+</html>
