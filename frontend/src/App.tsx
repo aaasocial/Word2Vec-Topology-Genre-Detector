@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { ScatterCanvas } from '@/components/canvas/ScatterCanvas'
 import { Sidebar } from '@/components/sidebar/Sidebar'
 import { GenreLegend } from '@/components/sidebar/GenreLegend'
@@ -15,12 +15,30 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { useUploadStore } from '@/stores/uploadStore'
 import { useUIStore } from '@/stores/uiStore'
+import {
+  usePreferencesStore,
+  applyTheme,
+  resolveEffectiveTheme,
+  subscribeToSystemTheme,
+} from '@/stores/preferencesStore'
 import { buildBuffers, buildUploadedBuffers } from '@/lib/buffers'
 
 /** Height of top nav (48px) + disclaimer banner (28px) + borders (2px) */
 const TOP_OFFSET = 78
 
 export default function App() {
+  // --- Theme wiring (POLISH-01 / D-63) ---
+  // Apply theme on mount + whenever preferencesStore.theme changes.
+  // System mode subscribes to OS prefers-color-scheme so it tracks live.
+  const theme = usePreferencesStore((s) => s.theme)
+  useEffect(() => {
+    applyTheme(theme)
+    if (theme !== 'system') return
+    // Re-apply when OS preference flips while user is on System mode.
+    return subscribeToSystemTheme(() => applyTheme('system'))
+  }, [theme])
+  const effectiveTheme = resolveEffectiveTheme(theme)
+
   const projection = useVisualizationStore((s) => s.projection)
   const selectedGenre = useVisualizationStore((s) => s.selectedGenre)
   const selectedBookId = useVisualizationStore((s) => s.selectedBookId)
@@ -55,10 +73,9 @@ export default function App() {
 
   const corpusBuffers = useMemo(() => {
     if (!data?.points) return null
-    // Phase 10 D-62: buildBuffers reads from the resolved-theme palette.
-    // Until preferencesStore lands (Task 5), 'dark' is the first-paint default.
-    return buildBuffers(data.points, 'dark')
-  }, [data])
+    // Phase 10 D-62: buildBuffers picks the genre palette based on effective theme.
+    return buildBuffers(data.points, effectiveTheme)
+  }, [data, effectiveTheme])
 
   // Build tfidfWeights Float32Array aligned to corpus points, normalized to [0,1]
   const tfidfWeights = useMemo<Float32Array | null>(() => {
@@ -87,8 +104,8 @@ export default function App() {
   }, [compareTfidfData, data])
 
   const uploadedBuffers = useMemo(() => {
-    return buildUploadedBuffers(uploadedPoints)
-  }, [uploadedPoints])
+    return buildUploadedBuffers(uploadedPoints, effectiveTheme)
+  }, [uploadedPoints, effectiveTheme])
 
   // Merge corpus + uploaded points into single buffer
   const mergedBuffers = useMemo(() => {
