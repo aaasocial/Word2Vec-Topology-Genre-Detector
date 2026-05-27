@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Shipped
 status: executing
-last_updated: "2026-05-26T18:47:35.610Z"
-last_activity: 2026-05-26
+last_updated: "2026-05-27T09:10:43.501Z"
+last_activity: 2026-05-27
 progress:
   total_phases: 10
   completed_phases: 8
   total_plans: 37
-  completed_plans: 35
-  percent: 95
+  completed_plans: 36
+  percent: 97
 ---
 
 # STATE
@@ -18,13 +18,13 @@ progress:
 ## Current Position
 
 Phase: 09 (classification-depth) — EXECUTING
-Plan: 5 of 6 (plans 09-01, 09-02, 09-03 complete; next is 09-04)
+Plan: 6 of 6 (plans 09-01..09-05 complete; next is 09-06)
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
 - **Phase:** 09
-- **Plans complete:** 3/6
-- **Status:** Ready to execute
-- **Last activity:** 2026-05-26
+- **Plans complete:** 5/6
+- **Status:** Ready to execute 09-06 (walkthrough disclaimer + 09-VALIDATION + end-to-end gate)
+- **Last activity:** 2026-05-27
 
 ### Phase 8 Complete (2026-05-26)
 
@@ -110,15 +110,40 @@ Plan-research deviations auto-applied:
 - Rule 1 bug: `test_jobs_imports_pipeline_functions` asserted the old single-name import line; updated to match the new `predict_genre, predict_top_n` + `compute_uncertainty_metrics` imports. Added two new tests for the D-47 Redis write + SSE result Phase 9 additions.
 - Rule 1 bug: module-scoped TestClient fixture leaked MagicMock instances into lifespan-exit `await app.state.redis.close()` (TypeError). Fix: snapshot original redis at fixture entry, restore in try/finally.
 
+### Phase 9 plan 09-04 complete (2026-05-27)
+
+Plan 09-04 landed the frontend SSE field wiring + top-N + uncertainty badge (DEPTH-02 + DEPTH-07):
+
+- **Task 1** (`d16db8c`): `frontend/src/types/explain.ts` exports 7 TS interfaces mirroring backend Pydantic verbatim; `uploadStore.ClassificationResult` gains 4 optional Phase 9 fields (`top_n?`, `entropy?`, `top1_top2_gap?`, `badge_fires?`); `useClassify.ts` SSE `done` handler forwards the new fields into `setResult`.
+- **Task 2** (`9a7c2a1`): `TopNList.tsx` (top-3 horizontal probability bars + collapsible "+5 more" expander revealing all 8 genres; D-41/D-42) + `UncertaintyBadge.tsx` (conditional "Low confidence" badge with D-52 canonical tooltip; renders null when `badge_fires !== true`). 14 vitest tests covering sort order, default-3-visible / 8-after-expand, percent formatting, bar-fill width, color fallback, empty input, badge conditional render, D-52 tooltip phrasing.
+- **Task 3** (`ddbbe94`): `ClassificationResult.tsx` rewired to mount `<TopNList>` + `<UncertaintyBadge>` with backward-compat fallback (synthesizes single-row top-N when `result.top_n` is absent). Mount points scoped so 09-05 can land Why-button + ClassificationExplain between OOV line and View in Scatter button without conflict.
+- **Pre-existing test failures logged** to `.planning/phases/09-classification-depth/deferred-items.md`: `useClassify.test.ts` (5 failures, EventSource vs WebSocket mock mismatch from SSE migration) + `SlowTierParams.test.tsx` (1 failure, `setH2Enabled is not a function`). Confirmed pre-existing via `git stash` re-run; out of scope for this plan.
+
+### Phase 9 plan 09-05 complete (2026-05-27)
+
+Plan 09-05 landed the Why-this-genre explain frontend (DEPTH-03 + DEPTH-04 + DEPTH-05 + DEPTH-06):
+
+- **Task 1** (`5444102`): `frontend/src/lib/api.ts` extended with `ApiError extends Error` carrying `.status` and `.body` (backwards-compat: `instanceof Error` still matches; new `instanceof ApiError` callers access `.status`); `frontend/src/hooks/useExplain.ts` wraps `useMutation<ExplainResponse, ApiError>` calling POST `/classify/{job_id}/explain`. Routes 410 -> `opts.onExpired`, 503 -> `opts.onUncalibrated`; retry skips terminal 410/503 and any 4xx, otherwise up to 2 retries.
+- **Task 2** (`118233d`): three minimum-viable sub-components in `frontend/src/components/sidebar/`: `NearestBooksList.tsx` (5-row list with color dot + title + author/genre + 3-decimal Euclidean distance), `TrackContributionBars.tsx` (topology + vocabulary bars with direction glyph ↑ green / ↓ red / · muted), `DrivingWordsPills.tsx` (pills with D-46 canonical "proxies -- not literal classifier inputs" disclosure copy). 18 vitest tests (6 per component) covering render, content, order preservation, fallback, empty input.
+- **Task 3** (`f752e08`): `ClassificationExplain.tsx` orchestrates the three sub-components with a 5-branch state machine (expired -> uncalibrated -> isPending -> error -> success) + D-51 footnote linking to `results/v2_validation_report.md`; auto-fires useExplain on mount via useEffect keyed on jobId. `ClassificationResult.tsx` adds Why-button (`Why this genre?` / `Hide explanation`) between OOV line and View in Scatter button per 09-04's pre-planned mount point; conditional `{explainOpen && <ClassificationExplain />}` mounts below the View in Scatter button. 5 useExplain vitest tests (happy + 410 + 503 + no auto-fire + null jobId rejects).
+- **All 37 Phase 9 frontend tests pass** (14 from 09-04 + 23 from 09-05); tsc --noEmit clean.
+- **D-46 disclosure copy enforced as a contract:** the strings "proxies" and "not literal classifier inputs" both appear verbatim in `DrivingWordsPills.tsx` and are asserted via vitest. Phase 06 walkthrough's Step7ValidationLimitations component should mirror the D-51 footnote phrasing for cross-surface consistency.
+
+Plan-research deviations auto-applied:
+
+- Rule 1 bug: useExplain test `null jobId` originally polled `result.current.isError` via waitFor and flaked under fake timers. Switched to `await expect(mutateAsync()).rejects.toBeInstanceOf(ApiError)` which awaits the actual Promise rejection directly (canonical React Query test pattern for synchronous-throw mutationFn).
+- Rule 3 blocker: `.git/refs/heads/master` was empty at plan start (`git log` reported "branch appears to be broken"). Restored from `.git/logs/refs/heads/master` reflog (last good commit `0684445`). No code/test impact; all task commits land normally.
+
 ### Known limitations (deferred to v2.1 / future phase)
 
 - **CEXP-04 author-leakage BLOCKED** — v2 SVM generalizes poorly to unseen authors (15 of 34 multi-book authors score 0% when held out). Honest mitigation candidates for v2.1: max-N-per-author cap in corpus design, or per-author held-out fine-tuning routine.
 - **86 dropped corpus rows** — listed in `.planning/research/v2/v1_to_v2_migration.md` "08.1 Final Resolution". Re-sourcing them via authoritative author bibliographies is a candidate for Phase 8.2 if corpus growth back toward 240 books is desired.
 - **7 advisory code-review warnings** — see `08-REVIEW.md`. Can be addressed via `/gsd-code-review-fix 08` when convenient.
+- **Frontend test-hygiene gaps** (logged to `.planning/phases/09-classification-depth/deferred-items.md`): `useClassify.test.ts` 5 failures (EventSource/WebSocket mock mismatch); `SlowTierParams.test.tsx` 1 failure (`setH2Enabled` missing). Both pre-existing; recommend follow-up quick fix.
 
 ### Next step
 
-Phase 9 (Classification Depth) — plan 09-03 complete 2026-05-27. Backend explainability spine landed (DEPTH-03/04/05/07 complete; only DEPTH-02 + DEPTH-06 left, both frontend). Run `/gsd-execute-phase 9` to land plan 09-04 (frontend TopNList + UncertaintyBadge + ClassificationResult rewire; consumes the new SSE fields `top_n` / `entropy` / `top1_top2_gap` / `badge_fires` already emitted by `backend/worker/jobs.py`).
+Phase 9 (Classification Depth) — plans 09-01..09-05 complete 2026-05-27. Backend explainability spine + frontend explain panel both landed; only plan 09-06 remains (walkthrough Step7ValidationLimitations + 09-VALIDATION.md sign-off + end-to-end test gate covering classify -> Why -> sub-components render -> 410 expiry path). Run `/gsd-execute-phase 9` to land 09-06 and close Phase 9.
 
 ### Quick Tasks Completed
 
@@ -199,6 +224,7 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 | Phase 09 P02 | 25min | 2 tasks | 7 files |
 | Phase 09 P03 | 35 | 3 tasks | 10 files |
 | Phase 09 P04 | 7min | 3 tasks | 9 files |
+| Phase 09 P05 | ~5min | 3 tasks | 11 files |
 
 ## Open Blockers
 
