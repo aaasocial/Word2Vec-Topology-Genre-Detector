@@ -40,7 +40,7 @@
 - [ ] **Phase 7: Corpus Sourcing Research Spike** — Decide sources, per-genre counts, author-distribution constraints, and the validation protocol. Pure research, no code.
 - [x] **Phase 8: Corpus Expansion** — Retrained on the Phase-7-derived corpus (post Phase-8.1 drop strategy = 154 verified-clean books); evaluated against the v1-frozen 20-book hold-out (macro-F1 0.7367 vs v1 0.3235, p=0.0010); ships via `v2.0-data` Release with D-31 disclaimer for the per-author smoke-test failure (CEXP-04 BLOCKED — v2.1 follow-up). Closed 2026-05-26.
 - [x] **Phase 9: Classification Depth** — Top-N calibrated predictions and "why this genre" explainability built on the Phase-8 SVM. **Complete 2026-05-27** (6/6 plans; 5/5 ROADMAP success criteria + 7/7 DEPTH requirements verified; 7 UAT items pending live walkthrough).
-- [ ] **Phase 10: Visual Polish** — Dark mode, onboarding tour, empty-state polish — horizontal sweep across components touched by Phases 6–9.
+- [x] **Phase 10: Visual Polish** — Dark mode, onboarding tour, empty-state polish — horizontal sweep across components touched by Phases 6–9. (completed 2026-05-27)
 
 | # | Phase | Goal (outcome, not task) | Requirements | Success criteria |
 |---|---|---|---|---|
@@ -48,7 +48,7 @@
 | 7 | Corpus Sourcing Research Spike | A written, defensible plan exists for what books to add, where to source them, and how to measure that v2 is actually better than v1 | RES-01, RES-02, RES-03 | 4 |
 | 8 | Corpus Expansion | The bundled corpus is larger, balanced, and author-diverse; the retrained model beats the v1 baseline on a frozen test set | CEXP-01, CEXP-02, CEXP-03, CEXP-04, CEXP-05 | 5 |
 | 9 | Classification Depth | Classification results show ranked, calibrated alternatives and an honest "why this genre?" explanation that users can interrogate | DEPTH-01, DEPTH-02, DEPTH-03, DEPTH-04, DEPTH-05, DEPTH-06, DEPTH-07 | 5 |
-| 10 | Visual Polish | The app feels finished: theming respects user preference, first-time visitors are oriented, and every empty state has intentional copy | POLISH-01, POLISH-02, POLISH-03, POLISH-04, POLISH-05 | 4 |
+| 10 | Visual Polish | 1/1 | Complete   | 2026-05-27 |
 
 ### Phase Dependencies (hard gates)
 
@@ -234,7 +234,7 @@ Plans:
   4. Tour steps cover scatter exploration, genre selection + brightness, the upload + classification flow, and the topology tab — they explain the UI, not the underlying mathematics (mathematics remains in the v1 "How It Works" walkthrough).
   5. Empty states are polished for: pre-upload upload zone, comparison mode with no genres selected, classification failure, and the explanation panel before any upload exists — each with intentional copy, no generic placeholders.
 
-**Plans:** TBD
+**Plans:** 1/1 plans complete
 
 **UI hint:** yes
 

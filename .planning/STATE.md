@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Shipped
-status: completed
-last_updated: "2026-05-28T00:00:00.000Z"
+status: planning
+last_updated: "2026-05-27T23:10:04.232Z"
 last_activity: 2026-05-28
 progress:
-  total_phases: 10
-  completed_phases: 9
-  total_plans: 37
-  completed_plans: 37
+  total_phases: 11
+  completed_phases: 10
+  total_plans: 38
+  completed_plans: 38
   percent: 100
 ---
 
@@ -17,13 +17,35 @@ progress:
 
 ## Current Position
 
-Phase: 09 (classification-depth) — **COMPLETE 2026-05-27**
+Phase: 10 (visual-polish) — **PLAN 10-01 COMPLETE 2026-05-28**
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
-- **Phase:** 09 — Complete (6/6 plans)
-- **Status:** Phase 9 closed; 7 UAT items pending live walkthrough (see `.planning/phases/09-classification-depth/09-HUMAN-UAT.md`)
-- **Next phase:** 10 (Visual Polish) — `/gsd-discuss-phase 10` paused 2026-05-28 at gray-area selection; user is iterating visuals in Claude Design before locking CONTEXT.md. Brief: `.planning/phases/10-visual-polish/10-CLAUDE-DESIGN-BRIEF.md`
+- **Phase:** 10 — Plan 10-01 complete (1/1 plans); ready for /gsd-secure-phase, /gsd-code-review, /gsd-verify-work
+- **Status:** Phase 10 visual polish full sweep landed in 22 atomic commits (b760036 → 00d7cbb). Theme toggle, hand-rolled tour, four empty states, v2 dual-token genre palette, Playwright smoke test all green. 167 Vitest tests passing, 6 pre-existing Phase 9 deferred failures unchanged.
+- **Next phase:** None — Phase 10 is the final v2.0 phase. After verification/review/secure passes, v2.0 milestone ships.
 - **Last activity:** 2026-05-28
+
+### Phase 10 Complete (2026-05-28)
+
+Plan 10-01 (the only plan in Phase 10) landed the full Visual Polish sweep per the design handoff:
+
+- **Theming infrastructure:** :root.light Paper theme (#FBF9F2 cream / #FFFFFF cards) added alongside dark; 13 new tokens (--scene-bg, --sidebar-bg/border, --warn/--good families, --error wash) in both scopes
+- **preferencesStore (Zustand persist, key `lgt-prefs-v1`):** theme + tourCompleted; applyTheme toggles `<html>.light`; System mode subscribes to OS prefers-color-scheme live (D-63/D-65)
+- **v2 dual-token GENRE_COLORS:** Record<'light'|'dark', Record<Genre, string>> shape; 8 v2 keys (adventure/gothic_horror/historical/literary/mystery/romance/speculative/western); UPLOADED_BOOK_COLOR.light = #1D4ED8 deep blue (saffron melts into cream) (D-60/D-61)
+- **Imperative scene.background:** ScatterCanvas + VRViewer read --scene-bg via getComputedStyle round-trip, push to scene.background in useEffect([theme]) — no Canvas remount, no WebGL context loss, camera pose preserved (PITFALLS §13 / D-64)
+- **Component sweep:** ~30 Phase 9 inline-hex components lifted to hsl(var(--*)) tokens following D-82 canonical pattern; UncertaintyBadge keeps amber identity per D-84 exception
+- **Hand-rolled 4-step onboarding tour:** TourOverlay (~250 LoC) + TourProvider (~100 LoC); centralised TOUR_ANCHORS in src/tour/anchors.ts; first-load auto-open at 600ms grace; replayable from Help dropdown; Esc/←/→ keyboard wired; missing-anchor silent-skip after 600ms grace (PITFALLS §14)
+- **Header HelpDropdown:** `?` button + popover with Replay tour / How It Works / Keyboard shortcuts / 3-state theme segmented control / GitHub link; closes on outside-pointerdown or Esc
+- **Four empty states (POLISH-05) + Topology empty:**
+  - UploadZone: constraints copy `.txt · ≤5MB · ≥500 words` + ghost-scatter helper SVG
+  - Compare tab: two ghost panels with `+ Pick genre` shortcuts + gothic_horror/speculative hint
+  - Classification failure: FailureCard with 5 variants (encoding/too_short/wrong_format = red wash, expired_410/uncalibrated_503 = amber wash; 503 keeps top-1 prediction visible per D-79)
+  - Explain pre-upload: three ghost rows mirroring real sub-panels; "Upload a book first." headline; D-51 footnote intentionally omitted (D-80)
+  - Topology empty: 320×240 ghost heatmap with --muted→--secondary gradient at 50% opacity (D-81)
+- **Playwright smoke test (D-76):** 9 specs guarding tour anchor presence on fresh mount; passes in 9.1s; vitest excludes tests/e2e/** so the two runners don't collide
+- **Auto-fixed deviations:** 3 (border-shorthand jsdom workaround, vitest Playwright exclude, final inline-hex leftover in PersistenceDiagram loading skeleton) — all documented in 10-01-SUMMARY.md
+- **Verification:** tsc --noEmit clean; 167 Vitest tests passing (6 pre-existing Phase 9 deferred failures unchanged); 9/9 Playwright tour-anchor specs green; manual browser verification via HMR throughout
+- **POLISH-01..05 requirements all complete**
 
 ### Phase 9 Complete (2026-05-27)
 
@@ -161,8 +183,8 @@ Phase 9 (Classification Depth) — plans 09-01..09-05 complete 2026-05-27. Backe
 | 6 | v1 Bug-Fix Sweep | Complete (2026-05-23; commits 5a37a28, e57ea67) |
 | 7 | Corpus Sourcing Research Spike | Complete (2026-05-25; CORPUS_SOURCING.md + VALIDATION_PROTOCOL.md + corpus_candidates.yaml + v1_baseline_results.json delivered) |
 | 8 | Corpus Expansion | Complete (2026-05-26; v2.0-data Release published with D-31 disclaimer; v2 macro-F1 = 0.7367 vs v1 0.3235) |
-| 9 | Classification Depth | Context gathered (2026-05-27); ready to plan (D-37..D-45 user-authored: calibration empirical pick · top-3 + expander · lineage extension · local zero-ablation · 5 NN · both P2 items ship) |
-| 10 | Visual Polish | Pending (blocked on Phase 9) |
+| 9 | Classification Depth | Complete (2026-05-27; 6/6 plans; calibration + explain spine + Why panel; 91 tests green) |
+| 10 | Visual Polish | Complete (2026-05-28; plan 10-01 landed in 22 commits; theme toggle + tour + 4 empty states + Playwright smoke test; 167 vitest + 9 playwright green) |
 
 ## Accumulated Context
 
@@ -229,6 +251,7 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 | Phase 09 P04 | 7min | 3 tasks | 9 files |
 | Phase 09 P05 | ~5min | 3 tasks | 11 files |
 | Phase 09 P06 | 18min | 3 tasks | 4 files |
+| Phase 10 P10-01 | ~6h | 12 tasks | 40 files |
 
 ## Open Blockers
 
@@ -267,6 +290,7 @@ Documentation drift to clean up (folded into Wave 4 per D-34, no longer a separa
 ### Phase 9 history (closed 2026-05-27 — kept for context)
 
 Original Phase 9 reading order remains valid for any retrospective work:
+
 - `09-CONTEXT.md` (D-37..D-55) + `09-DISCUSSION-LOG.md` (alternatives)
 - `09-VERIFICATION.md` + `09-VALIDATION.md` + `09-HUMAN-UAT.md` (7 items pending live walkthrough)
 - `09-REVIEW.md` (0 critical / 5 warnings / 8 info — advisory)

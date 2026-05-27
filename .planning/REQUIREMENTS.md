@@ -63,11 +63,11 @@ See [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md) for ful
 
 ### Visual Polish (Phase 10)
 
-- [ ] **POLISH-01**: User can toggle between light / dark / system themes; choice persists across sessions via a new `preferencesStore` with Zustand `persist` middleware (separate from session-scoped `visualizationStore`).
-- [ ] **POLISH-02**: R3F scatter scene background, HoverTooltip, persistence diagrams, and all sidebar/topology/compare components honor the selected theme. Scene background updates imperatively via `scene.background` (no canvas remount — `PITFALLS.md §13`).
-- [ ] **POLISH-03**: First-load detection presents a 3–5 step onboarding tour anchored on stable `data-tour-id` selectors (centralised in `src/tour/anchors.ts`); skippable and replayable from a Help menu (`PITFALLS.md §14`).
-- [ ] **POLISH-04**: Tour steps cover scatter exploration, genre selection + brightness, upload + classification flow, and the topology tab — NOT the underlying mathematics (that remains in "How It Works").
-- [ ] **POLISH-05**: Empty states polished for the upload zone (pre-upload), comparison mode (no genres selected), classification failure, and the explanation panel (no upload yet).
+- [x] **POLISH-01**: User can toggle between light / dark / system themes; choice persists across sessions via a new `preferencesStore` with Zustand `persist` middleware (separate from session-scoped `visualizationStore`).
+- [x] **POLISH-02**: R3F scatter scene background, HoverTooltip, persistence diagrams, and all sidebar/topology/compare components honor the selected theme. Scene background updates imperatively via `scene.background` (no canvas remount — `PITFALLS.md §13`).
+- [x] **POLISH-03**: First-load detection presents a 3–5 step onboarding tour anchored on stable `data-tour-id` selectors (centralised in `src/tour/anchors.ts`); skippable and replayable from a Help menu (`PITFALLS.md §14`).
+- [x] **POLISH-04**: Tour steps cover scatter exploration, genre selection + brightness, upload + classification flow, and the topology tab — NOT the underlying mathematics (that remains in "How It Works").
+- [x] **POLISH-05**: Empty states polished for the upload zone (pre-upload), comparison mode (no genres selected), classification failure, and the explanation panel (no upload yet).
 
 ---
 
@@ -196,11 +196,11 @@ Captured during v1 planning; deferred from v2.0 scope. Re-evaluate at v3 boundar
 | DEPTH-05 | Phase 9 | Complete |
 | DEPTH-06 | Phase 9 | Complete |
 | DEPTH-07 | Phase 9 | Complete |
-| POLISH-01 | Phase 10 | Pending |
-| POLISH-02 | Phase 10 | Pending |
-| POLISH-03 | Phase 10 | Pending |
-| POLISH-04 | Phase 10 | Pending |
-| POLISH-05 | Phase 10 | Pending |
+| POLISH-01 | Phase 10 | Complete |
+| POLISH-02 | Phase 10 | Complete |
+| POLISH-03 | Phase 10 | Complete |
+| POLISH-04 | Phase 10 | Complete |
+| POLISH-05 | Phase 10 | Complete |
 
 **Coverage:**
 - v1.0 requirements: 63 total — all Validated (shipped 2026-04-13)
