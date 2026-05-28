@@ -1,22 +1,20 @@
-// Phase 10 D-73 — Tour provider + useTour() hook.
+// Phase 10 D-73 / Phase 11 D-89 — Tour provider + useTour() hook.
 //
 // State split:
 //   - `tourActive` + `tourStep` are transient (live in this provider's useState
 //     so reload doesn't pin the user mid-tour).
-//   - `tourCompleted` persists in preferencesStore so first-load detection
-//     fires once per browser localStorage.
+//   - `tourCompleted` persists in preferencesStore as the tour's own replay flag.
 //
-// First-load detection (D-73): on mount, if tourCompleted === false, set
-// tourActive = true after a 600ms delay (lets the layout settle before
-// measuring anchor rects).
+// Phase 11 D-89: the tour NO LONGER auto-starts on first load. The old
+// `tourCompleted`-driven mount effect was removed (reverses D-73). The tour now
+// starts ONLY via (a) the How-It-Works→tour chain in App's auto-intro, or
+// (b) the manual "Replay tour" Help-dropdown item — both call `start()`.
 
 import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useRef,
   useState,
   type ReactNode,
 } from 'react'
@@ -39,38 +37,18 @@ interface TourContextValue {
 
 const TourContext = createContext<TourContextValue | null>(null)
 
-/** First-load grace period before auto-opening the tour (D-73). */
-const FIRST_LOAD_DELAY_MS = 600
-
 interface TourProviderProps {
   children: ReactNode
 }
 
 export function TourProvider({ children }: TourProviderProps) {
-  const tourCompleted = usePreferencesStore((s) => s.tourCompleted)
   const setTourCompleted = usePreferencesStore((s) => s.setTourCompleted)
 
   const [active, setActive] = useState(false)
   const [step, setStep] = useState(0)
-  // Track whether the first-load auto-open has already fired in this session.
-  // Without this, a `setTourCompleted(false)` from "Replay tour" would re-trigger
-  // the 600ms timer (harmless, but the explicit start() path already handles it).
-  const firstLoadFiredRef = useRef(false)
 
-  // First-load detection (D-73). Fires once on mount when tourCompleted === false.
-  useEffect(() => {
-    if (firstLoadFiredRef.current) return
-    if (tourCompleted) {
-      firstLoadFiredRef.current = true
-      return
-    }
-    firstLoadFiredRef.current = true
-    const t = setTimeout(() => {
-      setActive(true)
-      setStep(0)
-    }, FIRST_LOAD_DELAY_MS)
-    return () => clearTimeout(t)
-  }, [tourCompleted])
+  // Phase 11 D-89: no first-load auto-start effect. The tour fires only via
+  // start() — from App's How-It-Works→tour chain or the manual Replay item.
 
   const start = useCallback(() => {
     setTourCompleted(false)
