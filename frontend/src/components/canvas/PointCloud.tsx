@@ -19,7 +19,8 @@ void main() {
   vColor = aColor;
   vIndex = aIndex;
   vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-  gl_PointSize = aSize * uSizeMultiplier * (25.0 / -mvPosition.z);
+  // 12.5 (was 25.0): slider value 1.0 now renders at the old 0.5 visual size.
+  gl_PointSize = aSize * uSizeMultiplier * (12.5 / -mvPosition.z);
   gl_Position = projectionMatrix * mvPosition;
 }
 `
@@ -29,6 +30,7 @@ varying float vOpacity;
 varying vec3 vColor;
 varying float vIndex;
 uniform float uHighlightIndex;
+uniform float uBrightness;
 
 void main() {
   float dist = length(gl_PointCoord - vec2(0.5));
@@ -43,7 +45,10 @@ void main() {
     }
   }
 
-  float alpha = smoothstep(0.5, 0.35, dist) * vOpacity;
+  // uBrightness is the global Brightness slider — scales every point's alpha so
+  // the control works in all views (genre-selected AND All Genres). Clamped so
+  // values >1 push faint points toward full opacity rather than overflowing.
+  float alpha = clamp(smoothstep(0.5, 0.35, dist) * vOpacity * uBrightness, 0.0, 1.0);
   gl_FragColor = vec4(vColor, alpha);
 }
 `
@@ -81,7 +86,8 @@ export function PointCloud({
   const selectedGenre = useVisualizationStore(s => s.selectedGenre)
   const globalOpacity = useVisualizationStore(s => s.opacity)
   const tfidfThreshold = useVisualizationStore(s => s.tfidfThreshold)
-  const brightnessSensitivity = useVisualizationStore(s => s.brightnessSensitivity)
+  // Brightness is applied live in the fragment shader via the uBrightness uniform
+  // (see useFrame), so it needs no subscription/rebuild here.
   const compareMode = useVisualizationStore(s => s.compareMode)
   const compareGenre = useVisualizationStore(s => s.compareGenre)
   // Guard: positions.length is n*3, so n = positions.length/3 — cap at 100k points (300k floats)
@@ -131,6 +137,7 @@ export function PointCloud({
       uniforms: {
         uSizeMultiplier: { value: 1.0 },
         uHighlightIndex: { value: -1.0 },
+        uBrightness: { value: 1.0 },
       },
     })
 
@@ -157,9 +164,10 @@ export function PointCloud({
 
   // When any visual state changes, update opacity/size GPU buffers
   useEffect(() => {
-    const store = useVisualizationStore.getState()
-    const { pointSizeMultiplier } = store
-
+    // Size is driven entirely by the uSizeMultiplier uniform (see useFrame) and
+    // brightness by uBrightness — neither is baked into the buffers anymore, so
+    // dragging those sliders never triggers a buffer rewrite or genre-change
+    // double-application.
     const sizesAttr = geometry.attributes.aSize.array as Float32Array
     const opacitiesAttr = geometry.attributes.aOpacity.array as Float32Array
 
@@ -172,16 +180,16 @@ export function PointCloud({
       // Compare mode: dual brightness for both genres
       if (compareMode && compareGenre && selectedGenre) {
         if (pointGenre === selectedGenre) {
-          // Genre A: full color, TF-IDF brightness
-          const brightness = tfidfWeights ? Math.pow(w, brightnessSensitivity) : 0.8
+          // Genre A: full color, TF-IDF weight drives base opacity
+          const brightness = tfidfWeights ? w : 0.8
           opacitiesAttr[i] = Math.max(0.2, brightness) * globalOpacity
-          sizesAttr[i] = (1.0 + (tfidfWeights ? w : 0.5) * 2.0) * pointSizeMultiplier
+          sizesAttr[i] = 1.0 + (tfidfWeights ? w : 0.5) * 2.0
         } else if (inCompareGenre) {
-          // Genre B: full color, TF-IDF brightness from compare weights
+          // Genre B: full color, TF-IDF weight from compare weights
           const cw = Math.min(1.0, compareTfidfWeights?.[i] ?? 0)
-          const brightness = compareTfidfWeights ? Math.pow(cw, brightnessSensitivity) : 0.8
+          const brightness = compareTfidfWeights ? cw : 0.8
           opacitiesAttr[i] = Math.max(0.2, brightness) * globalOpacity
-          sizesAttr[i] = (1.0 + (compareTfidfWeights ? cw : 0.5) * 2.0) * pointSizeMultiplier
+          sizesAttr[i] = 1.0 + (compareTfidfWeights ? cw : 0.5) * 2.0
         } else {
           // All other points: dim to 4%
           opacitiesAttr[i] = 0.04 * globalOpacity
@@ -203,33 +211,34 @@ export function PointCloud({
           opacitiesAttr[i] = 0.04 * globalOpacity
           sizesAttr[i] = 0.8
         } else if (tfidfWeights) {
-          // Genre point with TF-IDF: apply brightness curve
-          const brightness = Math.pow(w, brightnessSensitivity)
-          opacitiesAttr[i] = Math.max(0.2, brightness) * globalOpacity
-          sizesAttr[i] = (1.0 + w * 2.0) * pointSizeMultiplier
+          // Genre point with TF-IDF: weight drives base opacity (Brightness slider
+          // scales it globally in-shader)
+          opacitiesAttr[i] = Math.max(0.2, w) * globalOpacity
+          sizesAttr[i] = 1.0 + w * 2.0
         } else {
           // Genre point, no TF-IDF data yet
           opacitiesAttr[i] = opacities[i] * globalOpacity
-          sizesAttr[i] = sizes[i] * pointSizeMultiplier
+          sizesAttr[i] = sizes[i]
         }
       } else {
         // No genre selected — base opacities/sizes scaled by global opacity
         opacitiesAttr[i] = opacities[i] * globalOpacity
-        sizesAttr[i] = sizes[i] * pointSizeMultiplier
+        sizesAttr[i] = sizes[i]
       }
     }
 
     geometry.attributes.aOpacity.needsUpdate = true
     geometry.attributes.aSize.needsUpdate = true
-  }, [tfidfWeights, compareTfidfWeights, geometry, n, points, opacities, sizes, selectedGenre, globalOpacity, tfidfThreshold, brightnessSensitivity, compareMode, compareGenre])
+  }, [tfidfWeights, compareTfidfWeights, geometry, n, points, opacities, sizes, selectedGenre, globalOpacity, tfidfThreshold, compareMode, compareGenre])
 
   useFrame((_, delta) => {
     if (!geometry || !material) return
 
     const store = useVisualizationStore.getState()
 
-    // Update size multiplier uniform (instant, no subscription)
+    // Update size + brightness uniforms (instant, no subscription/rebuild)
     material.uniforms.uSizeMultiplier.value = store.pointSizeMultiplier
+    material.uniforms.uBrightness.value = store.brightnessSensitivity
 
     // Update selection ring uniform
     material.uniforms.uHighlightIndex.value = selectedIndex ?? -1

@@ -43,7 +43,7 @@ export function buildBuffers(
     const w = p.tfidf_weight / maxWeight  // normalized [0, 1]
     normalizedWeights[i] = w
     sizes[i] = 1.0 + w * 2.0             // range [1, 3] — small base for 57k points
-    opacities[i] = Math.max(0.15, w)
+    opacities[i] = Math.max(0.3, w)      // floor raised from 0.15 so the faint majority reads more solid
   }
   return { positions, colors, sizes, opacities, normalizedWeights }
 }
