@@ -49,7 +49,8 @@
 | 7 | Corpus Sourcing Research Spike | A written, defensible plan exists for what books to add, where to source them, and how to measure that v2 is actually better than v1 | RES-01, RES-02, RES-03 | 4 |
 | 8 | Corpus Expansion | The bundled corpus is larger, balanced, and author-diverse; the retrained model beats the v1 baseline on a frozen test set | CEXP-01, CEXP-02, CEXP-03, CEXP-04, CEXP-05 | 5 |
 | 9 | Classification Depth | Classification results show ranked, calibrated alternatives and an honest "why this genre?" explanation that users can interrogate | DEPTH-01, DEPTH-02, DEPTH-03, DEPTH-04, DEPTH-05, DEPTH-06, DEPTH-07 | 5 |
-| 10 | Visual Polish | 1/1 | Complete   | 2026-05-27 |
+| 10 | Visual Polish | The app feels finished: theming respects user preference, first-time visitors are oriented, and every empty state has intentional copy | POLISH-01, POLISH-02, POLISH-03, POLISH-04, POLISH-05 | 5 |
+| 11 | Onboarding & Theme Defaults | New users land in light mode and are walked through How-It-Works then the tour on first visit (or first in ≥30 days) | ONBOARD-01, ONBOARD-02, ONBOARD-03 | 3 |
 
 ### Phase Dependencies (hard gates)
 
