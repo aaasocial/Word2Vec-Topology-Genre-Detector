@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Shipped
-status: planning
-last_updated: "2026-05-27T23:10:04.232Z"
+status: Phase 11 (Onboarding & Theme Defaults) plan 11-01 complete in 6 atomic commits (0f0d111 → 8397206). Light is now the default theme with a no-FOUC inline pre-hydration script; first-visit How-It-Works → 4-step-tour onboarding chain gated by a 30-day introSeenAt timestamp; tour no longer auto-starts independently. tsc clean, 167 Vitest in-scope green (6 Phase 9 deferred unchanged), 9/9 Playwright tour-anchor smoke green.
+last_updated: "2026-05-28T12:01:31.785Z"
 last_activity: 2026-05-28
 progress:
-  total_phases: 11
-  completed_phases: 10
-  total_plans: 38
-  completed_plans: 38
+  total_phases: 12
+  completed_phases: 12
+  total_plans: 40
+  completed_plans: 40
   percent: 100
 ---
 
@@ -17,13 +17,24 @@ progress:
 
 ## Current Position
 
-Phase: 10 (visual-polish) — **PLAN 10-01 COMPLETE 2026-05-28**
+Phase: 11 (onboarding-theme-defaults) — **PLAN 11-01 COMPLETE 2026-05-28**
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
-- **Phase:** 10 — Plan 10-01 complete (1/1 plans); ready for /gsd-secure-phase, /gsd-code-review, /gsd-verify-work
-- **Status:** Phase 10 visual polish full sweep landed in 22 atomic commits (b760036 → 00d7cbb). Theme toggle, hand-rolled tour, four empty states, v2 dual-token genre palette, Playwright smoke test all green. 167 Vitest tests passing, 6 pre-existing Phase 9 deferred failures unchanged.
-- **Next phase:** None — Phase 10 is the final v2.0 phase. After verification/review/secure passes, v2.0 milestone ships.
+- **Phase:** 11 — Plan 11-01 complete (1/1 plans); ready for /gsd-secure-phase, /gsd-code-review, /gsd-verify-work
+- **Status:** Phase 11 (Onboarding & Theme Defaults) plan 11-01 complete in 6 atomic commits (0f0d111 → 8397206). Light is now the default theme with a no-FOUC inline pre-hydration script; first-visit How-It-Works → 4-step-tour onboarding chain gated by a 30-day introSeenAt timestamp; tour no longer auto-starts independently. tsc clean, 167 Vitest in-scope green (6 Phase 9 deferred unchanged), 9/9 Playwright tour-anchor smoke green.
+- **Next phase:** None mapped — Phase 11 reversed two Phase 10 decisions (D-58 dark default → D-86 light default; D-73 tour auto-start → D-89 chain/replay only) per the user's 2026-05-28 request. After verification/review/secure passes, v2.0 milestone ships.
 - **Last activity:** 2026-05-28
+
+### Phase 11 Complete (2026-05-28)
+
+Plan 11-01 (the only plan in Phase 11) landed the onboarding + theme-defaults reversal:
+
+- **D-86 light default:** `preferencesStore` default theme `'system' → 'light'`; inline pre-hydration `<head>` script in `index.html` adds `.light` to `<html>` before the bundle (reads `lgt-prefs-v1` persist payload `.state.theme`, new users → light, parse errors → light per Rule 1); removed `class="dark"` from `<html>`. Persisted dark/system users unaffected.
+- **D-87 introSeenAt:** added `introSeenAt: number | null` + `setIntroSeenAt`; exported `INTRO_TTL_MS` (30 days) + `isIntroStale()` helper (null/undefined or ≥30 days). Rides the existing `lgt-prefs-v1` persist key.
+- **D-89 no tour auto-start:** removed the `tourCompleted`-driven first-load `useEffect` from `TourProvider` (reverses D-73); `start/next/prev/skip/done` + `useTour()` intact; manual Replay still works.
+- **D-88/D-90 onboarding chain:** `OnboardingOrchestrator` (null-rendering child inside `TourProvider` so it can call `useTour().start()`) runs once-on-mount: stale `introSeenAt` → open How It Works + set `introSequenceActive` + `setIntroSeenAt(Date.now())` (consume-on-fire); observes `pipelineExplanationOpen` true→false and chains to the tour after 300ms; manual opens leave `introSequenceActive` false so they do NOT chain.
+- **Verification:** tsc --noEmit clean; 167 Vitest in-scope green (6 Phase 9 deferred failures unchanged); 9/9 Playwright tour-anchor smoke green after seeding `introSeenAt` in the fixture (1 Rule 3 deviation).
+- **ONBOARD-01..03 requirements all complete.**
 
 ### Phase 10 Complete (2026-05-28)
 
@@ -185,6 +196,7 @@ Phase 9 (Classification Depth) — plans 09-01..09-05 complete 2026-05-27. Backe
 | 8 | Corpus Expansion | Complete (2026-05-26; v2.0-data Release published with D-31 disclaimer; v2 macro-F1 = 0.7367 vs v1 0.3235) |
 | 9 | Classification Depth | Complete (2026-05-27; 6/6 plans; calibration + explain spine + Why panel; 91 tests green) |
 | 10 | Visual Polish | Complete (2026-05-28; plan 10-01 landed in 22 commits; theme toggle + tour + 4 empty states + Playwright smoke test; 167 vitest + 9 playwright green) |
+| 11 | Onboarding & Theme Defaults | Complete (2026-05-28; plan 11-01 in 6 commits; light default + no-FOUC + first-visit How-It-Works→tour chain; D-58/D-73 reversed; 167 vitest in-scope + 9 playwright green) |
 
 ## Accumulated Context
 
@@ -252,6 +264,7 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 | Phase 09 P05 | ~5min | 3 tasks | 11 files |
 | Phase 09 P06 | 18min | 3 tasks | 4 files |
 | Phase 10 P10-01 | ~6h | 12 tasks | 40 files |
+| Phase 11 P11-01 | 6min | 6 tasks | 6 files |
 
 ## Open Blockers
 
@@ -269,9 +282,11 @@ Documentation drift to clean up (folded into Wave 4 per D-34, no longer a separa
 
 ## Session Continuity
 
-**Stopped at (2026-05-28):** Phase 10 (Visual Polish) — `/gsd-discuss-phase 10` was paused at the "select gray areas" step. User is iterating Phase 10 visuals in a separate Claude Design conversation before locking palette/tour-copy/library decisions. Self-contained brief written to `.planning/phases/10-visual-polish/10-CLAUDE-DESIGN-BRIEF.md` (commit b6b4447).
+**Stopped at (2026-05-28):** Phase 11 (Onboarding & Theme Defaults) — plan 11-01 complete via `/gsd-execute-phase 11`. Six atomic commits (`0f0d111` → `8397206`) + docs commit landed the light-default + no-FOUC first paint, the `introSeenAt`-gated first-visit How-It-Works→tour chain, and the removal of the independent tour auto-start. This intentionally reverses Phase 10's D-58 (dark default) and D-73 (tour auto-start) per the user's 2026-05-28 request.
 
-**Next command (when Claude Design output is ready):** `/gsd-discuss-phase 10` — the workflow will detect the brief and fold the design output into 10-CONTEXT.md. Then `/gsd-plan-phase 10`.
+**Next command:** in-browser verification per Task 6 of 11-01-PLAN.md (clear localStorage → light + intro chain; dark stays dark; manual open no-chain; Replay; simulate 30-day-old introSeenAt). Then `/gsd-verify-work` / `/gsd-code-review` / `/gsd-secure-phase` before the v2.0 milestone ships.
+
+**Prior (Phase 10 archived):** `/gsd-discuss-phase 10` paused at "select gray areas"; design brief at `.planning/phases/10-visual-polish/10-CLAUDE-DESIGN-BRIEF.md` (commit b6b4447) was folded into 10-CONTEXT.md and Phase 10 shipped.
 
 **Reading order for the next Phase 10 session:**
 

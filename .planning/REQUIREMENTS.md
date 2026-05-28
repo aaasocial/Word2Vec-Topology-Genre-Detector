@@ -71,9 +71,9 @@ See [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md) for ful
 
 ### Onboarding & Theme Defaults (Phase 11)
 
-- [ ] **ONBOARD-01**: Default theme is **light** for new users (first paint light, no dark flash); reverses the Phase 3 / D-58 dark-default lock. Persisted users keep their stored choice; `system` and `dark` remain selectable.
-- [ ] **ONBOARD-02**: On first visit — or the first visit in ≥30 days — the "How It Works" walkthrough auto-opens, then on its close the 4-step onboarding tour starts automatically. Re-trigger is gated by a persisted `introSeenAt` timestamp (localStorage via `preferencesStore` persist). The tour no longer auto-starts independently (reverses D-73); it fires via this chain or the manual "Replay tour" Help item.
-- [ ] **ONBOARD-03**: Dismissing "How It Works" early (X / Esc / outside-click) still chains into the tour during the auto-intro; manually opening "How It Works" from the nav does NOT chain into the tour.
+- [x] **ONBOARD-01**: Default theme is **light** for new users (first paint light, no dark flash); reverses the Phase 3 / D-58 dark-default lock. Persisted users keep their stored choice; `system` and `dark` remain selectable.
+- [x] **ONBOARD-02**: On first visit — or the first visit in ≥30 days — the "How It Works" walkthrough auto-opens, then on its close the 4-step onboarding tour starts automatically. Re-trigger is gated by a persisted `introSeenAt` timestamp (localStorage via `preferencesStore` persist). The tour no longer auto-starts independently (reverses D-73); it fires via this chain or the manual "Replay tour" Help item.
+- [x] **ONBOARD-03**: Dismissing "How It Works" early (X / Esc / outside-click) still chains into the tour during the auto-intro; manually opening "How It Works" from the nav does NOT chain into the tour.
 
 ---
 
@@ -207,13 +207,16 @@ Captured during v1 planning; deferred from v2.0 scope. Re-evaluate at v3 boundar
 | POLISH-03 | Phase 10 | Complete |
 | POLISH-04 | Phase 10 | Complete |
 | POLISH-05 | Phase 10 | Complete |
+| ONBOARD-01 | Phase 11 | Complete |
+| ONBOARD-02 | Phase 11 | Complete |
+| ONBOARD-03 | Phase 11 | Complete |
 
 **Coverage:**
 - v1.0 requirements: 63 total — all Validated (shipped 2026-04-13)
-- v2.0 requirements: 25 total (20 must-ship + 5 P2) — all mapped to Phases 6–10, all Pending
+- v2.0 requirements: 28 total (23 must-ship + 5 P2) — all mapped to Phases 6–11, all Complete/Validated
 - Unmapped: 0
 
 ---
 *v1 requirements defined: 2026-04-11 — validated 2026-04-13*
 *v2 requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 — v2.0 traceability appended; all 25 v2 requirements mapped*
+*Last updated: 2026-05-28 — Phase 11 (ONBOARD-01..03) appended and marked Complete*
