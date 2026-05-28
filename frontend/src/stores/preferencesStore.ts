@@ -24,7 +24,15 @@ export const usePreferencesStore = create<PreferencesState>()(
       // Defaults: 'system' theme follows OS preference; tour shown on first visit.
       theme: 'system',
       tourCompleted: false,
-      setTheme: (theme) => set({ theme }),
+      setTheme: (theme) => {
+        // Toggle <html>.light SYNCHRONOUSLY before React re-renders. React runs
+        // child effects before parent effects, so canvas components that read
+        // --scene-bg via getComputedStyle in a useEffect([theme]) would otherwise
+        // see the stale class (App's applyTheme effect runs after theirs). Applying
+        // here guarantees the DOM class is correct the moment any effect reads CSS.
+        applyTheme(theme)
+        set({ theme })
+      },
       setTourCompleted: (done) => set({ tourCompleted: done }),
     }),
     { name: PREFS_STORAGE_KEY },
