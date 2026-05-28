@@ -11,12 +11,31 @@ export type EffectiveTheme = 'light' | 'dark'
 interface PreferencesState {
   theme: Theme
   tourCompleted: boolean
+  /**
+   * Phase 11 D-87 — epoch ms of the last auto-intro fire (How-It-Works→tour
+   * chain). `null` = never seen → intro fires on first visit. Old persisted
+   * payloads lack this field; Zustand reads missing as `undefined`, which
+   * `isIntroStale` treats as null (intro fires once for them too).
+   */
+  introSeenAt: number | null
   setTheme: (theme: Theme) => void
   setTourCompleted: (done: boolean) => void
+  setIntroSeenAt: (ts: number | null) => void
 }
 
 /** Persistence key — bump suffix if shape changes in a future phase. */
 export const PREFS_STORAGE_KEY = 'lgt-prefs-v1'
+
+/** Phase 11 D-87 — auto-intro re-trigger window: 30 days in ms (2,592,000,000). */
+export const INTRO_TTL_MS = 30 * 24 * 60 * 60 * 1000
+
+/**
+ * True when the first-visit intro should fire: never seen (`null`/`undefined`)
+ * OR the last fire is at least INTRO_TTL_MS (30 days) old.
+ */
+export function isIntroStale(introSeenAt: number | null): boolean {
+  return introSeenAt == null || Date.now() - introSeenAt >= INTRO_TTL_MS
+}
 
 export const usePreferencesStore = create<PreferencesState>()(
   persist(
@@ -26,6 +45,8 @@ export const usePreferencesStore = create<PreferencesState>()(
       // choice; 'system' and 'dark' remain selectable from the Help dropdown.
       theme: 'light',
       tourCompleted: false,
+      // Phase 11 D-87: null until the auto-intro fires; consumed-on-fire in App.
+      introSeenAt: null,
       setTheme: (theme) => {
         // Toggle <html>.light SYNCHRONOUSLY before React re-renders. React runs
         // child effects before parent effects, so canvas components that read
@@ -36,6 +57,7 @@ export const usePreferencesStore = create<PreferencesState>()(
         set({ theme })
       },
       setTourCompleted: (done) => set({ tourCompleted: done }),
+      setIntroSeenAt: (ts) => set({ introSeenAt: ts }),
     }),
     { name: PREFS_STORAGE_KEY },
   ),
