@@ -21,12 +21,73 @@ import {
   applyTheme,
   resolveEffectiveTheme,
   subscribeToSystemTheme,
+  isIntroStale,
 } from '@/stores/preferencesStore'
-import { TourProvider } from '@/tour/TourProvider'
+import { TourProvider, useTour } from '@/tour/TourProvider'
 import { buildBuffers, buildUploadedBuffers } from '@/lib/buffers'
 
 /** Height of top nav (48px) + disclaimer banner (28px) + borders (2px) */
 const TOP_OFFSET = 78
+
+/**
+ * Delay between How It Works closing and the tour starting (Phase 11 D-88).
+ * Lets the modal unmount so the tour can measure its anchor rects.
+ */
+const INTRO_CHAIN_DELAY_MS = 300
+
+/**
+ * Phase 11 D-88/D-90 — first-visit onboarding orchestration. Renders INSIDE
+ * <TourProvider> so it can call useTour().start(). Runs the once-on-mount
+ * auto-intro (How It Works → tour chain) and observes the How-It-Works close.
+ *
+ * Distinguishes the auto-intro from manual opens via `introSequenceActiveRef`:
+ * only set true when THIS component auto-opens How It Works. Manual nav/Help
+ * opens leave it false, so closing them does NOT chain into the tour (D-90).
+ */
+function OnboardingOrchestrator() {
+  const tour = useTour()
+  const introSeenAt = usePreferencesStore((s) => s.introSeenAt)
+  const setIntroSeenAt = usePreferencesStore((s) => s.setIntroSeenAt)
+  const pipelineExplanationOpen = useVisualizationStore((s) => s.pipelineExplanationOpen)
+  const setPipelineExplanationOpen = useVisualizationStore((s) => s.setPipelineExplanationOpen)
+
+  // True only while the auto-intro's How It Works is open. Closing it then
+  // chains into the tour; manual opens never set this, so they don't chain.
+  const introSequenceActiveRef = useRef(false)
+  // Latch so the mount effect runs exactly once (not on every render).
+  const mountFiredRef = useRef(false)
+  // Track previous open state to detect the true->false (close) transition.
+  const prevOpenRef = useRef(pipelineExplanationOpen)
+
+  // Once-on-mount auto-intro (D-88). Read introSeenAt at fire time so we don't
+  // re-run when the store updates. `eslint-disable` deps: intentional run-once.
+  useEffect(() => {
+    if (mountFiredRef.current) return
+    mountFiredRef.current = true
+    if (!isIntroStale(introSeenAt)) return
+    // 1) auto-open How It Works  2) mark this as the auto-intro sequence
+    // 3) consume-on-fire so a mid-sequence reload doesn't reopen it (D-88).
+    introSequenceActiveRef.current = true
+    setPipelineExplanationOpen(true)
+    setIntroSeenAt(Date.now())
+    prevOpenRef.current = true
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Observe How It Works closing during the auto-intro -> chain into the tour.
+  useEffect(() => {
+    const was = prevOpenRef.current
+    prevOpenRef.current = pipelineExplanationOpen
+    // Only a true->false transition while the auto-intro is active chains.
+    if (was && !pipelineExplanationOpen && introSequenceActiveRef.current) {
+      introSequenceActiveRef.current = false
+      const t = setTimeout(() => tour.start(), INTRO_CHAIN_DELAY_MS)
+      return () => clearTimeout(t)
+    }
+  }, [pipelineExplanationOpen, tour])
+
+  return null
+}
 
 export default function App() {
   // --- Theme wiring (POLISH-01 / D-63) ---
@@ -142,6 +203,10 @@ export default function App() {
 
   return (
     <TourProvider>
+      {/* Phase 11 — first-visit How-It-Works→tour onboarding chain (D-88/D-90).
+          Inside TourProvider so it can call useTour().start(). */}
+      <OnboardingOrchestrator />
+
       {/* Unsupported screen overlay — pure CSS, no React state */}
       <style>{`
         @media (max-width: 767px) {
