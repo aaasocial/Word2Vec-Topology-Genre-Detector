@@ -27,6 +27,12 @@ export function PipelineExplanation() {
   const setOpen = useVisualizationStore((s) => s.setPipelineExplanationOpen)
   const setStep = useVisualizationStore((s) => s.setPipelineExplanationStep)
 
+  // Phase 11 D-88/D-90 — single close funnel. EVERY dismissal path (X button,
+  // Esc, Next-on-last-step) MUST route through here so the close drives
+  // `pipelineExplanationOpen` true->false in visualizationStore. App observes
+  // that store transition to chain into the tour during the auto-intro. Do NOT
+  // add an internal-only "closed" state or a close path that skips setOpen(false)
+  // — it would make the dismissal invisible to App and break the onboarding chain.
   const handleClose = useCallback(() => {
     setOpen(false)
     setStep(0)
