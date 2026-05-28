@@ -41,6 +41,7 @@
 - [x] **Phase 8: Corpus Expansion** — Retrained on the Phase-7-derived corpus (post Phase-8.1 drop strategy = 154 verified-clean books); evaluated against the v1-frozen 20-book hold-out (macro-F1 0.7367 vs v1 0.3235, p=0.0010); ships via `v2.0-data` Release with D-31 disclaimer for the per-author smoke-test failure (CEXP-04 BLOCKED — v2.1 follow-up). Closed 2026-05-26.
 - [x] **Phase 9: Classification Depth** — Top-N calibrated predictions and "why this genre" explainability built on the Phase-8 SVM. **Complete 2026-05-27** (6/6 plans; 5/5 ROADMAP success criteria + 7/7 DEPTH requirements verified; 7 UAT items pending live walkthrough).
 - [x] **Phase 10: Visual Polish** — Dark mode, onboarding tour, empty-state polish — horizontal sweep across components touched by Phases 6–9. (completed 2026-05-27)
+- [ ] **Phase 11: Onboarding & Theme Defaults** — Flip default theme to light; auto-run the "How It Works" walkthrough on first visit (or first in ≥30 days), then chain into the 4-step tour. Persisted via localStorage timestamp. (added 2026-05-28)
 
 | # | Phase | Goal (outcome, not task) | Requirements | Success criteria |
 |---|---|---|---|---|
@@ -260,7 +261,8 @@ Plans:
 | 7. Corpus Sourcing Research Spike | 0/5 | Planned | — |
 | 8. Corpus Expansion | 4/4 | Shipped (v2.0) | 2026-05-26 |
 | 9. Classification Depth | 6/6 | Complete (7 UAT pending live walkthrough; calibrated SVM Brier 0.0481; /explain p50 = 15ms) | 2026-05-27 |
-| 10. Visual Polish | 0/? | Not started (blocked on 6–9) | — |
+| 10. Visual Polish | 1/1 | Complete (theming, tour, empty states, scatter tweaks) | 2026-05-27 |
+| 11. Onboarding & Theme Defaults | 0/1 | Planned (light default + first-visit How-It-Works→tour chain) | — |
 
 ---
 

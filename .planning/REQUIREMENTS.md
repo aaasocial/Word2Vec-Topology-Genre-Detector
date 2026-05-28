@@ -69,6 +69,12 @@ See [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md) for ful
 - [x] **POLISH-04**: Tour steps cover scatter exploration, genre selection + brightness, upload + classification flow, and the topology tab — NOT the underlying mathematics (that remains in "How It Works").
 - [x] **POLISH-05**: Empty states polished for the upload zone (pre-upload), comparison mode (no genres selected), classification failure, and the explanation panel (no upload yet).
 
+### Onboarding & Theme Defaults (Phase 11)
+
+- [ ] **ONBOARD-01**: Default theme is **light** for new users (first paint light, no dark flash); reverses the Phase 3 / D-58 dark-default lock. Persisted users keep their stored choice; `system` and `dark` remain selectable.
+- [ ] **ONBOARD-02**: On first visit — or the first visit in ≥30 days — the "How It Works" walkthrough auto-opens, then on its close the 4-step onboarding tour starts automatically. Re-trigger is gated by a persisted `introSeenAt` timestamp (localStorage via `preferencesStore` persist). The tour no longer auto-starts independently (reverses D-73); it fires via this chain or the manual "Replay tour" Help item.
+- [ ] **ONBOARD-03**: Dismissing "How It Works" early (X / Esc / outside-click) still chains into the tour during the auto-intro; manually opening "How It Works" from the nav does NOT chain into the tour.
+
 ---
 
 ## Future Work (Parking Lot)
