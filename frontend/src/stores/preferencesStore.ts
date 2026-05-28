@@ -21,8 +21,10 @@ export const PREFS_STORAGE_KEY = 'lgt-prefs-v1'
 export const usePreferencesStore = create<PreferencesState>()(
   persist(
     (set) => ({
-      // Defaults: 'system' theme follows OS preference; tour shown on first visit.
-      theme: 'system',
+      // Defaults (Phase 11 D-86): 'light' is the default for new users — reverses
+      // the Phase 3 / D-58 dark-default lock. Persisted users keep their stored
+      // choice; 'system' and 'dark' remain selectable from the Help dropdown.
+      theme: 'light',
       tourCompleted: false,
       setTheme: (theme) => {
         // Toggle <html>.light SYNCHRONOUSLY before React re-renders. React runs
@@ -53,7 +55,8 @@ export function resolveEffectiveTheme(theme: Theme): EffectiveTheme {
 
 /**
  * Apply the resolved theme to <html>. Toggles the `.light` class on/off.
- * Dark is the default first paint (Phase 3 lock) — <html> ships without `.light`.
+ * Phase 11 D-86: light is the default first paint — the inline pre-hydration
+ * script in index.html adds `.light` for new users before the bundle loads.
  */
 export function applyTheme(theme: Theme): void {
   if (typeof document === 'undefined') return
