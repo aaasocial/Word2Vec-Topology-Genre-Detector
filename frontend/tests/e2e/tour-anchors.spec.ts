@@ -15,12 +15,18 @@ import { TOUR_STEPS, TOUR_ANCHORS } from '../../src/tour/anchors'
 
 test.describe('tour anchors', () => {
   test.beforeEach(async ({ page }) => {
-    // Give first-load tour the 600ms grace, then dismiss so the dim layer
-    // doesn't interfere with locator visibility checks for other anchors.
+    // Pre-seed preferencesStore so neither onboarding path fires on mount and
+    // the How-It-Works dialog / tour dim layer don't intercept the locator
+    // clicks for the other anchors. Phase 11 D-88/D-89: the tour no longer
+    // auto-starts off tourCompleted; the auto-intro fires when introSeenAt is
+    // stale (null/undefined or >= 30 days). Seed a fresh introSeenAt so
+    // isIntroStale() is false and the How It Works modal stays closed.
     await page.addInitScript(() => {
-      // Pre-seed preferencesStore so the tour is marked complete on mount.
       try {
-        const PREFS = { state: { theme: 'system', tourCompleted: true }, version: 0 }
+        const PREFS = {
+          state: { theme: 'system', tourCompleted: true, introSeenAt: Date.now() },
+          version: 0,
+        }
         localStorage.setItem('lgt-prefs-v1', JSON.stringify(PREFS))
       } catch {
         // ignore in browsers without localStorage
