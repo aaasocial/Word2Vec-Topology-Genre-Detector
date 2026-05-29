@@ -36,11 +36,13 @@ void main() {
   float dist = length(gl_PointCoord - vec2(0.5));
   if (dist > 0.5) discard;
 
-  // Selection ring: draw white annulus around highlighted point
+  // Selection ring: draw an ink-toned annulus around the highlighted point.
+  // Phase 12 D-U1 — the plate sits on warm paper, so the ring reads as dark ink
+  // (#26211B) rather than the old dark-theme white halo.
   if (uHighlightIndex >= 0.0 && vIndex == uHighlightIndex) {
     float ringDist = abs(dist - 0.42);
     if (ringDist < 0.06) {
-      gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+      gl_FragColor = vec4(0.149, 0.129, 0.106, 1.0);
       return;
     }
   }
@@ -207,8 +209,10 @@ export function PointCloud({
 
       if (selectedGenre !== null) {
         if (!inSelectedGenre) {
-          // Dim non-genre points strongly
-          opacitiesAttr[i] = 0.04 * globalOpacity
+          // Reading-room region filter (Phase 12 §7 / L-12): non-selected region
+          // dims to ~0.15 (was 0.04) so the un-highlighted corpus stays a legible
+          // ghost behind the active region rather than near-invisible.
+          opacitiesAttr[i] = 0.15 * globalOpacity
           sizesAttr[i] = 0.8
         } else if (tfidfWeights) {
           // Genre point with TF-IDF: weight drives base opacity (Brightness slider

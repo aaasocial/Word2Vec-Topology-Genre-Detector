@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { Canvas } from '@react-three/fiber'
 import { CameraController } from './CameraController'
 import { PointCloud } from './PointCloud'
-import { usePreferencesStore } from '@/stores/preferencesStore'
+import { useReadingRoomStore } from '@/stores/readingRoomStore'
 import { TOUR_ANCHORS } from '@/tour/anchors'
 import type { ScatterPoint } from '@/types/scatter'
 
@@ -23,52 +23,38 @@ interface ScatterCanvasProps {
 }
 
 /**
- * Read the resolved CSS hsl value from --scene-bg via a temporary DOM element.
- * Three.js needs an rgb() string; CSS variables hold "H S% L%" raw, so we
- * round-trip through the browser's color resolver. Cheap (~1ms) and idempotent.
+ * Read the resolved reading-room paper color from the `--paper` CSS custom
+ * property (Phase 12 D-U1 — the scene background is the page's paper, not the
+ * Phase 10 near-black `--scene-bg`). The reading-room tokens hold a literal hex
+ * (`#F2EDE0` etc.), so a single getComputedStyle read is enough; we still mint a
+ * THREE.Color from it. Cheap (~1ms) and idempotent. Falls back to cream paper.
  */
 function readSceneBgFromCss(): THREE.Color {
-  if (typeof document === 'undefined') return new THREE.Color('#0A0A0F')
-  const hsl = getComputedStyle(document.documentElement).getPropertyValue('--scene-bg').trim()
-  if (!hsl) return new THREE.Color('#0A0A0F')
-  const el = document.createElement('div')
-  el.style.color = `hsl(${hsl})`
-  document.body.appendChild(el)
-  const rgb = getComputedStyle(el).color
-  document.body.removeChild(el)
-  return new THREE.Color(rgb)
+  const CREAM_PAPER = '#F2EDE0'
+  if (typeof document === 'undefined') return new THREE.Color(CREAM_PAPER)
+  const paper = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim()
+  if (!paper) return new THREE.Color(CREAM_PAPER)
+  try {
+    return new THREE.Color(paper)
+  } catch {
+    return new THREE.Color(CREAM_PAPER)
+  }
 }
 
 export function ScatterCanvas(props: ScatterCanvasProps) {
   // PITFALLS §13: hold the THREE.Scene ref so we can update background
-  // imperatively. NEVER pass theme into <Canvas> or key it on theme — that
+  // imperatively. NEVER pass the palette into <Canvas> or key it on it — that
   // would remount the WebGL context and lose camera pose.
   const sceneRef = useRef<THREE.Scene | null>(null)
-  const theme = usePreferencesStore((s) => s.theme)
+  // Re-paint the scene background whenever the active reading-room paper changes
+  // (the Tweaks panel writes `--paper` onto <html> via applyReadingRoomTheme).
+  const paper = useReadingRoomStore((s) => s.tweaks.paper)
 
-  // Whenever the resolved theme flips, push --scene-bg into scene.background.
-  // Listen for OS pref changes too so System mode keeps the scene in sync.
   useEffect(() => {
-    function apply() {
-      const scene = sceneRef.current
-      if (!scene) return
-      scene.background = readSceneBgFromCss()
-    }
-    apply()
-    if (typeof window === 'undefined' || !window.matchMedia) return
-    const mql = window.matchMedia('(prefers-color-scheme: light)')
-    // For System mode the CSS variable changes only after applyTheme() flips
-    // the .light class; the effect already re-runs when `theme` changes, but
-    // the matchMedia subscription guarantees OS-pref flips also re-paint the
-    // scene even if the React effect didn't fire.
-    const handler = () => apply()
-    if (mql.addEventListener) mql.addEventListener('change', handler)
-    else mql.addListener(handler)
-    return () => {
-      if (mql.removeEventListener) mql.removeEventListener('change', handler)
-      else mql.removeListener(handler)
-    }
-  }, [theme])
+    const scene = sceneRef.current
+    if (!scene) return
+    scene.background = readSceneBgFromCss()
+  }, [paper])
 
   return (
     <div
