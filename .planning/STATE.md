@@ -2,28 +2,40 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Shipped
-status: Phase 11 (Onboarding & Theme Defaults) plan 11-01 complete in 6 atomic commits (0f0d111 → 8397206). Light is now the default theme with a no-FOUC inline pre-hydration script; first-visit How-It-Works → 4-step-tour onboarding chain gated by a 30-day introSeenAt timestamp; tour no longer auto-starts independently. tsc clean, 167 Vitest in-scope green (6 Phase 9 deferred unchanged), 9/9 Playwright tour-anchor smoke green.
-last_updated: "2026-05-28T12:01:31.785Z"
-last_activity: 2026-05-28
+status: Phase 12 (Reading Room redesign) plan 12-01 complete — foundation tokens/shell/router/Landing+About landed in 5 atomic commits (d81d7d5 → e72fc06). RR-01 complete.
+last_updated: "2026-05-29T04:49:48.802Z"
+last_activity: 2026-05-29
 progress:
-  total_phases: 12
-  completed_phases: 12
-  total_plans: 40
+  total_phases: 13
+  completed_phases: 11
+  total_plans: 46
   completed_plans: 40
-  percent: 100
+  percent: 87
 ---
 
 # STATE
 
 ## Current Position
 
-Phase: 11 (onboarding-theme-defaults) — **PLAN 11-01 COMPLETE 2026-05-28**
+Phase: 12 (reading-room-redesign) — **PLAN 12-01 COMPLETE 2026-05-29** (1/7 plans)
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
-- **Phase:** 11 — Plan 11-01 complete (1/1 plans); ready for /gsd-secure-phase, /gsd-code-review, /gsd-verify-work
-- **Status:** Phase 11 (Onboarding & Theme Defaults) plan 11-01 complete in 6 atomic commits (0f0d111 → 8397206). Light is now the default theme with a no-FOUC inline pre-hydration script; first-visit How-It-Works → 4-step-tour onboarding chain gated by a 30-day introSeenAt timestamp; tour no longer auto-starts independently. tsc clean, 167 Vitest in-scope green (6 Phase 9 deferred unchanged), 9/9 Playwright tour-anchor smoke green.
-- **Next phase:** None mapped — Phase 11 reversed two Phase 10 decisions (D-58 dark default → D-86 light default; D-73 tour auto-start → D-89 chain/replay only) per the user's 2026-05-28 request. After verification/review/secure passes, v2.0 milestone ships.
-- **Last activity:** 2026-05-28
+- **Phase:** 12 — Plan 12-01 complete (1/7 plans); foundation laid. Next: 12-02 (Collection).
+- **Status:** Phase 12 (The Reading Room — full front-end redesign) plan 12-01 complete in 5 atomic commits (d81d7d5 → e72fc06). The editorial reading-room system (Spectral + JetBrains Mono, paper/accent/density Tweaks, square rules + hard offset shadows) now replaces the Phase 10 indigo theme + the Phase 11 tabbed shell/onboarding chain wholesale (D-U2). Landed: reading-room tokens in index.css (no indigo remains), theme/readingRoom.ts (4 palettes + 4 accents + applyReadingRoomTheme), L-05 genre hexes in constants/genres.ts (API preserved so consumers compile), readingRoomStore (route + guide + persisted tweaks), Masthead/Footer/FootnoteHost/TweaksPanel, and the App.tsx masthead router with live Landing + About (copy verbatim, matching screenshots). tsc clean; vite build clean (87 modules — dead indigo components tree-shaken); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-01 complete.
+- **Next phase:** Phase 12 continues — 12-02 Collection (reskinned R3F plate + catalog rail + marginalia), then 12-03..12-07 per 12-CONTEXT.md plan map. Run `/gsd-execute-phase 12` to land 12-02.
+- **Last activity:** 2026-05-29
+
+### Phase 12 plan 12-01 complete (2026-05-29)
+
+Plan 12-01 laid the reading-room foundation every later Phase-12 screen builds on (RR-01):
+
+- **Tokens (D-U2):** `index.css` indigo `:root`/`:root.light` HSL block replaced by reading-room paper/paper2/card/ink/muted surfaces + accent + rule/shadow tokens + a `.rr-*` type scale; cream/oxblood defaults baked in so first paint is correct. `index.html` loads Spectral + JetBrains Mono and drops the Phase 11 light-default FOUC script + Inter.
+- **Theme of record:** `theme/readingRoom.ts` — 4 paper palettes, 4 accents, `RR_GENRE_HEX` (the fixed 8 L-05 hexes), and `applyReadingRoomTheme(palette, accent)` writing the surface/accent CSS vars (+ alpha-derived ink shadow tints) onto `<html>`.
+- **Genre palette (L-05):** `constants/genres.ts` now carries the reading-room hexes, theme-independent. Kept the `Record<Theme,...>` API + `genreColor`/`GENRE_LIST`/`UPLOADED_BOOK_COLOR[theme]`/`HISTORICAL_DIM_COLOR` so all ~14 consumers compile unchanged (both subrecords identical). `gothic_horror` → tokens.md `gothic` (#6E4A8E); uploaded-book marker is now the oxblood accent.
+- **Shell store:** new `readingRoomStore` (route over 8 screens, guideOpen + persisted guideSeen, persisted `tweaks{paper,accent,density}`, tour cursor). `setTweak` reapplies the theme live; `onRehydrateStorage` + `initReadingRoomTheme()` (in main.tsx) apply persisted palette before/at first paint. Data-side stores (visualization/upload) untouched per CONTEXT discretion.
+- **Shell + screens:** Masthead (L-04 active = accent underline + ink + roman, others italic + muted; 2px ink rule; sticky), Footer (running labels), FootnoteHost (6 verbatim notes + centered modal, backdrop/Esc close, block shadow), native TweaksPanel (Warmth/Mark/Layout swatches + bottom-right toggle). App.tsx masthead router replaces the tabbed shell + Phase 11 onboarding orchestrator; Landing (§6.1) + About (§6.8) ship with verbatim copy; collection/card/topology/study/upload/verdict render a navigable PlaceholderScreen owned by later plans.
+- **Deviations:** none — executed exactly as written; no Rule 1/2/3 auto-fixes needed; no tests retired (no test imports the replaced App or asserts old genre hexes).
+- **Known stubs (intentional, owned by later plans):** PlaceholderScreens (12-02..12-05), Landing static-SVG plate (live R3F in 12-02), Guide button opens nothing yet (12-06).
 
 ### Phase 11 Complete (2026-05-28)
 
@@ -265,6 +277,7 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 | Phase 09 P06 | 18min | 3 tasks | 4 files |
 | Phase 10 P10-01 | ~6h | 12 tasks | 40 files |
 | Phase 11 P11-01 | 6min | 6 tasks | 6 files |
+| Phase 12 P12-01 | 40min | 6 tasks | 14 files |
 
 ## Open Blockers
 
@@ -282,9 +295,11 @@ Documentation drift to clean up (folded into Wave 4 per D-34, no longer a separa
 
 ## Session Continuity
 
-**Stopped at (2026-05-28):** Phase 11 (Onboarding & Theme Defaults) — plan 11-01 complete via `/gsd-execute-phase 11`. Six atomic commits (`0f0d111` → `8397206`) + docs commit landed the light-default + no-FOUC first paint, the `introSeenAt`-gated first-visit How-It-Works→tour chain, and the removal of the independent tour auto-start. This intentionally reverses Phase 10's D-58 (dark default) and D-73 (tour auto-start) per the user's 2026-05-28 request.
+**Stopped at (2026-05-29):** Completed 12-01-PLAN.md — Phase 12 (The Reading Room) foundation via `/gsd-execute-phase 12`. Five atomic feat commits (`d81d7d5` → `e72fc06`) + this docs commit landed the editorial reading-room token system (replacing the Phase 10 indigo theme + Phase 11 tabbed shell wholesale, D-U2): Spectral + JetBrains Mono, paper/accent/density Tweaks, `theme/readingRoom.ts`, L-05 genre hexes, `readingRoomStore`, Masthead/Footer/FootnoteHost/TweaksPanel, and the App.tsx masthead router with live Landing + About. tsc clean; vite build clean (87 modules); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-01 complete.
 
-**Next command:** in-browser verification per Task 6 of 11-01-PLAN.md (clear localStorage → light + intro chain; dark stays dark; manual open no-chain; Replay; simulate 30-day-old introSeenAt). Then `/gsd-verify-work` / `/gsd-code-review` / `/gsd-secure-phase` before the v2.0 milestone ships.
+**Next command:** `/gsd-execute-phase 12` to land 12-02 (The Collection — reskinned R3F plate + catalog rail + marginalia + region filter, on useScatterData/useCorpusBooks). Optional in-browser verification first: clear localStorage → boot into Landing (cream/oxblood); navigate the masthead; toggle Tweaks (paper/accent/density change live + persist across reload); open a footnote; confirm Landing matches 01-landing.png + About matches 08-about.png.
+
+**Prior (Phase 11 archived):** plan 11-01 complete 2026-05-28 (`0f0d111` → `8397206`): light default + no-FOUC + How-It-Works→tour chain. Phase 12 D-U2 supersedes this front end (the Phase 10/11 indigo UI is now replaced; their milestone requirements remain historically met).
 
 **Prior (Phase 10 archived):** `/gsd-discuss-phase 10` paused at "select gray areas"; design brief at `.planning/phases/10-visual-polish/10-CLAUDE-DESIGN-BRIEF.md` (commit b6b4447) was folded into 10-CONTEXT.md and Phase 10 shipped.
 
