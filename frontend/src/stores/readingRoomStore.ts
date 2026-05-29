@@ -64,6 +64,13 @@ interface ReadingRoomState {
   tweaksOpen: boolean
   tourActive: boolean
   tourStep: number
+  /**
+   * The two regions compared on the Comparative Study folio (§6.5 / RR-04). Genre
+   * slugs from constants/genres.ts (`Genre`); session-scoped, not persisted. The
+   * defaults open the prototype's first studied pair (Mystery & Romance).
+   */
+  studyA: string
+  studyB: string
 
   goTo: (route: RRRoute) => void
   openGuide: () => void
@@ -75,6 +82,8 @@ interface ReadingRoomState {
   startTour: () => void
   setTourStep: (step: number) => void
   endTour: () => void
+  /** Set one side of the Comparative Study pair ('A' = left, 'B' = right). */
+  setStudy: (side: 'A' | 'B', genre: string) => void
 }
 
 export const useReadingRoomStore = create<ReadingRoomState>()(
@@ -87,6 +96,8 @@ export const useReadingRoomStore = create<ReadingRoomState>()(
       tweaksOpen: false,
       tourActive: false,
       tourStep: 0,
+      studyA: 'mystery',
+      studyB: 'romance',
 
       goTo: (route) => set({ route }),
       openGuide: () => set({ guideOpen: true }),
@@ -104,6 +115,8 @@ export const useReadingRoomStore = create<ReadingRoomState>()(
       startTour: () => set({ guideOpen: false, tourActive: true, tourStep: 0 }),
       setTourStep: (step) => set({ tourStep: step }),
       endTour: () => set({ tourActive: false }),
+      setStudy: (side, genre) =>
+        set(side === 'A' ? { studyA: genre } : { studyB: genre }),
     }),
     {
       name: RR_TWEAKS_STORAGE_KEY,
