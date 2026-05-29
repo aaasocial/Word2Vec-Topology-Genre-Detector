@@ -10,8 +10,9 @@ export function useGenreTfidf(genre: string | null) {
     queryKey: ['tfidf', 'genre', genre],
     queryFn: () => {
       if (!genre) throw new Error('no genre')
-      // Runtime guard against path injection (T-3-02)
-      if (!GENRE_LIST.includes(genre)) throw new Error(`Invalid genre: ${genre}`)
+      // Runtime guard against path injection (T-3-02). GENRE_LIST is Genre[]; the
+      // arg is a plain string, so widen for the membership check.
+      if (!(GENRE_LIST as readonly string[]).includes(genre)) throw new Error(`Invalid genre: ${genre}`)
       return apiFetch<TfidfMap>(`/viz/tfidf/${genre}`)
     },
     enabled: genre !== null,
