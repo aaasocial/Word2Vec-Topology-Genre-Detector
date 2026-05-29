@@ -140,7 +140,14 @@ export function TourOverlay({ step, onPrev, onNext, onEnd }: TourOverlayProps) {
   const cx = rect ? rect.left + rect.width / 2 : vw / 2
   const cy = rect ? rect.top + rect.height / 2 : vh * 0.7
   const M = 28
-  const cardPos: React.CSSProperties = { position: 'fixed', width: 340, zIndex: 1003 }
+  // Clamp the card to the viewport on narrow screens (L-14 / §10 — the tour card
+  // clamps to the viewport with the same opposite-quadrant logic).
+  const cardPos: React.CSSProperties = {
+    position: 'fixed',
+    width: 340,
+    maxWidth: `calc(100vw - ${M * 2}px)`,
+    zIndex: 1003,
+  }
   if (cx > vw / 2) cardPos.left = M
   else cardPos.right = M
   if (cy > vh / 2) cardPos.top = M

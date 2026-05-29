@@ -243,14 +243,7 @@ export function VerdictEssay() {
         </div>
       </div>
 
-      <div
-        style={{
-          flex: 1,
-          display: 'grid',
-          gridTemplateColumns: '1.5fr 1fr',
-          minHeight: 0,
-        }}
-      >
+      <div className="rr-verdict">
         {/* ── Left: the essay ──────────────────────────────────── */}
         <article
           className="rr-scroll"

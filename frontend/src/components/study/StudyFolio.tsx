@@ -246,20 +246,14 @@ export function StudyFolio() {
         </div>
       </div>
 
-      {/* Three-column folio. */}
-      <div
-        style={{
-          flex: 1,
-          display: 'grid',
-          gridTemplateColumns: '1fr 260px 1fr',
-          gap: 0,
-          minHeight: 0,
-        }}
-      >
+      {/* Three-column folio. Drops the center binding at ≤1100px and stacks to one
+          column in source order at ≤768px (README §10). */}
+      <div className="rr-folio">
         <RegionFolio genre={studyA} corpus={positioned} count={countA} onlyWords={tbl.onlyA} side="left" />
 
         {/* Center: shared binding. */}
         <section
+          className="rr-folio-center"
           style={{
             padding: '0 18px',
             display: 'flex',

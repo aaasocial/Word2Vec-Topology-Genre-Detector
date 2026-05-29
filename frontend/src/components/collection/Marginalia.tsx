@@ -39,7 +39,7 @@ export function Marginalia({ corpus }: MarginaliaProps) {
 
   return (
     <aside
-      className="rr-scroll"
+      className="rr-scroll rr-marginalia"
       style={{
         padding: '28px 22px 22px',
         borderLeft: '1px solid var(--ink-33)',

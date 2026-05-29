@@ -160,15 +160,7 @@ export function Topology() {
       </div>
 
       {hasRegion ? (
-        <div
-          style={{
-            flex: 1,
-            display: 'grid',
-            gridTemplateColumns: studyMode ? '1fr' : '1.5fr 300px',
-            gap: 18,
-            minHeight: 0,
-          }}
-        >
+        <div className={`rr-topo${studyMode ? ' rr-dense' : ''}`}>
           {/* ── i · Vietoris–Rips filtration — the hero ──────────── */}
           <section style={{ display: 'flex', flexDirection: 'column', gap: 8, minHeight: 0 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
@@ -267,8 +259,10 @@ export function Topology() {
           </section>
 
           {/* ── ii + iii · linked side panels ───────────────────── */}
+          {/* Dropped under `study` density (React tree) and hidden by CSS at
+              ≤1100px (`.rr-side`); the VR hero owns the full width below that. */}
           {!studyMode && (
-            <section style={{ display: 'flex', flexDirection: 'column', gap: 16, minHeight: 0 }}>
+            <section className="rr-side" style={{ display: 'flex', flexDirection: 'column', gap: 16, minHeight: 0 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 <SectionLabel>
                   ii · Persistence diagram{' '}

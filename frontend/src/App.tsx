@@ -81,14 +81,12 @@ export default function App() {
   return (
     <FootnoteHost>
       <div
+        className="rr-shell"
         style={{
           display: 'flex',
           flexDirection: 'column',
-          width: '100vw',
-          height: '100vh',
           background: 'var(--paper)',
           color: 'var(--ink)',
-          overflow: 'hidden',
         }}
       >
         <Masthead />

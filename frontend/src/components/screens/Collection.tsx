@@ -93,14 +93,7 @@ export function Collection() {
   ) : null
 
   return (
-    <div
-      style={{
-        flex: 1,
-        display: 'grid',
-        gridTemplateColumns: studyMode ? '260px 1fr' : '260px 1fr 300px',
-        minHeight: 0,
-      }}
-    >
+    <div className={`rr-carrel${studyMode ? ' rr-dense' : ''}`}>
       <CatalogRail corpus={corpus} />
 
       <PlateFrame
@@ -136,7 +129,10 @@ export function Collection() {
         />
       </PlateFrame>
 
-      {!studyMode && <Marginalia corpus={corpus} />}
+      {/* Always rendered; the `.rr-marginalia` column is hidden by CSS under the
+          `study` density (`.rr-dense`) and at ≤1100px, and reappears as a stacked
+          row at ≤768px (README §10). */}
+      <Marginalia corpus={corpus} />
     </div>
   )
 }

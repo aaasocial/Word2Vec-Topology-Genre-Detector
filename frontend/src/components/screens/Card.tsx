@@ -127,18 +127,12 @@ export function Card() {
         <span style={{ color: 'var(--ink)', fontStyle: 'normal' }}>{book.title}</span>
       </div>
 
-      <div
-        style={{
-          flex: 1,
-          display: 'grid',
-          gridTemplateColumns: studyMode ? '1fr 340px' : '260px 1fr 340px',
-          minHeight: 0,
-        }}
-      >
-        {/* Region-siblings rail (hidden under study density). */}
-        {!studyMode && (
+      <div className={`rr-carrel-card${studyMode ? ' rr-dense' : ''}`}>
+        {/* Region-siblings rail — hidden under `study` density and at ≤1100px via
+            CSS (`.rr-siblings-rail`), reappearing as a stacked row at ≤768px. */}
+        {(
           <aside
-            className="rr-scroll"
+            className="rr-scroll rr-siblings-rail"
             style={{
               padding: '22px 18px',
               borderRight: '1px solid var(--ink-33)',

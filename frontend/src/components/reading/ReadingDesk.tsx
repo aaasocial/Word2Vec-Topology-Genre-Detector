@@ -121,11 +121,9 @@ export function ReadingDesk() {
 
   return (
     <main
+      className="rr-desk rr-scroll"
       style={{
         flex: 1,
-        display: 'grid',
-        gridTemplateColumns: '1.3fr 1fr',
-        gap: 56,
         padding: '36px 64px',
         maxWidth: 1180,
         margin: '0 auto',

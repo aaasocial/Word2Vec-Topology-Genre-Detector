@@ -59,6 +59,19 @@
     transition: background-color 240ms ease, color 240ms ease;
   }
 
+  /* The app shell is viewport-locked on wide screens (the editorial spread fits
+     one screen); on narrow screens the stacked columns can exceed the viewport,
+     so the lock lifts and the page scrolls vertically (README §10). */
+  .rr-shell {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  @media (max-width: 768px) {
+    body { overflow-y: auto; overflow-x: hidden; }
+    .rr-shell { height: auto; min-height: 100vh; overflow: visible; }
+  }
+
   /* Accent-tinted text selection (mirrors the prototype's ::selection rule). */
   ::selection {
     background: color-mix(in srgb, var(--accent) 20%, transparent);
@@ -145,3 +158,101 @@
   border-radius: 0;
 }
 .rr-scroll::-webkit-scrollbar-track { background: transparent; }
+
+/* ============================================================ */
+/* RESPONSIVE — fluid editorial layout (README §10 / L-14).     */
+/* ============================================================ */
+/* The 1240×780 artboard is a prototype framing device only; we  */
+/* ship a fluid layout. Screen column grids are declared here as  */
+/* classes (NOT inline styles) so @media breakpoints can collapse */
+/* them: at ≤1100px drop the marginalia / sibling rail (reuse the */
+/* `study` density 2-col fallback); at ≤768px stack to one column */
+/* in source order. The `.rr-dense` modifier forces the 2-col     */
+/* fallback at any width (the existing `study` density Tweak). The */
+/* plate/figures stay square + centered, min/max-clamped.         */
+/* ============================================================ */
+
+/* Collection carrel: catalog rail (260) · plate (1fr) · marginalia (300). */
+.rr-carrel {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) 300px;
+  min-height: 0;
+  flex: 1;
+}
+/* Card carrel: siblings rail (260) · plate (1fr) · catalog card (340). */
+.rr-carrel-card {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) 340px;
+  min-height: 0;
+  flex: 1;
+}
+/* Drop the third (marginalia/card-aside) and second-aside columns under the
+   `study` density Tweak — the historical 2-col fallback, at any width. */
+.rr-carrel.rr-dense { grid-template-columns: 260px minmax(0, 1fr); }
+.rr-carrel-card.rr-dense { grid-template-columns: minmax(0, 1fr) 340px; }
+/* `study` density hides the marginalia (Collection) + the sibling rail (Card). */
+.rr-carrel.rr-dense .rr-marginalia,
+.rr-carrel-card.rr-dense .rr-siblings-rail { display: none; }
+
+/* Verdict: essay (1.5fr) · catalog aside (1fr). */
+.rr-verdict {
+  display: grid;
+  grid-template-columns: 1.5fr minmax(0, 1fr);
+  min-height: 0;
+  flex: 1;
+}
+/* Upload desk: editor (1.3fr) · reading panel (1fr). */
+.rr-desk {
+  display: grid;
+  grid-template-columns: 1.3fr minmax(0, 1fr);
+  gap: 56px;
+}
+/* Study folio: region A (1fr) · shared binding (260) · region B (1fr). */
+.rr-folio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px minmax(0, 1fr);
+  min-height: 0;
+  flex: 1;
+}
+/* Topology: VR hero (1.5fr) · linked side panels (300). */
+.rr-topo {
+  display: grid;
+  grid-template-columns: 1.5fr 300px;
+  gap: 18px;
+  min-height: 0;
+  flex: 1;
+}
+.rr-topo.rr-dense { grid-template-columns: minmax(0, 1fr); }
+
+/* ≤1100px — drop the marginalia / sibling rail / shared-binding / side panels
+   (the `study` density 2-col fallback applied by viewport). */
+@media (max-width: 1100px) {
+  .rr-carrel { grid-template-columns: 260px minmax(0, 1fr); }
+  .rr-carrel-card { grid-template-columns: minmax(0, 1fr) 340px; }
+  .rr-carrel .rr-marginalia,
+  .rr-carrel-card .rr-siblings-rail { display: none; }
+  .rr-folio { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .rr-folio .rr-folio-center { display: none; }
+  .rr-topo { grid-template-columns: minmax(0, 1fr); }
+  .rr-topo .rr-side { display: none; }
+}
+
+/* ≤768px — stack to ONE column in source order. The plate/figures stay square
+   and centered. The shell allows vertical scroll (the artboard lock lifts). */
+@media (max-width: 768px) {
+  .rr-carrel,
+  .rr-carrel-card,
+  .rr-verdict,
+  .rr-desk,
+  .rr-folio,
+  .rr-topo {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  /* On the smallest stack, show the marginalia/rail back (it's now a row, not a
+     side column) so nothing is lost — keep them visible in source order. */
+  .rr-carrel .rr-marginalia,
+  .rr-carrel-card .rr-siblings-rail,
+  .rr-folio .rr-folio-center { display: revert; }
+  .rr-desk { row-gap: 28px; }
+}

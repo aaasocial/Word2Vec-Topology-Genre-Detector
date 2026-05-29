@@ -123,7 +123,9 @@ export function PlateFrame({ label, title, caption, children, overlay }: PlateFr
         </div>
       </div>
 
-      {/* The framed figure — houses the R3F canvas */}
+      {/* The framed figure — houses the R3F canvas. `flex:1` fills the spread on
+          wide screens; the min-height clamp keeps the plate a usable square when
+          the carrel stacks to one column on narrow screens (README §10). */}
       <figure
         data-tour-id="plate"
         style={{
@@ -132,7 +134,7 @@ export function PlateFrame({ label, title, caption, children, overlay }: PlateFr
           border: '1px solid var(--ink)',
           background: 'var(--card)',
           position: 'relative',
-          minHeight: 0,
+          minHeight: 320,
         }}
       >
         <div style={{ position: 'absolute', inset: 0 }}>{children}</div>
