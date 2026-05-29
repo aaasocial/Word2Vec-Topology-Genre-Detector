@@ -5,10 +5,9 @@
 // Footer, the FootnoteHost overlay, and the Tweaks panel/toggle. Fluid editorial
 // layout (L-14 / §10) — NOT the fixed 1240×780 prototype artboard.
 //
-// Routes not yet built (collection/card/topology/study/upload/verdict) render a
-// PlaceholderScreen so the masthead is fully navigable from the foundation plan;
-// later plans swap each route's render for the real composition. Landing + About
-// are real here. The Guide side-sheet + 6-stop tour mount points land in 12-06.
+// All eight screens are now real compositions (landing/about/collection/card/
+// topology/study/upload/verdict). The Guide side-sheet + 6-stop tour mount points
+// land in 12-06.
 
 import { useReadingRoomStore } from '@/stores/readingRoomStore'
 import { Masthead } from '@/components/shell/Masthead'
@@ -19,10 +18,10 @@ import { Landing } from '@/components/screens/Landing'
 import { About } from '@/components/screens/About'
 import { Collection } from '@/components/screens/Collection'
 import { Card } from '@/components/screens/Card'
+import { Topology } from '@/components/screens/Topology'
 import { Study } from '@/components/screens/Study'
 import { Upload } from '@/components/screens/Upload'
 import { Verdict } from '@/components/screens/Verdict'
-import { PlaceholderScreen } from '@/components/screens/PlaceholderScreen'
 
 /** Per-route running-footer text (left running note + right page marker). */
 const FOOTER: Record<string, { left: string; center: string; right: string }> = {
@@ -50,13 +49,7 @@ export default function App() {
       case 'card':
         return <Card />
       case 'topology':
-        return (
-          <PlaceholderScreen
-            plan="12-05"
-            title="Topology"
-            note="One region's H₁ shape, three linked ways — VR filtration with an ε slider, persistence diagram, persistence image. Forthcoming."
-          />
-        )
+        return <Topology />
       case 'study':
         return <Study />
       case 'upload':
