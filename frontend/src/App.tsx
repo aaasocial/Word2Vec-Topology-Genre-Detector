@@ -19,6 +19,7 @@ import { Landing } from '@/components/screens/Landing'
 import { About } from '@/components/screens/About'
 import { Collection } from '@/components/screens/Collection'
 import { Card } from '@/components/screens/Card'
+import { Study } from '@/components/screens/Study'
 import { PlaceholderScreen } from '@/components/screens/PlaceholderScreen'
 
 /** Per-route running-footer text (left running note + right page marker). */
@@ -55,13 +56,7 @@ export default function App() {
           />
         )
       case 'study':
-        return (
-          <PlaceholderScreen
-            plan="12-03"
-            title="A Comparative Study"
-            note="Two regions side by side: shared and distinctive vocabulary, with an editor's note. Forthcoming."
-          />
-        )
+        return <Study />
       case 'upload':
         return (
           <PlaceholderScreen
