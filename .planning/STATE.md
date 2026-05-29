@@ -1,28 +1,28 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: — Accuracy, Depth, and Polish
-status: Phase 12 (Reading Room redesign) plan 12-02 complete — Collection screen (reskinned R3F plate + catalog rail + marginalia + region filter + Find) landed in 3 atomic feat commits (5291a0d → 0927371). RR-02 complete (2/7 plans).
-last_updated: "2026-05-29T05:03:01.579Z"
+milestone: v1.0
+milestone_name: — Shipped
+status: completed
+last_updated: "2026-05-29T05:14:50.247Z"
 last_activity: 2026-05-29
 progress:
-  total_phases: 13
-  completed_phases: 11
-  total_plans: 46
-  completed_plans: 41
-  percent: 89
+  total_phases: 6
+  completed_phases: 6
+  total_plans: 24
+  completed_plans: 24
+  percent: 100
 ---
 
 # STATE
 
 ## Current Position
 
-Phase: 12 (reading-room-redesign) — **PLAN 12-02 COMPLETE 2026-05-29** (2/7 plans)
+Phase: 12 (reading-room-redesign) — **PLAN 12-03 COMPLETE 2026-05-29** (3/7 plans)
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
-- **Phase:** 12 — Plan 12-02 complete (2/7 plans); Collection screen live. Next: 12-03 (Catalog card + Comparative Study).
-- **Status:** Phase 12 (The Reading Room) plan 12-02 complete in 3 atomic feat commits (5291a0d → 0927371). The Collection screen is the 3-col carrel (catalog rail 260 / reskinned R3F plate 1fr / marginalia 300), collapsing to 2-col under `study` density. Per D-U1 the plate is the EXISTING react-three-fiber word scatter (ScatterCanvas/PointCloud), reskinned: scene background now reads `--paper` imperatively (was the dead Phase 10 `--scene-bg`; re-applies on the active paper Tweak, no canvas remount), point colors flow from the L-05 genre hexes via buildBuffers, the region filter dims non-selected to ~0.15, and the selection ring is ink-toned. New: PlateFrame (corner rulings "Plate I" / "{proj} · {dim} · ε 0.42", projection chips PCA/KPCA/UMAP/t-SNE + 2D/3D toggle wired to visualizationStore, fig.¹ caption), CatalogRail (region index + filter + expand-titles + Find search, data-tour-id="catalog-rail"), Marginalia (hovered-book note + UMAP-distortion note), and useAllCorpusBooks (client-side fan-out over useCorpusBooks — no new endpoint). Book hover/select/route-to-card lives in the rail + marginalia (book-keyed); the plate carries word-point hover → floating tooltip. Added visualizationStore.hoveredBookId. tsc clean; vite build clean (684 modules); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-02 complete.
-- **Next phase:** Phase 12 continues — 12-03 (Catalog card screen + Comparative Study folio), then 12-04..12-07 per 12-CONTEXT.md plan map. Run `/gsd-execute-phase 12` to land 12-03.
+- **Phase:** 12 — Plan 12-03 complete (3/7 plans); Catalog card + Comparative Study live. Next: 12-04 (Submit a Text → The Reading).
+- **Status:** Phase 12 (The Reading Room) plan 12-03 complete in 3 atomic feat commits (65bfa39 → bcf0da3). Two browse screens landed over the real corpus. **Catalog card (RR-03, §6.3):** breadcrumb (Collection › Genre › Title) + 3-col carrel — region-siblings rail ("You are reading", titles, click swaps the selection, hover → hoveredBookId) / SVG **plate detail** (corpus faint, selected book ink-ringed, dashed accent leader lines + a·b·c·d labels to the 4 nearest, fig.² caption) / letterpress **catalog card** aside (`data-tour-id="catalog-card"`: border-top 4px double + hard offset shadow + punch hole; shelfmark, title 24, author·year, Genre/Words/Vocab/UMAP-x/y grid, See also, Driving vocabulary chips from real top_10_tfidf_words, Five nearest with dot + cosine-distance). Drops to 2-col under `study` density. **Comparative Study (RR-04, §6.5):** two genre pickers + "&" (`data-tour-id="study-pickers"`); 3-col folio — region A (dot/label/count · SVG mini-plate · "Only in {A}" chips) / center "what they share" (two-circle Venn motif + shared chips + "ε ∈ [0, 0.6]") / region B (mirror); Editor's note + footnote³; curated word tables (mystery|romance, gothic|literary, adventure|western verbatim) + generic fallback. Added `studyA`/`studyB` + `setStudy` to readingRoomStore. **D-U1:** the card plate detail + study mini-plates are SVG (not extra WebGL); only the Collection plate is R3F. tsc clean; vite build clean (692 modules); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-03 + RR-04 complete.
+- **Next phase:** Phase 12 continues — 12-04 (Submit a Text → The Reading, RR-05), then 12-05..12-07 per 12-CONTEXT.md plan map. Run `/gsd-execute-phase 12` to land 12-04.
 - **Last activity:** 2026-05-29
 
 ### Phase 12 plan 12-01 complete (2026-05-29)
@@ -279,6 +279,7 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 | Phase 11 P11-01 | 6min | 6 tasks | 6 files |
 | Phase 12 P12-01 | 40min | 6 tasks | 14 files |
 | Phase 12 P12-02 | ~7min | 4 tasks | 9 files |
+| Phase 12 P12-03 | ~6min | 4 tasks | 10 files |
 
 ## Open Blockers
 
@@ -296,11 +297,11 @@ Documentation drift to clean up (folded into Wave 4 per D-34, no longer a separa
 
 ## Session Continuity
 
-**Stopped at (2026-05-29):** Completed 12-02-PLAN.md — Phase 12 (The Reading Room) Collection screen via `/gsd-execute-phase 12`. Three atomic feat commits (`5291a0d` → `0927371`) + this docs commit landed the 3-col carrel: reskinned R3F plate (scene bg → `--paper`, L-05 genre hexes, region filter dim ~0.15, ink selection ring), PlateFrame (corner rulings + projection/2D-3D chips wired to visualizationStore + fig.¹ caption), CatalogRail (region index + filter + expand-titles + Find, `data-tour-id="catalog-rail"`), Marginalia (hovered-book note + UMAP note), useAllCorpusBooks (fan-out over useCorpusBooks), and `visualizationStore.hoveredBookId`. Plate is the WORD geography (hover → word tooltip); book identity flows through the rail + marginalia. tsc clean; vite build clean (684 modules); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-02 complete.
+**Stopped at (2026-05-29):** Completed 12-03-PLAN.md — Phase 12 (The Reading Room) Catalog card + Comparative Study via `/gsd-execute-phase 12`. Three atomic feat commits (`65bfa39` → `bcf0da3`) + this docs commit landed both browse screens. Catalog card: breadcrumb + 3-col carrel (siblings rail / SVG plate detail with dashed accent leader lines + a·b·c·d labels to 4 nearest / letterpress catalog-card aside with shelfmark/title/author·year/Genre·Words·Vocab·UMAP grid/See also/Driving vocabulary chips/Five nearest), `data-tour-id="catalog-card"`. Comparative Study: two genre pickers + "&" (`data-tour-id="study-pickers"`), 3-col folio (region A / shared two-circle Venn motif + chips + "ε ∈ [0, 0.6]" / region B), "Only in {A/B}" chips, Editor's note + footnote³, curated word tables + generic fallback. Added `studyA`/`studyB` + `setStudy`. Card + study routes registered (PlaceholderScreens replaced). tsc clean; vite build clean (692 modules); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-03 + RR-04 complete.
 
-**Decision (12-02):** Collection plate = reskinned R3F WORD scatter (D-U1); `/viz/scatter` serves words not books, so book hover/select/route-to-card lives in the catalog rail + marginalia (book-keyed via useCorpusBooks) while the plate hover yields a word tooltip. Region filter = `visualizationStore.selectedGenre` dimming non-selected word points to ~0.15.
+**Decision (12-03):** Card plate detail is SVG, not R3F. The reused R3F scatter is WORD-keyed (12-02) so it has no book points to highlight or draw leader lines to; SVG over deterministic id-seeded book positions renders `03-catalog-card.png` faithfully and honours D-U1's nuance (detail/decorative plates = SVG, one WebGL context per app). `CorpusBookFull` carries no x/y, year, vocab, or shelfmark — those are derived deterministically (id-seeded, Known Stubs); all real fields (title/author/genre/word_count/driving vocabulary/region membership) come from the hook. studyA/studyB live in the shell store, default Mystery & Romance.
 
-**Next command:** `/gsd-execute-phase 12` to land 12-03 (Catalog card screen + Comparative Study folio). Optional in-browser verification first (needs backend :8000 + Redis + arq up): masthead → The Collection → rail filters dim the plate region, expanding a genre lists its titles (hover → marginalia, click → catalog card route), projection chips + 2D/3D drive the live WebGL plate, `study` density (Tweaks) hides marginalia → 2-col; compare against 02-collection.png.
+**Next command:** `/gsd-execute-phase 12` to land 12-04 (Submit a Text → The Reading). Optional in-browser verification first (needs backend :8000 + Redis + arq up): masthead → The Collection → click a title (or rail expand) → Catalog card (breadcrumb, siblings rail swaps selection, plate detail with leader lines, letterpress card); masthead → A Comparative Study → swap the two pickers (Mystery & Romance default), folio shows shared/distinctive vocab + Venn motif + Editor's note; compare against 03-catalog-card.png + 05-comparative-study.png.
 
 **Prior (Phase 11 archived):** plan 11-01 complete 2026-05-28 (`0f0d111` → `8397206`): light default + no-FOUC + How-It-Works→tour chain. Phase 12 D-U2 supersedes this front end (the Phase 10/11 indigo UI is now replaced; their milestone requirements remain historically met).
 
