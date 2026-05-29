@@ -12,6 +12,10 @@ interface VisualizationState {
   projection: ProjectionKey
   selectedGenre: string | null
   selectedBookId: string | null
+  // Phase 12 (12-02): the catalog book the reader is hovering (rail row, plate,
+  // or marginalia). Drives the Collection marginalia note + plate tooltip. Distinct
+  // from `hoveredPointIndex`, which is a WORD-point index in the R3F scatter.
+  hoveredBookId: string | null
   selectedPointIndex: number | null
   hoveredPointIndex: number | null
   pointSizeMultiplier: number
@@ -37,6 +41,7 @@ interface VisualizationState {
   setProjection: (p: ProjectionKey) => void
   setSelectedGenre: (g: string | null) => void
   setSelectedBook: (id: string | null) => void
+  setHoveredBook: (id: string | null) => void
   setSelectedPoint: (idx: number | null) => void
   setHoveredPoint: (idx: number | null) => void
   setPointSizeMultiplier: (v: number) => void
@@ -67,6 +72,7 @@ export const useVisualizationStore = create<VisualizationState>()((set) => ({
   projection: 'pca',
   selectedGenre: null,
   selectedBookId: null,
+  hoveredBookId: null,
   selectedPointIndex: null,
   hoveredPointIndex: null,
   pointSizeMultiplier: 1.0,
@@ -92,6 +98,7 @@ export const useVisualizationStore = create<VisualizationState>()((set) => ({
   setProjection: (p) => set({ projection: p }),
   setSelectedGenre: (g) => set({ selectedGenre: g }),
   setSelectedBook: (id) => set({ selectedBookId: id }),
+  setHoveredBook: (id) => set({ hoveredBookId: id }),
   setSelectedPoint: (idx) => set({ selectedPointIndex: idx }),
   setHoveredPoint: (idx) => set({ hoveredPointIndex: idx }),
   setPointSizeMultiplier: (v) => set({ pointSizeMultiplier: v }),

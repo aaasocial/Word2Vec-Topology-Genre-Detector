@@ -17,6 +17,7 @@ import { FootnoteHost } from '@/components/shell/FootnoteHost'
 import { TweaksPanel, TweaksToggle } from '@/components/shell/TweaksPanel'
 import { Landing } from '@/components/screens/Landing'
 import { About } from '@/components/screens/About'
+import { Collection } from '@/components/screens/Collection'
 import { PlaceholderScreen } from '@/components/screens/PlaceholderScreen'
 
 /** Per-route running-footer text (left running note + right page marker). */
@@ -41,13 +42,7 @@ export default function App() {
       case 'about':
         return <About />
       case 'collection':
-        return (
-          <PlaceholderScreen
-            plan="12-02"
-            title="The Collection"
-            note="The plate, catalog rail, and marginalia — browse and filter the corpus by region. Forthcoming."
-          />
-        )
+        return <Collection />
       case 'card':
         return (
           <PlaceholderScreen
