@@ -36,8 +36,8 @@
 
 ## Phases
 
-- [ ] **Phase 6: v1 Bug-Fix Sweep** — Close H₂, BookSlider, dot-scaling, restored planning docs, and the latent cache-key bug before any retrain happens.
-- [ ] **Phase 7: Corpus Sourcing Research Spike** — Decide sources, per-genre counts, author-distribution constraints, and the validation protocol. Pure research, no code.
+- [x] **Phase 6: v1 Bug-Fix Sweep** — Close H₂, BookSlider, dot-scaling, restored planning docs, and the latent cache-key bug before any retrain happens. (completed 2026-05-23; checkbox reconciled at v2.0 close)
+- [x] **Phase 7: Corpus Sourcing Research Spike** — Decide sources, per-genre counts, author-distribution constraints, and the validation protocol. Pure research, no code. (completed 2026-05-25; checkbox reconciled at v2.0 close)
 - [x] **Phase 8: Corpus Expansion** — Retrained on the Phase-7-derived corpus (post Phase-8.1 drop strategy = 154 verified-clean books); evaluated against the v1-frozen 20-book hold-out (macro-F1 0.7367 vs v1 0.3235, p=0.0010); ships via `v2.0-data` Release with D-31 disclaimer for the per-author smoke-test failure (CEXP-04 BLOCKED — v2.1 follow-up). Closed 2026-05-26.
 - [x] **Phase 9: Classification Depth** — Top-N calibrated predictions and "why this genre" explainability built on the Phase-8 SVM. **Complete 2026-05-27** (6/6 plans; 5/5 ROADMAP success criteria + 7/7 DEPTH requirements verified; 7 UAT items pending live walkthrough).
 - [x] **Phase 10: Visual Polish** — Dark mode, onboarding tour, empty-state polish — horizontal sweep across components touched by Phases 6–9. (completed 2026-05-27)

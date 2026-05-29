@@ -31,17 +31,17 @@ See [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md) for ful
 
 ### Bug-Fix Sweep (Phase 6)
 
-- [ ] **BUG-01**: System removes the H₂ UI tab, the H₂ settings toggle, and all backend `homology_dims=2` plumbing. Bonus cleanup: H₀ tab also removed (degenerate in weighted Vietoris-Rips — all components born at filtration time 0). UI ships H₁-only. H₂ deferred to v3; rationale recorded in PROJECT.md Key Decisions and CONTEXT.md `<domain>` block for Phase 6.
-- [ ] **BUG-02**: Persistence-diagram dots scale by sqrt(persistence) for finite points; H₀ infinite-persistence points use a dedicated marker so all classes are readable at any zoom level (`PITFALLS.md §10`).
-- [ ] **BUG-03**: BookSlider fetches book metadata from a new `GET /api/corpus/genres/{genre}/books` endpoint and lets the user slide through every book within the selected genre, with title + author + word count surfaced.
-- [ ] **BUG-04**: ROADMAP.md and STATE.md are restored as living planning documents; a pre-commit hook rejects 0-byte commits to `.planning/**/*.md` to prevent recurrence (`PITFALLS.md §15`).
-- [ ] **BUG-05**: Content-addressed `cache_key` includes `corpus_hash` and `w2v_model_sha256` so a corpus change or Word2Vec retrain forces a cache miss across all precomputed artifacts (latent v1 bug, must land before Phase 8 — `PITFALLS.md §1`).
+- [x] **BUG-01**: System removes the H₂ UI tab, the H₂ settings toggle, and all backend `homology_dims=2` plumbing. Bonus cleanup: H₀ tab also removed (degenerate in weighted Vietoris-Rips — all components born at filtration time 0). UI ships H₁-only. H₂ deferred to v3; rationale recorded in PROJECT.md Key Decisions and CONTEXT.md `<domain>` block for Phase 6.
+- [x] **BUG-02**: Persistence-diagram dots scale by sqrt(persistence) for finite points; H₀ infinite-persistence points use a dedicated marker so all classes are readable at any zoom level (`PITFALLS.md §10`).
+- [x] **BUG-03**: BookSlider fetches book metadata from a new `GET /api/corpus/genres/{genre}/books` endpoint and lets the user slide through every book within the selected genre, with title + author + word count surfaced.
+- [x] **BUG-04**: ROADMAP.md and STATE.md are restored as living planning documents; a pre-commit hook rejects 0-byte commits to `.planning/**/*.md` to prevent recurrence (`PITFALLS.md §15`).
+- [x] **BUG-05**: Content-addressed `cache_key` includes `corpus_hash` and `w2v_model_sha256` so a corpus change or Word2Vec retrain forces a cache miss across all precomputed artifacts (latent v1 bug, must land before Phase 8 — `PITFALLS.md §1`).
 
 ### Corpus Sourcing Research Spike (Phase 7) — research-only, no implementation
 
-- [ ] **RES-01**: Produce `.planning/research/v2/CORPUS_SOURCING.md` selecting source(s) (Gutenberg / Open Library / HuggingFace datasets / Internet Archive), target book count per genre, target genre count, and per-genre author distribution constraints.
-- [ ] **RES-02**: Produce `.planning/research/v2/VALIDATION_PROTOCOL.md` defining a v1-frozen test set, `GroupKFold(groups=author)` cross-validation, macro-F1 as the headline metric, and permutation null hypothesis test (`PITFALLS.md §4–6`).
-- [ ] **RES-03**: Decide whether v2 adopts multi-label classification (recommendation: defer to v3); document decision and rationale in the sourcing doc.
+- [x] **RES-01**: Produce `.planning/research/v2/CORPUS_SOURCING.md` selecting source(s) (Gutenberg / Open Library / HuggingFace datasets / Internet Archive), target book count per genre, target genre count, and per-genre author distribution constraints.
+- [x] **RES-02**: Produce `.planning/research/v2/VALIDATION_PROTOCOL.md` defining a v1-frozen test set, `GroupKFold(groups=author)` cross-validation, macro-F1 as the headline metric, and permutation null hypothesis test (`PITFALLS.md §4–6`).
+- [x] **RES-03**: Decide whether v2 adopts multi-label classification (recommendation: defer to v3); document decision and rationale in the sourcing doc.
 
 ### Corpus Expansion (Phase 8)
 
@@ -88,6 +88,17 @@ See [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md) for ful
 - [x] **RR-07**: About + the Guide — About prose; Guide right side-sheet (Welcome / How to wander / How it works) auto-opening once per browser (localStorage `rr.guide.seen.v1`), with the 5 live "How it works" method figures rendered at rest (background-tab safe).
 - [x] **RR-08**: The guided tour — 6 stops navigating the real screens (plate, catalog rail, catalog card, topology plate [pre-selects a region], study pickers, reading desk) with reading-room spotlight (four dim panels + accent frame) and a margin card; ←/→/Esc; missing-anchor → wait then advance. Extends `tour/anchors.ts`.
 - [x] **RR-09**: Responsive + animation-robustness pass — fluid editorial grids collapsing at ~1100px (drop marginalia/rail) and ~768px (single column), Guide full-width on narrow, tour card clamped; every "alive" figure degrades to a valid static frame when the timeline is paused.
+
+---
+
+## v2.1 Carry-over (deferred at v2.0 close, 2026-05-30)
+
+Items that travelled out of v2.0 as documented caveats, not phase gaps — the v2.0 phases shipped their deliverables. Re-evaluate at the start of v2.1.
+
+- [ ] **V21-01 — Author-leakage gap (from CEXP-04, BLOCKED):** GroupKFold-by-author mean macro-F1 = 0.2865 vs hold-out 0.7367 (45pp gap >> 15pp threshold). Shipped with the D-31 public disclaimer. Candidates: max-N-per-author corpus cap, or per-author held-out fine-tuning. See `results/v2_validation_report.md`.
+- [ ] **V21-02 — α weight miscalibrated for the v2 corpus:** LOOCV (2026-05-30) on the 151-book corpus shows location-only (α=0) = 0.7682 acc, shipped 70/30 (α=0.7) = 0.6887, topology-only (α=1) = 0.2053. The topology track is near chance and α=0.7 underperforms location-only by ~8pp. The 0.7 default was tuned on the v1 corpus. Action: re-sweep α on the v2 hold-out macro-F1 protocol (cached features, fast) and re-fit; likely a much lower α. See `TECHNICAL.md §5`.
+- [ ] **V21-03 — Phase 9 human UAT outstanding:** 7 items in `.planning/phases/09-classification-depth/09-HUMAN-UAT.md` remain `partial` (live browser walkthrough never done; automated verification passed). Run `/gsd-verify-work 9`.
+- [ ] **V21-04 — Per-book persistence not fully cached:** per-genre persistence is precomputed for all 8 regions; per-book persistence is missing for ~6/25 sampled books. The Topology tab is region-keyed as a result. Precompute per-book persistence if a per-book topology view is ever wanted.
 
 ---
 
