@@ -20,6 +20,7 @@ import { About } from '@/components/screens/About'
 import { Collection } from '@/components/screens/Collection'
 import { Card } from '@/components/screens/Card'
 import { Study } from '@/components/screens/Study'
+import { Upload } from '@/components/screens/Upload'
 import { PlaceholderScreen } from '@/components/screens/PlaceholderScreen'
 
 /** Per-route running-footer text (left running note + right page marker). */
@@ -58,13 +59,7 @@ export default function App() {
       case 'study':
         return <Study />
       case 'upload':
-        return (
-          <PlaceholderScreen
-            plan="12-04"
-            title="Submit a Text"
-            note="Paste or upload a manuscript to request a reading. Forthcoming."
-          />
-        )
+        return <Upload />
       case 'verdict':
         return (
           <PlaceholderScreen
