@@ -26,18 +26,20 @@ function resolveCssVar(name: string, fallback: string): string {
  */
 export function PersistenceHeatmap() {
   const selectedGenre = useVisualizationStore((s) => s.selectedGenre)
-  const selectedBookId = useVisualizationStore((s) => s.selectedBookId)
   const selectedHomologyDim = useVisualizationStore((s) => s.selectedHomologyDim)
   const vrEpsilon = useVisualizationStore((s) => s.vrEpsilon)
 
-  const isBook = !!selectedBookId
-  const queryId = selectedBookId ?? selectedGenre
+  // Region view (L-11): key the image to the selected genre, not a stale
+  // `selectedBookId`. Per-genre persistence images are precomputed for all 8
+  // regions; per-book images are not cached for every book, so the old
+  // book-first fallback 404'd intermittently. See PersistenceDiagram for detail.
+  const queryId = selectedGenre
 
   // Re-paint on palette / accent swap so the ramp tracks the active paper.
   const paper = useReadingRoomStore((s) => s.tweaks.paper)
   const accentTweak = useReadingRoomStore((s) => s.tweaks.accent)
 
-  const { data, isLoading } = usePersistenceImage(queryId, selectedHomologyDim, isBook)
+  const { data, isLoading } = usePersistenceImage(queryId, selectedHomologyDim, false)
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const legendRef = useRef<HTMLCanvasElement>(null)

@@ -62,18 +62,23 @@ interface InfinityHit {
  */
 export function PersistenceDiagram() {
   const selectedGenre = useVisualizationStore((s) => s.selectedGenre)
-  const selectedBookId = useVisualizationStore((s) => s.selectedBookId)
   const selectedHomologyDim = useVisualizationStore((s) => s.selectedHomologyDim)
   const vrEpsilon = useVisualizationStore((s) => s.vrEpsilon)
 
-  const isBook = !!selectedBookId
-  const queryId = selectedBookId ?? selectedGenre
+  // The Topology tab is a REGION view ("The topology of {Region}", L-11), so the
+  // diagram is always keyed to the selected genre — never a lingering
+  // `selectedBookId` left over from browsing a catalog card. Per-genre persistence
+  // is precomputed for all 8 regions; per-book persistence is NOT cached for every
+  // corpus book, so the old `selectedBookId ?? selectedGenre` fallback 404'd
+  // intermittently (blank diagram for ~6 books). Genre-only is both correct and
+  // always-cached.
+  const queryId = selectedGenre
 
   // Re-paint when the active reading-room palette / accent changes.
   const paper = useReadingRoomStore((s) => s.tweaks.paper)
   const accentTweak = useReadingRoomStore((s) => s.tweaks.accent)
 
-  const { data, isLoading } = usePersistenceDiagram(queryId, selectedHomologyDim, isBook)
+  const { data, isLoading } = usePersistenceDiagram(queryId, selectedHomologyDim, false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const infinityHitsRef = useRef<InfinityHit[]>([])
   const [tooltip, setTooltip] = useState<{ x: number; y: number; birth: number } | null>(null)
