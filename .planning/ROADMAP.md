@@ -12,7 +12,9 @@
 
 ---
 
-# v2.0 — Accuracy, Depth, and Polish
+# v2.0 — Accuracy, Depth, and Polish ✅ SHIPPED 2026-05-30
+
+> **Milestone complete.** Phases 6–12 all delivered. Archived to [`milestones/v2.0-ROADMAP.md`](milestones/v2.0-ROADMAP.md) + [`milestones/v2.0-REQUIREMENTS.md`](milestones/v2.0-REQUIREMENTS.md). Headline: v2 macro-F1 **0.7367** (vs v1 0.3235) + calibrated top-N + "why this genre?" explainability + the editorial **Reading Room** front end. Four documented caveats carried to v2.1 (author-leakage, α-miscalibration, Phase-9 UAT, per-book persistence — see REQUIREMENTS.md §"v2.1 Carry-over"). Tag: `v2.0`.
 
 **Milestone goal:** Improve classification accuracy via a better-sourced corpus, add explainability and top-N predictions, sweep v1 carry-over bugs, and round out the visual experience with theming and onboarding. Additive polish on a shipped app — no new layers, no replaced layers.
 

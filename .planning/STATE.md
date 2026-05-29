@@ -1,10 +1,10 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: — Shipped
-status: completed
-last_updated: "2026-05-29T06:18:01.128Z"
-last_activity: 2026-05-29
+milestone: v2.0
+milestone_name: — Accuracy, Depth, and Polish (Shipped 2026-05-30)
+status: milestone-complete
+last_updated: "2026-05-30T05:00:00.000Z"
+last_activity: 2026-05-30
 progress:
   total_phases: 13
   completed_phases: 12
@@ -16,6 +16,10 @@ progress:
 # STATE
 
 ## Current Position
+
+**▶ v2.0 MILESTONE COMPLETE — Shipped 2026-05-30.** Phases 6–12 all closed; archived to `.planning/milestones/v2.0-{ROADMAP,REQUIREMENTS}.md`; git tag `v2.0`. Four documented caveats carried to v2.1 (V21-01 author-leakage · V21-02 α-miscalibration · V21-03 Phase-9 UAT · V21-04 per-book persistence — see `REQUIREMENTS.md` §"v2.1 Carry-over"). The live `ROADMAP.md`/`REQUIREMENTS.md` were intentionally kept (not reset) since v2.1 isn't started yet; `/gsd-new-milestone` will reset requirements when v2.1 opens. Next: `/gsd-new-milestone` (v2.1) or address a carry-over (e.g. re-sweep α).
+
+---
 
 Phase: 12 (reading-room-redesign) — **COMPLETE 2026-05-29** (7/7 plans) — **THE READING ROOM SHIPPED**
 

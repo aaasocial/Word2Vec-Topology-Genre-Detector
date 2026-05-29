@@ -10,9 +10,13 @@ The front end is **The Reading Room** (Phase 12) — an editorial reskin (Spectr
 
 A user uploads any book and sees where it lives in semantic space — and why the algorithm predicts the genre it does.
 
-## Current Milestone: v2.0 — Accuracy, Depth, and Polish
+## Current State: v2.0 — Accuracy, Depth, and Polish ✅ SHIPPED 2026-05-30
 
-**Goal:** Improve classification accuracy via a better-sourced corpus, add explainability and top-N predictions, sweep v1 bugs, and round out the visual experience with theming and onboarding.
+**Shipped:** Phases 6–12 complete. Retrained on a 154-book verified-clean corpus (hold-out macro-F1 **0.7367** vs v1 0.3235); calibrated top-N + "why this genre?" explainability (~15 ms); and a full editorial **Reading Room** front end (masthead routing, Guide, 6-stop tour) over the unchanged word2vec/topology engine. Archived to [`milestones/v2.0-ROADMAP.md`](milestones/v2.0-ROADMAP.md) + [`milestones/v2.0-REQUIREMENTS.md`](milestones/v2.0-REQUIREMENTS.md); tag `v2.0`.
+
+**Carried to v2.1** (documented caveats): author-leakage gap (CEXP-04), α-weight miscalibration on the v2 corpus, Phase-9 human UAT, per-book persistence caching. See `REQUIREMENTS.md` §"v2.1 Carry-over".
+
+**Original goal:** Improve classification accuracy via a better-sourced corpus, add explainability and top-N predictions, sweep v1 bugs, and round out the visual experience with theming and onboarding.
 
 **Target features:**
 - Sweep v1 carry-over bugs: H₂ homology + tooltip, persistence-diagram dot scaling, BookSlider stub (corpus metadata endpoint), restore empty ROADMAP/STATE files
