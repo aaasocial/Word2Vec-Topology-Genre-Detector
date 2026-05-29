@@ -1,231 +1,213 @@
-import { useRef, useEffect, useState, useCallback } from 'react'
+import { useRef, useEffect } from 'react'
 import { useVisualizationStore } from '@/stores/visualizationStore'
+import { useReadingRoomStore } from '@/stores/readingRoomStore'
 import { usePersistenceImage } from '@/hooks/usePersistenceImage'
-import { renderHeatmap } from '@/lib/heatmap'
-import { PLASMA_256 } from '@/lib/plasma'
-import { exportHeatmapPNG, exportPersistenceCSV } from '@/lib/exportUtils'
-import { HomologyTabs } from './HomologyTabs'
+import { renderReadingRoomHeatmap, readingRoomRamp } from '@/lib/heatmap'
+import { genreColor } from '@/constants/genres'
 
-const HEATMAP_SIZE = 300 // default canvas size, constrained to min 200 max 400
+const HEATMAP_SIZE = 150
 
+/** Resolve a `#RRGGBB` reading-room CSS custom property; falls back to the arg. */
+function resolveCssVar(name: string, fallback: string): string {
+  if (typeof document === 'undefined') return fallback
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  return v || fallback
+}
+
+/**
+ * PersistenceHeatmap (reading-room skin, 12-05): the persistence image (iii) for
+ * the Topology side column.
+ *
+ * The 20×20 → 400-vector image rendered with the **`paper2 → genreHex → ink`**
+ * ramp (genreHex = the selected region's reading-room hex; replaces PLASMA), a
+ * framed figure, and a horizontal **density legend** (vmin · density · vmax). A
+ * faint ε birth-axis guide ties the image to the VR ε slider (birth runs along
+ * the image's X-axis, so the guide is a vertical line at birth = ε).
+ */
 export function PersistenceHeatmap() {
   const selectedGenre = useVisualizationStore((s) => s.selectedGenre)
   const selectedBookId = useVisualizationStore((s) => s.selectedBookId)
   const selectedHomologyDim = useVisualizationStore((s) => s.selectedHomologyDim)
+  const vrEpsilon = useVisualizationStore((s) => s.vrEpsilon)
 
-  // Prefer book if selected, otherwise genre
   const isBook = !!selectedBookId
   const queryId = selectedBookId ?? selectedGenre
+
+  // Re-paint on palette / accent swap so the ramp tracks the active paper.
+  const paper = useReadingRoomStore((s) => s.tweaks.paper)
+  const accentTweak = useReadingRoomStore((s) => s.tweaks.accent)
 
   const { data, isLoading } = usePersistenceImage(queryId, selectedHomologyDim, isBook)
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const colorBarRef = useRef<HTMLCanvasElement>(null)
+  const legendRef = useRef<HTMLCanvasElement>(null)
 
-  // Render heatmap when data changes
+  const genreHex = selectedGenre ? genreColor(selectedGenre) : '#736B5E'
+
+  // Heatmap with the reading-room ramp.
   useEffect(() => {
     if (!data || !canvasRef.current) return
     const canvas = canvasRef.current
     canvas.width = HEATMAP_SIZE
     canvas.height = HEATMAP_SIZE
-    renderHeatmap(canvas, data.data, data.M, data.vmin, data.vmax)
-  }, [data])
+    const paper2 = resolveCssVar('--paper2', '#E9E3D2')
+    const ink = resolveCssVar('--ink', '#26211B')
+    renderReadingRoomHeatmap(canvas, data.data, data.M, data.vmin, data.vmax, paper2, genreHex, ink)
+  }, [data, genreHex, paper, accentTweak])
 
-  // Render color bar
+  // Horizontal density legend (paper2 → genreHex → ink).
   useEffect(() => {
-    if (!data || !colorBarRef.current) return
-    const canvas = colorBarRef.current
+    if (!data || !legendRef.current) return
+    const canvas = legendRef.current
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-    canvas.width = 12
-    canvas.height = HEATMAP_SIZE
-    const stepH = HEATMAP_SIZE / 256
-    for (let i = 0; i < 256; i++) {
-      // Top = high values (255), bottom = low values (0)
-      const idx = 255 - i
-      const [r, g, b] = PLASMA_256[idx]
-      ctx.fillStyle = `rgb(${r},${g},${b})`
-      ctx.fillRect(0, i * stepH, 12, stepH + 1)
+    const W = HEATMAP_SIZE
+    canvas.width = W
+    canvas.height = 8
+    const paper2 = resolveCssVar('--paper2', '#E9E3D2')
+    const ink = resolveCssVar('--ink', '#26211B')
+    // Stepped fillRect ramp (paper2 → genreHex → ink) rather than a canvas
+    // linear gradient — keeps the legend renderable under the jsdom canvas mock
+    // (no createLinearGradient) and identical to the heatmap's own ramp.
+    for (let x = 0; x < W; x++) {
+      const [r, g, b] = readingRoomRamp(x / (W - 1), paper2, genreHex, ink)
+      ctx.fillStyle = `rgb(${r | 0},${g | 0},${b | 0})`
+      ctx.fillRect(x, 0, 1, 8)
     }
-  }, [data])
+  }, [data, genreHex, paper, accentTweak])
 
   const hasSelection = !!queryId
+  // ε guide along the birth axis (image X), clamped into the figure.
+  const epsMax = data ? Math.max(data.vmax, 1) : 1
+  const epsGuidePct = data && vrEpsilon > 0 ? Math.min(100, (vrEpsilon / epsMax) * 100) : null
 
-  // Export feedback state
-  const [pngExported, setPngExported] = useState(false)
-  const [csvExported, setCsvExported] = useState(false)
-
-  const handleExportPNG = useCallback(() => {
-    if (!canvasRef.current || !queryId) return
-    exportHeatmapPNG(canvasRef.current, queryId, selectedHomologyDim)
-    setPngExported(true)
-    setTimeout(() => setPngExported(false), 2000)
-  }, [queryId, selectedHomologyDim])
-
-  const handleExportCSV = useCallback(() => {
-    if (!data || !queryId) return
-    // Convert flat persistence image data to diagram entries for CSV
-    const M = data.M
-    const diagrams: { birth: number; death: number; dimension: number }[] = []
-    for (let row = 0; row < M; row++) {
-      for (let col = 0; col < M; col++) {
-        const val = data.data[row * M + col]
-        if (val > 0) {
-          diagrams.push({
-            birth: col / M,
-            death: row / M,
-            dimension: selectedHomologyDim,
-          })
-        }
-      }
-    }
-    exportPersistenceCSV(diagrams, queryId, selectedHomologyDim)
-    setCsvExported(true)
-    setTimeout(() => setCsvExported(false), 2000)
-  }, [data, queryId, selectedHomologyDim])
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Header */}
+  if (!hasSelection) {
+    return (
       <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 16,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 600, color: 'hsl(var(--foreground))', margin: 0 }}>
-            Persistence Image
-          </h2>
-          <HomologyTabs />
-        </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button
-            onClick={handleExportPNG}
-            disabled={!data}
-            style={{
-              background: 'transparent',
-              border: '1px solid hsl(var(--border))',
-              color: data ? 'hsl(var(--muted-foreground))' : 'hsl(var(--muted-foreground) / 0.6)',
-              fontSize: 12,
-              padding: '4px 8px',
-              borderRadius: 4,
-              cursor: data ? 'pointer' : 'not-allowed',
-            }}
-          >
-            {pngExported ? '\u2713' : 'PNG'}
-          </button>
-          <button
-            onClick={handleExportCSV}
-            disabled={!data}
-            style={{
-              background: 'transparent',
-              border: '1px solid hsl(var(--border))',
-              color: data ? 'hsl(var(--muted-foreground))' : 'hsl(var(--muted-foreground) / 0.6)',
-              fontSize: 12,
-              padding: '4px 8px',
-              borderRadius: 4,
-              cursor: data ? 'pointer' : 'not-allowed',
-            }}
-          >
-            {csvExported ? '\u2713' : 'CSV'}
-          </button>
-        </div>
-      </div>
-
-      {/* Content area */}
-      <div
-        style={{
-          flex: 1,
+          width: HEATMAP_SIZE,
+          height: HEATMAP_SIZE,
+          background: 'var(--card)',
+          border: '1px solid var(--ink-33)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        {!hasSelection && (
-          <div
-            style={{
-              width: HEATMAP_SIZE,
-              height: HEATMAP_SIZE,
-              background: 'hsl(var(--muted))',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 4,
-            }}
-          >
-            <span style={{ color: 'hsl(var(--muted-foreground))', fontSize: 14, textAlign: 'center', padding: 24 }}>
-              Select a genre or book to view persistence image
-            </span>
-          </div>
-        )}
+        <span
+          style={{
+            color: 'var(--muted)',
+            fontFamily: 'var(--font-serif)',
+            fontStyle: 'italic',
+            fontSize: 12,
+            textAlign: 'center',
+            padding: 16,
+          }}
+        >
+          Pick a region.
+        </span>
+      </div>
+    )
+  }
 
-        {hasSelection && isLoading && (
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          width: HEATMAP_SIZE,
+          height: HEATMAP_SIZE,
+          background: 'var(--paper2)',
+          animation: 'pulse 1.5s ease-in-out infinite',
+        }}
+      />
+    )
+  }
+
+  if (!data) {
+    return (
+      <div
+        style={{
+          width: HEATMAP_SIZE,
+          height: HEATMAP_SIZE,
+          background: 'var(--card)',
+          border: '1px solid var(--ink-33)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <span
+          style={{
+            color: 'var(--muted)',
+            fontFamily: 'var(--font-serif)',
+            fontStyle: 'italic',
+            fontSize: 12,
+            textAlign: 'center',
+            padding: 16,
+          }}
+        >
+          No persistence image.
+        </span>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {/* Framed heatmap with the ε birth-axis guide. */}
+      <div style={{ position: 'relative', width: HEATMAP_SIZE, height: HEATMAP_SIZE }}>
+        <canvas
+          ref={canvasRef}
+          width={HEATMAP_SIZE}
+          height={HEATMAP_SIZE}
+          style={{ display: 'block', width: HEATMAP_SIZE, height: HEATMAP_SIZE, imageRendering: 'pixelated' }}
+        />
+        {epsGuidePct != null && (
           <div
+            aria-hidden
             style={{
-              width: HEATMAP_SIZE,
-              height: HEATMAP_SIZE,
-              background: 'hsl(var(--muted))',
-              borderRadius: 4,
-              animation: 'pulse 1.5s ease-in-out infinite',
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: `${epsGuidePct}%`,
+              width: 1,
+              background: 'var(--accent)',
+              opacity: 0.55,
+              pointerEvents: 'none',
             }}
           />
         )}
-
-        {hasSelection && data && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {/* Y-axis label */}
-            <span
-              style={{
-                fontSize: 12,
-                color: 'hsl(var(--muted-foreground))',
-                writingMode: 'vertical-rl',
-                transform: 'rotate(180deg)',
-                letterSpacing: 1,
-              }}
-            >
-              Persistence
-            </span>
-
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <canvas
-                ref={canvasRef}
-                width={HEATMAP_SIZE}
-                height={HEATMAP_SIZE}
-                style={{
-                  width: HEATMAP_SIZE,
-                  height: HEATMAP_SIZE,
-                  imageRendering: 'pixelated',
-                }}
-              />
-              {/* X-axis label */}
-              <span style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))', marginTop: 8 }}>
-                Birth scale
-              </span>
-            </div>
-
-            {/* Color bar */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-              <span style={{ fontSize: 13, fontFamily: 'JetBrains Mono, monospace', color: 'hsl(var(--foreground))' }}>
-                {data.vmax.toFixed(2)}
-              </span>
-              <canvas
-                ref={colorBarRef}
-                width={12}
-                height={HEATMAP_SIZE}
-                style={{ width: 12, height: HEATMAP_SIZE }}
-              />
-              <span style={{ fontSize: 13, fontFamily: 'JetBrains Mono, monospace', color: 'hsl(var(--foreground))' }}>
-                {data.vmin.toFixed(2)}
-              </span>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Skeleton pulse animation */}
+      {/* Density legend (paper2 → genreHex → ink). */}
+      <div style={{ width: HEATMAP_SIZE }}>
+        <canvas
+          ref={legendRef}
+          width={HEATMAP_SIZE}
+          height={8}
+          style={{
+            display: 'block',
+            width: HEATMAP_SIZE,
+            height: 8,
+            border: '0.5px solid var(--ink-33)',
+          }}
+        />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 8.5,
+            color: 'var(--muted)',
+            marginTop: 2,
+          }}
+        >
+          <span>{data.vmin.toFixed(0)}</span>
+          <span>density</span>
+          <span>{data.vmax.toFixed(1)}</span>
+        </div>
+      </div>
+
       <style>{`
         @keyframes pulse {
           0%, 100% { opacity: 0.4; }

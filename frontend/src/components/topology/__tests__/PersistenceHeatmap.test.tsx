@@ -33,13 +33,17 @@ beforeEach(() => {
 })
 
 describe('PersistenceHeatmap', () => {
+  // Phase 12 (12-05) reading-room reskin: the side-column persistence image now
+  // renders a framed heatmap (paper2→genreHex→ink ramp) + a horizontal density
+  // legend. The empty-state copy, axis labels, and legend layout changed from the
+  // Phase 9/10 version; these assertions track the reskin.
   it('shows empty state when no genre selected', () => {
     ;(usePersistenceImage as any).mockReturnValue({ data: null, isLoading: false })
     render(<PersistenceHeatmap />, { wrapper: Wrapper })
-    expect(screen.getByText(/select a genre or book/i)).toBeInTheDocument()
+    expect(screen.getByText(/pick a region/i)).toBeInTheDocument()
   })
 
-  it('renders canvas element when data is present', () => {
+  it('renders heatmap + legend canvases when data is present', () => {
     useVisualizationStore.setState({ selectedGenre: 'romance' })
     const mockData = {
       data: [0.1, 0.2, 0.3, 0.4],
@@ -51,7 +55,7 @@ describe('PersistenceHeatmap', () => {
     ;(usePersistenceImage as any).mockReturnValue({ data: mockData, isLoading: false })
     const { container } = render(<PersistenceHeatmap />, { wrapper: Wrapper })
     const canvases = container.querySelectorAll('canvas')
-    // Should have heatmap canvas + color bar canvas
+    // Heatmap canvas + density-legend canvas.
     expect(canvases.length).toBeGreaterThanOrEqual(2)
   })
 
@@ -64,7 +68,7 @@ describe('PersistenceHeatmap', () => {
     expect(canvases.length).toBe(0)
   })
 
-  it('renders axis labels when data present', () => {
+  it('renders the density legend caption when data present', () => {
     useVisualizationStore.setState({ selectedGenre: 'romance' })
     const mockData = {
       data: [0.1, 0.2, 0.3, 0.4],
@@ -75,11 +79,10 @@ describe('PersistenceHeatmap', () => {
     }
     ;(usePersistenceImage as any).mockReturnValue({ data: mockData, isLoading: false })
     render(<PersistenceHeatmap />, { wrapper: Wrapper })
-    expect(screen.getByText('Birth scale')).toBeInTheDocument()
-    expect(screen.getByText('Persistence')).toBeInTheDocument()
+    expect(screen.getByText('density')).toBeInTheDocument()
   })
 
-  it('displays vmin/vmax labels on color bar', () => {
+  it('displays vmin/vmax labels on the density legend', () => {
     useVisualizationStore.setState({ selectedGenre: 'romance' })
     const mockData = {
       data: [0.1, 0.2, 0.3, 0.4],
@@ -90,7 +93,8 @@ describe('PersistenceHeatmap', () => {
     }
     ;(usePersistenceImage as any).mockReturnValue({ data: mockData, isLoading: false })
     render(<PersistenceHeatmap />, { wrapper: Wrapper })
-    expect(screen.getByText('0.40')).toBeInTheDocument()
-    expect(screen.getByText('0.10')).toBeInTheDocument()
+    // Legend labels: vmin → toFixed(0) = "0", vmax → toFixed(1) = "0.4".
+    expect(screen.getByText('0')).toBeInTheDocument()
+    expect(screen.getByText('0.4')).toBeInTheDocument()
   })
 })
