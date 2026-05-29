@@ -19,8 +19,9 @@ void main() {
   vColor = aColor;
   vIndex = aIndex;
   vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-  // 12.5 (was 25.0): slider value 1.0 now renders at the old 0.5 visual size.
-  gl_PointSize = aSize * uSizeMultiplier * (12.5 / -mvPosition.z);
+  // 6.25 (was 12.5, originally 25.0): each halving rebases the slider so
+  // value 1.0 renders at what the previous default's 0.5 looked like.
+  gl_PointSize = aSize * uSizeMultiplier * (6.25 / -mvPosition.z);
   gl_Position = projectionMatrix * mvPosition;
 }
 `
