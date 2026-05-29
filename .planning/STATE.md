@@ -3,27 +3,38 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Shipped
 status: completed
-last_updated: "2026-05-29T05:14:50.247Z"
+last_updated: "2026-05-29T05:26:31.787Z"
 last_activity: 2026-05-29
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 24
-  completed_plans: 24
-  percent: 100
+  total_phases: 13
+  completed_phases: 11
+  total_plans: 46
+  completed_plans: 43
+  percent: 93
 ---
 
 # STATE
 
 ## Current Position
 
-Phase: 12 (reading-room-redesign) — **PLAN 12-03 COMPLETE 2026-05-29** (3/7 plans)
+Phase: 12 (reading-room-redesign) — **PLAN 12-04 COMPLETE 2026-05-29** (4/7 plans)
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
-- **Phase:** 12 — Plan 12-03 complete (3/7 plans); Catalog card + Comparative Study live. Next: 12-04 (Submit a Text → The Reading).
-- **Status:** Phase 12 (The Reading Room) plan 12-03 complete in 3 atomic feat commits (65bfa39 → bcf0da3). Two browse screens landed over the real corpus. **Catalog card (RR-03, §6.3):** breadcrumb (Collection › Genre › Title) + 3-col carrel — region-siblings rail ("You are reading", titles, click swaps the selection, hover → hoveredBookId) / SVG **plate detail** (corpus faint, selected book ink-ringed, dashed accent leader lines + a·b·c·d labels to the 4 nearest, fig.² caption) / letterpress **catalog card** aside (`data-tour-id="catalog-card"`: border-top 4px double + hard offset shadow + punch hole; shelfmark, title 24, author·year, Genre/Words/Vocab/UMAP-x/y grid, See also, Driving vocabulary chips from real top_10_tfidf_words, Five nearest with dot + cosine-distance). Drops to 2-col under `study` density. **Comparative Study (RR-04, §6.5):** two genre pickers + "&" (`data-tour-id="study-pickers"`); 3-col folio — region A (dot/label/count · SVG mini-plate · "Only in {A}" chips) / center "what they share" (two-circle Venn motif + shared chips + "ε ∈ [0, 0.6]") / region B (mirror); Editor's note + footnote³; curated word tables (mystery|romance, gothic|literary, adventure|western verbatim) + generic fallback. Added `studyA`/`studyB` + `setStudy` to readingRoomStore. **D-U1:** the card plate detail + study mini-plates are SVG (not extra WebGL); only the Collection plate is R3F. tsc clean; vite build clean (692 modules); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-03 + RR-04 complete.
-- **Next phase:** Phase 12 continues — 12-04 (Submit a Text → The Reading, RR-05), then 12-05..12-07 per 12-CONTEXT.md plan map. Run `/gsd-execute-phase 12` to land 12-04.
+- **Phase:** 12 — Plan 12-04 complete (4/7 plans); Submit a Text → The Reading (verdict) live on the REAL useClassify + useExplain pipeline. Next: 12-05 (Topology reading-room reskin).
+- **Status:** Phase 12 (The Reading Room) plan 12-04 complete in 2 atomic feat commits (82a8e8e → 496d023). The upload → verdict flow landed on the REAL pipeline (NOT the prototype's ~900ms simulation). **Submit a Text (RR-05, §6.6):** 2-col reading desk — foolscap framed textarea (`foolscap · paste below`, live word count, `data-tour-id="reading-desk"`) + "Generate a reading →" / "or upload a .txt" + 3 sample passages; right empty-state ("The reading appears here" + privacy note). Submitting wraps pasted text into a `.txt` File and runs the existing `useClassify` SSE job; while it runs the right panel shows **staged pipeline progress** (Uploading→Tokenizing→TF-IDF→Point cloud→Homology→Classifying) from the real SSE steps, then routes to `verdict` on `uploadStore.result`. Errored step / retry → framed, never blank. **The Reading (RR-05, §6.7):** breadcrumb + share/print; 2-col — left the essay (label, 38px title, 3 indented paragraphs w/ footnotes⁴⁵⁶, "Probability fix" bars from the real top-N, Notes block) · right a letterpress catalog card (provisional shelfmark, Verdict + Confidence "0.NN · marginal", UMAP-x/y, punch hole), a "Where it landed" **SVG** mini-plate w/ dashed accent pin (D-U1), and "Nearest five works". **L-13 voice:** confidence <0.80 → "marginal" (essay + card + footnote⁶), never "wrong"; ≥0.80 → "confident", hedging dropped. **Two-track contributions MAPPED from the real `useExplain.track_contributions`** (vocabulary/topology pct/100), NOT the prototype's hardcoded 0.76/0.24. Nearest-five prefers real `useExplain.nearest_training_books`, degrades to `bookLayout.nearestNeighbours` fallback; 410 → "upload expired", 503 → "explanation unavailable, verdict stands" (both framed). New `reading/` components: ReadingDesk, ProbabilityBars, VerdictEssay, WhereItLanded + Upload/Verdict screen wrappers. tsc clean; vite build clean (700 modules); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-05 complete.
+- **Next phase:** Phase 12 continues — 12-05 (Topology reading-room reskin, RR-06), then 12-06..12-07 per 12-CONTEXT.md plan map. Run `/gsd-execute-phase 12` to land 12-05.
 - **Last activity:** 2026-05-29
+
+### Phase 12 plan 12-04 complete (2026-05-29)
+
+Plan 12-04 landed the Submit-a-Text → verdict flow on the REAL classify pipeline (RR-05):
+
+- **Real pipeline, not a simulation:** the reading desk wraps pasted text into an in-memory `.txt` File so the existing `useClassify` SSE job runs unchanged for paste + upload alike; the right panel swaps the empty-state for staged SSE progress while the job runs and routes to `verdict` on `uploadStore.result`. Errored step / retry message → framed panel (never blank).
+- **Verdict reads the real result + useExplain:** `VerdictEssay` fires `useExplain` on mount; "Probability fix" bars from the real `result.top_n`; Notes-block centroid/topology fractions MAPPED from `useExplain.track_contributions.{vocabulary,topology}.pct/100` (the prototype's 0.76/0.24 are NOT hardcoded); nearest-five from real `useExplain.nearest_training_books` with a `bookLayout.nearestNeighbours` fallback so the panel never blanks. 410/503 render framed notes.
+- **L-13 voice:** `result.confidence < 0.80` → the word "marginal" (essay, catalog card, footnote⁶), never "wrong"; ≥0.80 drops the hedging and reads "confident".
+- **D-U1 SVG mini-plate:** `WhereItLanded` reuses the id-seeded `bookLayout` corpus positions + a job-id-seeded dashed accent pin near the predicted region — decorative SVG, no second WebGL context.
+- **Known Stubs:** the where-it-landed pin position, the catalog-card UMAP-x/y, and the sample-passage filler body are derived/decorative (the classify result carries no plate coordinate; the previews are too short for the real classifier). All real fields (verdict genre, confidence, word count, top-N, nearest, track contributions) come from the hooks.
+- **Verification:** tsc clean; vite build clean (700 modules, +8 vs 12-03); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). Live classify run (backend :8000 + Redis + arq) is the user's verify step.
 
 ### Phase 12 plan 12-01 complete (2026-05-29)
 
@@ -280,6 +291,7 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 | Phase 12 P12-01 | 40min | 6 tasks | 14 files |
 | Phase 12 P12-02 | ~7min | 4 tasks | 9 files |
 | Phase 12 P12-03 | ~6min | 4 tasks | 10 files |
+| Phase 12 P12-04 | ~10min | 3 tasks | 7 files |
 
 ## Open Blockers
 
@@ -297,7 +309,9 @@ Documentation drift to clean up (folded into Wave 4 per D-34, no longer a separa
 
 ## Session Continuity
 
-**Stopped at (2026-05-29):** Completed 12-03-PLAN.md — Phase 12 (The Reading Room) Catalog card + Comparative Study via `/gsd-execute-phase 12`. Three atomic feat commits (`65bfa39` → `bcf0da3`) + this docs commit landed both browse screens. Catalog card: breadcrumb + 3-col carrel (siblings rail / SVG plate detail with dashed accent leader lines + a·b·c·d labels to 4 nearest / letterpress catalog-card aside with shelfmark/title/author·year/Genre·Words·Vocab·UMAP grid/See also/Driving vocabulary chips/Five nearest), `data-tour-id="catalog-card"`. Comparative Study: two genre pickers + "&" (`data-tour-id="study-pickers"`), 3-col folio (region A / shared two-circle Venn motif + chips + "ε ∈ [0, 0.6]" / region B), "Only in {A/B}" chips, Editor's note + footnote³, curated word tables + generic fallback. Added `studyA`/`studyB` + `setStudy`. Card + study routes registered (PlaceholderScreens replaced). tsc clean; vite build clean (692 modules); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-03 + RR-04 complete.
+**Stopped at (2026-05-29):** Completed 12-04-PLAN.md — Phase 12 (The Reading Room) Submit a Text → The Reading (verdict) via `/gsd-execute-phase 12`. Two atomic feat commits (`82a8e8e` → `496d023`) + this docs commit landed the upload → verdict flow on the REAL pipeline. Submit a Text: foolscap textarea (`data-tour-id="reading-desk"`, live word count) + "Generate a reading →" / "or upload a .txt" + 3 sample passages; right empty-state + privacy note; submitting wraps pasted text into a `.txt` File and runs the existing `useClassify` SSE job (staged progress while running) then routes to `verdict` on `uploadStore.result`. The Reading: breadcrumb + share/print; essay (38px title, 3 indented paragraphs w/ footnotes⁴⁵⁶, "Probability fix" bars from the real top-N, Notes block) + letterpress catalog card (provisional shelfmark, Verdict + Confidence "0.NN · marginal", UMAP-x/y, punch hole) + "Where it landed" SVG mini-plate w/ dashed accent pin + "Nearest five works". L-13 voice (<0.80 → "marginal", never "wrong"); two-track contributions MAPPED from the real `useExplain.track_contributions` (not hardcoded 0.76/0.24); nearest-five from real `useExplain.nearest_training_books` w/ `bookLayout` fallback; 410/503 framed. New `reading/` components (ReadingDesk, ProbabilityBars, VerdictEssay, WhereItLanded) + Upload/Verdict screen wrappers; upload + verdict routes registered (PlaceholderScreens replaced). tsc clean; vite build clean (700 modules); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-05 complete.
+
+**Next command:** `/gsd-execute-phase 12` to land 12-05 (Topology reading-room reskin, RR-06: existing R3F VRViewer + EpsilonSlider + PersistenceDiagram + PersistenceHeatmap; accent ε signal; genre-hex heatmap ramp). Optional in-browser verification of 12-04 first (needs backend :8000 + Redis + arq up): masthead → Submit a Text → paste a passage or click a sample → "Generate a reading →" runs the real classify job (staged progress) → routes to The Reading; verify the essay/probability bars/catalog card/where-it-landed/nearest-five against `07-the-reading.png`, a <0.80 confidence reads "marginal", and (backend down) the 503/expired paths render framed, not blank.
 
 **Decision (12-03):** Card plate detail is SVG, not R3F. The reused R3F scatter is WORD-keyed (12-02) so it has no book points to highlight or draw leader lines to; SVG over deterministic id-seeded book positions renders `03-catalog-card.png` faithfully and honours D-U1's nuance (detail/decorative plates = SVG, one WebGL context per app). `CorpusBookFull` carries no x/y, year, vocab, or shelfmark — those are derived deterministically (id-seeded, Known Stubs); all real fields (title/author/genre/word_count/driving vocabulary/region membership) come from the hook. studyA/studyB live in the shell store, default Mystery & Romance.
 
