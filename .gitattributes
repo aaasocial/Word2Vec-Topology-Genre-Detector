@@ -6,3 +6,10 @@ data/models/*.npz filter=lfs diff=lfs merge=lfs -text
 
 # BUG-04 — Never LFS-track planning markdown. PITFALLS.md §15 (root cause #5).
 .planning/**/*.md -lfs -filter -diff -merge -text
+
+# Pin the corpus manifest to CRLF on every checkout. corpus_hash() in
+# backend/cache/lineage.py is a raw sha256 of the file bytes and is baked into
+# lineage.json + every cache_key, so a Windows-trained lineage (CRLF) cannot be
+# validated against a Linux checkout (LF). Forcing CRLF everywhere keeps the
+# hash platform-independent until corpus_hash() is itself normalized (v2.1).
+corpus/books.yaml text eol=crlf
