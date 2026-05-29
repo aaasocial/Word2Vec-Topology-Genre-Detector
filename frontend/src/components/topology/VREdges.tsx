@@ -7,14 +7,23 @@ import { useVisualizationStore } from '@/stores/visualizationStore'
 interface VREdgesProps {
   edges: [number, number, number, number][]
   positions: [number, number, number][]
+  /** Reading-room accent (THREE.Color) — freshly-born edges flash this. */
+  accentColor: THREE.Color
+  /** Resting ink-ish hairline color for settled edges (THREE.Color). */
+  restColor: THREE.Color
 }
 
 /**
  * R3F component rendering VR filtration edges as THREE.LineSegments.
  * Uses useFrame hot-path to read vrEpsilon from store (no subscription overhead).
- * feature_type-aware coloring applied by vrFiltering.ts.
+ *
+ * Phase 12 (12-05) reading-room skin: freshly-born edges flash the **accent**
+ * (read live from the active reading-room palette, not the amber #FACC15 literal)
+ * and fade to an ink-ish resting hairline over ~500ms. The base "birth" color is
+ * still set by vrFiltering.ts for the just-crossed band; the per-frame fade below
+ * lerps from accent → rest, so both signals stay accent-toned.
  */
-export function VREdges({ edges, positions }: VREdgesProps) {
+export function VREdges({ edges, positions, accentColor, restColor }: VREdgesProps) {
   const geomRef = useRef<THREE.BufferGeometry>(null)
   const lastEpsilonRef = useRef<number>(-1)
   const birthTimestamps = useRef<Map<number, number>>(new Map())
@@ -48,7 +57,14 @@ export function VREdges({ edges, positions }: VREdgesProps) {
         : 0
       lastEpsilonRef.current = epsilon
 
-      const result = filterEdgesByEpsilon(edges, epsilon, positions)
+      const result = filterEdgesByEpsilon(
+        edges,
+        epsilon,
+        positions,
+        0.005,
+        accentColor,
+        restColor,
+      )
 
       // Track birth timestamps for newly visible edges
       const now = clock.getElapsedTime() * 1000
@@ -69,8 +85,8 @@ export function VREdges({ edges, positions }: VREdgesProps) {
       geom.setDrawRange(0, result.count * 2)
     }
 
-    // Apply birth fade effect: edges within 500ms of birth stay highlight,
-    // then fade to default over 300ms
+    // Apply birth fade effect: edges stay at the accent flash for ~500ms after
+    // birth, then lerp accent → resting ink-ish hairline over 300ms.
     const now = clock.getElapsedTime() * 1000
     const colArr = buffers.colAttr.array as Float32Array
     let needsColorUpdate = false
@@ -83,12 +99,12 @@ export function VREdges({ edges, positions }: VREdgesProps) {
         return
       }
       if (age > 500) {
-        // Fade from highlight to subdued over 300ms
+        // Fade from accent flash to resting hairline over 300ms
         const t = (age - 500) / 300
         const offset = edgeIdx * 6
-        const r = 0.98 + (0.29 - 0.98) * t
-        const g = 0.80 + (0.29 - 0.80) * t
-        const b = 0.08 + (0.35 - 0.08) * t
+        const r = accentColor.r + (restColor.r - accentColor.r) * t
+        const g = accentColor.g + (restColor.g - accentColor.g) * t
+        const b = accentColor.b + (restColor.b - accentColor.b) * t
         colArr[offset] = r
         colArr[offset + 1] = g
         colArr[offset + 2] = b
@@ -110,7 +126,7 @@ export function VREdges({ edges, positions }: VREdgesProps) {
         <bufferAttribute attach="attributes-position" {...buffers.posAttr} />
         <bufferAttribute attach="attributes-color" {...buffers.colAttr} />
       </bufferGeometry>
-      <lineBasicMaterial vertexColors transparent opacity={0.7} />
+      <lineBasicMaterial vertexColors transparent opacity={0.85} />
     </lineSegments>
   )
 }

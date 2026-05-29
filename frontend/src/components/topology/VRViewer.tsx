@@ -3,29 +3,46 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useVisualizationStore } from '@/stores/visualizationStore'
-import { usePreferencesStore } from '@/stores/preferencesStore'
+import { useReadingRoomStore } from '@/stores/readingRoomStore'
 import { useVRData } from '@/hooks/useVRData'
+import { genreColor } from '@/constants/genres'
 import { VREdges } from './VREdges'
 
-/** Resolve `--scene-bg` to an rgb string (same trick as ScatterCanvas). */
+/**
+ * Read a `#RRGGBB` reading-room CSS custom property to a THREE.Color. The
+ * reading-room tokens hold literal hexes on <html>, so one getComputedStyle read
+ * suffices (same pattern as ScatterCanvas). Falls back to the cream/ink defaults.
+ */
+function readCssColor(varName: string, fallback: string): THREE.Color {
+  if (typeof document === 'undefined') return new THREE.Color(fallback)
+  const hex = getComputedStyle(document.documentElement).getPropertyValue(varName).trim()
+  if (!hex) return new THREE.Color(fallback)
+  try {
+    return new THREE.Color(hex)
+  } catch {
+    return new THREE.Color(fallback)
+  }
+}
+
+/** Scene background = the page paper (D-U1 — no near-black scene). */
 function readSceneBgFromCss(): THREE.Color {
-  if (typeof document === 'undefined') return new THREE.Color('#0A0A0F')
-  const hsl = getComputedStyle(document.documentElement).getPropertyValue('--scene-bg').trim()
-  if (!hsl) return new THREE.Color('#0A0A0F')
-  const el = document.createElement('div')
-  el.style.color = `hsl(${hsl})`
-  document.body.appendChild(el)
-  const rgb = getComputedStyle(el).color
-  document.body.removeChild(el)
-  return new THREE.Color(rgb)
+  return readCssColor('--paper', '#F2EDE0')
 }
 
 /**
- * Simplified point rendering for VR viewer.
- * All points at 40% opacity, selected genre at 80%.
+ * VR point cloud. Ring / structural nodes take the selected region's reading-room
+ * genre hex (L-05); the scattered dust takes ink so it recedes against paper.
+ * The genre hex is determined once at the cloud level (the backend payload does
+ * not flag which points are "ring", so all points read the region color — which
+ * matches the screenshot, where the region's loop is the whole cloud).
  */
-function VRPoints({ positions }: { positions: [number, number, number][] }) {
-  const theme = usePreferencesStore((s) => s.theme)
+function VRPoints({
+  positions,
+  genreHex,
+}: {
+  positions: [number, number, number][]
+  genreHex: string
+}) {
   const geometry = useMemo(() => {
     const geom = new THREE.BufferGeometry()
     const posArr = new Float32Array(positions.length * 3)
@@ -38,20 +55,14 @@ function VRPoints({ positions }: { positions: [number, number, number][] }) {
     return geom
   }, [positions])
 
-  // Point color flips with theme so cream-on-cream stays legible. Reading
-  // --foreground each render is cheap (the resolveCssVar path skirts re-renders).
-  const pointColor = theme === 'system'
-    ? (typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: light)').matches ? '#181A2D' : '#F5F5FF')
-    : (theme === 'light' ? '#181A2D' : '#F5F5FF')
-
   return (
     <points geometry={geometry}>
       <pointsMaterial
-        size={0.02}
+        size={0.024}
         sizeAttenuation
-        color={pointColor}
+        color={genreHex}
         transparent
-        opacity={0.6}
+        opacity={0.85}
         depthWrite={false}
       />
     </points>
@@ -59,32 +70,32 @@ function VRPoints({ positions }: { positions: [number, number, number][] }) {
 }
 
 /**
- * Empty state overlay when epsilon is 0.
+ * Empty-state overlay when epsilon is 0 (the cloud is still dust).
  */
 function EmptyOverlay() {
   return (
     <div
       style={{
         position: 'absolute',
-        bottom: 48,
+        bottom: 14,
         left: 0,
         right: 0,
         textAlign: 'center',
-        color: 'hsl(var(--muted-foreground))',
-        fontSize: 13,
+        color: 'var(--muted)',
+        fontFamily: 'var(--font-serif)',
+        fontStyle: 'italic',
+        fontSize: 12.5,
         pointerEvents: 'none',
-        zIndex: 10,
+        zIndex: 2,
       }}
     >
-      Drag the epsilon slider to explore filtration
+      Drag the filtration radius to grow the complex
     </div>
   )
 }
 
-/**
- * Loading state for VR viewer.
- */
-function LoadingState() {
+/** Centered status note inside the framed plate (loading / awaiting region). */
+function PlateNote({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -93,42 +104,28 @@ function LoadingState() {
         justifyContent: 'center',
         width: '100%',
         height: '100%',
-        color: 'hsl(var(--muted-foreground))',
-        fontSize: 14,
-      }}
-    >
-      Loading VR data...
-    </div>
-  )
-}
-
-/**
- * No genre selected state.
- */
-function NoGenreState() {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        height: '100%',
-        color: 'hsl(var(--muted-foreground))',
-        fontSize: 14,
+        color: 'var(--muted)',
+        fontFamily: 'var(--font-serif)',
+        fontStyle: 'italic',
+        fontSize: 13,
         textAlign: 'center',
         padding: 24,
       }}
     >
-      Select a genre to view its Vietoris-Rips filtration
+      {children}
     </div>
   )
 }
 
 /**
- * VRViewer: R3F Canvas wrapper for the Vietoris-Rips filtration viewer.
- * Renders in the right panel of the Topology tab.
- * Separate Canvas instance from scatter (per CONTEXT.md).
+ * VRViewer: R3F Canvas wrapper for the Vietoris–Rips filtration viewer (the hero).
+ *
+ * Phase 12 (12-05) reading-room skin:
+ * - Scene background reads `--paper` imperatively (no canvas remount on a paper
+ *   Tweak — the PITFALLS §13 pattern shared with ScatterCanvas).
+ * - Ring/structural nodes take the region's reading-room genre hex.
+ * - Freshly-born edges flash the active accent (read from `--accent`), fading to
+ *   an ink-ish resting hairline (read from `--ink`).
  */
 export function VRViewer() {
   const selectedGenre = useVisualizationStore((s) => s.selectedGenre)
@@ -136,17 +133,31 @@ export function VRViewer() {
   const vrEpsilon = useVisualizationStore((s) => s.vrEpsilon)
   const { data, isLoading } = useVRData(selectedGenre, projection)
 
-  // PITFALLS §13 mirror: same imperative scene.background pattern as
-  // ScatterCanvas so the topology Canvas doesn't remount on theme flip.
+  // PITFALLS §13: hold the THREE.Scene ref so we can re-tint the background
+  // imperatively when the reader changes the paper Tweak — never key <Canvas>
+  // on the palette (that remounts the WebGL context + loses the camera pose).
   const sceneRef = useRef<THREE.Scene | null>(null)
-  const theme = usePreferencesStore((s) => s.theme)
+  const paper = useReadingRoomStore((s) => s.tweaks.paper)
+  const accent = useReadingRoomStore((s) => s.tweaks.accent)
   useEffect(() => {
     if (sceneRef.current) sceneRef.current.background = readSceneBgFromCss()
-  }, [theme])
+  }, [paper])
 
-  if (!selectedGenre) return <NoGenreState />
-  if (isLoading) return <LoadingState />
-  if (!data) return <NoGenreState />
+  // Edge colors: accent flash (live --accent) + ink-ish resting hairline (--ink).
+  // Recomputed when the accent/paper Tweak changes so a swap reskins the edges.
+  const edgeColors = useMemo(
+    () => ({
+      accentColor: readCssColor('--accent', '#8B3B2B'),
+      restColor: readCssColor('--ink', '#26211B'),
+    }),
+    [accent, paper],
+  )
+
+  const genreHex = selectedGenre ? genreColor(selectedGenre) : '#736B5E'
+
+  if (!selectedGenre) return <PlateNote>Select a region to view its Vietoris–Rips filtration.</PlateNote>
+  if (isLoading) return <PlateNote>Computing filtration…</PlateNote>
+  if (!data) return <PlateNote>No filtration data for this region.</PlateNote>
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
@@ -158,9 +169,14 @@ export function VRViewer() {
           scene.background = readSceneBgFromCss()
         }}
       >
-        <ambientLight intensity={0.5} />
-        <VRPoints positions={data.positions} />
-        <VREdges edges={data.edges} positions={data.positions} />
+        <ambientLight intensity={0.6} />
+        <VRPoints positions={data.positions} genreHex={genreHex} />
+        <VREdges
+          edges={data.edges}
+          positions={data.positions}
+          accentColor={edgeColors.accentColor}
+          restColor={edgeColors.restColor}
+        />
         <OrbitControls enableDamping dampingFactor={0.1} />
       </Canvas>
       {vrEpsilon === 0 && <EmptyOverlay />}

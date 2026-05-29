@@ -5,16 +5,18 @@
  * Edges are pre-sorted by eps_birth ascending, enabling binary search for cutoff.
  *
  * feature_type: 0=H0 (generic), 1=H1 boundary, 2=H2 boundary
+ *
+ * Phase 12 (12-05) reading-room skin: the birth-highlight + resting colors are now
+ * passed in (the reading-room accent + an ink-ish hairline) rather than baked-in
+ * amber/indigo literals, so the filtration reads against warm paper and the ε
+ * signal stays the active accent.
  */
 
-// Color constants
-const SUBDUED_R = 0.29  // #4A = 74/255
-const SUBDUED_G = 0.29
-const SUBDUED_B = 0.35  // #5A = 90/255 -> 0.353
-
-const HIGHLIGHT_R = 0.98  // #FA = 250/255
-const HIGHLIGHT_G = 0.80  // #CC = 204/255 -> 0.8
-const HIGHLIGHT_B = 0.08  // #15 = 21/255 -> 0.082
+interface RGB {
+  r: number
+  g: number
+  b: number
+}
 
 export interface FilterResult {
   linePositions: Float32Array
@@ -51,12 +53,16 @@ export function getVisibleEdgeCount(
  * @param epsilon - current filtration radius
  * @param positions - [x, y, z][] word positions
  * @param birthWindow - epsilon distance within which an edge is considered "at birth"
+ * @param highlight - color (0..1 rgb) for freshly-born edges (reading-room accent)
+ * @param rest - color (0..1 rgb) for settled edges (ink-ish hairline)
  */
 export function filterEdgesByEpsilon(
   edges: [number, number, number, number][],
   epsilon: number,
   positions: [number, number, number][],
   birthWindow: number = 0.005,
+  highlight: RGB = { r: 0.98, g: 0.8, b: 0.08 },
+  rest: RGB = { r: 0.29, g: 0.29, b: 0.35 },
 ): FilterResult {
   const count = getVisibleEdgeCount(edges, epsilon)
 
@@ -86,15 +92,15 @@ export function filterEdgesByEpsilon(
     let r: number, g: number, b: number
 
     if (nearBirth) {
-      // Birth highlight for all feature types at birth threshold
-      r = HIGHLIGHT_R
-      g = HIGHLIGHT_G
-      b = HIGHLIGHT_B
+      // Birth highlight (reading-room accent) for edges at the birth threshold
+      r = highlight.r
+      g = highlight.g
+      b = highlight.b
     } else {
-      // Subdued color for all non-birth edges
-      r = SUBDUED_R
-      g = SUBDUED_G
-      b = SUBDUED_B
+      // Resting ink-ish hairline for all non-birth edges
+      r = rest.r
+      g = rest.g
+      b = rest.b
     }
 
     // Set color for both vertices of the line segment
