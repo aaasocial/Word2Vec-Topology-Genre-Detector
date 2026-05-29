@@ -87,7 +87,7 @@ See [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md) for ful
 - [x] **RR-06**: Topology screen, reading-room skin — hero VR filtration viewer (existing R3F `VRViewer`) + ε slider, persistence diagram + persistence image side column; H₁ only; ε links all three; accent (not amber) for the ε signal, genre-hex heatmap ramp. Built on the existing topology components + hooks.
 - [x] **RR-07**: About + the Guide — About prose; Guide right side-sheet (Welcome / How to wander / How it works) auto-opening once per browser (localStorage `rr.guide.seen.v1`), with the 5 live "How it works" method figures rendered at rest (background-tab safe).
 - [x] **RR-08**: The guided tour — 6 stops navigating the real screens (plate, catalog rail, catalog card, topology plate [pre-selects a region], study pickers, reading desk) with reading-room spotlight (four dim panels + accent frame) and a margin card; ←/→/Esc; missing-anchor → wait then advance. Extends `tour/anchors.ts`.
-- [ ] **RR-09**: Responsive + animation-robustness pass — fluid editorial grids collapsing at ~1100px (drop marginalia/rail) and ~768px (single column), Guide full-width on narrow, tour card clamped; every "alive" figure degrades to a valid static frame when the timeline is paused.
+- [x] **RR-09**: Responsive + animation-robustness pass — fluid editorial grids collapsing at ~1100px (drop marginalia/rail) and ~768px (single column), Guide full-width on narrow, tour card clamped; every "alive" figure degrades to a valid static frame when the timeline is paused.
 
 ---
 
@@ -224,13 +224,23 @@ Captured during v1 planning; deferred from v2.0 scope. Re-evaluate at v3 boundar
 | ONBOARD-01 | Phase 11 | Complete |
 | ONBOARD-02 | Phase 11 | Complete |
 | ONBOARD-03 | Phase 11 | Complete |
+| RR-01 | Phase 12 | Complete |
+| RR-02 | Phase 12 | Complete |
+| RR-03 | Phase 12 | Complete |
+| RR-04 | Phase 12 | Complete |
+| RR-05 | Phase 12 | Complete |
+| RR-06 | Phase 12 | Complete |
+| RR-07 | Phase 12 | Complete |
+| RR-08 | Phase 12 | Complete |
+| RR-09 | Phase 12 | Complete |
 
 **Coverage:**
 - v1.0 requirements: 63 total — all Validated (shipped 2026-04-13)
 - v2.0 requirements: 28 total (23 must-ship + 5 P2) — all mapped to Phases 6–11, all Complete/Validated
+- v2.0 reading-room redesign: 9 total (RR-01..RR-09) — all mapped to Phase 12, all Complete
 - Unmapped: 0
 
 ---
 *v1 requirements defined: 2026-04-11 — validated 2026-04-13*
 *v2 requirements defined: 2026-05-22*
-*Last updated: 2026-05-28 — Phase 11 (ONBOARD-01..03) appended and marked Complete*
+*Last updated: 2026-05-29 — Phase 12 (RR-01..RR-09) appended to traceability and marked Complete (RR-09 closes the phase)*

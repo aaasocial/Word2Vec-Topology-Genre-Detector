@@ -4,6 +4,8 @@
 
 A hosted web application that makes the hidden geometric structure of literary genres visible and usable. Books are embedded in a shared word2vec space weighted by TF-IDF, forming genre-specific shapes that can be explored through interactive 3D visualizations and used to classify new books via kernel SVM. Ships with a bundled labeled corpus so it works immediately; users can also upload their own text files for classification and visualization.
 
+The front end is **The Reading Room** (Phase 12) — an editorial reskin (Spectral + JetBrains Mono, warm-paper palettes, marginalia, footnotes) over the unchanged word2vec/topology engine: a masthead-routed library of eight screens, a Guide side-sheet, and a 6-stop guided tour. It replaces the earlier indigo theme + tabbed shell wholesale while reusing every data hook, store, and endpoint underneath.
+
 ## Core Value
 
 A user uploads any book and sees where it lives in semantic space — and why the algorithm predicts the genre it does.
@@ -85,10 +87,24 @@ A user uploads any book and sees where it lives in semantic space — and why th
 - [x] **DEPTH-06 (P2):** `DrivingWordsPills.tsx` renders TF-IDF-driven words ranked by per-genre w2v centroid attribution; D-46 disclosure copy "proxies, not literal classifier inputs" rendered verbatim.
 - [x] **DEPTH-07 (P2):** `UncertaintyBadge` fires on `badge_fires === true`; operative thresholds gap<0.2801 OR norm_entropy>0.7738 declared exactly once in `backend/pipeline/explain.py:33-34` (tightened from research defaults 0.10/0.70 after a 53% fire-rate audit on hold-out).
 
-**Visual Polish**
-- [ ] Dark mode / refined theming pass
-- [ ] Onboarding flow / first-load tour
-- [ ] Empty-state polish across the app
+**Visual Polish** _(delivered in Phase 10/11, then superseded by the Phase 12 Reading Room redesign — see below; the Phase 10/11 milestone requirements remain historically met)_
+- [x] Dark mode / refined theming pass (Phase 10 — light/dark/system indigo theme; **superseded** by the Phase 12 paper/accent/density Tweaks, D-U2)
+- [x] Onboarding flow / first-load tour (Phase 10/11 — How-It-Works → tour chain; **superseded** by the Phase 12 Guide side-sheet + 6-stop guided tour, D-U2)
+- [x] Empty-state polish across the app (Phase 10; carried into the reading-room screens — framed never-blank states)
+
+**Reading Room redesign (Phase 12 — closed 2026-05-29)**
+
+A wholesale editorial reskin + restructure of the **entire front end** into a "reading room" idiom (Spectral + JetBrains Mono, warm-paper palettes, square rules, hard offset shadows, marginalia, footnotes), wrapping the **same** word2vec/topology product — every data hook, store, and endpoint is reused unchanged (D-U2: a reskin, not a backend change). The 8 masthead-routed screens (landing · collection · catalog card · topology · comparative study · submit-a-text · the reading · about) + the Guide side-sheet + the 6-stop guided tour + the Tweaks panel replace the Phase 10/11 tabbed indigo shell wholesale. Fluid editorial layout (no fixed artboard) that collapses gracefully at ~1100px / ~768px; every "alive" figure degrades to a valid static frame in a background tab.
+
+- [x] **RR-01** Editorial design system + app shell (tokens, masthead, footer, footnote host, Tweaks; replaces the indigo `index.css`)
+- [x] **RR-02** Collection screen (3-col carrel; **reskinned existing R3F scatter** per D-U1, region filter, Find, marginalia)
+- [x] **RR-03** Catalog card screen (breadcrumb, siblings rail, SVG plate detail, letterpress card)
+- [x] **RR-04** Comparative Study folio (two pickers, shared/distinctive vocabulary, Venn motif, Editor's note)
+- [x] **RR-05** Submit a Text → The Reading (real `useClassify`/`useExplain`; "marginal" voice rule; probability fix; nearest five)
+- [x] **RR-06** Topology reading-room skin (existing R3F VRViewer + ε slider + diagram + image; H₁ only; accent ε; genre-hex ramp)
+- [x] **RR-07** About + the Guide (auto-open-once side-sheet; 5 background-tab-safe live method figures)
+- [x] **RR-08** The 6-stop guided tour (navigates the real screens; four-panel spotlight; pre-selects a region at Topology)
+- [x] **RR-09** Responsive + animation-robustness pass (fluid grids collapse at ~1100/768; figures degrade to static frames)
 
 ### Out of Scope
 
@@ -135,6 +151,7 @@ Persistent homology scales poorly with point count (Vietoris-Rips complex constr
 | Cache key includes corpus_hash + w2v_model_sha256 | Latent v1 footgun: cache key omitted model-lineage inputs, so a retrain could silently return stale precomputed artifacts. Lands before Phase 8 retrain to avoid mid-flight migration. | Validated — v2.0 (Phase 6, BUG-05) |
 | Planning files protected by pre-commit + CI + snapshots | v1 ROADMAP/STATE were wiped to 0 bytes by a GSD wrap-up template (commit 336eb7c, 2026-04-13). Hook rejects 0-byte commits to `.planning/**/*.md`; `.gitattributes` excludes from LFS; CI is a backstop. | Validated — v2.0 (Phase 6, BUG-04) |
 | v2: Phase 8 closes with ship-with-disclaimer for CEXP-04 (2026-05-26) | v2 corpus integrity was rebuilt via Phase 8.1's drop strategy after a Wave-1.5 audit found 141/240 books had wrong gid bindings — the verified-clean corpus is 154 books (8 genres × 15–25 each). v2 SVM macro-F1 = 0.7367 beats v1 = 0.3235 by +41pp (permutation p = 0.0010) on the 20-book hold-out, satisfying D-32 strict-`>` + significance. However, GroupKFold-by-author gap = 45.03pp (>> 15pp threshold) and the per-author smoke test fails (mean-gap 36.96pp >> 10pp threshold), indicating significant author-leakage in the v2 corpus. Per D-31, ship with explicit public disclaimer rather than restructure-and-retry. | Validated with disclaimer — v2.0 Phase 8 (v2.0-data Release published with `v2_validation_report.md` attached; Phase 9 inherits a working v2 SVM; v2.1 follow-up addresses author-leakage via stricter per-author caps OR per-author fine-tuning) |
+| v2: front end recast as The Reading Room, reusing the data layer (D-U2, 2026-05-29) | The Phase 10 indigo theme + Phase 11 onboarding chain were a horizontal polish pass over the original tabbed shell. The user chose a wholesale editorial redesign (the Reading Room) as the production front end — a reskin + restructure only: every data hook, Zustand store, and API endpoint is reused unchanged, and the math/semantics are untouched (topology stays H₁-only with the N-D disclaimer; verdict voice stays "marginal", never "wrong"). D-U1 keeps the existing R3F/WebGL scatter for the primary interactive plate (reskinned) and uses lightweight SVG for decorative mini-plates. | Validated — v2.0 Phase 12 (RR-01..RR-09 complete in 7 plans; the Phase 10/11 indigo UI is superseded in the live app but their milestone requirements remain historically met; fluid layout collapses at ~1100/768 with no fixed artboard) |
 
 ## Evolution
 
@@ -154,7 +171,7 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-27 — v2.0 Phase 9 complete: classification depth landed end-to-end. Calibrated SVM (libsvm Platt, Brier 0.0481) retrained; explain artifact + FastAPI lifespan loader + `POST /explain` endpoint operational at p50 = 15ms; frontend renders top-3 + UncertaintyBadge + ClassificationExplain panel (5 NN + track contributions + driving words) + Step7 walkthrough disclaimer with D-53 "upper bound" framing. 7 UAT items pending live walkthrough (see `09-HUMAN-UAT.md`). Phase 10 (Visual Polish — dark mode + onboarding + empty-state polish) next; depends on Phases 6–9 (all upstream complete).*
+*Last updated: 2026-05-29 — v2.0 Phase 12 complete: The Reading Room redesign landed end-to-end (RR-01..RR-09, 7 plans). The entire front end is recast into the editorial reading-room idiom — masthead-routed 8-screen library + Guide side-sheet + 6-stop guided tour + paper/accent/density Tweaks — reusing every data hook, store, and endpoint unchanged (D-U2). The Phase 10 indigo theme + Phase 11 onboarding chain are superseded in the live app (their milestone requirements remain historically met). Plan 12-07 closed the phase with a fluid responsive pass (grids collapse at ~1100/768; no fixed artboard) + an animation-robustness pass (every "alive" figure degrades to a valid static frame in a background tab); tsc clean, Vitest green for surviving/updated components (6 Phase 9 deferred excepted), Playwright 6-stop tour smoke green.*
 
 **Shipped milestones:**
 - **v1.0** (2026-04-13, archived 2026-05-24) — see [`.planning/milestones/v1.0-ROADMAP.md`](milestones/v1.0-ROADMAP.md) and [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md). Live at https://word2vec-topology-genre-detector-production.up.railway.app.

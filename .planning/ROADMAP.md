@@ -42,7 +42,7 @@
 - [x] **Phase 9: Classification Depth** — Top-N calibrated predictions and "why this genre" explainability built on the Phase-8 SVM. **Complete 2026-05-27** (6/6 plans; 5/5 ROADMAP success criteria + 7/7 DEPTH requirements verified; 7 UAT items pending live walkthrough).
 - [x] **Phase 10: Visual Polish** — Dark mode, onboarding tour, empty-state polish — horizontal sweep across components touched by Phases 6–9. (completed 2026-05-27)
 - [x] **Phase 11: Onboarding & Theme Defaults** — Flip default theme to light; auto-run the "How It Works" walkthrough on first visit (or first in ≥30 days), then chain into the 4-step tour. Persisted via localStorage timestamp. (added 2026-05-28) (completed 2026-05-28)
-- [ ] **Phase 12: The Reading Room (full front-end redesign)** — Wholesale editorial reskin + restructure (Spectral/JetBrains Mono, paper palettes, masthead nav, 8 routes, Guide side-sheet, 6-stop tour, Tweaks). Reuses the existing data layer/hooks; supersedes the Phase 10 indigo theme + Phase 11 onboarding UI. (added 2026-05-29)
+- [x] **Phase 12: The Reading Room (full front-end redesign)** — Wholesale editorial reskin + restructure (Spectral/JetBrains Mono, paper palettes, masthead nav, 8 routes, Guide side-sheet, 6-stop tour, Tweaks). Reuses the existing data layer/hooks; supersedes the Phase 10 indigo theme + Phase 11 onboarding UI. (added 2026-05-29) (completed 2026-05-29)
 
 | # | Phase | Goal (outcome, not task) | Requirements | Success criteria |
 |---|---|---|---|---|
@@ -52,7 +52,7 @@
 | 9 | Classification Depth | Classification results show ranked, calibrated alternatives and an honest "why this genre?" explanation that users can interrogate | DEPTH-01, DEPTH-02, DEPTH-03, DEPTH-04, DEPTH-05, DEPTH-06, DEPTH-07 | 5 |
 | 10 | Visual Polish | The app feels finished: theming respects user preference, first-time visitors are oriented, and every empty state has intentional copy | POLISH-01, POLISH-02, POLISH-03, POLISH-04, POLISH-05 | 5 |
 | 11 | Onboarding & Theme Defaults | New users land in light mode and are walked through How-It-Works then the tour on first visit (or first in ≥30 days) | ONBOARD-01, ONBOARD-02, ONBOARD-03 | 3 |
-| 12 | The Reading Room (redesign) | 6/7 | In Progress|  |
+| 12 | The Reading Room (redesign) | The entire front end is recast into a fluid editorial reading-room idiom (masthead 8-screen library + Guide side-sheet + 6-stop tour + paper/accent/density Tweaks), reusing the unchanged word2vec/topology data layer and superseding the Phase 10/11 indigo UI | RR-01, RR-02, RR-03, RR-04, RR-05, RR-06, RR-07, RR-08, RR-09 | 9 |
 
 ### Phase Dependencies (hard gates)
 
@@ -266,7 +266,7 @@ Plans:
 | 9. Classification Depth | 6/6 | Complete (7 UAT pending live walkthrough; calibrated SVM Brier 0.0481; /explain p50 = 15ms) | 2026-05-27 |
 | 10. Visual Polish | 1/1 | Complete (theming, tour, empty states, scatter tweaks) | 2026-05-27 |
 | 11. Onboarding & Theme Defaults | 1/1 | Complete   | 2026-05-28 |
-| 12. The Reading Room (redesign) | 5/7 | In Progress (12-01 foundation; 12-02 Collection; 12-03 Card+Study; 12-04 Submit->Reading; 12-05 Topology reskin: accent ε slider/sweep + genre-hex heatmap, ε links all three; RR-01..06 complete) | 2026-05-29 |
+| 12. The Reading Room (redesign) | 7/7 | Complete | 2026-05-29 |
 
 ---
 

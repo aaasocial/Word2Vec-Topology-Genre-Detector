@@ -131,7 +131,6 @@ export function ReadingDesk() {
         minHeight: 0,
         overflowY: 'auto',
       }}
-      className="rr-scroll"
     >
       {/* ── Left: the editor ─────────────────────────────────────── */}
       <section style={{ display: 'flex', flexDirection: 'column', gap: 16, minHeight: 0 }}>
