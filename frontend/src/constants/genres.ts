@@ -1,8 +1,17 @@
-// Phase 10 D-60 — v2 dual-token genre palette.
-// Each genre carries a light hex and a dark hex; consumers pick based on the
-// resolved effective theme (read from preferencesStore).
-// Contrast ratios computed against #FAFAF7 (light · Paper) and #0A0A0F (dark);
-// every genre clears AA for incidental UI (3:1) and 7/8 clear AA body text (4.5:1).
+// Phase 12 L-05 — reading-room genre palette (replaces the Phase 10 dual-token
+// indigo palette). The 8 genre hexes are now FIXED and theme-independent
+// (tokens.md §Genre palette): plate points, region dots, study Venn, topology
+// ring nodes, and verdict bars all read these same values under every paper
+// palette / accent.
+//
+// Source of truth: `theme/readingRoom.ts::RR_GENRE_HEX`. We keep the
+// `Record<Theme, Record<Genre, string>>` shape (and the `genreColor(genre,
+// theme)` / `GENRE_LIST` / `UPLOADED_BOOK_COLOR[theme]` / `HISTORICAL_DIM_COLOR`
+// API) so the ~14 existing consumers keep compiling unchanged — the `light` and
+// `dark` subrecords are simply identical now (the palette no longer varies by
+// theme). The `Genre` key `gothic_horror` maps to the reading-room "gothic" hex.
+
+import { RR_GENRE_HEX } from '@/theme/readingRoom'
 
 export type Theme = 'light' | 'dark'
 export type Genre =
@@ -15,53 +24,50 @@ export type Genre =
   | 'speculative'
   | 'western'
 
-export const GENRE_COLORS: Record<Theme, Record<Genre, string>> = {
-  light: {
-    adventure:     '#DC2626',
-    gothic_horror: '#7C3AED',
-    historical:    '#B45309',
-    literary:      '#0F766E',
-    mystery:       '#1D4ED8',
-    romance:       '#BE185D',
-    speculative:   '#4338CA',
-    western:       '#9A3412',
-  },
-  dark: {
-    adventure:     '#F87171',
-    gothic_horror: '#B47AE6',
-    historical:    '#FBBF24',
-    literary:      '#5EEAD4',
-    mystery:       '#60A5FA',
-    romance:       '#F472B6',
-    speculative:   '#818CF8',
-    western:       '#F97316',
-  },
+/** The fixed reading-room genre map under the app's `Genre` keys (L-05). */
+const RR_GENRE_COLORS: Record<Genre, string> = {
+  adventure:     RR_GENRE_HEX.adventure,   // #C45533
+  gothic_horror: RR_GENRE_HEX.gothic,      // #6E4A8E
+  historical:    RR_GENRE_HEX.historical,  // #B68D3F
+  literary:      RR_GENRE_HEX.literary,    // #3E7F75
+  mystery:       RR_GENRE_HEX.mystery,     // #3A6CA8
+  romance:       RR_GENRE_HEX.romance,     // #B65385
+  speculative:   RR_GENRE_HEX.speculative, // #5E5EA6
+  western:       RR_GENRE_HEX.western,     // #A85C2D
 }
 
-export const GENRE_LIST: Genre[] = Object.keys(GENRE_COLORS.dark) as Genre[]
+// Theme-independent (L-05): both subrecords are the same reading-room palette.
+export const GENRE_COLORS: Record<Theme, Record<Genre, string>> = {
+  light: RR_GENRE_COLORS,
+  dark: RR_GENRE_COLORS,
+}
 
-// Scene-adjacent constants — need explicit light/dark hexes; not derived from HSL vars.
-// Amber dims darker on each canvas so historical stays distinct while uploads are active.
-// Saffron melts into cream on light → deep blue replaces it; dark keeps saffron.
+export const GENRE_LIST: Genre[] = Object.keys(RR_GENRE_COLORS) as Genre[]
+
+// Scene-adjacent constants. Historical's dim variant + the uploaded-book marker
+// are now theme-independent too (the reading room runs one palette per session).
+// Uploaded books use the accent oxblood so they read as "the text under reading"
+// against any paper; historical keeps its own hex when dimmed.
 export const HISTORICAL_DIM_COLOR: Record<Theme, string> = {
-  light: '#B45309',
-  dark:  '#D97706',
+  light: RR_GENRE_HEX.historical,
+  dark:  RR_GENRE_HEX.historical,
 }
 
 export const UPLOADED_BOOK_COLOR: Record<Theme, string> = {
-  light: '#1D4ED8',
-  dark:  '#FBBF24',
+  light: '#8B3B2B',
+  dark:  '#8B3B2B',
 }
 
 // Generic fallback for unknown genre keys (rare; legacy or off-corpus uploads).
 export const FALLBACK_GENRE_COLOR = '#888888'
 
 /**
- * Resolve a genre's color under the given effective theme.
- * Use this from any consumer that may receive a genre string from the API.
- * Falls back to FALLBACK_GENRE_COLOR for unknown keys (does not throw).
+ * Resolve a genre's color. The reading-room palette is theme-independent (L-05),
+ * so the `theme` argument is retained only for back-compat with existing callers
+ * and no longer changes the result. Falls back to FALLBACK_GENRE_COLOR for
+ * unknown keys (does not throw).
  */
-export function genreColor(genre: string | null | undefined, theme: Theme): string {
+export function genreColor(genre: string | null | undefined, theme: Theme = 'light'): string {
   if (!genre) return FALLBACK_GENRE_COLOR
   const palette = GENRE_COLORS[theme]
   return (palette as Record<string, string>)[genre] ?? FALLBACK_GENRE_COLOR

@@ -1,116 +1,147 @@
 @import "tailwindcss";
 
 /* ============================================================ */
-/* DESIGN TOKENS — Phase 10 dual-theme (Paper light + dark)      */
+/* READING ROOM — Phase 12 token system (L-01 / tokens.md)      */
 /* ============================================================ */
-/* Dark stays the default first paint (Phase 3 lock).            */
-/* Light theme adds the `.light` scope on <html>.                */
-/* HSL CSS variables per Phase 9 D-55 — NOT Tailwind `dark:`.    */
+/* A new, self-contained editorial visual system that replaces  */
+/* the Phase 10 indigo `:root`/`:root.light` HSL block wholesale */
+/* (D-U2). Surfaces (paper/paper2/card/ink/muted) + accent are   */
+/* written live onto <html> by applyReadingRoomTheme(palette,    */
+/* accent) from theme/readingRoom.ts, driven by the persisted    */
+/* Tweaks (default cream / oxblood). The values below are the    */
+/* cream + oxblood defaults so the very first paint is correct   */
+/* before the store's apply-on-init runs.                        */
 /* ============================================================ */
 
 @layer base {
   :root {
-    /* dark (default first paint per Phase 3 lock) */
-    --background: 0 0% 4%;
-    --foreground: 240 20% 93%;
-    --card: 240 13% 10%;
-    --card-foreground: 240 20% 97%;
-    --popover: 240 13% 10%;
-    --popover-foreground: 240 20% 97%;
-    --primary: 239 84% 67%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 10% 14%;
-    --secondary-foreground: 240 20% 93%;
-    --muted: 240 10% 14%;
-    --muted-foreground: 240 5% 46%;
-    --accent: 239 84% 67%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 240 13% 16%;
-    --input: 240 13% 16%;
-    --ring: 239 84% 67%;
-    --radius: 0.5rem;
+    /* Paper palette — cream (default). Five surfaces. */
+    --paper: #f2ede0;   /* page */
+    --paper2: #e9e3d2;  /* recessed rails */
+    --card: #faf6ec;    /* raised */
+    --ink: #26211b;     /* text / rules */
+    --muted: #736b5e;   /* secondary text */
 
-    /* Phase 10 NEW tokens (canvas + sidebar + warn/good + error wash) */
-    --scene-bg: 0 0% 4%;
-    --sidebar-bg: 240 13% 8%;
-    --sidebar-border: 240 13% 12%;
+    /* Accent — oxblood (default). Single accent per session. */
+    --accent: #8b3b2b;
 
-    --warn: 35 89% 56%;
-    --warn-soft: 45 90% 92%;
-    --warn-strong: 35 80% 32%;
+    /* Translucent ink derivations (alpha suffixes per tokens.md). */
+    --ink-22: rgba(38, 33, 27, 0.13); /* {ink}22 catalog-card shadow tint */
+    --ink-33: rgba(38, 33, 27, 0.2);  /* {ink}33 soft divider / block shadow */
+    --ink-55: rgba(38, 33, 27, 0.33); /* {ink}55 guide button border */
 
-    --good: 152 35% 50%;
-    --good-soft: 140 40% 90%;
+    /* Letterbox / stage matte (outside the artboard — prototype only). */
+    --matte: #d8d4c8;
 
-    --error-bg: 0 50% 96%;
-    --error-border: 0 35% 78%;
-    --error-fg: 0 50% 24%;
-    --error-mid: 0 30% 38%;
-  }
+    /* Rules, borders, shadows (tokens.md §Rules). Radius is 0 everywhere. */
+    --rule-hairline: 1px solid var(--ink);
+    --rule-soft: 1px solid var(--ink-33);
+    --rule-masthead: 2px solid var(--ink);
+    --shadow-card: 4px 4px 0 var(--ink-22);   /* hard offset, no blur */
+    --shadow-block: 6px 6px 0 var(--ink-33);  /* modals / footnotes */
+    --radius: 0;
 
-  :root.light {
-    /* Light · Paper — warm cream canvas with white cards floating on it. */
-    --background: 40 30% 97%;     /* #FBF9F2 */
-    --foreground: 235 25% 13%;
-    --card: 40 60% 100%;          /* #FFFFFF */
-    --card-foreground: 235 28% 14%;
-    --popover: 40 60% 100%;
-    --popover-foreground: 235 28% 14%;
-    --primary: 239 84% 58%;       /* #4F46E5 deepened from dark (67%) for AA on cream */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 40 25% 92%;
-    --secondary-foreground: 235 28% 14%;
-    --muted: 40 25% 92%;
-    --muted-foreground: 240 10% 41%;
-    --accent: 239 84% 58%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 73% 51%;     /* #DC2626 */
-    --destructive-foreground: 0 0% 100%;
-    --border: 40 18% 86%;
-    --input: 40 18% 86%;
-    --ring: 239 84% 58%;
-    /* --radius inherits */
-
-    --scene-bg: 40 30% 97%;
-    --sidebar-bg: 40 60% 100%;
-    --sidebar-border: 40 18% 86%;
-
-    --warn: 35 78% 42%;
-    --warn-soft: 45 90% 92%;
-    --warn-strong: 35 78% 30%;
-
-    --good: 152 45% 38%;
-    --good-soft: 140 40% 90%;
-
-    --error-bg: 0 50% 97%;
-    --error-border: 0 40% 78%;
-    --error-fg: 0 50% 24%;
-    --error-mid: 0 30% 32%;
+    /* Type families (tokens.md §Typography). */
+    --font-serif: "Spectral", Georgia, "Times New Roman", serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
   }
 }
 
 @layer base {
   * { box-sizing: border-box; }
+  html { color-scheme: light; }
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-serif);
     margin: 0;
     overflow: hidden;
     transition: background-color 240ms ease, color 240ms ease;
   }
+
+  /* Accent-tinted text selection (mirrors the prototype's ::selection rule). */
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  /* Focus ring — accent, 2px, offset 2px (tokens.md). */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 }
 
-/* Custom scrollbar for sidebar */
-.sidebar-scroll::-webkit-scrollbar { width: 4px; }
-.sidebar-scroll::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 2px; }
-.sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
-
-/* Upload progress pulse animation */
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.3); }
+/* ============================================================ */
+/* Reading-room type-scale helpers (tokens.md §Type scale).     */
+/* Optional utility classes — components may also inline styles. */
+/* ============================================================ */
+@layer components {
+  .rr-display {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 64px;
+    line-height: 1.02;
+    letter-spacing: -0.018em;
+  }
+  .rr-h1 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 38px;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+  }
+  .rr-h2 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: -0.005em;
+  }
+  .rr-h3 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.2;
+  }
+  .rr-body-lg {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  .rr-body {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  .rr-body-sm {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .rr-label {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .rr-numeral {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
 }
-.pulse-dot { animation: pulse-dot 1s ease-in-out infinite; }
+
+/* Reading-room scrollbar — thin, ink-tinted (replaces the indigo sidebar one). */
+.rr-scroll::-webkit-scrollbar { width: 8px; }
+.rr-scroll::-webkit-scrollbar-thumb {
+  background: var(--ink-33);
+  border-radius: 0;
+}
+.rr-scroll::-webkit-scrollbar-track { background: transparent; }
