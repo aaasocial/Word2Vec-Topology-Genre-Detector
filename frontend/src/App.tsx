@@ -6,10 +6,12 @@
 // layout (L-14 / §10) — NOT the fixed 1240×780 prototype artboard.
 //
 // All eight screens are now real compositions (landing/about/collection/card/
-// topology/study/upload/verdict). The Guide side-sheet + 6-stop tour mount points
-// land in 12-06.
+// topology/study/upload/verdict). The Guide side-sheet (12-06) auto-opens once
+// per browser, and the 6-stop guided tour mounts alongside it.
 
+import { useEffect } from 'react'
 import { useReadingRoomStore } from '@/stores/readingRoomStore'
+import { Guide } from '@/components/guide/Guide'
 import { Masthead } from '@/components/shell/Masthead'
 import { Footer } from '@/components/shell/Footer'
 import { FootnoteHost } from '@/components/shell/FootnoteHost'
@@ -37,6 +39,18 @@ const FOOTER: Record<string, { left: string; center: string; right: string }> = 
 
 export default function App() {
   const route = useReadingRoomStore((s) => s.route)
+
+  // L-07 — auto-open the Guide ONCE per browser. `guideSeen` is persisted
+  // (semantic key rr.guide.seen.v1); flipping it here is the "consume on fire"
+  // that prevents a re-open on the next visit. This is the new onboarding (D-U2);
+  // the Phase 11 How-It-Works → tour chain was already removed in 12-01.
+  useEffect(() => {
+    const { guideSeen, openGuide, markGuideSeen } = useReadingRoomStore.getState()
+    if (!guideSeen) {
+      openGuide()
+      markGuideSeen()
+    }
+  }, [])
 
   const screen = (() => {
     switch (route) {
@@ -85,7 +99,8 @@ export default function App() {
       <TweaksToggle />
       <TweaksPanel />
 
-      {/* Guide side-sheet + 6-stop guided tour mount points land in 12-06. */}
+      {/* Guide side-sheet (auto-opens once; masthead "Guide" reopens). */}
+      <Guide />
     </FootnoteHost>
   )
 }
