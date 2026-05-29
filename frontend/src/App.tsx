@@ -18,6 +18,7 @@ import { TweaksPanel, TweaksToggle } from '@/components/shell/TweaksPanel'
 import { Landing } from '@/components/screens/Landing'
 import { About } from '@/components/screens/About'
 import { Collection } from '@/components/screens/Collection'
+import { Card } from '@/components/screens/Card'
 import { PlaceholderScreen } from '@/components/screens/PlaceholderScreen'
 
 /** Per-route running-footer text (left running note + right page marker). */
@@ -44,13 +45,7 @@ export default function App() {
       case 'collection':
         return <Collection />
       case 'card':
-        return (
-          <PlaceholderScreen
-            plan="12-03"
-            title="Catalog card"
-            note="One book: shelfmark, driving vocabulary, five nearest, and a plate detail with leader lines. Forthcoming."
-          />
-        )
+        return <Card />
       case 'topology':
         return (
           <PlaceholderScreen
