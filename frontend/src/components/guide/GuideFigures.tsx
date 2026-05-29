@@ -463,19 +463,33 @@ function FigVerdict() {
   ]
   // Initialise visible (`on=true`) so a paused background tab shows the full
   // verdict rather than empty tracks (L-08 robustness). The cycle re-plays the
-  // fill purely for delight when the tab is foregrounded.
+  // fill purely for delight when the tab is foregrounded — and ONLY when the
+  // document is visible, so a tab backgrounded mid-replay can never strand the
+  // bars at width:0 (the §7 "degrade to a valid static frame" contract).
   const [on, setOn] = useState(true)
   useEffect(() => {
     let alive = true
+    let restore: ReturnType<typeof setTimeout> | null = null
     const cycle = () => {
-      if (!alive) return
+      if (!alive || document.hidden) return
       setOn(false)
-      setTimeout(() => alive && setOn(true), 120)
+      restore = setTimeout(() => alive && setOn(true), 120)
     }
+    // Whenever the tab is hidden, force the bars back to their target widths so
+    // the static frame is always coherent.
+    const onVisibility = () => {
+      if (document.hidden) {
+        if (restore) clearTimeout(restore)
+        setOn(true)
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibility)
     const iv = setInterval(cycle, 4200)
     return () => {
       alive = false
       clearInterval(iv)
+      if (restore) clearTimeout(restore)
+      document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [])
   return (

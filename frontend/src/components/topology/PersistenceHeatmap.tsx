@@ -111,15 +111,28 @@ export function PersistenceHeatmap() {
   }
 
   if (isLoading) {
+    // §7 robustness: a valid static loading frame — no timeline dependence (the
+    // old `pulse` keyframe was scoped to the data-state return below, so it never
+    // animated from here anyway, and a paused background tab must show a coherent
+    // frame regardless). A labelled, fully-visible skeleton satisfies that.
     return (
       <div
         style={{
           width: HEATMAP_SIZE,
           height: HEATMAP_SIZE,
           background: 'var(--paper2)',
-          animation: 'pulse 1.5s ease-in-out infinite',
+          border: '1px solid var(--ink-33)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: 'var(--font-serif)',
+          fontStyle: 'italic',
+          fontSize: 11.5,
+          color: 'var(--muted)',
         }}
-      />
+      >
+        reading…
+      </div>
     )
   }
 
@@ -207,13 +220,6 @@ export function PersistenceHeatmap() {
           <span>{data.vmax.toFixed(1)}</span>
         </div>
       </div>
-
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 0.7; }
-        }
-      `}</style>
     </div>
   )
 }

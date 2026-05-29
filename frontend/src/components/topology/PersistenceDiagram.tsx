@@ -287,14 +287,26 @@ export function PersistenceDiagram() {
       )}
 
       {hasSelection && isLoading && (
+        // §7 robustness: a valid static loading frame (no `pulse` keyframe was
+        // ever defined for this component, and a paused background tab must show
+        // a coherent frame regardless of any timeline).
         <div
           style={{
             width: SIZE,
             height: SIZE,
             background: 'var(--paper2)',
-            animation: 'pulse 1.5s ease-in-out infinite',
+            border: '1px solid var(--ink-33)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontFamily: 'var(--font-serif)',
+            fontStyle: 'italic',
+            fontSize: 11.5,
+            color: 'var(--muted)',
           }}
-        />
+        >
+          reading…
+        </div>
       )}
 
       {hasSelection && !isLoading && !data && (
