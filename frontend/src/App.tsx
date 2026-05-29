@@ -21,6 +21,7 @@ import { Collection } from '@/components/screens/Collection'
 import { Card } from '@/components/screens/Card'
 import { Study } from '@/components/screens/Study'
 import { Upload } from '@/components/screens/Upload'
+import { Verdict } from '@/components/screens/Verdict'
 import { PlaceholderScreen } from '@/components/screens/PlaceholderScreen'
 
 /** Per-route running-footer text (left running note + right page marker). */
@@ -61,13 +62,7 @@ export default function App() {
       case 'upload':
         return <Upload />
       case 'verdict':
-        return (
-          <PlaceholderScreen
-            plan="12-04"
-            title="The Reading"
-            note="The essay result: verdict, confidence, probability bars, a catalog card for the text, and where it landed. Forthcoming."
-          />
-        )
+        return <Verdict />
       default:
         return <Landing />
     }
