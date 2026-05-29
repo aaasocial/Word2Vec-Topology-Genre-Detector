@@ -117,8 +117,11 @@ export function PlateDetail({ book, corpus, neighbours }: PlateDetailProps) {
             fontStyle: 'italic',
             fontSize: 11.5,
             color: 'var(--ink)',
-            background: 'var(--card)',
-            padding: '0 4px',
+            // Transparent label so it never masks nearby points; a faint paper
+            // halo keeps the type legible over the plate without a hard box.
+            background: 'transparent',
+            textShadow:
+              '0 0 3px var(--card), 0 0 3px var(--card), 0 0 4px var(--card)',
             pointerEvents: 'none',
             whiteSpace: 'nowrap',
           }}
@@ -138,6 +141,8 @@ export function PlateDetail({ book, corpus, neighbours }: PlateDetailProps) {
           fontStyle: 'italic',
           fontSize: 13.5,
           color: 'var(--ink)',
+          textShadow:
+            '0 0 3px var(--card), 0 0 3px var(--card), 0 0 4px var(--card)',
           pointerEvents: 'none',
           whiteSpace: 'nowrap',
         }}

@@ -16,7 +16,6 @@ import { GuidedTour } from '@/tour/TourProvider'
 import { Masthead } from '@/components/shell/Masthead'
 import { Footer } from '@/components/shell/Footer'
 import { FootnoteHost } from '@/components/shell/FootnoteHost'
-import { TweaksPanel, TweaksToggle } from '@/components/shell/TweaksPanel'
 import { Landing } from '@/components/screens/Landing'
 import { About } from '@/components/screens/About'
 import { Collection } from '@/components/screens/Collection'
@@ -93,10 +92,6 @@ export default function App() {
         {screen}
         <Footer left={footer.left} center={footer.center} right={footer.right} />
       </div>
-
-      {/* Tweaks (paper/accent/density) — toggled from the bottom-right pill. */}
-      <TweaksToggle />
-      <TweaksPanel />
 
       {/* Guide side-sheet (auto-opens once; masthead "Guide" reopens). */}
       <Guide />

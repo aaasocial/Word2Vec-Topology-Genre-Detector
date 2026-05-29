@@ -13,6 +13,7 @@
 import { useVisualizationStore } from '@/stores/visualizationStore'
 import { useReadingRoomStore } from '@/stores/readingRoomStore'
 import { genreColor } from '@/constants/genres'
+import { PlateControls } from '@/components/collection/PlateControls'
 import type { AllCorpusBooks } from '@/hooks/useAllCorpusBooks'
 
 const GENRE_LABELS: Record<string, string> = {
@@ -50,6 +51,10 @@ export function Marginalia({ corpus }: MarginaliaProps) {
         minHeight: 0,
       }}
     >
+      <PlateControls />
+
+      <div style={{ borderTop: '1px solid var(--ink-22)', paddingTop: 16 }} />
+
       <div className="rr-label">Marginalia</div>
 
       {hovered ? (

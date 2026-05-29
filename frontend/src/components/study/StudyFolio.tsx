@@ -14,12 +14,37 @@
 
 import { useMemo, useState } from 'react'
 import { useAllCorpusBooks } from '@/hooks/useAllCorpusBooks'
+import { useGenreTfidf, type TfidfMap } from '@/hooks/useTfidfData'
 import { useReadingRoomStore } from '@/stores/readingRoomStore'
 import { GENRE_LIST, genreColor, type Genre } from '@/constants/genres'
 import { Footnote } from '@/components/shell/FootnoteHost'
 import { MiniPlate } from '@/components/study/MiniPlate'
 import { resolveWordTable } from '@/components/study/wordTables'
 import { positionBooks, type PositionedBook } from '@/components/card/bookLayout'
+
+/**
+ * Data-driven shared/distinctive vocabulary from the two regions' real per-genre
+ * TF-IDF maps (`/viz/tfidf/{genre}`). Takes each region's top-weighted words, then:
+ *   shared  = words in BOTH top sets, ranked by combined weight
+ *   onlyA/B = each region's top words absent from the other's top set
+ * Returns null until both maps have loaded (caller falls back to curated copy).
+ */
+function computeStudyVocab(mapA?: TfidfMap, mapB?: TfidfMap) {
+  if (!mapA || !mapB) return null
+  const TOP = 80
+  const topA = Object.entries(mapA).sort((a, b) => b[1] - a[1]).slice(0, TOP)
+  const topB = Object.entries(mapB).sort((a, b) => b[1] - a[1]).slice(0, TOP)
+  const wA = new Map(topA)
+  const wB = new Map(topB)
+  const shared = topA
+    .map(([w]) => w)
+    .filter((w) => wB.has(w))
+    .sort((x, y) => (wA.get(y)! + wB.get(y)!) - (wA.get(x)! + wB.get(x)!))
+    .slice(0, 10)
+  const onlyA = topA.filter(([w]) => !wB.has(w)).map(([w]) => w).slice(0, 9)
+  const onlyB = topB.filter(([w]) => !wA.has(w)).map(([w]) => w).slice(0, 9)
+  return { shared, onlyA, onlyB }
+}
 
 const GENRE_LABELS: Record<string, string> = {
   adventure: 'Adventure',
@@ -197,6 +222,16 @@ export function StudyFolio() {
   const countB = corpus.byGenre[studyB]?.length ?? 0
 
   const tbl = resolveWordTable(studyA, studyB)
+
+  // Real per-genre TF-IDF → data-driven shared/distinctive vocab; falls back to
+  // the curated table while the two maps load (or if a request fails).
+  const { data: tfidfA } = useGenreTfidf(studyA)
+  const { data: tfidfB } = useGenreTfidf(studyB)
+  const computed = useMemo(() => computeStudyVocab(tfidfA, tfidfB), [tfidfA, tfidfB])
+  const shared = computed?.shared ?? tbl.shared
+  const onlyA = computed?.onlyA ?? tbl.onlyA
+  const onlyB = computed?.onlyB ?? tbl.onlyB
+
   const hexA = genreColor(studyA)
   const hexB = genreColor(studyB)
 
@@ -249,7 +284,7 @@ export function StudyFolio() {
       {/* Three-column folio. Drops the center binding at ≤1100px and stacks to one
           column in source order at ≤768px (README §10). */}
       <div className="rr-folio">
-        <RegionFolio genre={studyA} corpus={positioned} count={countA} onlyWords={tbl.onlyA} side="left" />
+        <RegionFolio genre={studyA} corpus={positioned} count={countA} onlyWords={onlyA} side="left" />
 
         {/* Center: shared binding. */}
         <section
@@ -289,11 +324,11 @@ export function StudyFolio() {
                 shared
               </text>
               <text x="110" y="130" fontSize="9" fontFamily="JetBrains Mono, monospace" textAnchor="middle" fill="var(--muted)">
-                {tbl.shared.length} terms
+                {shared.length} terms
               </text>
             </svg>
             <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'center' }}>
-              {tbl.shared.map((w) => (
+              {shared.map((w) => (
                 <span
                   key={w}
                   style={{
@@ -324,7 +359,7 @@ export function StudyFolio() {
           </div>
         </section>
 
-        <RegionFolio genre={studyB} corpus={positioned} count={countB} onlyWords={tbl.onlyB} side="right" />
+        <RegionFolio genre={studyB} corpus={positioned} count={countB} onlyWords={onlyB} side="right" />
       </div>
 
       {/* Editor's note. */}
