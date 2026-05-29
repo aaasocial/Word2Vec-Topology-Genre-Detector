@@ -52,7 +52,7 @@
 | 9 | Classification Depth | Classification results show ranked, calibrated alternatives and an honest "why this genre?" explanation that users can interrogate | DEPTH-01, DEPTH-02, DEPTH-03, DEPTH-04, DEPTH-05, DEPTH-06, DEPTH-07 | 5 |
 | 10 | Visual Polish | The app feels finished: theming respects user preference, first-time visitors are oriented, and every empty state has intentional copy | POLISH-01, POLISH-02, POLISH-03, POLISH-04, POLISH-05 | 5 |
 | 11 | Onboarding & Theme Defaults | New users land in light mode and are walked through How-It-Works then the tour on first visit (or first in ≥30 days) | ONBOARD-01, ONBOARD-02, ONBOARD-03 | 3 |
-| 12 | The Reading Room (redesign) | 4/7 | In Progress|  |
+| 12 | The Reading Room (redesign) | 5/7 | In Progress|  |
 
 ### Phase Dependencies (hard gates)
 
@@ -266,7 +266,7 @@ Plans:
 | 9. Classification Depth | 6/6 | Complete (7 UAT pending live walkthrough; calibrated SVM Brier 0.0481; /explain p50 = 15ms) | 2026-05-27 |
 | 10. Visual Polish | 1/1 | Complete (theming, tour, empty states, scatter tweaks) | 2026-05-27 |
 | 11. Onboarding & Theme Defaults | 1/1 | Complete   | 2026-05-28 |
-| 12. The Reading Room (redesign) | 2/7 | In Progress (12-01 foundation + 12-02 Collection: reskinned R3F plate/rail/marginalia/region-filter/Find; RR-01..02 complete) | 2026-05-29 |
+| 12. The Reading Room (redesign) | 5/7 | In Progress (12-01 foundation; 12-02 Collection; 12-03 Card+Study; 12-04 Submit->Reading; 12-05 Topology reskin: accent ε slider/sweep + genre-hex heatmap, ε links all three; RR-01..06 complete) | 2026-05-29 |
 
 ---
 

@@ -1,85 +1,57 @@
-// Phase 10 D-76 — Tour anchor smoke test.
+// Reading Room — tour-anchor smoke test (Phase 12).
 //
-// Boots the app at /, then iterates TOUR_STEPS asserting each anchor's
-// data-tour-id is findable on the freshly mounted app. PITFALLS §14:
-// catches refactor drift where a `data-tour-id` literal gets renamed
-// or a sidebar component stops emitting its anchor.
+// The Phase 10/11 tabbed indigo shell (and its anchors: scatter-canvas,
+// genre-select, upload-zone, topology-tab, help-menu, theme-toggle, compare-tab,
+// explain-panel) was replaced wholesale by the reading-room masthead shell in
+// 12-01 (D-U2). The live screens carry the reading-room anchors instead:
+//   plate · catalog-rail   (Collection, 12-02)
+//   catalog-card           (Card, 12-03)
+//   topology-plate         (Topology, 12-05)
+//   study-pickers          (Study, 12-03)
+//   reading-desk           (Submit a Text, 12-04)
 //
-// Some anchors live behind a tab switch (topology-tab is on the nav
-// trigger AND on the empty-state body — both are always mounted).
-// genre-select, upload-zone, explain-panel are in the always-mounted
-// sidebar. scatter-canvas is the R3F outer div.
+// This smoke navigates the masthead router (via the readingRoomStore) to each
+// screen and asserts its anchor mounts — catching refactor drift where a
+// `data-tour-id` literal gets renamed or a screen stops emitting its anchor
+// (PITFALLS §14). The full 6-stop tour script lands in 12-06; this file tracks
+// the anchors that exist today so the suite stays green through the rewrite.
 
 import { test, expect } from '@playwright/test'
-import { TOUR_STEPS, TOUR_ANCHORS } from '../../src/tour/anchors'
 
-test.describe('tour anchors', () => {
+test.describe('reading-room tour anchors', () => {
   test.beforeEach(async ({ page }) => {
-    // Pre-seed preferencesStore so neither onboarding path fires on mount and
-    // the How-It-Works dialog / tour dim layer don't intercept the locator
-    // clicks for the other anchors. Phase 11 D-88/D-89: the tour no longer
-    // auto-starts off tourCompleted; the auto-intro fires when introSeenAt is
-    // stale (null/undefined or >= 30 days). Seed a fresh introSeenAt so
-    // isIntroStale() is false and the How It Works modal stays closed.
-    await page.addInitScript(() => {
-      try {
-        const PREFS = {
-          state: { theme: 'system', tourCompleted: true, introSeenAt: Date.now() },
-          version: 0,
-        }
-        localStorage.setItem('lgt-prefs-v1', JSON.stringify(PREFS))
-      } catch {
-        // ignore in browsers without localStorage
-      }
-    })
     await page.goto('/')
   })
 
-  for (const step of TOUR_STEPS) {
-    test(`anchor "${step.anchor}" is findable on fresh mount`, async ({ page }) => {
-      const locator = page.locator(`[data-tour-id="${step.anchor}"]`).first()
-      await expect(locator).toBeAttached({ timeout: 15_000 })
+  test('collection plate + catalog-rail anchors mount', async ({ page }) => {
+    // Navigate via the masthead "The Collection" item.
+    await page.getByRole('button', { name: /the collection/i }).first().click()
+    await expect(page.locator('[data-tour-id="plate"]').first()).toBeAttached({ timeout: 15_000 })
+    await expect(page.locator('[data-tour-id="catalog-rail"]').first()).toBeAttached({ timeout: 15_000 })
+  })
+
+  test('topology-plate anchor mounts once a region is selected', async ({ page }) => {
+    // Masthead "Topology" item → the Topology screen (empty until a region).
+    await page.getByRole('button', { name: /^topology$/i }).first().click()
+    // The framed VR viewer (data-tour-id="topology-plate") only renders after a
+    // region is chosen — the 12-06 tour pre-selects Mystery; here we click it.
+    await page.getByRole('button', { name: /mystery/i }).first().click()
+    await expect(page.locator('[data-tour-id="topology-plate"]').first()).toBeAttached({
+      timeout: 15_000,
     })
-  }
-
-  // Other anchors referenced by empty states + future tour add-back.
-  // helpMenu + themeToggle live in the dropdown — open it first.
-  test('help-menu anchor is findable in the top nav', async ({ page }) => {
-    const help = page.locator(`[data-tour-id="${TOUR_ANCHORS.helpMenu}"]`).first()
-    await expect(help).toBeAttached({ timeout: 15_000 })
   })
 
-  test('theme-toggle anchor mounts when the help dropdown opens', async ({ page }) => {
-    const help = page.locator(`[data-tour-id="${TOUR_ANCHORS.helpMenu}"]`).first()
-    await expect(help).toBeAttached({ timeout: 15_000 })
-    await help.click()
-    const segmented = page.locator(`[data-tour-id="${TOUR_ANCHORS.themeToggle}"]`).first()
-    await expect(segmented).toBeAttached({ timeout: 5_000 })
+  test('study-pickers anchor mounts on the Comparative Study folio', async ({ page }) => {
+    await page.getByRole('button', { name: /a comparative study/i }).first().click()
+    await expect(page.locator('[data-tour-id="study-pickers"]').first()).toBeAttached({
+      timeout: 15_000,
+    })
   })
 
-  test('compare-tab anchor mounts on the Compare empty state', async ({ page }) => {
-    // The TopNavTabs Compare button has the anchor too, so we're guaranteed at
-    // least one match. Activate the tab and verify the inner empty-state
-    // anchor (also tagged compare-tab) becomes visible.
-    const tabButton = page.locator(`[data-tour-id="${TOUR_ANCHORS.compareTab}"]`).first()
-    await expect(tabButton).toBeAttached({ timeout: 15_000 })
-    await tabButton.click()
-    // The empty state inherits the same anchor; .first() still resolves.
-    const inner = page.locator(`[data-tour-id="${TOUR_ANCHORS.compareTab}"]`).first()
-    await expect(inner).toBeVisible({ timeout: 10_000 })
-  })
-
-  test('explain-panel anchor mounts on the sidebar pre-upload state', async ({ page }) => {
-    const explain = page.locator(`[data-tour-id="${TOUR_ANCHORS.explainPanel}"]`).first()
-    await expect(explain).toBeAttached({ timeout: 15_000 })
-  })
-
-  test('classification-result anchor is NOT mounted before any upload', async ({ page }) => {
-    // Sanity check — failure card / result card both carry this anchor only
-    // when there's an error or a verdict to show. Pre-upload, it should be
-    // absent. Confirms our anchor coverage isn't accidentally over-attached.
-    const result = page.locator(`[data-tour-id="${TOUR_ANCHORS.classificationResult}"]`)
-    await page.waitForTimeout(2_000)
-    await expect(result).toHaveCount(0)
+  test('reading-desk anchor mounts on Submit a Text', async ({ page }) => {
+    await page.getByRole('button', { name: /submit a text/i }).first().click()
+    await expect(page.locator('[data-tour-id="reading-desk"]').first()).toBeAttached({
+      timeout: 15_000,
+    })
   })
 })
