@@ -12,6 +12,7 @@
 import { useEffect } from 'react'
 import { useReadingRoomStore } from '@/stores/readingRoomStore'
 import { Guide } from '@/components/guide/Guide'
+import { GuidedTour } from '@/tour/TourProvider'
 import { Masthead } from '@/components/shell/Masthead'
 import { Footer } from '@/components/shell/Footer'
 import { FootnoteHost } from '@/components/shell/FootnoteHost'
@@ -101,6 +102,10 @@ export default function App() {
 
       {/* Guide side-sheet (auto-opens once; masthead "Guide" reopens). */}
       <Guide />
+
+      {/* 6-stop guided tour — mounts the spotlight overlay when tourActive and
+          navigates the real screens per stop (pre-selects Mystery at Topology). */}
+      <GuidedTour />
     </FootnoteHost>
   )
 }
