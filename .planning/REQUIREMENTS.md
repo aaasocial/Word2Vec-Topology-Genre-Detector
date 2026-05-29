@@ -75,6 +75,20 @@ See [`milestones/v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md) for ful
 - [x] **ONBOARD-02**: On first visit — or the first visit in ≥30 days — the "How It Works" walkthrough auto-opens, then on its close the 4-step onboarding tour starts automatically. Re-trigger is gated by a persisted `introSeenAt` timestamp (localStorage via `preferencesStore` persist). The tour no longer auto-starts independently (reverses D-73); it fires via this chain or the manual "Replay tour" Help item.
 - [x] **ONBOARD-03**: Dismissing "How It Works" early (X / Esc / outside-click) still chains into the tour during the auto-intro; manually opening "How It Works" from the nav does NOT chain into the tour.
 
+### The Reading Room — full front-end redesign (Phase 12)
+
+> Wholesale editorial reskin + restructure. **Reuses the existing data layer/hooks unchanged** (`useScatterData`, `useCorpusBooks`, `useClassify`, `useExplain`, `useVRData`, `usePersistenceDiagram`, `usePersistenceImage`). **Supersedes** the Phase 10 indigo theme (POLISH-01/02) and the Phase 11 onboarding chain (ONBOARD-01..03): light/dark/system → paper/accent/density Tweaks; How-It-Works→tour chain → the Guide side-sheet + 6-stop guided tour. Phase 10/11 stay historically "met"; their UI is replaced. Spec: `.planning/phases/12-reading-room-redesign/design_handoff/.../README.md` (authoritative).
+
+- [ ] **RR-01**: Editorial design system + app shell — Spectral + JetBrains Mono type scale, 4 paper palettes + 4 accents + 8 genre hexes (tokens.md) as CSS custom properties, masthead nav (5 items + Guide), footer, footnote host, and a Tweaks panel (paper/accent/density) persisted to localStorage. Replaces the Phase 10 `index.css` indigo system wholesale.
+- [ ] **RR-02**: Collection screen — 3-column carrel (catalog rail / plate / marginalia, collapsing to 2-col study density), region filter, "Find" search, hover→marginalia + tooltip, click→catalog card. Plate uses the **reskinned existing R3F scatter** (deviation from handoff L-12 SVG, per user decision) with reading-room framing + corner rulings + projection chips + 2D/3D.
+- [ ] **RR-03**: Catalog card screen — breadcrumb, region-siblings rail, plate detail with dashed leader lines to the 4 nearest, and the letterpress catalog card aside (shelfmark, key/value grid, driving vocabulary chips, five-nearest list). On `useCorpusBooks` + `useExplain`.
+- [ ] **RR-04**: Comparative Study folio — two genre pickers, 3-column folio (region A / shared Venn motif / region B), shared vs distinctive vocabulary, Editor's note.
+- [ ] **RR-05**: Submit a Text → The Reading — reading-desk textarea + sample passages on `useClassify`/`useExplain`; verdict essay (verdict, confidence with "marginal" voice rule, probability bars, catalog card for the text, where-it-landed mini-plate, nearest five).
+- [ ] **RR-06**: Topology screen, reading-room skin — hero VR filtration viewer (existing R3F `VRViewer`) + ε slider, persistence diagram + persistence image side column; H₁ only; ε links all three; accent (not amber) for the ε signal, genre-hex heatmap ramp. Built on the existing topology components + hooks.
+- [ ] **RR-07**: About + the Guide — About prose; Guide right side-sheet (Welcome / How to wander / How it works) auto-opening once per browser (localStorage `rr.guide.seen.v1`), with the 5 live "How it works" method figures rendered at rest (background-tab safe).
+- [ ] **RR-08**: The guided tour — 6 stops navigating the real screens (plate, catalog rail, catalog card, topology plate [pre-selects a region], study pickers, reading desk) with reading-room spotlight (four dim panels + accent frame) and a margin card; ←/→/Esc; missing-anchor → wait then advance. Extends `tour/anchors.ts`.
+- [ ] **RR-09**: Responsive + animation-robustness pass — fluid editorial grids collapsing at ~1100px (drop marginalia/rail) and ~768px (single column), Guide full-width on narrow, tour card clamped; every "alive" figure degrades to a valid static frame when the timeline is paused.
+
 ---
 
 ## Future Work (Parking Lot)
