@@ -1,28 +1,28 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: — Shipped
-status: Phase 12 (Reading Room redesign) plan 12-01 complete — foundation tokens/shell/router/Landing+About landed in 5 atomic commits (d81d7d5 → e72fc06). RR-01 complete.
-last_updated: "2026-05-29T04:49:48.802Z"
+milestone: v2.0
+milestone_name: — Accuracy, Depth, and Polish
+status: Phase 12 (Reading Room redesign) plan 12-02 complete — Collection screen (reskinned R3F plate + catalog rail + marginalia + region filter + Find) landed in 3 atomic feat commits (5291a0d → 0927371). RR-02 complete (2/7 plans).
+last_updated: "2026-05-29T05:03:01.579Z"
 last_activity: 2026-05-29
 progress:
   total_phases: 13
   completed_phases: 11
   total_plans: 46
-  completed_plans: 40
-  percent: 87
+  completed_plans: 41
+  percent: 89
 ---
 
 # STATE
 
 ## Current Position
 
-Phase: 12 (reading-room-redesign) — **PLAN 12-01 COMPLETE 2026-05-29** (1/7 plans)
+Phase: 12 (reading-room-redesign) — **PLAN 12-02 COMPLETE 2026-05-29** (2/7 plans)
 
 - **Milestone:** v2.0 — Accuracy, Depth, and Polish
-- **Phase:** 12 — Plan 12-01 complete (1/7 plans); foundation laid. Next: 12-02 (Collection).
-- **Status:** Phase 12 (The Reading Room — full front-end redesign) plan 12-01 complete in 5 atomic commits (d81d7d5 → e72fc06). The editorial reading-room system (Spectral + JetBrains Mono, paper/accent/density Tweaks, square rules + hard offset shadows) now replaces the Phase 10 indigo theme + the Phase 11 tabbed shell/onboarding chain wholesale (D-U2). Landed: reading-room tokens in index.css (no indigo remains), theme/readingRoom.ts (4 palettes + 4 accents + applyReadingRoomTheme), L-05 genre hexes in constants/genres.ts (API preserved so consumers compile), readingRoomStore (route + guide + persisted tweaks), Masthead/Footer/FootnoteHost/TweaksPanel, and the App.tsx masthead router with live Landing + About (copy verbatim, matching screenshots). tsc clean; vite build clean (87 modules — dead indigo components tree-shaken); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-01 complete.
-- **Next phase:** Phase 12 continues — 12-02 Collection (reskinned R3F plate + catalog rail + marginalia), then 12-03..12-07 per 12-CONTEXT.md plan map. Run `/gsd-execute-phase 12` to land 12-02.
+- **Phase:** 12 — Plan 12-02 complete (2/7 plans); Collection screen live. Next: 12-03 (Catalog card + Comparative Study).
+- **Status:** Phase 12 (The Reading Room) plan 12-02 complete in 3 atomic feat commits (5291a0d → 0927371). The Collection screen is the 3-col carrel (catalog rail 260 / reskinned R3F plate 1fr / marginalia 300), collapsing to 2-col under `study` density. Per D-U1 the plate is the EXISTING react-three-fiber word scatter (ScatterCanvas/PointCloud), reskinned: scene background now reads `--paper` imperatively (was the dead Phase 10 `--scene-bg`; re-applies on the active paper Tweak, no canvas remount), point colors flow from the L-05 genre hexes via buildBuffers, the region filter dims non-selected to ~0.15, and the selection ring is ink-toned. New: PlateFrame (corner rulings "Plate I" / "{proj} · {dim} · ε 0.42", projection chips PCA/KPCA/UMAP/t-SNE + 2D/3D toggle wired to visualizationStore, fig.¹ caption), CatalogRail (region index + filter + expand-titles + Find search, data-tour-id="catalog-rail"), Marginalia (hovered-book note + UMAP-distortion note), and useAllCorpusBooks (client-side fan-out over useCorpusBooks — no new endpoint). Book hover/select/route-to-card lives in the rail + marginalia (book-keyed); the plate carries word-point hover → floating tooltip. Added visualizationStore.hoveredBookId. tsc clean; vite build clean (684 modules); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-02 complete.
+- **Next phase:** Phase 12 continues — 12-03 (Catalog card screen + Comparative Study folio), then 12-04..12-07 per 12-CONTEXT.md plan map. Run `/gsd-execute-phase 12` to land 12-03.
 - **Last activity:** 2026-05-29
 
 ### Phase 12 plan 12-01 complete (2026-05-29)
@@ -278,6 +278,7 @@ Live at https://word2vec-topology-genre-detector-production.up.railway.app
 | Phase 10 P10-01 | ~6h | 12 tasks | 40 files |
 | Phase 11 P11-01 | 6min | 6 tasks | 6 files |
 | Phase 12 P12-01 | 40min | 6 tasks | 14 files |
+| Phase 12 P12-02 | ~7min | 4 tasks | 9 files |
 
 ## Open Blockers
 
@@ -295,9 +296,11 @@ Documentation drift to clean up (folded into Wave 4 per D-34, no longer a separa
 
 ## Session Continuity
 
-**Stopped at (2026-05-29):** Completed 12-01-PLAN.md — Phase 12 (The Reading Room) foundation via `/gsd-execute-phase 12`. Five atomic feat commits (`d81d7d5` → `e72fc06`) + this docs commit landed the editorial reading-room token system (replacing the Phase 10 indigo theme + Phase 11 tabbed shell wholesale, D-U2): Spectral + JetBrains Mono, paper/accent/density Tweaks, `theme/readingRoom.ts`, L-05 genre hexes, `readingRoomStore`, Masthead/Footer/FootnoteHost/TweaksPanel, and the App.tsx masthead router with live Landing + About. tsc clean; vite build clean (87 modules); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-01 complete.
+**Stopped at (2026-05-29):** Completed 12-02-PLAN.md — Phase 12 (The Reading Room) Collection screen via `/gsd-execute-phase 12`. Three atomic feat commits (`5291a0d` → `0927371`) + this docs commit landed the 3-col carrel: reskinned R3F plate (scene bg → `--paper`, L-05 genre hexes, region filter dim ~0.15, ink selection ring), PlateFrame (corner rulings + projection/2D-3D chips wired to visualizationStore + fig.¹ caption), CatalogRail (region index + filter + expand-titles + Find, `data-tour-id="catalog-rail"`), Marginalia (hovered-book note + UMAP note), useAllCorpusBooks (fan-out over useCorpusBooks), and `visualizationStore.hoveredBookId`. Plate is the WORD geography (hover → word tooltip); book identity flows through the rail + marginalia. tsc clean; vite build clean (684 modules); 167 Vitest in-scope green (6 Phase 9 deferred unchanged). RR-02 complete.
 
-**Next command:** `/gsd-execute-phase 12` to land 12-02 (The Collection — reskinned R3F plate + catalog rail + marginalia + region filter, on useScatterData/useCorpusBooks). Optional in-browser verification first: clear localStorage → boot into Landing (cream/oxblood); navigate the masthead; toggle Tweaks (paper/accent/density change live + persist across reload); open a footnote; confirm Landing matches 01-landing.png + About matches 08-about.png.
+**Decision (12-02):** Collection plate = reskinned R3F WORD scatter (D-U1); `/viz/scatter` serves words not books, so book hover/select/route-to-card lives in the catalog rail + marginalia (book-keyed via useCorpusBooks) while the plate hover yields a word tooltip. Region filter = `visualizationStore.selectedGenre` dimming non-selected word points to ~0.15.
+
+**Next command:** `/gsd-execute-phase 12` to land 12-03 (Catalog card screen + Comparative Study folio). Optional in-browser verification first (needs backend :8000 + Redis + arq up): masthead → The Collection → rail filters dim the plate region, expanding a genre lists its titles (hover → marginalia, click → catalog card route), projection chips + 2D/3D drive the live WebGL plate, `study` density (Tweaks) hides marginalia → 2-col; compare against 02-collection.png.
 
 **Prior (Phase 11 archived):** plan 11-01 complete 2026-05-28 (`0f0d111` → `8397206`): light default + no-FOUC + How-It-Works→tour chain. Phase 12 D-U2 supersedes this front end (the Phase 10/11 indigo UI is now replaced; their milestone requirements remain historically met).
 
